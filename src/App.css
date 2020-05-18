@@ -7,7 +7,7 @@
 }
 nav ul {
   list-style-type: none;
-  background-image: linear-gradient(to right, #b94d1a, #ca9325);
+  background-image: linear-gradient(to right, #1367ac, #195db6);
   margin: 0px;
   border-bottom: solid 1px #dddada;
   overflow: hidden;
@@ -97,6 +97,6 @@ nav ul li {
 }
 @media screen and (min-width: 1200px) {
   .wrapper {
-    width: 1024px;
+    width: 1156px;
   }
 }

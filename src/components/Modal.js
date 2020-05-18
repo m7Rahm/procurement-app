@@ -15,6 +15,9 @@ export default (props) => {
         },[])
     return (
         <div className="modal" onClick={onmModalClick}>
+            {
+                props.children
+            }
         </div>
     )
 }
