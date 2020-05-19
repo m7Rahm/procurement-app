@@ -5,14 +5,14 @@
 * {
   box-sizing: border-box;
 }
-nav ul {
+nav>ul {
   list-style-type: none;
   background-image: linear-gradient(to right, #1367ac, #195db6);
   margin: 0px;
   border-bottom: solid 1px #dddada;
   overflow: hidden;
 }
-nav ul li {
+nav>ul>li {
   float: right;
   margin-right: 50px;
 }
@@ -33,20 +33,20 @@ nav ul li {
   padding: 0px;
   margin: 40px 0px;
 }
-.table li {
+.table>li {
   overflow: hidden;
 }
-.table li:nth-of-type(2n) {
+.table>li:nth-of-type(2n) {
   background-image: linear-gradient(to right, #e3e3e3 , #f1f1f1);
 }
-.table li div {
+.table>li div {
   padding: 3px 0px
 }
-.table li div:not(:last-child) {
+.table>li div:not(:last-child) {
   float: left;
 }
 
-.table li:first-child {
+.table>li:first-child {
   font-weight: 600;
   padding: 10px 0px;
   background-color: dodgerblue;
@@ -59,30 +59,63 @@ nav ul li {
   left: 0px;
   height: 100%;
   z-index: 1;
+  filter: blur(8px);
   background-color: rgba(0,0,0,0.4);
+  -webkit-filter: blur(8px);
+}
+.modal-content{
+  border: 1px ridge #1f1f1f;
+  width: 60%;
+  margin: auto;
+  position: absolute;
+  margin-top: 15%;
+  background-color: #f1f1f1;
+  padding: 0px;
+  z-index: 2;
+}
+.modal-content>div:first-child {
+  background-image: linear-gradient(to bottom, #3f3f3f, #1f1f1f);
+  padding: 10px 20px;
+  color: #dddada;
+  text-align: left;
+  font-weight: 600;
+}
+.modal-content>ul {
+  overflow: hidden;
+  list-style-type: none;
+}
+.modal-content>ul>li:first-of-type {
+  background-color: #4285F4;
+}
+.modal-content>ul>li>div {
+  float: left;
+  width: 25%;
 }
 @media screen and (max-width: 600px) {
   .wrapper {
     width: 100%;
   }
-  .table li div:nth-last-child(2),.table li div:nth-last-child(4) {
+  .table>li div:nth-last-child(2),.table li div:nth-last-child(4) {
     display: none;
   }
-  .table li div:not(:first-child):not(:last-child) {
+  .table>li div:not(:first-child):not(:last-child) {
     float: left;
     width: 21% !important;
   }
 }
 @media screen and (min-width: 600px) and (max-width: 800px) {
   .wrapper {
-    width: 550px;
+    width: 600px;
   }
-  .table li div:nth-last-child(2) {
+  .table>li div:nth-last-child(2) {
     display: none;
   }
-  .table li div:not(:first-child):not(:last-child) {
+  .table>li div:not(:first-child):not(:last-child) {
     float: left;
     width: 17% !important;
+  }
+  .modal-content {
+    width: 100%;
   }
 }
 @media screen and (min-width: 800px) and (max-width: 992px) {

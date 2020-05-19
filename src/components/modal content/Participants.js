@@ -2,8 +2,26 @@ import React from 'react'
 
 export default (props) => {
     return (
-        <ul style={{ marginTop: '25%', paddingLeft: '0px' }}>
-            {props.participants.map((participant, index) => <li key={index}>{participant.fullname}</li>)}
-        </ul>
+        <div className='modal-content'>
+            <div>
+                Sifariş № {props.number}
+            </div>
+            <ul>
+                <li>
+                    <div>Ad Soyad</div>
+                    <div>Çatma Tarixi</div>
+                    <div>Baxılma Tarixi</div>
+                    <div>Status</div>
+                </li>
+                {props.participants.map((participant, index) =>
+                    <li key={index}>
+                        <div>{participant.fullname}</div>
+                        <div>{new Date().toString().substring(4, 15)}</div>
+                        <div>{new Date().toString().substring(4, 15)}</div>
+                        <div>{'Təsdiq edilib'}</div>
+                    </li>
+                )}
+            </ul>
+        </div>
     )
 }

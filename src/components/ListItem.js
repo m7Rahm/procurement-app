@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react'
+import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react'
 import {
   FaCommentAlt,
   FaEllipsisH
@@ -14,17 +14,17 @@ import {
 import Modal from './Modal'
 const ParticipantsModal = lazy(() => import('./modal content/Participants'))
 export default (props) => {
-  const onStatusClick = () => {
+  // const onStatusClick = () => {
 
-  }
+  // }
   const participantsString = props.participants.reduce((sum, participant, index) => {
     let char = index === 0 ? '' : ', '
     sum += char + participant.surname + ' ' + participant.name.substring(0, 1) + '.'
     return sum
   }
     , '')
-  const onParticipantsClick = (participants) => {
-    setContent(_ => <ParticipantsModal participants={participants} />)
+  const onParticipantsClick = (participants, number) => {
+    setContent(_ => <ParticipantsModal participants={participants} number={number} />)
     setIsModalOpen(prevState => !prevState)
   }
   const onCommentClick = () => {
@@ -41,6 +41,10 @@ export default (props) => {
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [content, setContent] = useState('');
+  const memoizedModalControlCallback = useCallback(
+    setIsModalOpen,
+    [],
+  );
 
   useEffect(
     () => {
@@ -85,7 +89,7 @@ export default (props) => {
               participantsString.substring(0, 6) + '..' :
               participantsString.substring(0, 14) + '..'
           }
-          <IoMdList onClick={_ => onParticipantsClick(props.participants)} size='20' display='block' style={{ verticalAlign: 'middle', float: 'right', marginRight: '3px', cursor: 'pointer' }} color='#195db6' />
+          <IoMdList onClick={_ => onParticipantsClick(props.participants, props.number)} size='20' display='block' style={{ verticalAlign: 'middle', float: 'right', marginRight: '3px', cursor: 'pointer' }} color='#195db6' />
         </div>
         <div style={{ width: '15%' }}> {props.deadline}</div>
         <div style={{ width: '5%', cursor: 'pointer' }}><FaCommentAlt color='#a1a1a1' onClick={onCommentClick} /> {props.remark}</div>
@@ -93,12 +97,7 @@ export default (props) => {
       </li>
       {
         isModalOpen ?
-          <Modal changeModalState={setIsModalOpen}>
-            <Suspense fallback={<div>Loading ..</div>} >
-              {
-                content
-              }
-            </Suspense>
+          <Modal changeModalState={memoizedModalControlCallback} content={<Suspense fallback={<div>Loading ..</div>}>{content}</Suspense>}>
           </Modal>
           : ''
       }

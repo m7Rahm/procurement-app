@@ -9,7 +9,7 @@ export default () => {
       <nav>
         <ul>
           <li>
-            <a style={{ display: 'block', height: '50px' }} href='#'>
+            <a style={{ display: 'block', height: '50px' }} href='https://reactjs.org/'>
               <img style={{ height: '100%' }} src={logo} alt='user pic'></img>
             </a>
           </li>
