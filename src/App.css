@@ -59,16 +59,18 @@ nav>ul>li {
   left: 0px;
   height: 100%;
   z-index: 1;
-  filter: blur(8px);
-  background-color: rgba(0,0,0,0.4);
-  -webkit-filter: blur(8px);
+  background-color: #00000060;
+  filter: blur(6px);
+  -webkit-filter: blur(6px);
 }
 .modal-content{
   border: 1px ridge #1f1f1f;
   width: 60%;
+  top: 15%;
+  left: 0;
+  right: 0;
   margin: auto;
   position: absolute;
-  margin-top: 15%;
   background-color: #f1f1f1;
   padding: 0px;
   z-index: 2;

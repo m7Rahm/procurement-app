@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback } from 'react'
 
 export default (props) => {
-    const closeModel = props.changeModalState
+    const closeModal = props.changeModalState
     const onEscPress = useCallback((e) => {
         if (e.keyCode === 27)
-        closeModel(false)
+        closeModal(false)
     },
-    [closeModel])
+    [closeModal])
     useEffect(
         () => {
             document.addEventListener('keyup', onEscPress, false)
@@ -14,7 +14,7 @@ export default (props) => {
         }, [onEscPress])
     return (
         <>
-            <div className="modal" onClick={() => closeModel(false)}>
+            <div className="modal" onClick={() => closeModal(false)}>
             </div>
             {
                 props.content

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react'
+import React, { useState, useEffect, lazy } from 'react'
 import {
   FaCommentAlt,
   FaEllipsisH
@@ -11,8 +11,8 @@ import {
   IoIosArchive,
   IoMdList
 } from 'react-icons/io'
-import Modal from './Modal'
 const ParticipantsModal = lazy(() => import('./modal content/Participants'))
+
 export default (props) => {
   // const onStatusClick = () => {
 
@@ -24,11 +24,11 @@ export default (props) => {
   }
     , '')
   const onParticipantsClick = (participants, number) => {
-    setContent(_ => <ParticipantsModal participants={participants} number={number} />)
-    setIsModalOpen(prevState => !prevState)
+    props.setModalContent(_ => <ParticipantsModal participants={participants} number={number} />)
+    props.setModalVisibility(prevState => !prevState)
   }
   const onCommentClick = () => {
-    setIsModalOpen(prevState => !prevState)
+    props.setModalVisibility(prevState => !prevState)
   }
   const onActionClick = () => {
 
@@ -37,14 +37,10 @@ export default (props) => {
     setScreenSize(_ => window.innerWidth);
     console.log(window.innerWidth)
   }
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const changeBlur = props.changeBlur
   const [screenSize, setScreenSize] = useState(window.innerWidth);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [content, setContent] = useState('');
-  const memoizedModalControlCallback = useCallback(
-    setIsModalOpen,
-    [],
-  );
+
 
   useEffect(
     () => {
@@ -63,6 +59,10 @@ export default (props) => {
       setIsSmallScreen(_ => isSmall)
     }
     , [screenSize])
+  // useEffect(
+  //   () => {
+  //     changeBlur(isModalOpen)
+  //   }, [isModalOpen])
   return (
     <>
       <li>
@@ -95,12 +95,12 @@ export default (props) => {
         <div style={{ width: '5%', cursor: 'pointer' }}><FaCommentAlt color='#a1a1a1' onClick={onCommentClick} /> {props.remark}</div>
         <div style={{ overflow: 'hidden', cursor: 'pointer' }}><FaEllipsisH color='#a1a1a1' onClick={onActionClick} /></div>
       </li>
-      {
+      {/* {
         isModalOpen ?
           <Modal changeModalState={memoizedModalControlCallback} content={<Suspense fallback={<div>Loading ..</div>}>{content}</Suspense>}>
           </Modal>
           : ''
-      }
+      } */}
     </>
   )
 }

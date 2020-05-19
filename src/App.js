@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { lazy, useState, Suspense, useCallback } from 'react';
 import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
+const Modal = lazy(() => import('./components/Modal'))
 // import SideBar from './components/SideBar'
 export default () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [content, setModalContent] = useState('')
+  const setModalVisibilityCallback = useCallback(setIsModalOpen, [])
+  const setModalContentCallback = useCallback(setModalContent, [])
   return (
     <div className="app">
       <nav>
@@ -15,9 +20,16 @@ export default () => {
           </li>
         </ul>
       </nav>
-      <div className="wrapper">
-        <Table orders={orders} />
+      <div className="wrapper" style={{ filter: isModalOpen ? 'blur(4px)' : '' }}>
+        <Table orders={orders} setModalVisibility={setModalVisibilityCallback} setModalContent={setModalContentCallback} />
       </div>
+      {
+        isModalOpen ?
+          <Suspense fallback={<div>loading..</div>}>
+            <Modal changeModalState={setModalVisibilityCallback} content={content} />
+          </Suspense> :
+          ''
+      }
     </div>
   );
 }
@@ -35,10 +47,10 @@ const orders = [
     status: 'Gözlənilir',
     number: '123',
     category: 'B',
-    participants: [{ fullname: 'Lala Musaeva', name: 'Lala', surname: 'Musayeva'},
-      { fullname: 'Mustafayev Rahman', name: 'Rahman', surname: 'Mustafayev' },
-      { fullname: 'Baghirov Emin', name: 'Emin', surname: 'Baghirov' },
-      { fullname: 'Cristiano Ronaldo', name: 'Cristiano', surname: 'Ronaldo' }],
+    participants: [{ fullname: 'Lala Musaeva', name: 'Lala', surname: 'Musayeva' },
+    { fullname: 'Mustafayev Rahman', name: 'Rahman', surname: 'Mustafayev' },
+    { fullname: 'Baghirov Emin', name: 'Emin', surname: 'Baghirov' },
+    { fullname: 'Cristiano Ronaldo', name: 'Cristiano', surname: 'Ronaldo' }],
     deadline: '18/05/2020',
     remark: ' ',
     action: ' ',
@@ -67,7 +79,7 @@ const orders = [
     status: 'Anbarda',
     number: '123456',
     category: 'E',
-    participants: [{ fullname: 'Sergio Ramos', name: 'Sergio', surname: 'Ramos'}],
+    participants: [{ fullname: 'Sergio Ramos', name: 'Sergio', surname: 'Ramos' }],
     deadline: '21/05/2020',
     remark: ' ',
     action: ' ',

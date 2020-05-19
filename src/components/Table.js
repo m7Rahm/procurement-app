@@ -1,7 +1,9 @@
 import React from 'react'
 import ListItem from './ListItem'
 export default (props) => {
-  
+  // const [isBlur, setIsBlur] = useState(false);
+  // console.log(isBlur);
+  // const setBlurCallback = useCallback(setIsBlur,[]);
   return (
     <ul className='table'>
       <li key={-1}>
@@ -17,6 +19,9 @@ export default (props) => {
       {
         props.orders.map((order, index) =>
           <ListItem
+            // changeBlur={setBlurCallback}
+            setModalContent={props.setModalContent}
+            setModalVisibility={props.setModalVisibility}
             index={index}
             key={index}
             rowNumber={index + 1}
