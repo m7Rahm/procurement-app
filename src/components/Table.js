@@ -8,13 +8,13 @@ export default (props) => {
     <ul className='table'>
       <li key={-1}>
         <div style={{ width: '25px' }}> #</div>
-        <div style={{ width: '15%' }}> Status</div>
+        <div style={{ width: '15%', paddingLeft: '30px' }}> Status</div>
         <div style={{ width: '20%' }}> Katqoriya</div>
         <div style={{ width: '15%' }}> Nömrə</div>
-        <div style={{ width: '20%' }}> İştirakçılar</div>
+        <div style={{ width: '20%', paddingLeft: '30px' }}> İştirakçılar</div>
         <div style={{ width: '15%' }}> Deadline</div>
         <div style={{ width: '5%' }}> Qeyd</div>
-        <div style={{ overflow:'hidden' }}>  </div>
+        <div style={{ overflow: 'hidden' }}>  </div>
       </li>
       {
         props.orders.map((order, index) =>
