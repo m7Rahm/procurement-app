@@ -101,7 +101,7 @@ nav>ul>li {
 }
 .modal-content{
   border: 1px ridge #1f1f1f;
-  width: 40%;
+  width: 60%;
   top: 15%;
   left: 0;
   right: 0;
@@ -151,6 +151,42 @@ nav>ul>li {
 .modal-content>ul>li:not(:first-of-type) {
   height: 50px;
   overflow: hidden;
+}
+.action-container {
+  width: 100px;
+  background-color: white;
+  border: 0.5px solid gray;
+  z-index: 1;
+  display: block;
+  position: absolute;
+  min-height: 60px;
+  transition: all 0.1s;
+  border-radius: 3px;
+  -webkit-transition: all 0.15s;
+  -moz-transition: all 0.15s;
+  -ms-transition: all 0.15s;
+  -o-transition: all 0.15s;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  box-shadow: 0px 0px 10px 0.5px #888888;
+}
+
+.action-container>ul {
+  overflow: hidden;
+  list-style-type: none;
+  margin: 0px;
+  padding-left: 0px;
+  padding-top: 2px;
+}
+.action-container>ul>li {
+  padding-left: 10px;
+  text-align: left;
+}
+.action-container>ul>li:hover {
+  background-color: #f1f1f1;
+  color: 505050;
 }
 
 @media screen and (max-width: 600px) {

@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import ListItem from './ListItem'
 export default (props) => {
-  // const [isBlur, setIsBlur] = useState(false);
-  // console.log(isBlur);
-  // const setBlurCallback = useCallback(setIsBlur,[]);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [activeLinkIndex, setactiveLinkIndex] = useState(null);
+  useEffect(
+    () => {
+      window.addEventListener('resize', handleWidthChange, false);
+      return _ => window.removeEventListener('resize', handleWidthChange, false)
+    }
+    , []
+  )
+  const setactiveLinkIndexCallback = useCallback(setactiveLinkIndex, []);
+    const handleWidthChange = () => {
+      let isSmall = false;
+      if (window.innerWidth < 830)
+        isSmall = true;
+      else
+        isSmall = false;
+      setIsSmallScreen(_ => isSmall)
+    }
   return (
     <ul className='table'>
       <li key={-1}>
@@ -14,12 +29,14 @@ export default (props) => {
         <div style={{ width: '20%', paddingLeft: '30px' }}> İştirakçılar</div>
         <div style={{ width: '15%' }}> Deadline</div>
         <div style={{ width: '5%' }}> Qeyd</div>
-        <div style={{ overflow: 'hidden' }}>  </div>
+        <div style={{ overflow: 'visible', display: 'inline-block', width: '40px' }}>  </div>
       </li>
       {
-        props.orders.map((order, index) =>
+        props.orders.map((order, index) => {
+          const active = index===activeLinkIndex? true : false;
+          const isSmall = isSmallScreen
+        return useMemo(()=>
           <ListItem
-            // changeBlur={setBlurCallback}
             setModalContent={props.setModalContent}
             setModalVisibility={props.setModalVisibility}
             index={index}
@@ -32,7 +49,12 @@ export default (props) => {
             deadline={order.deadline}
             remark=''
             action=''
-          />)
+            isSmallScreen={isSmall}
+            setactiveLinkIndex={setactiveLinkIndexCallback}
+            activeLinkIndex={active}
+          />, [index, order.category, order.deadline, order.number, order.participants, order.status, active, isSmall])
+        }
+          )
       }
     </ul>
   )

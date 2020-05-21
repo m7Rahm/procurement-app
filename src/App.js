@@ -9,6 +9,7 @@ export default () => {
   const [content, setModalContent] = useState('')
   const setModalVisibilityCallback = useCallback(setIsModalOpen, [])
   const setModalContentCallback = useCallback(setModalContent, [])
+  console.log('App.js')
   return (
     <div className="app">
       <nav>
