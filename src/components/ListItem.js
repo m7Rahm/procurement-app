@@ -1,19 +1,20 @@
-import React, { useState, lazy, useRef, Suspense } from 'react'
+import React, { useState, lazy} from 'react'
 import {
-  FaCommentAlt
+  FaCommentAlt,
+  FaBoxOpen
 } from 'react-icons/fa'
 import {
-  IoIosCheckmarkCircle,
-  IoIosCloseCircle,
-  IoIosClock,
-  IoIosAlert,
-  IoIosArchive,
-  IoMdList,
+  IoMdCheckmark,
+  IoMdClose,
+  IoMdPaperPlane,
+  IoMdDoneAll,
+  IoMdPeople,
   IoIosOptions
 } from 'react-icons/io'
 import CommentContainer from './CommentContainer'
-const ActionsComponent = lazy(() => import('./ActionsComponent'))
+import ActionsComponent from'./ActionsComponent'
 const ParticipantsModal = lazy(() => import('./modal content/Participants'))
+const StatusModal = lazy(() => import('./modal content/Status'))
 
 
 export default (props) => {
@@ -27,15 +28,20 @@ export default (props) => {
     props.setModalContent(_ => <ParticipantsModal changeModalState={props.setModalVisibility} participants={participants} number={number} />)
     props.setModalVisibility(prevState => !prevState)
   }
-
-  const onActionClick = () => {
-    props.setactiveLinkIndex(_ => props.index)
-    setIsActionsVisible(prevState => !prevState)
+  // const onActionClick = () => {
+  //   let activeIndex = null
+  //   props.activeLinkIndex ?
+  //   activeIndex = null :
+  //   activeIndex = props.index
+  //   props.setActiveLink(_ => activeIndex)
+  // }
+  const onStatusClick = (number) => {
+    props.setModalContent(_ => <StatusModal changeModalState={props.setModalVisibility} number={number} />)
+    props.setModalVisibility(prevState => !prevState)
   }
   const [isCommentVisible, setIsCommentVisible] = useState(false)
-  const [isActionsVisible, setIsActionsVisible] = useState(false)
-  const participantsRef = useRef(null);
   const charCount = props.isSmallScreen ? 6 : 14
+  // console.log(props.activeLinkIndex, isActionsVisible)
   // useEffect(
   //   () => {
   //     setCharCount(_=>participantsRef.current.clientWidth/10);
@@ -44,28 +50,28 @@ export default (props) => {
   return (
     <>
       <li>
-        <div style={{ width: '25px' }}>{props.rowNumber}</div>
+        <div style={{ width: '30px', fontWeight:'520', color:'#505050' }}>{props.index + 1}</div>
         <div style={{ width: '15%' }}> {props.isSmallScreen ? '' : props.status}
           {props.status === 'Baxılır' ?
-            <IoIosAlert color='#F4B400' title='Baxılır' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
+            <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#F4B400' title='Baxılır' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
             props.status === 'Təsdiqlənib' ?
-              <IoIosCheckmarkCircle color='#0F9D58' title='Təsdiqlənib' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
+              <IoMdDoneAll onClick={() => onStatusClick(props.number)} color='#0F9D58' title='Təsdiqlənib' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
               props.status === 'Etiraz' ?
-                <IoIosCloseCircle color='#DB4437' title='Etiraz' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
+                <IoMdClose onClick={() => onStatusClick(props.number)} color='#DB4437' title='Etiraz' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
                 props.status === 'Gözlənilir' ?
-                  <IoIosClock color='#4285F4' title='Gözlənilir' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
+                  <IoMdPaperPlane onClick={() => onStatusClick(props.number)} color='#4285F4' title='Gözlənilir' size='20' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
                   props.status === 'Anbarda' ?
-                    <IoIosArchive title='Anbarda' size='20' color='#777777' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
+                    <FaBoxOpen onClick={() => onStatusClick(props.number)} title='Anbarda' size='20' color='#777777' style={props.isSmallScreen ? styles.smallScreen : styles.biggerScreen} display='block' /> :
                     ''
           }
         </div>
         <div style={{ width: '20%' }}> {props.category}</div>
         <div style={{ width: '15%' }}> {props.number}</div>
-        <div style={{ width: '20%' }} ref={participantsRef}>
+        <div style={{ width: '20%' }}>
           {
             participantsString.substring(0, charCount) + '..'
           }
-          <IoMdList onClick={_ => onParticipantsClick(props.participants, props.number)} size='20' display='block' style={styles.biggerScreen} color='#195db6' />
+          <IoMdPeople onClick={_ => onParticipantsClick(props.participants, props.number)} size='20' display='block' style={styles.biggerScreen} color='gray' />
         </div>
         <div style={{ width: '15%' }}> {props.deadline}</div>
         <div style={{ width: '5%' }}>
@@ -78,13 +84,11 @@ export default (props) => {
             }
           </div>
         </div>
-        <div style={{ overflow: 'visible', cursor: 'pointer', clear: 'left', display: 'inline-block', width: '40px' }}>
-          <IoIosOptions size='20' color='#606060' onClick={onActionClick} />
+        <div id={props.index} className='options-button' style={{ overflow: 'visible', cursor: 'pointer', clear: 'left', display: 'inline-block', width: 'auto' }}>
+          <IoIosOptions size='20' color='#606060' />
           {
-            props.activeLinkIndex && isActionsVisible ?
-              <Suspense fallback={<div>Loading..</div>}>
-                <ActionsComponent />
-              </Suspense> :
+            props.activeLinkIndex ?
+                <ActionsComponent /> :
               ''
           }
         </div>
