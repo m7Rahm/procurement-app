@@ -13,18 +13,18 @@ export default (props) => {
       <ul>
         <li>
           <div>Ad Soyad</div>
-          <div>Çatma Tarixi</div>
-          <div>Baxılma Tarixi</div>
           <div>Status</div>
+          <div>Tarix</div>
+          <div>Qeyd</div>
         </li>
         {props.participants.map((participant, index) =>
           <li key={index}>
             <div>{participant.fullname}
               <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{'Mütəxəssis'}</div>
             </div>
+            <div>{'Təsdiq'}</div>
             <div>{new Date().toString().substring(4, 15)}</div>
-            <div>{new Date().toString().substring(4, 15)}</div>
-            <div>{'Təsdiq edilib'}</div>
+            <div>ABCSDW</div>
           </li>
         )}
       </ul>

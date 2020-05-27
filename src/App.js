@@ -9,6 +9,7 @@ export default () => {
   const [content, setModalContent] = useState('')
   const setModalVisibilityCallback = useCallback(setIsModalOpen, [])
   const setModalContentCallback = useCallback(setModalContent, [])
+  console.log(isModalOpen);
   return (
     <div className="app">
       <nav>
@@ -37,7 +38,7 @@ const orders = [
   {
     status: 'Etiraz',
     number: '12',
-    category: 'A',
+    category: 'İnformasiya Texnologiyaları',
     participants: [{ fullname: 'A', name: 'Linonel', surname: 'Messi' }],
     deadline: '17/05/2020',
     remark: ' ',
@@ -46,7 +47,7 @@ const orders = [
   {
     status: 'Gözlənilir',
     number: '123',
-    category: 'B',
+    category: 'Elektronika',
     participants: [{ fullname: 'Lala Musaeva', name: 'Lala', surname: 'Musayeva' },
     { fullname: 'Mustafayev Rahman', name: 'Rahman', surname: 'Mustafayev' },
     { fullname: 'Baghirov Emin', name: 'Emin', surname: 'Baghirov' },
@@ -58,7 +59,7 @@ const orders = [
   {
     status: 'Təsdiqlənib',
     number: '1234',
-    category: 'C',
+    category: 'Kadrlar',
     participants: [{ fullname: 'A', name: 'Rahman', surname: 'Mustafayev' },
     { fullname: 'B', name: 'Cesc', surname: 'Fabregas' },
     { fullname: 'C', name: 'Gabriel', surname: 'Martinelli' }],
@@ -69,7 +70,7 @@ const orders = [
   {
     status: 'Baxılır',
     number: '12345',
-    category: 'D',
+    category: 'Energetika',
     participants: [{ fullname: 'Mustafayev Rahman', name: 'Rahman', surname: 'Mustafayev' }],
     deadline: '20/05/2020',
     remark: ' ',
@@ -78,10 +79,19 @@ const orders = [
   {
     status: 'Anbarda',
     number: '123456',
-    category: 'E',
+    category: 'Təsərüfat',
     participants: [{ fullname: 'Sergio Ramos', name: 'Sergio', surname: 'Ramos' }],
     deadline: '21/05/2020',
     remark: ' ',
     action: ' ',
   },
+  {
+    status: 'Tamamlanmışdır',
+    number: '1234567',
+    category: 'Digər',
+    participants: [{ fullname: 'Sergio Ramos', name: 'Sergio', surname: 'Ramos' }],
+    deadline: '21/05/2020',
+    remark: ' ',
+    action: ' ',
+  }
 ]

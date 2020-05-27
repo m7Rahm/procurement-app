@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import {FaSortDown
+} from 'react-icons/fa'
 import ListItem from './ListItem'
 export default (props) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -49,15 +51,16 @@ export default (props) => {
     <ul className='table'>
       <li key={-1}>
         <div style={{ width: '30px' }}> #</div>
-        <div style={{ width: '15%', paddingLeft: !isSmallScreen? '30px' : '', textAlign: isSmallScreen ? 'center' : 'left' }}> Status</div>
-        <div style={{ width: '20%' }}> Katqoriya</div>
-        <div style={{ width: '15%' }}> Nömrə</div>
-        <div style={{ width: '20%', paddingLeft: !isSmallScreen? '30px' : '' }}> İştirakçılar</div>
-        <div style={{ width: '15%' }}> Deadline</div>
-        <div style={{ width: '5%' }}> Qeyd</div>
-        <div style={{ overflow: 'visible', display: 'inline-block', width: 'auto' }}>  </div>
+        <div style={{ minWidth: '80px' }}> Status</div>
+        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left', paddingRight: '10px' }}> Tarix <FaSortDown style={{float: 'right', marginRight: '10px'}}/></div>
+        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə <FaSortDown style={{float: 'right', marginRight: '10px'}}/></div>
+        <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> Deadline <FaSortDown style={{float: 'right', marginRight: '10px'}}/></div>
+        <div style={{ minWidth: '70px', width: '20%', textAlign: 'left' }}> Təyinatı</div>
+        <div style={{ width: '20%', paddingLeft: !isSmallScreen? '30px' : '', textAlign: 'left' }}> İştirakçılar</div>
+        <div style={{ minWidth: '5%' }}> Qeyd</div>
+        <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div>
       </li>
-      {
+      { 
         props.orders.map((order, index) => {
           const active = index === activeLinkIndex ? true : false;
           const isSmall = isSmallScreen
@@ -79,7 +82,7 @@ export default (props) => {
               setActiveLink={setActiveLinkIndexCallback}
             />, [index, order.category, order.deadline, order.number, order.participants, order.status, active, isSmall])
         }
-        )
+        ) 
       }
     </ul>
   )
