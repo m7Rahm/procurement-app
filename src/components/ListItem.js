@@ -41,16 +41,18 @@ export default (props) => {
   }
   const [isCommentVisible, setIsCommentVisible] = useState(false)
   const icon = props.status === 'Baxılır' ?
-    <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#F4B400' title='Baxılır' size='20' style={{ margin: 'auto', }} display='block' /> :
-    props.status === 'Təsdiqlənib' ?
-      <IoMdDoneAll onClick={() => onStatusClick(props.number)} color='#0F9D58' title='Təsdiqlənib' size='20' style={{ margin: 'auto', }} display='block' /> :
+    <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#F4B400' title={props.status} size='20' style={{ margin: 'auto', }} /> :
+    props.status === 'Tamamlanmışdır' ?
+      <IoMdDoneAll onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} /> :
       props.status === 'Etiraz' ?
-        <IoMdClose onClick={() => onStatusClick(props.number)} color='#DB4437' title='Etiraz' size='20' style={{ margin: 'auto', }} display='block' /> :
+        <IoMdClose onClick={() => onStatusClick(props.number)} color='#DB4437' title={props.status} size='20' style={{ margin: 'auto', }} /> :
         props.status === 'Gözlənilir' ?
-          <IoMdPaperPlane onClick={() => onStatusClick(props.number)} color='#4285F4' title='Gözlənilir' size='20' style={{ margin: 'auto', }} display='block' /> :
+          <IoMdPaperPlane onClick={() => onStatusClick(props.number)} color='#4285F4' title={props.status} size='20' style={{ margin: 'auto', }} /> :
           props.status === 'Anbarda' ?
-            <FaBoxOpen onClick={() => onStatusClick(props.number)} title='Anbarda' size='20' color='#777777' style={{ margin: 'auto', }} display='block' /> :
-            <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#0F9D58' title='Baxılır' size='20' style={{ margin: 'auto', }} display='block' />
+            <FaBoxOpen onClick={() => onStatusClick(props.number)} title={props.status} size='20' color='#777777' style={{ margin: 'auto', }} /> :
+            props.status === 'Təsdiq edilib' ?
+            <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} /> :
+            ''
 
   // console.log(props.activeLinkIndex, isActionsVisible)
   // useEffect(

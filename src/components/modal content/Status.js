@@ -4,7 +4,8 @@ import {
   FaBoxOpen,
   FaCheck,
   FaShoppingCart,
-  FaTruck
+  FaTruck,
+  FaCircle
 } from 'react-icons/fa'
 import { IoMdClose } from 'react-icons/io'
 export default (props) => {
@@ -36,6 +37,48 @@ export default (props) => {
           <FaCheck size='30' color='white' />
         </div>
       </div>
+      <span style={{fontWeight: 'bold', marginBottom: '10px' , float: 'left', clear: 'right', fontSize: '14px' , marginLeft: '20px'}}>Tarixçə</span>
+      <ul className='history'>
+      <li>
+          <div className='blinking' style={{width: '40px'}}>
+            <FaCircle size='10'/>
+          </div>
+          <div style={{width: '20%', textAlign: 'left'}}>
+            {
+              new Date().toLocaleString()
+            }
+          </div>
+          <div style={{textAlign: 'left'}}>
+            Asif Bağırov tərəfindən sifarişə baxılır
+          </div>
+        </li>
+      <li>
+          <div style={{width: '40px'}}>
+            <FaCircle color='green' size='10'/>
+          </div>
+          <div style={{width: '20%', textAlign: 'left'}}>
+            {
+              new Date().toLocaleString()
+            }
+          </div>
+          <div style={{textAlign: 'left'}}>
+            Antonio sifarişi təsdiq etdi
+          </div>
+        </li>
+        <li>
+          <div style={{width: '40px'}}>
+            <FaCircle color='green' size='10'/>
+          </div>
+          <div style={{width: '20%', textAlign: 'left'}}>
+            {
+              new Date().toLocaleString()
+            }
+          </div>
+          <div style={{textAlign: 'left'}}>
+            Sənəd yaradıldı
+          </div>
+        </li>
+      </ul>
     </div>
   )
 }

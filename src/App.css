@@ -110,7 +110,7 @@ nav>ul>li {
   right: 0;
   margin: auto;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: #f5f5f5;
   padding: 0px;
   z-index: 2;
   animation-name: modal-show;
@@ -128,21 +128,21 @@ nav>ul>li {
 .modal-content>div:first-child {
   background-image: linear-gradient(to bottom, #3f3f3f, #1f1f1f);
   padding: 10px 20px;
-  color: #dddada;
+  color: white;
   text-align: left;
   font-weight: 600;
 }
-.modal-content>ul {
+.participants {
   list-style-type: none;
   padding-left: 0px;
 }
-.modal-content>ul>li:first-of-type {
+.participants>li:first-of-type {
   background-color: #D93404;
-  color: #dddada;
+  color: white;
   font-weight: 600;
   overflow: hidden;
 }
-.modal-content>ul>li>div {
+.participants>li>div {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -151,11 +151,11 @@ nav>ul>li {
   padding: 10px 20px;
   height: 50px;
 }
-.modal-content>ul>li>div:first-of-type {
+.participants>li>div:first-of-type {
   text-align: left;
 }
 
-.modal-content>ul>li:not(:first-of-type) {
+.participants>li:not(:first-of-type) {
   height: 50px;
   overflow: hidden;
 }
@@ -193,15 +193,33 @@ nav>ul>li {
   background-color: dodgerblue;
   color: white;
 }
+.blinking {
+  animation-name: blink;
+  animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+  animation-duration: 400ms;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  animation-direction: alternate;
+}
+@keyframes blink {
+  from {
+    color: gray;
+  }
+  to {
+    color:#F4B400
+  }
+}
 .status-container {
-  width: 90%;
-  background-color: #f1f1f1;
-  margin: auto;
+  padding: 20px;
+  background-color: #eeeeee;
+  border: 1.5px #d1d1d1 solid;
+  margin: 20px 20px;
+  margin-bottom: 30px;
   display: flex;
   align-items: center 
 }
 .icon-container {
-  background-color: green;
+  background-color: #0F9D58;
   display: flex;
   height: 60px;
   justify-content: center;
@@ -219,13 +237,26 @@ nav>ul>li {
   border-radius: 3px;
   flex-grow: 1;
   margin: 0px 2px;
-  background-color: green;
+  background-color: #0F9D58;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
 }
-
+.history {
+  padding-left: 0px;
+  margin-left: 20px;
+  list-style-type: none;
+}
+.history>li {
+  padding: 10px 0px;
+  width: 100%;
+  overflow: hidden;
+}
+.history>li>div {
+  float: left;
+  text-align: left;
+}
 @media screen and (max-width: 600px) {
   .modal-content{
     width: 100%;

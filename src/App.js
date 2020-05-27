@@ -57,7 +57,7 @@ const orders = [
     action: ' ',
   },
   {
-    status: 'Təsdiqlənib',
+    status: 'Təsdiq edilib',
     number: '1234',
     category: 'Kadrlar',
     participants: [{ fullname: 'A', name: 'Rahman', surname: 'Mustafayev' },

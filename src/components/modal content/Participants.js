@@ -10,7 +10,7 @@ export default (props) => {
         Sifariş № {props.number}
         <IoMdClose onClick={() => closeModal(false)} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
       </div>
-      <ul>
+      <ul className='participants'>
         <li>
           <div>Ad Soyad</div>
           <div>Status</div>
