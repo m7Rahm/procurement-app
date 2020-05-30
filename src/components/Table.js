@@ -89,8 +89,7 @@ export default (props) => {
               activeLinkIndex={active}
               setActiveLink={setActiveLinkIndexCallback}
             />, [index, order.category, order.deadline, order.number, order.participants, order.status, active, isSmall])
-        }
-        )
+        })
       }
     </ul>
   )

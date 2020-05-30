@@ -250,14 +250,28 @@ nav>ul>li {
 }
 .history>li {
   padding: 10px 0px;
-  width: 100%;
+  /* width: 100%; */
+  clear: both;
   overflow: hidden;
 }
 .history>li>div {
   float: left;
   text-align: left;
 }
-@media screen and (max-width: 600px) {
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 0px;
+  /* min-height: 100px; */
+}
+.search-container input:focus {
+  outline: none;
+  outline-offset: 0px;
+  outline: 1.5px #ffae00 solid;
+}
+/* @media screen and (max-width: 600px) {
   .modal-content{
     width: 100%;
   }
@@ -291,7 +305,7 @@ nav>ul>li {
   .wrapper {
     width: 800px;
   }
-}
+} */
 @media screen and (min-width: 992px) {
   .wrapper {
     width: 90%;
