@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
-import {FaSortDown
+import {
+  FaSortDown,
+  FaSortUp
 } from 'react-icons/fa'
 import ListItem from './ListItem'
 export default (props) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
+  const [createDateFilter, setCreateDateFilter] = useState(false)
+  const [deadlineFilter, setDeadlineFilter] = useState(false)
+  const [numberFilter, setNumberFilter] = useState(false)
   const setActiveLinkIndexCallback = useCallback(setActiveLinkIndex, []);
   useEffect(
     () => {
@@ -47,20 +52,23 @@ export default (props) => {
       isSmall = false;
     setIsSmallScreen(_ => isSmall)
   }
+  const createDateFilterIcon = !createDateFilter ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={() => setCreateDateFilter(_ => !_)} /> : <FaSortUp onClick={() => setCreateDateFilter(_ => !_)} style={{ float: 'right', marginRight: '10px' }} />
+  const deadlineIcon = !deadlineFilter ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={() => setDeadlineFilter(_ => !_)} /> : <FaSortUp onClick={() => setDeadlineFilter(_ => !_)} style={{ float: 'right', marginRight: '10px' }} />
+  const numberIcon = !numberFilter ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={() => setNumberFilter(_ => !_)} /> : <FaSortUp onClick={() => setNumberFilter(_ => !_)} style={{ float: 'right', marginRight: '10px' }} />
   return (
     <ul className='table'>
       <li key={-1}>
         <div style={{ width: '30px' }}> #</div>
         <div style={{ minWidth: '80px' }}> Status</div>
-        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left', paddingRight: '10px' }}> Tarix <FaSortDown style={{float: 'right', marginRight: '10px'}}/></div>
-        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə <FaSortDown style={{float: 'right', marginRight: '10px'}}/></div>
-        <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> Deadline <FaSortDown style={{float: 'right', marginRight: '10px'}}/></div>
+        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left', paddingRight: '10px' }}> Tarix {createDateFilterIcon}</div>
+        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
+        <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> Deadline {deadlineIcon}</div>
         <div style={{ minWidth: '70px', width: '20%', textAlign: 'left' }}> Təyinatı</div>
-        <div style={{ width: '20%', paddingLeft: !isSmallScreen? '30px' : '', textAlign: 'left' }}> İştirakçılar</div>
+        <div style={{ width: '20%', paddingLeft: !isSmallScreen ? '30px' : '', textAlign: 'left' }}> İştirakçılar</div>
         <div style={{ minWidth: '5%' }}> Qeyd</div>
         <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div>
       </li>
-      { 
+      {
         props.orders.map((order, index) => {
           const active = index === activeLinkIndex ? true : false;
           const isSmall = isSmallScreen
@@ -81,8 +89,7 @@ export default (props) => {
               activeLinkIndex={active}
               setActiveLink={setActiveLinkIndexCallback}
             />, [index, order.category, order.deadline, order.number, order.participants, order.status, active, isSmall])
-        }
-        ) 
+        })
       }
     </ul>
   )

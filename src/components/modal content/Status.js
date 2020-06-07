@@ -37,45 +37,64 @@ export default (props) => {
           <FaCheck size='30' color='white' />
         </div>
       </div>
-      <span style={{fontWeight: 'bold', marginBottom: '10px' , float: 'left', clear: 'right', fontSize: '14px' , marginLeft: '20px'}}>Tarixçə</span>
+      <span style={{ fontWeight: 'bold', marginBottom: '10px', float: 'left', clear: 'right', fontSize: '14px', marginLeft: '20px' }}>Tarixçə</span>
       <ul className='history'>
-      <li>
-          <div className='blinking' style={{width: '40px'}}>
-            <FaCircle size='10'/>
+        <li style={{ backgroundColor: '#eeeeee', fontWeight: 'bold', padding: '2px', paddingLeft: '20px', marginRight: '20px', textAlign: 'left' }}>
+          {new Date().toDateString()}
+        </li>
+        <li>
+          <div className='blinking' style={{ width: '40px' }}>
+            <FaCircle size='10' />
           </div>
-          <div style={{width: '20%', textAlign: 'left'}}>
+          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
             {
-              new Date().toLocaleString()
+              new Date().toLocaleTimeString()
             }
           </div>
-          <div style={{textAlign: 'left'}}>
+          <div style={{ textAlign: 'left' }}>
             Asif Bağırov tərəfindən sifarişə baxılır
           </div>
         </li>
-      <li>
-          <div style={{width: '40px'}}>
-            <FaCircle color='green' size='10'/>
+        <li>
+          <div style={{ width: '40px' }}>
+            <FaCircle color='green' size='10' />
           </div>
-          <div style={{width: '20%', textAlign: 'left'}}>
+          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
             {
-              new Date().toLocaleString()
+              new Date().toLocaleTimeString()
             }
           </div>
-          <div style={{textAlign: 'left'}}>
+          <div style={{ textAlign: 'left' }}>
             Antonio sifarişi təsdiq etdi
           </div>
         </li>
         <li>
-          <div style={{width: '40px'}}>
-            <FaCircle color='green' size='10'/>
+          <div style={{ width: '40px' }}>
+            <FaCircle color='green' size='10' />
           </div>
-          <div style={{width: '20%', textAlign: 'left'}}>
+          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
             {
-              new Date().toLocaleString()
+              new Date().toLocaleTimeString()
             }
           </div>
-          <div style={{textAlign: 'left'}}>
+          <div style={{ textAlign: 'left' }}>
             Sənəd yaradıldı
+          </div>
+        </li>
+        <li style={{ backgroundColor: '#eeeeee', fontWeight: 'bold', padding: '2px', paddingLeft: '20px', marginRight: '20px', textAlign: 'left' }}>
+          {'Fri May 29 2020'}
+        </li>
+        <li>
+          <div style={{ width: '40px' }}>
+            <FaCircle color='green' size='10' />
+          </div>
+          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
+            {
+              new Date().toLocaleTimeString()
+            }
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            Pellegrini sifarişi təsdiq etdi
           </div>
         </li>
       </ul>

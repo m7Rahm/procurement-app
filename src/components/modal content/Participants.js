@@ -7,7 +7,7 @@ export default (props) => {
   return (
     <div className='modal-content'>
       <div>
-        Sifariş № {props.number}
+        Sifarişiniz təsdiq edilmişdir
         <IoMdClose onClick={() => closeModal(false)} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
       </div>
       <ul className='participants'>
@@ -15,7 +15,7 @@ export default (props) => {
           <div>Ad Soyad</div>
           <div>Status</div>
           <div>Tarix</div>
-          <div>Qeyd</div>
+          <div style={{ textAlign: 'left' }}>Qeyd</div>
         </li>
         {props.participants.map((participant, index) =>
           <li key={index}>
@@ -24,7 +24,7 @@ export default (props) => {
             </div>
             <div>{'Təsdiq'}</div>
             <div>{new Date().toString().substring(4, 15)}</div>
-            <div>ABCSDW</div>
+            <div style={{ textAlign: 'left' }}>ABCSDW</div>
           </li>
         )}
       </ul>

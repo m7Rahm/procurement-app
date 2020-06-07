@@ -2,6 +2,7 @@ import React, { lazy, useState, Suspense, useCallback } from 'react';
 import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
+import Search from './components/Search'
 const Modal = lazy(() => import('./components/Modal'))
 // import SideBar from './components/SideBar'
 export default () => {
@@ -21,6 +22,7 @@ export default () => {
           </li>
         </ul>
       </nav>
+      <Search />
       <div className="wrapper" style={{ filter: isModalOpen ? 'blur(4px)' : '' }}>
         <Table orders={orders} setModalVisibility={setModalVisibilityCallback} setModalContent={setModalContentCallback} />
       </div>
