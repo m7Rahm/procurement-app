@@ -1,4 +1,4 @@
-import React, { useState, lazy } from 'react'
+import React, { lazy, useState, Suspense } from 'react'
 import {
   FaBoxOpen
 } from 'react-icons/fa'
@@ -9,15 +9,18 @@ import {
   IoMdDoneAll,
   IoMdPeople,
   IoIosOptions,
-  IoMdChatbubbles,
 } from 'react-icons/io'
 import CommentContainer from './CommentContainer'
-import ActionsComponent from './ActionsComponent'
+import ActionsContainer from './ActionsContainer'
 const ParticipantsModal = lazy(() => import('./modal content/Participants'))
 const StatusModal = lazy(() => import('./modal content/Status'))
+const Modal = lazy(() => import('./Modal'))
 
 
-export default (props) => {
+
+const ListItem = (props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [content, setModalContent] = useState('')
   // const participantsString = props.participants.reduce((sum, participant, index) => {
   //   let char = index === 0 ? '' : ', '
   //   sum += char + participant.surname + ' ' + participant.name.substring(0, 1) + '.'
@@ -25,8 +28,9 @@ export default (props) => {
   // }
   //   , '')
   const onParticipantsClick = (participants, number) => {
-    props.setModalContent(_ => <ParticipantsModal changeModalState={props.setModalVisibility} participants={participants} number={number} />)
-    props.setModalVisibility(prevState => !prevState)
+    setModalContent(_ => <ParticipantsModal changeModalState={setIsModalOpen} participants={participants} number={number} />)
+    // props.wrapperRef.current.style.filter = "blur(4px)"
+    setIsModalOpen(prevState => !prevState)
   }
   // const onActionClick = () => {
   //   let activeIndex = null
@@ -36,10 +40,10 @@ export default (props) => {
   //   props.setActiveLink(_ => activeIndex)
   // }
   const onStatusClick = (number) => {
-    props.setModalContent(_ => <StatusModal changeModalState={props.setModalVisibility} number={number} />)
-    props.setModalVisibility(prevState => !prevState)
+    setModalContent(_ => <StatusModal changeModalState={setIsModalOpen} number={number} />)
+    // props.wrapperRef.current.style.filter = "blur(4px)"
+    setIsModalOpen(prevState => !prevState)
   }
-  const [isCommentVisible, setIsCommentVisible] = useState(false)
   const icon = props.status === 'Baxılır' ?
     <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#F4B400' title={props.status} size='20' style={{ margin: 'auto', }} /> :
     props.status === 'Tamamlanmışdır' ?
@@ -51,8 +55,8 @@ export default (props) => {
           props.status === 'Anbarda' ?
             <FaBoxOpen onClick={() => onStatusClick(props.number)} title={props.status} size='20' color='#777777' style={{ margin: 'auto', }} /> :
             props.status === 'Təsdiq edilib' ?
-            <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} /> :
-            ''
+              <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} /> :
+              ''
 
   // console.log(props.activeLinkIndex, isActionsVisible)
   // useEffect(
@@ -68,6 +72,14 @@ export default (props) => {
           {
             icon
           }
+          {
+            isModalOpen ?
+              <Suspense fallback={<div>loading..</div>}>
+                <Modal wrapperRef={props.wrapperRef} changeModalState={setIsModalOpen} content={content} />
+              </Suspense> :
+              ''
+          }
+
         </div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{props.deadline}</div>
         <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> {props.number}</div>
@@ -80,21 +92,14 @@ export default (props) => {
           <IoMdPeople onClick={_ => onParticipantsClick(props.participants, props.number)} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
         </div>
         <div style={{ width: '5%' }}>
-          <div style={{ margin: 'auto', height: '100%', width: '40px', position: 'relative', padding: '0px 2px', cursor: 'pointer' }} onMouseLeave={() => setIsCommentVisible(false)} onMouseEnter={() => setIsCommentVisible(true)}>
-            <IoMdChatbubbles size='20' color='#4285F4' />{props.remark}
-            {
-              isCommentVisible ?
-                <CommentContainer number={props.number} /> :
-                ''
-            }
-          </div>
+          <CommentContainer remark={props.remark} number={props.number} />
         </div>
         {/* <div style={{ minWidth: '60px' }}> <IoMdDocument size='20' color='gray' /></div> */}
         <div id={props.index} className='options-button' style={{ overflow: 'visible', cursor: 'pointer', clear: 'left', display: 'inline-block', width: 'auto' }}>
           <IoIosOptions size='20' color='#606060' />
           {
             props.activeLinkIndex ?
-              <ActionsComponent /> :
+              <ActionsContainer /> :
               ''
           }
         </div>
@@ -108,6 +113,7 @@ export default (props) => {
     </>
   )
 }
+export default ListItem
 // const styles = {
 //   smallScreen: {
 //     margin: 'auto',

@@ -1,5 +1,5 @@
 import React from 'react'
-export default () => {
+const Search = () => {
     return (
         <div style={{ backgroundColor: '#188bc0' }}>
             <div className="wrapper">
@@ -37,3 +37,4 @@ export default () => {
         </div>
     )
 }
+export default Search

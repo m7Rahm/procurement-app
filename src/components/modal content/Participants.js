@@ -2,7 +2,7 @@ import React from 'react'
 import {
   IoMdClose
 } from 'react-icons/io'
-export default (props) => {
+const Participants = (props) => {
   const closeModal = props.changeModalState
   return (
     <div className='modal-content'>
@@ -31,3 +31,4 @@ export default (props) => {
     </div>
   )
 }
+export default Participants

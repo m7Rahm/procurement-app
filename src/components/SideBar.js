@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () => {
+const SideBar = () => {
     return (
         <div className='Side-bar'>
             <ul style={{listStyle:'none'}}>
@@ -11,3 +11,4 @@ export default () => {
         </div>
     )
 }
+export default SideBar

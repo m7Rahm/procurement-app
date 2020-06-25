@@ -1,24 +1,26 @@
 import React, { useEffect, useCallback } from 'react'
 
 export default (props) => {
-    const closeModal = props.changeModalState
-    const onEscPress = useCallback((e) => {
+  const closeModalCallback = useCallback(props.changeModalState, [])
+  useEffect(
+    () => {
+      const onEscPress = (e) => {
         if (e.keyCode === 27)
-        closeModal(false)
-    },
-    [closeModal])
-    useEffect(
-        () => {
-            document.addEventListener('keyup', onEscPress, false)
-            return () => document.removeEventListener('keyup', onEscPress, false)
-        }, [onEscPress])
-    return (
-        <>
-            <div className="modal" onClick={() => closeModal(false)}>
-            </div>
-            {
-                props.content
-            }
-        </>
-    )
+        {
+        closeModalCallback()
+        }
+      }
+      document.addEventListener('keyup', onEscPress, false);
+      console.log('use effect fired')
+      return () => document.removeEventListener('keyup', onEscPress, false)
+    }, [closeModalCallback])
+  return (
+    <>
+      <div className="modal" onClick={() => closeModalCallback()}>
+      </div>
+      {
+        props.content
+      }
+    </>
+  )
 }

@@ -1,16 +1,12 @@
-import React, { lazy, useState, Suspense, useCallback } from 'react';
+import React, { useRef } from 'react';
 import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
 import Search from './components/Search'
-const Modal = lazy(() => import('./components/Modal'))
+import NewOrder from './components/NewOder';
 // import SideBar from './components/SideBar'
 export default () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [content, setModalContent] = useState('')
-  const setModalVisibilityCallback = useCallback(setIsModalOpen, [])
-  const setModalContentCallback = useCallback(setModalContent, [])
-  console.log(isModalOpen);
+  const wrapperRef = useRef(null)
   return (
     <div className="app">
       <nav>
@@ -23,16 +19,10 @@ export default () => {
         </ul>
       </nav>
       <Search />
-      <div className="wrapper" style={{ filter: isModalOpen ? 'blur(4px)' : '' }}>
-        <Table orders={orders} setModalVisibility={setModalVisibilityCallback} setModalContent={setModalContentCallback} />
+      <div className="wrapper" ref={wrapperRef}>
+        <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
-      {
-        isModalOpen ?
-          <Suspense fallback={<div>loading..</div>}>
-            <Modal changeModalState={setModalVisibilityCallback} content={content} />
-          </Suspense> :
-          ''
-      }
+      <NewOrder wrapperRef={wrapperRef}/>
     </div>
   );
 }
