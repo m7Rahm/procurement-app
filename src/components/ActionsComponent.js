@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default () => {
+const ActionsComponent = () => {
     return (
         <div className='action-container'>
             <ul>
@@ -17,3 +17,4 @@ export default () => {
         </div>
     )
 }
+export default ActionsComponent

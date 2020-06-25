@@ -8,7 +8,7 @@ import {
   FaCircle
 } from 'react-icons/fa'
 import { IoMdClose } from 'react-icons/io'
-export default (props) => {
+const Status = (props) => {
   const closeModal = props.changeModalState
   return (
     <div className='modal-content'>
@@ -101,3 +101,4 @@ export default (props) => {
     </div>
   )
 }
+export default Status

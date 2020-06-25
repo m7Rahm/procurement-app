@@ -74,6 +74,7 @@ export default (props) => {
           const isSmall = isSmallScreen
           return useMemo(() =>
             <ListItem
+              wrapperRef={props.wrapperRef}
               setModalContent={props.setModalContent}
               setModalVisibility={props.setModalVisibility}
               index={index}
