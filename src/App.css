@@ -149,7 +149,7 @@ nav>ul>li {
   left: 0;
   right: 0;
   margin: auto;
-  position: absolute;
+  position: fixed;
   background-color: #f5f5f5;
   padding: 0px;
   z-index: 2;
