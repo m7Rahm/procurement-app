@@ -9,6 +9,7 @@ import {
   IoMdDoneAll,
   IoMdPeople,
   IoIosOptions,
+  IoMdRefreshCircle
 } from 'react-icons/io'
 import CommentContainer from './CommentContainer'
 import ActionsContainer from './ActionsContainer'
@@ -17,31 +18,19 @@ const StatusModal = lazy(() => import('./modal content/Status'))
 const Modal = lazy(() => import('./Modal'))
 
 
-
 const ListItem = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [content, setModalContent] = useState('')
-  // const participantsString = props.participants.reduce((sum, participant, index) => {
-  //   let char = index === 0 ? '' : ', '
-  //   sum += char + participant.surname + ' ' + participant.name.substring(0, 1) + '.'
-  //   return sum
-  // }
-  //   , '')
+  const handleClose = () => {
+    setIsModalOpen(_prev => false);
+  }
   const onParticipantsClick = (participants, number) => {
-    setModalContent(_ => <ParticipantsModal changeModalState={setIsModalOpen} participants={participants} number={number} />)
-    // props.wrapperRef.current.style.filter = "blur(4px)"
+    setModalContent(_ => <ParticipantsModal participants={participants} number={number} />)
     setIsModalOpen(prevState => !prevState)
   }
-  // const onActionClick = () => {
-  //   let activeIndex = null
-  //   props.activeLinkIndex ?
-  //   activeIndex = null :
-  //   activeIndex = props.index
-  //   props.setActiveLink(_ => activeIndex)
-  // }
+
   const onStatusClick = (number) => {
-    setModalContent(_ => <StatusModal changeModalState={setIsModalOpen} number={number} />)
-    // props.wrapperRef.current.style.filter = "blur(4px)"
+    setModalContent(_ => <StatusModal number={number} />)
     setIsModalOpen(prevState => !prevState)
   }
   const icon = props.status === 'Baxılır' ?
@@ -58,12 +47,6 @@ const ListItem = (props) => {
               <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} /> :
               ''
 
-  // console.log(props.activeLinkIndex, isActionsVisible)
-  // useEffect(
-  //   () => {
-  //     setCharCount(_=>participantsRef.current.clientWidth/10);
-  //     console.log(participantsRef.current.clientWidth/10);
-  //   }, [participantsRef.current.clientWidth])
   return (
     <>
       <li>
@@ -73,11 +56,15 @@ const ListItem = (props) => {
             icon
           }
           {
-            isModalOpen ?
-              <Suspense fallback={<div>loading..</div>}>
-                <Modal wrapperRef={props.wrapperRef} changeModalState={setIsModalOpen} content={content} />
-              </Suspense> :
-              ''
+            isModalOpen &&
+            <Suspense fallback={
+              <div className="loading">
+                <IoMdRefreshCircle size="50" color="#a4a4a4" />
+              </div>}>
+              <Modal changeModalState={handleClose} >
+                {content}
+              </Modal>
+            </Suspense>
           }
 
         </div>
@@ -104,22 +91,7 @@ const ListItem = (props) => {
           }
         </div>
       </li>
-      {/* {
-        isModalOpen ?
-          <Modal changeModalState={memoizedModalControlCallback} content={<Suspense fallback={<div>Loading ..</div>}>{content}</Suspense>}>
-          </Modal>
-          : ''
-      } */}
     </>
   )
 }
-export default ListItem
-// const styles = {
-//   smallScreen: {
-//     margin: 'auto',
-//   },
-//   biggerScreen: {
-//     float: 'left',
-//     margin: '0px 5px'
-//   }
-// }
+export default React.memo(ListItem)

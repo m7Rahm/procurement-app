@@ -1,15 +1,8 @@
 import React from 'react'
-import {
-  IoMdClose
-} from 'react-icons/io'
+
 const Participants = (props) => {
-  const closeModal = props.changeModalState
   return (
-    <div className='modal-content'>
-      <div>
-        Sifarişiniz təsdiq edilmişdir
-        <IoMdClose onClick={() => closeModal(false)} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
-      </div>
+
       <ul className='participants'>
         <li>
           <div>Ad Soyad</div>
@@ -28,7 +21,6 @@ const Participants = (props) => {
           </li>
         )}
       </ul>
-    </div>
   )
 }
 export default Participants

@@ -3,7 +3,7 @@ import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
 import Search from './components/Search'
-import NewOrder from './components/NewOder';
+import NewOrderButton from './components/NewOderButton';
 // import SideBar from './components/SideBar'
 export default () => {
   const wrapperRef = useRef(null)
@@ -22,7 +22,7 @@ export default () => {
       <div className="wrapper" ref={wrapperRef}>
         <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
-      <NewOrder wrapperRef={wrapperRef}/>
+      <NewOrderButton wrapperRef={wrapperRef}/>
     </div>
   );
 }

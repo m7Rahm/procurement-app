@@ -7,15 +7,9 @@ import {
   FaTruck,
   FaCircle
 } from 'react-icons/fa'
-import { IoMdClose } from 'react-icons/io'
-const Status = (props) => {
-  const closeModal = props.changeModalState
+const Status = () => {
   return (
-    <div className='modal-content'>
-      <div style={{ marginBottom: '20px' }}>
-        Sifariş № {props.number}
-        <IoMdClose onClick={() => closeModal(false)} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
-      </div>
+    <>
       <div className='status-container'>
         <div className='icon-container'>
           <FaSearch size='30' color='white' />
@@ -98,7 +92,7 @@ const Status = (props) => {
           </div>
         </li>
       </ul>
-    </div>
+      </>
   )
 }
 export default Status
