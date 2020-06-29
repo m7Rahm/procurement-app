@@ -19,7 +19,6 @@ useEffect(
   }
   , [handleOnOuterClick]
 )
-// const memoizedItems = props.orders.map((order, index) => useMemoizeItems(order, index, activeLinkIndex, props.wrapperRef))
 return (
   props.orders.map((order, index) => {
     const active = index === activeLinkIndex ? true : false;
