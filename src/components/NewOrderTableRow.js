@@ -1,54 +1,92 @@
-import React, { useState, useRef } from 'react'
+import React from 'react'
 import {
-  FaTimes,
-  FaAngleDown
+  FaTrashAlt,
+  FaAngleDown,
+  FaPlus,
+  FaMinus
 } from 'react-icons/fa'
 const NewOrderTableRow = (props) => {
-  const [importance, setImportance] = useState({
-    value: 1,
-    text: 'orta'
-  })
-  const dropdownRef = useRef(null)
-  // const handleImportanceVisiblityChange = (value) => {
-  //   dropdownRef.current.classList.toggle('importance-dropdown-visible',value)
-  // }
-  const handleImportanceChange = (e) =>{
-    console.log(e.target.value)
-    setImportance({value: e.target.value, text: e.target.innerHTML})
+  // const [importance, setImportance] = useState({
+  //   value: 1,
+  //   text: 'orta'
+  // })
+  const importanceText = ['orta','vacib','çox vacib']
+  const updateMaterialsList = props.updateMaterialsList;
+  const handleImportanceChange = (e) => {
+    e.target.name = 'importance';
+    handleChange(e);
+  }
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name
+    if (value === '' || Number(value) > 0)
+      updateMaterialsList(materials =>
+        materials.map(material => material.id !== props.id ? material : ({ ...material, [name]: value }))
+      )
+  }
+  const handleAmountFocusLose = (e) => {
+    const value = e.target.value;
+    const name = e.target.name
+    if (value === '')
+      updateMaterialsList(materials =>
+        materials.map(material => material.id !== props.id ? material : ({ ...material, [name]: 1 }))
+      )
+  }
+  const handleAmountChangeButtons = (action) => {
+    const amoutValue = action === 'dec' ? parseInt(props.amount) - 1 : parseInt(props.amount) + 1;
+    if (amoutValue > 0)
+      updateMaterialsList(materials =>
+        materials.map(material =>
+          material.id !== props.id ? material : ({ ...material, amount: amoutValue })
+        )
+      )
+  }
+  const handleChange = (e) => {
+    const value = e.target.value;
+    const name = e.target.name
+    updateMaterialsList(materials =>
+      materials.map(material => material.id !== props.id ? material : ({ ...material, [name]: value }))
+    )
   }
   return (
     <tr>
-      <td>1</td>
+      <td>{props.index + 1}</td>
       <td>
-        <select>
+        <select onChange={handleChange} value={props.materialId}>
           <option>Notebook</option>
           <option>Hard Drive</option>
           <option>Mouse</option>
         </select>
       </td>
-      <td><input type="text" placeholder="Model" /></td>
-      <td style={{ position: 'relative'}}>
-          <div id={props.index} className={`importance-div`}>
+      <td><input type="text" placeholder="Model" value={props.model} name="model" onChange={handleChange} /></td>
+      <td style={{ position: 'relative' }}>
+        <div id={props.id} style={{ boxShadow: `${props.isActive ? '0px 0px 0px 1.6px royalblue' : ''}` }} className={`importance-div`}>
           {
-            importance.text
+            importanceText[props.importance - 1]
           }
-          <FaAngleDown color="royalblue"/>
-          </div>
-          <ul className={`importance-dropdown ${props.isActive ? 'importance-dropdown-visible' : ''}`} ref={dropdownRef}>
-            <li value="1" key="1" onClick={handleImportanceChange}>
-              orta
-            </li>
-            <li title="vacib" value="2" key="2" onClick={handleImportanceChange} >
+          <FaAngleDown color="royalblue" />
+        </div>
+        <ul className={`importance-dropdown ${props.isActive ? 'importance-dropdown-visible' : ''}`}>
+          <li value="1" key="1" onClick={handleImportanceChange}>
+            orta
+          </li>
+          <li title="vacib" value="2" key="2" onClick={handleImportanceChange} >
             vacib
             </li>
-            <li title="çox vacib" value="3" key="3" onClick={handleImportanceChange}>
+          <li title="çox vacib" value="3" key="3" onClick={handleImportanceChange}>
             çox vacib
-            </li>
-          </ul>
+          </li>
+        </ul>
       </td>
-      <td>50</td>
-      <td><input placeholder="Link və ya əlavə məlumat" type="text"/></td>
-      <td><FaTimes color="#ff4a4a"/></td>
+      <td>
+        <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
+          <FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons('dec')} color="#ffae00" style={{ float: 'left' }} />
+          <input name="amount" style={{ textAlign: 'center', padding: '0px 2px', margin: '0px 5px' }} type="text" onBlur={handleAmountFocusLose} onChange={handleAmountChange} value={props.amount} />
+          <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ float: 'right' }} />
+        </div>
+      </td>
+      <td><input placeholder="Link və ya əlavə məlumat" name="additionalInfo" value={props.additionalInfo} type="text" onChange={handleChange} /></td>
+      <td><FaTrashAlt title="Sil" color="#ff4a4a" /></td>
     </tr>
   )
 }

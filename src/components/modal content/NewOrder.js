@@ -27,8 +27,8 @@ const NewOrderContent = (props) => {
             <td>#</td>
             <td>Material</td>
             <td>Model</td>
-            <td>Vaciblik</td>
-            <td>Say</td>
+            <td style={{width: '170px', maxWidth: '200px'}}>Vaciblik</td>
+            <td style={{width: '120px'}}>Say</td>
             <td>Əlavə məlumat</td>
             <td> </td>
           </tr>
