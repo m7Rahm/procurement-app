@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
@@ -7,6 +7,9 @@ import NewOrderButton from './components/NewOderButton';
 // import SideBar from './components/SideBar'
 export default () => {
   const wrapperRef = useRef(null)
+  useEffect(() => {
+    //todo: create socket and connect
+  }, [])
   return (
     <div className="app">
       <nav>

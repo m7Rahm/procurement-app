@@ -48,6 +48,11 @@ const NewOrderTableRow = (props) => {
       materials.map(material => material.id !== props.id ? material : ({ ...material, [name]: value }))
     )
   }
+  const handleRowDelete = () => {
+    updateMaterialsList(materials =>
+      materials.filter(material => material.id !== props.id)
+    )
+  }
   return (
     <tr>
       <td>{props.index + 1}</td>
@@ -80,13 +85,13 @@ const NewOrderTableRow = (props) => {
       </td>
       <td>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
-          <FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons('dec')} color="#ffae00" style={{ float: 'left' }} />
+          <FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons('dec')} color="#ffae00" style={{ float: 'left', margin: '0px 3px' }} />
           <input name="amount" style={{ textAlign: 'center', padding: '0px 2px', margin: '0px 5px' }} type="text" onBlur={handleAmountFocusLose} onChange={handleAmountChange} value={props.amount} />
-          <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ float: 'right' }} />
+          <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ float: 'right', margin: '0px 3px' }} />
         </div>
       </td>
-      <td><input placeholder="Link və ya əlavə məlumat" name="additionalInfo" value={props.additionalInfo} type="text" onChange={handleChange} /></td>
-      <td><FaTrashAlt title="Sil" color="#ff4a4a" /></td>
+      <td><input style={{width: '100%'}}placeholder="Link və ya əlavə məlumat" name="additionalInfo" value={props.additionalInfo} type="text" onChange={handleChange} /></td>
+      <td><FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" /></td>
     </tr>
   )
 }

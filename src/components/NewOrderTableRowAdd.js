@@ -25,7 +25,7 @@ const NewOrderTableRowAdd = (props) => {
       <td style={{ padding: '0px' }}></td>
       <td style={{ padding: '0px' }}></td>
       <td style={{ padding: '0px' }}>
-        <IoIosAdd title="Əlavə et" onClick={handleClick} size="20" style={{ alignSelf: 'flex-end', margin: 'auto' }} />
+        <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleClick} size="20" style={{margin: 'auto' }} />
       </td>
     </tr>
   )

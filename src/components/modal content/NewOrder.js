@@ -27,8 +27,8 @@ const NewOrderContent = (props) => {
             <td>#</td>
             <td>Material</td>
             <td>Model</td>
-            <td style={{width: '170px', maxWidth: '200px'}}>Vaciblik</td>
-            <td style={{width: '120px'}}>Say</td>
+            <td style={{ width: '170px', maxWidth: '200px' }}>Vaciblik</td>
+            <td style={{ width: '120px' }}>Say</td>
             <td>Əlavə məlumat</td>
             <td> </td>
           </tr>
@@ -37,6 +37,27 @@ const NewOrderContent = (props) => {
           <NewOrderTableBody />
         </tbody>
       </table>
+      <div className="new-order-footer-wrapper">
+        <textarea placeholder="Sifariş barədə əlavə qeydlər..." />
+        <div className="forwarded-person">
+          <label htmlFor="forwardedPerson">Yönləndirilən şəxs</label>
+          <br />
+          <select name="forwardedPerson">
+            <option>
+              Rahman Mustafayev
+        </option>
+            <option>
+              Bill Clinton
+        </option>
+            <option>
+              Bill Gates
+        </option>
+          </select>
+        </div>
+      </div>
+      <div className="send-order">
+        Göndər
+      </div>
     </div>
   )
 }
