@@ -4,7 +4,7 @@ import {
   FaSortUp
 } from 'react-icons/fa'
 import TableContent from './TableContent';
-export default (props) => {
+const Table =  (props) => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [createDateFilter, setCreateDateFilter] = useState(false)
   const [deadlineFilter, setDeadlineFilter] = useState(false)
@@ -47,3 +47,4 @@ export default (props) => {
   )
 }
 
+export default Table

@@ -65,7 +65,7 @@ const NewOrderTableRow = (props) => {
       </td>
       <td><input type="text" placeholder="Model" value={props.model} name="model" onChange={handleChange} /></td>
       <td style={{ position: 'relative' }}>
-        <div id={props.id} style={{ boxShadow: `${props.isActive ? '0px 0px 0px 1.6px royalblue' : ''}` }} className={`importance-div`}>
+        <div id={props.id} style={{ boxShadow: `${props.isActive ? '0px 0px 2px 1.6px royalblue' : ''}` }} className={`importance-div`}>
           {
             importanceText[props.importance - 1]
           }

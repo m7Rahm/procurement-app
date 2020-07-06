@@ -9,18 +9,67 @@
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
 }
+.left-side-pane{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 240px;
+  z-index: 1;
+  height: 100%;
+  transform: translateX(-240px);
+  background-color: white;
+  transition: all 0.2s;
+}
+.left-side-pane-open{
+  transform: translateX(0px);
+}
+.left-side-pane>div:first-of-type{
+  height: 56px;
+  padding: 8px;
+  background-color: #123456;
+  border-top: 1.5px solid rgb(255, 174, 0);
+  border-bottom: 1px solid #606060;
+}
+.left-side-pane>div:first-of-type>div{
+  float: left;
+  height: 40px;
+  padding: 8px;
+}
+.left-side-pane>div:not(:first-of-type){
+  height: 100%;
+  background-color: white;
+}
+nav {
+  position: sticky;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 56px;
+}
 
 nav>ul {
   list-style-type: none;
-  background-image: linear-gradient(to bottom, #1367ac, #195db6);
+  background-image: linear-gradient(to bottom, white, #ecf1f8);
   margin: 0px;
-  border-bottom: solid 1px #dddada;
-  overflow: hidden;
+  height: inherit;
+  padding: 0px;
+}
+nav div.left-side-toggle {
+  float: left;
+  height: 40px;
+  padding: 8px 16px;
+}
+nav>ul>li>div>div:not(.left-side-toggle) {
+  float: right;
+  height: 40px;
+  padding: 4px 16px;
 }
 
+
 nav>ul>li {
-  float: right;
-  margin-right: 50px;
+  height: 56px;
+  padding: 8px 4px;
+  overflow: hidden;
 }
 
 .side-bar {
@@ -239,6 +288,18 @@ nav>ul>li {
   height: 40px;
   padding: 0px 10px;
   padding-right: 10px;
+  border-radius: 3px;
+  border: 1px solid #3f3f3f;
+}
+
+.new-order-header>div>select:focus, .new-order-header>div>input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0px 0px 2px 3px royalblue;
+}
+
+.new-order-header>div:focus-within>label {
+  color: #195db6;
 }
 
 .new-order-table input, .new-order-table select {
@@ -250,8 +311,14 @@ nav>ul>li {
   border-radius: 3px;
 }
 
-.new-order-table input:focus {
-  outline-color: royalblue;
+.new-order-table input:focus, .new-order-table select:focus {
+  /* outline-color: royalblue; */
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  outline-offset: 0px;
+  box-shadow: 0px 0px 2px 1.6px royalblue;
+  /* outline: 3px royalblue solid; */
 }
 
 .new-order-table>tbody>tr>td>div:first-of-type {
@@ -281,6 +348,10 @@ div.forwarded-person {
   width: 190px;
 }
 
+div.forwarded-person:focus-within>label {
+  color: #505050;
+}
+
 div.forwarded-person>label {
   float: left;
   margin-bottom: 10px;
@@ -295,6 +366,13 @@ div.forwarded-person>select {
   padding: 0px 10px;
 }
 
+div.forwarded-person>select:focus {
+  border: none;
+  border-radius: 3px;
+  outline: none;
+  box-shadow: 0px 0px 2px 3px rgb(255, 174, 0);
+}
+
 div.send-order {
   align-self: flex-end;
   color: white;
@@ -303,7 +381,7 @@ div.send-order {
   background-color: rgb(255, 174, 0);
   min-width: 180px;
   margin: 50px;
-  padding:10px;
+  padding: 10px;
   border-radius: 3px;
   height: 40px;
 }
@@ -546,21 +624,46 @@ div.send-order {
 .search-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
-  padding: 20px 0px;
+  padding: 16px 0px;
   /* min-height: 100px; */
 }
 
-.search-container input {
-  border: none;
+.search-container>div:not(:first-of-type):not(:last-of-type) {
+  text-align: left;
+  height: 58px;
+  margin: 0px 10px
 }
 
-.search-container input:focus {
+.search-container>div:first-of-type {
+  text-align: left;
+  height: 58px;
+  margin-right: 10px;
+}
+
+.search-container label {
+  color: white;
+  font-weight: bold;
+  margin-bottom: 2px;
+  display: inline-block
+}
+
+.search-container input, .search-container select {
+  border: none;
+  padding: 0px 10px;
+  min-width: 150px;
+  color: #3f3f3f;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* margin: 0px 10px; */
+}
+
+.search-container input:focus, .search-container select:focus {
   outline: none;
   border: none;
   outline-offset: 0px;
-  outline: 2px #ffae00 solid;
+  outline: 3px #ffae00 solid;
 }
 
 /* @media screen and (max-width: 600px) {

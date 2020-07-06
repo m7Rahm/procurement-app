@@ -1,31 +1,48 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
 import Search from './components/Search'
 import NewOrderButton from './components/NewOderButton';
+import {
+  IoMdMenu
+} from 'react-icons/io'
+import LeftSidePane from './components/LefSidePane';
 // import SideBar from './components/SideBar'
-export default () => {
-  const wrapperRef = useRef(null)
+const App =  () => {
+  const wrapperRef = useRef(null);
+  const leftPaneRef = useRef(null);
+  const [backgroundVisibility, setBackgroundVisibility] = useState(false)
   useEffect(() => {
     //todo: create socket and connect
   }, [])
+  const handleNavClick = () => {
+    leftPaneRef.current.classList.toggle('left-side-pane-open');
+    setBackgroundVisibility(prev => !prev)
+  }
   return (
     <div className="app">
       <nav>
         <ul>
           <li>
-            <a style={{ display: 'block', height: '50px' }} href='https://reactjs.org/'>
-              <img style={{ height: '100%' }} src={logo} alt='user pic'></img>
-            </a>
+            <div>
+              <div className="left-side-toggle">
+              <IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
+              </div>
+              <div>
+              <img style={{ height: '32px' }} src={logo} alt='user pic'></img>
+              </div>
+            </div>
           </li>
         </ul>
       </nav>
+      {backgroundVisibility && <div style={{position:'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 1}}></div>}
+      <LeftSidePane ref={leftPaneRef} handleNavClick={handleNavClick}/>
       <Search />
       <div className="wrapper" ref={wrapperRef}>
         <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
-      <NewOrderButton wrapperRef={wrapperRef}/>
+      <NewOrderButton wrapperRef={wrapperRef} />
     </div>
   );
 }
@@ -90,3 +107,4 @@ const orders = [
     action: ' ',
   }
 ]
+export default App
