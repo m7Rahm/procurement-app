@@ -42,7 +42,7 @@ const Search = () => {
 						</select>
 					</div>
 					<div style={{ textAlign: 'left', height: '55px', display: 'flex', minWidth: '180px', flexDirection: 'column-reverse' }}>
-						<button style={{ height: '35px', marginBottom: '1.5px', color: 'white', fontWeight: '600', padding: '3px 6px', float: 'left', minWidth: '180px', fontFamily: 'sans-serif', border: 'none', backgroundColor: '#ffae00' }}> AXTAR</button>
+						<button style={{ height: '35px', marginBottom: '1.5px', cursor:'pointer', color: 'white', fontWeight: '600', padding: '3px 6px', float: 'left', minWidth: '180px', fontFamily: 'sans-serif', border: 'none', backgroundColor: '#ffae00' }}> AXTAR</button>
 					</div>
 				</div>
 			</div>

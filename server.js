@@ -3,7 +3,11 @@ const path = require('path')
 const staticFilesPath = path.resolve(__dirname, 'build')
 const app = express();
 app.use(express.static(staticFilesPath))
-app.get('/*', (req, resp, err) => {
+app.get('/', (_, resp, err) => {
+  if(err) {
+    resp.status(500);
+  }
+  else
     resp.sendFile(path.resolve(staticFilesPath, 'index.html'))
 })
 

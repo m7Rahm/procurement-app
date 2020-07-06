@@ -13,7 +13,7 @@ const NewOrder = (props) => {
   }
   return (
     <>
-      <div className="new-order-button" onClick={() => handleClick(true)}>
+      <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
         <MdAdd color="white" size="30" />
       </div>
       {

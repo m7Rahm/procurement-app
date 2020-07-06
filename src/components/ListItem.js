@@ -50,8 +50,8 @@ const ListItem = (props) => {
   return (
     <>
       <li>
-        <div style={{ width: '30px', fontWeight: '520', color: '#505050' }}>{props.index + 1}</div>
-        <div style={{ width: '80px' }}>
+        <div style={{ width: '30px', fontWeight: '520', color: '#505050', textAlign: 'center' }}>{props.index + 1}</div>
+        <div style={{ width: '80px', textAlign: 'center' }}>
           {
             icon
           }

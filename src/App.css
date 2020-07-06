@@ -1,6 +1,5 @@
 .app {
   text-align: center;
-  min-height: 100vh;
   position: relative;
 }
 
@@ -466,6 +465,7 @@ div.send-order {
   right: 80px;
   width: 50px;
   height: 50px;
+  cursor: pointer;
   padding: 10px;
   z-index: 1;
   border-radius: 50%;

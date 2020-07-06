@@ -2,6 +2,7 @@ import React from 'react'
 import {
     IoMdMenu
 } from 'react-icons/io'
+import { Link } from 'react-router-dom'
 const LeftSidePane = (props, ref) => {
     const handleNavClick = props.handleNavClick;
     return (
@@ -12,6 +13,8 @@ const LeftSidePane = (props, ref) => {
                 </div>
             </div>
             <div>
+            <Link to="/" style={{textDecoration: 'none', display: 'block', padding: '10px'}}>Sifarişlərim</Link>
+            <Link to="/visas" style={{textDecoration: 'none', display: 'block', padding: '10px'}}>Vizalarım</Link>
             </div>
         </div>
     )
