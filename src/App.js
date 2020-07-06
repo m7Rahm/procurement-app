@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useRef, useEffect, useState } from 'react';
+=======
+import React, { useRef, useEffect } from 'react';
+>>>>>>> e47ef4b8e4b4ab45eeccc2ac7deabd6cf5421022
 import './App.css';
 import logo from './logo.svg'
 import Table from './components/Table'
