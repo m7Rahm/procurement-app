@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import {
   FaTrashAlt,
   FaAngleDown,
@@ -6,11 +6,8 @@ import {
   FaMinus
 } from 'react-icons/fa'
 const NewOrderTableRow = (props) => {
-  // const [importance, setImportance] = useState({
-  //   value: 1,
-  //   text: 'orta'
-  // })
-  const importanceText = ['orta','vacib','çox vacib']
+  const rowRef = useRef(null);
+  const importanceText = ['orta', 'vacib', 'çox vacib']
   const updateMaterialsList = props.updateMaterialsList;
   const handleImportanceChange = (e) => {
     e.target.name = 'importance';
@@ -49,27 +46,29 @@ const NewOrderTableRow = (props) => {
     )
   }
   const handleRowDelete = () => {
-    updateMaterialsList(materials =>
+    rowRef.current.classList.add('delete-row');
+    console.log(rowRef.current.classList);
+    rowRef.current.addEventListener('animationend', () => updateMaterialsList(materials =>
       materials.filter(material => material.id !== props.id)
-    )
+    ))
   }
   return (
-    <tr>
-      <td>{props.index + 1}</td>
-      <td>
+    <li ref={rowRef} className={props.class}>
+      <div>{props.index + 1}</div>
+      <div>
         <select onChange={handleChange} value={props.materialId}>
           <option>Notebook</option>
           <option>Hard Drive</option>
           <option>Mouse</option>
         </select>
-      </td>
-      <td><input type="text" placeholder="Model" value={props.model} name="model" onChange={handleChange} /></td>
-      <td style={{ position: 'relative' }}>
-        <div id={props.id} style={{ boxShadow: `${props.isActive ? '0px 0px 2px 1.6px royalblue' : ''}` }} className={`importance-div`}>
+      </div>
+      <div><input type="text" placeholder="Model" value={props.model} name="model" onChange={handleChange} /></div>
+      <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
+        <div id={props.id} style={{height: '100%', textAlign: 'left', boxShadow: `${props.isActive ? '0px 0px 0px 1.6px royalblue' : ''}` }} className={`importance-div`}>
           {
             importanceText[props.importance - 1]
           }
-          <FaAngleDown color="royalblue" />
+          <FaAngleDown color="royalblue" style={{float: 'right'}} />
         </div>
         <ul className={`importance-dropdown ${props.isActive ? 'importance-dropdown-visible' : ''}`}>
           <li value="1" key="1" onClick={handleImportanceChange}>
@@ -82,17 +81,17 @@ const NewOrderTableRow = (props) => {
             çox vacib
           </li>
         </ul>
-      </td>
-      <td>
+      </div>
+      <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
-          <FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons('dec')} color="#ffae00" style={{ float: 'left', margin: '0px 3px' }} />
-          <input name="amount" style={{ textAlign: 'center', padding: '0px 2px', margin: '0px 5px' }} type="text" onBlur={handleAmountFocusLose} onChange={handleAmountChange} value={props.amount} />
-          <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ float: 'right', margin: '0px 3px' }} />
+          <FaMinus cursor="pointer" onClick={() => handleAmountChangeButtons('dec')} color="#ffae00" style={{ margin: '0px 3px' }} />
+          <input name="amount" style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: '0px 5px', flex: 1 }} type="text" onBlur={handleAmountFocusLose} onChange={handleAmountChange} value={props.amount} />
+          <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
         </div>
-      </td>
-      <td><input style={{width: '100%'}}placeholder="Link və ya əlavə məlumat" name="additionalInfo" value={props.additionalInfo} type="text" onChange={handleChange} /></td>
-      <td><FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" /></td>
-    </tr>
+      </div>
+      <div><input style={{ width: '100%' }} placeholder="Link və ya əlavə məlumat" name="additionalInfo" value={props.additionalInfo} type="text" onChange={handleChange} /></div>
+      <div><FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" /></div>
+    </li>
   )
 }
 export default React.memo(NewOrderTableRow)

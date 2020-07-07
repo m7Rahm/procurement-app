@@ -11,7 +11,8 @@ const NewOrderTableBody = (props) => {
       model: '',
       importance: 1,
       amount: 1,
-      additionalInfo: ''
+      additionalInfo: '',
+      class: ''
     }
   ])
   useEffect(
@@ -41,6 +42,7 @@ const NewOrderTableBody = (props) => {
             <NewOrderTableRow
               updateMaterialsList={setMaterialsList}
               index={index}
+              class={material.class}
               id={material.id}
               key={material.id}
               isActive={isActive}

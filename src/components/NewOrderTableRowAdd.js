@@ -12,22 +12,23 @@ const NewOrderTableRowAdd = (props) => {
       model: '',
       importance: 1,
       amount: 1,
-      additionalInfo: ''
+      additionalInfo: '',
+      class: 'new-row'
     }]
     )
   }
   return (
-    <tr style={{ height: '20px', backgroundColor: 'transparent' }}>
-      <td style={{ padding: '0px' }}></td>
-      <td style={{ padding: '0px' }}></td>
-      <td style={{ padding: '0px' }}></td>
-      <td style={{ padding: '0px' }}></td>
-      <td style={{ padding: '0px' }}></td>
-      <td style={{ padding: '0px' }}></td>
-      <td style={{ padding: '0px' }}>
+    <li style={{ height: '20px', backgroundColor: 'transparent' }}>
+      <div style={{ padding: '0px' }}></div>
+      <div style={{ padding: '0px' }}></div>
+      <div style={{ padding: '0px' }}></div>
+      <div style={{ padding: '0px' }}></div>
+      <div style={{ padding: '0px' }}></div>
+      <div style={{ padding: '0px' }}></div>
+      <div style={{ padding: '0px' }}>
         <IoIosAdd title="Əlavə et" cursor="pointer" onClick={handleClick} size="20" style={{margin: 'auto' }} />
-      </td>
-    </tr>
+      </div>
+    </li>
   )
 }
 export default React.memo(NewOrderTableRowAdd)

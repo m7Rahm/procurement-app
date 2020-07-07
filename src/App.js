@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react';
-import Visas from './screens/Visas'
-import MyOrders from './screens/MyOrders'
+import Visas from './pages/Visas'
+import MyOrders from './pages/MyOrders'
 import logo from './logo.svg'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import {
   IoMdMenu
 } from 'react-icons/io'
-import LeftSidePane from './components/LefSidePane';
+import LeftSidePane from './components/LeftSidePane';
+import Drafts from './pages/Drafts';
+import Deleted from './pages/Deleted';
 
 const App = () => {
   const leftPaneRef = useRef(null);
@@ -43,6 +45,12 @@ const App = () => {
       <Switch>
         <Route path="/visas">
           <Visas />
+        </Route>
+        <Route path="/deleted">
+          <Deleted />
+        </Route>
+        <Route path="/drafts">
+          <Drafts />
         </Route>
         <Route path="/">
           <MyOrders />

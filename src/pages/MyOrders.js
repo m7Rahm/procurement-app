@@ -10,13 +10,13 @@ const MyOrders = () => {
     //todo: create socket and connect
   }, [])
   return (
-    <>
+    <div className="app">
       <Search />
       <div className="wrapper" ref={wrapperRef}>
         <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
       <NewOrderButton wrapperRef={wrapperRef} />
-    </>
+    </div>
   )
 }
 const orders = [

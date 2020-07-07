@@ -21,22 +21,18 @@ const NewOrderContent = (props) => {
           </div>
         </div>
       </div>
-      <table className="new-order-table">
-        <thead>
-          <tr>
-            <td>#</td>
-            <td>Material</td>
-            <td>Model</td>
-            <td style={{ width: '170px', maxWidth: '200px' }}>Vaciblik</td>
-            <td style={{ width: '120px' }}>Say</td>
-            <td>Əlavə məlumat</td>
-            <td> </td>
-          </tr>
-        </thead>
-        <tbody>
+      <ul className="new-order-table">
+          <li>
+            <div>#</div>
+            <div>Material</div>
+            <div>Model</div>
+            <div style={{ width: '170px', maxWidth: '200px' }}>Vaciblik</div>
+            <div style={{ maxWidth: '140px' }}>Say</div>
+            <div>Əlavə məlumat</div>
+            <div> </div>
+          </li>
           <NewOrderTableBody />
-        </tbody>
-      </table>
+      </ul>
       <div className="new-order-footer-wrapper">
         <textarea placeholder="Sifariş barədə əlavə qeydlər..." />
         <div className="forwarded-person">
