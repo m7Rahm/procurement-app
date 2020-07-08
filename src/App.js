@@ -20,7 +20,7 @@ const App = () => {
   }
   return (
     <BrowserRouter>
-      <div className="app">
+      <>
         <nav>
           <ul>
             <li>
@@ -40,7 +40,7 @@ const App = () => {
           <div style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 1 }}>
           </div>
         }
-      </div>
+      </>
       <LeftSidePane ref={leftPaneRef} handleNavClick={handleNavClick} />
       <Switch>
         <Route path="/visas">

@@ -20,7 +20,7 @@ const NewOrder = (props) => {
         isModalVisible &&
         <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
           <Suspense fallback="loading..">
-            <NewOrderContent />
+            <NewOrderContent current={-1} />
           </Suspense>
         </Modal>
       }

@@ -47,7 +47,6 @@ const NewOrderTableRow = (props) => {
   }
   const handleRowDelete = () => {
     rowRef.current.classList.add('delete-row');
-    console.log(rowRef.current.classList);
     rowRef.current.addEventListener('animationend', () => updateMaterialsList(materials =>
       materials.filter(material => material.id !== props.id)
     ))
@@ -56,10 +55,10 @@ const NewOrderTableRow = (props) => {
     <li ref={rowRef} className={props.class}>
       <div>{props.index + 1}</div>
       <div>
-        <select onChange={handleChange} value={props.materialId}>
-          <option>Notebook</option>
-          <option>Hard Drive</option>
-          <option>Mouse</option>
+        <select name="materialId" onChange={handleChange} value={props.materialId}>
+          <option value={1}>Notebook</option>
+          <option value={2}>Hard Drive</option>
+          <option value={3}>Mouse</option>
         </select>
       </div>
       <div><input type="text" placeholder="Model" value={props.model} name="model" onChange={handleChange} /></div>

@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
-import shortId from 'shortid'
+import {orders} from '../data/data'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
-  const [activeLinkIndex, setActiveLinkIndex] = useState(null)
-  const [materialsList, setMaterialsList] = useState([
-    {
-      id: shortId.generate(),
-      materialId: null,
-      model: '',
-      importance: 1,
-      amount: 1,
-      additionalInfo: '',
-      class: ''
-    }
-  ])
+  const [activeLinkIndex, setActiveLinkIndex] = useState(null);
+  const current = props.current;
+    const order = orders.find(order => order.number === current);
+    const materials = order === undefined
+      ? [
+        {
+          id: Math.random(),
+          materialId: null,
+          model: '',
+          importance: 1,
+          amount: 1,
+          additionalInfo: '',
+          class: ''
+        }
+      ]
+      : order.materials;
+  const [materialsList, setMaterialsList] = useState(materials);
   useEffect(
     () => {
       const handleOnOuterClick = (e) => {
         const target = e.target.closest('div');
-        // console.log(target.id)
         if (target) {
           const activeOptions = (!target.classList.contains('importance-div') || activeLinkIndex === target.id)
             ? null
@@ -32,7 +36,6 @@ const NewOrderTableBody = (props) => {
     }
     , [activeLinkIndex]
   )
-  // console.log(materialsList)
   return (
     <>
       {

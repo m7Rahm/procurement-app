@@ -31,7 +31,7 @@ const NewOrderContent = (props) => {
             <div>Əlavə məlumat</div>
             <div> </div>
           </li>
-          <NewOrderTableBody />
+          <NewOrderTableBody current={props.current} />
       </ul>
       <div className="new-order-footer-wrapper">
         <textarea placeholder="Sifariş barədə əlavə qeydlər..." />

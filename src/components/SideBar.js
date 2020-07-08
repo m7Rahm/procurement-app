@@ -1,14 +1,25 @@
 import React from 'react'
-
-const SideBar = () => {
-    return (
-        <div className='Side-bar'>
-            <ul style={{listStyle:'none'}}>
-                <li>
-                    First Option
-                </li>
-            </ul>
-        </div>
-    )
+import VisaCard from '../components/VisaCard'
+const SideBar = (props) => {
+	return (
+		<div className='side-bar'>
+			<ul style={{ listStyle: 'none', margin: '50px 0px 0px 0px', padding: '0px' }}>
+				{
+					props.visas.map((visa) =>
+						<li onClick={() => props.setActive(_ => visa.number)} key={Math.random()}>
+							<VisaCard
+								isOpened={visa.isOpened}
+								from={visa.from}
+								category={visa.category}
+								deadline={visa.deadline}
+								remark={visa.remark}
+								date={visa.date}
+							/>
+						</li>
+					)
+				}
+			</ul>
+		</div>
+	)
 }
 export default SideBar

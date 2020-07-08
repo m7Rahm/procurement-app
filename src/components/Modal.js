@@ -12,7 +12,6 @@ export default (props) => {
         }
       }
       document.addEventListener('keyup', onEscPress, false);
-      console.log('use effect fired')
       return () => document.removeEventListener('keyup', onEscPress, false)
     }, [closeModalCallback])
   return (
