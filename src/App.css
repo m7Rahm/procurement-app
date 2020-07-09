@@ -155,11 +155,11 @@ nav>ul>li {
 
 .side-bar>div:first-of-type {
   padding-left: 50px;
-  animation: show-up 0.5s ease-in both;
+  animation: show-up 0.2s ease-in both;
 }
 
 div.icons-panel-hide {
-  animation: visibility-hide 0.5s ease-in both !important;
+  animation: visibility-hide 0.2s ease-in both !important;
 }
 
 .side-bar>div:first-of-type>svg {

@@ -19,16 +19,16 @@ const Modal = lazy(() => import('./Modal'))
 
 const ListItem = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [content, setModalContent] = useState('')
+  const [modalContent, setModalContent] = useState('')
   const handleClose = () => {
     setIsModalOpen(_ => false);
   }
   const onParticipantsClick = (participants, number) => {
-    setModalContent(_ => <ParticipantsModal participants={participants} number={number} />)
+    setModalContent(_ => () => <ParticipantsModal participants={participants} number={number} />)
     setIsModalOpen(prevState => !prevState)
   }
   const onStatusClick = (number) => {
-    setModalContent(_ => <StatusModal number={number} />)
+    setModalContent(_ => () => <StatusModal number={number} />)
     setIsModalOpen(prevState => !prevState)
   }
   const icon = props.status === 'Baxılır'
@@ -57,7 +57,7 @@ const ListItem = (props) => {
                 <IoMdRefreshCircle size="50" color="#a4a4a4" />
               </div>}>
               <Modal changeModalState={handleClose} >
-                {content}
+                {modalContent}
               </Modal>
             </Suspense>
           }

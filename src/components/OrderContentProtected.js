@@ -52,8 +52,9 @@ const OrderContentProtected = (props) => {
         setIsModalOpen(false)
     }
     const handleEditClick = (content) => {
-        setModalContent(content);
-        setIsModalOpen(true)
+        const modalContent = () => content;
+        setModalContent(_ => modalContent);
+        setIsModalOpen(true);
     }
     return (
         <>
@@ -72,7 +73,7 @@ const OrderContentProtected = (props) => {
                 }
                 <h1 className="protex-order-header">
                     {`Sifariş № ${current}`}
-                    <FaEdit onClick={()=>handleEditClick(<NewOrderContent current={current} />)} title="düzəliş et" size="20" />
+                    <FaEdit onClick={() => handleEditClick(<NewOrderContent current={current} />)} title="düzəliş et" size="20" />
                 </h1>
                 <div className="new-order-header">
                     <div>
@@ -82,7 +83,7 @@ const OrderContentProtected = (props) => {
                     </div>
                     <div>
                         <label htmlFor="deadline" color="#555555">Deadline</label>
-                        <div style={{ clear: 'both', fontSize: '22px', fontWeight: '550', color: 'gray'}}>{order.deadline}</div>
+                        <div style={{ clear: 'both', fontSize: '22px', fontWeight: '550', color: 'gray' }}>{order.deadline}</div>
                     </div>
                 </div>
             </div>
@@ -111,8 +112,8 @@ const OrderContentProtected = (props) => {
                 }
             </ul>
             <div>
-                <div onClick={()=>handleEditClick(<AcceptDecline accept={false} backgroundColor='#D93404'/>)} style={{ background: '#D93404' }}>Etiraz</div>
-                <div onClick={()=>handleEditClick(<AcceptDecline accept={true} backgroundColor='rgb(15, 157, 88)'/>)} style={{ background: 'rgb(15, 157, 88)' }}>Təsdiq</div>
+                <div onClick={() => handleEditClick(<AcceptDecline accept={false} backgroundColor='#D93404' />)} style={{ background: '#D93404' }}>Etiraz</div>
+                <div onClick={() => handleEditClick(<AcceptDecline accept={true} backgroundColor='rgb(15, 157, 88)' />)} style={{ background: 'rgb(15, 157, 88)' }}>Təsdiq</div>
             </div>
         </>
     )
