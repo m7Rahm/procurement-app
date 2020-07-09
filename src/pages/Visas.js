@@ -6,7 +6,7 @@ const Visas = () => {
 const [active, setActive] = useState(1);
   return (
     <div style={{ minHeight: '100vh', display: 'flex' }}>
-      <SideBar visas={visas} setActive={setActive} />
+      <SideBar visas={visas} active={active} setActive={setActive} />
       <VisaContent current={active}/>
     </div>
   )

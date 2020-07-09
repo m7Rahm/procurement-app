@@ -22,7 +22,7 @@ const VisaContent = (props) => {
             <OrderContentProtected current={props.current} />
             <div className="toggle-participants" onClick={handleParticipantsTransition}>
                 Tarixçəni göstər
-                <FaAngleDown size="36" color="royalblue" style={{ float: 'right' }} />
+                <FaAngleDown size="36" color="royalblue"/>
             </div>
             {
                 participantsVisiblity &&

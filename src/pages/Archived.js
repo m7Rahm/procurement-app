@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Deleted = () => {
+const Archived = () => {
     return (
         <div style={{ textAlign: 'center', background: 'dodgerblue', minHeight: '100vh' }}>
             Deleted
         </div>
     )
 }
-export default Deleted
+export default Archived

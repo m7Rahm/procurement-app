@@ -8,7 +8,7 @@ import {
 } from 'react-icons/io'
 import LeftSidePane from './components/LeftSidePane';
 import Drafts from './pages/Drafts';
-import Deleted from './pages/Deleted';
+import Archived from './pages/Archived';
 
 const App = () => {
   const leftPaneRef = useRef(null);
@@ -46,8 +46,8 @@ const App = () => {
         <Route path="/visas">
           <Visas />
         </Route>
-        <Route path="/deleted">
-          <Deleted />
+        <Route path="/archived">
+          <Archived />
         </Route>
         <Route path="/drafts">
           <Drafts />

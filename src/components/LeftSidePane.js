@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import {
     IoMdMenu,
     IoMdDocument,
-    IoIosTrash,
+    IoIosArchive,
     IoMdCart,
     IoMdCheckmarkCircleOutline
 } from 'react-icons/io'
@@ -64,9 +64,9 @@ const links = [
         icon: IoMdDocument
     },
     {
-        text: 'Silinmişlər',
-        link: '/deleted',
-        icon: IoIosTrash
+        text: 'Arxiv',
+        link: '/archived',
+        icon: IoIosArchive
     },
 ]
 export default React.forwardRef(LeftSidePane)

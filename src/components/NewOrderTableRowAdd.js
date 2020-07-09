@@ -2,12 +2,11 @@ import React from 'react'
 import {
   IoIosAdd
 } from 'react-icons/io'
-import shortId from 'shortid'
 const NewOrderTableRowAdd = (props) => {
   const handleClick = () => {
     props.updateMaterialsList(materials => [...materials,
     {
-      id: shortId.generate(),
+      id: Math.random(),
       materialId: null,
       model: '',
       importance: 1,
