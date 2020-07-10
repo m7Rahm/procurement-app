@@ -2,7 +2,6 @@ import React from 'react'
 
 const Participants = (props) => {
   return (
-
       <ul className='participants'>
         <li>
           <div>Ad Soyad</div>

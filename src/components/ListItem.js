@@ -24,11 +24,11 @@ const ListItem = (props) => {
     setIsModalOpen(_ => false);
   }
   const onParticipantsClick = (participants, number) => {
-    setModalContent(_ => () => <ParticipantsModal participants={participants} number={number} />)
+    setModalContent(_ => (props) => <ParticipantsModal participants={participants} number={number} {...props} />)
     setIsModalOpen(prevState => !prevState)
   }
   const onStatusClick = (number) => {
-    setModalContent(_ => () => <StatusModal number={number} />)
+    setModalContent(_ => (props) => <StatusModal number={number} {...props}/>)
     setIsModalOpen(prevState => !prevState)
   }
   const icon = props.status === 'Baxılır'

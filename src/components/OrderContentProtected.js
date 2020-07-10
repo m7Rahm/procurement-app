@@ -52,8 +52,7 @@ const OrderContentProtected = (props) => {
         setIsModalOpen(false)
     }
     const handleEditClick = (content) => {
-        const modalContent = () => content;
-        setModalContent(_ => modalContent);
+        setModalContent(_ => content);
         setIsModalOpen(true);
     }
     return (
@@ -73,7 +72,7 @@ const OrderContentProtected = (props) => {
                 }
                 <h1 className="protex-order-header">
                     {`Sifariş № ${current}`}
-                    <FaEdit onClick={() => handleEditClick(<NewOrderContent current={current} />)} title="düzəliş et" size="20" />
+                    <FaEdit onClick={() => handleEditClick((props) => <NewOrderContent current={current} {...props} />)} title="düzəliş et" size="20" />
                 </h1>
                 <div className="new-order-header">
                     <div>
@@ -112,8 +111,8 @@ const OrderContentProtected = (props) => {
                 }
             </ul>
             <div>
-                <div onClick={() => handleEditClick(<AcceptDecline accept={false} backgroundColor='#D93404' />)} style={{ background: '#D93404' }}>Etiraz</div>
-                <div onClick={() => handleEditClick(<AcceptDecline accept={true} backgroundColor='rgb(15, 157, 88)' />)} style={{ background: 'rgb(15, 157, 88)' }}>Təsdiq</div>
+                <div onClick={() => handleEditClick((props) => <AcceptDecline accept={false} backgroundColor='#D93404' {...props} />)} style={{ background: '#D93404' }}>Etiraz</div>
+                <div onClick={() => handleEditClick((props) => <AcceptDecline accept={true} backgroundColor='rgb(15, 157, 88)'{...props} />)} style={{ background: 'rgb(15, 157, 88)' }}>Təsdiq</div>
             </div>
         </>
     )

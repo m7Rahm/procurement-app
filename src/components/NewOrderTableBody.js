@@ -1,25 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
-import {orders} from '../data/data'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
-  const current = props.current;
-    const order = orders.find(order => order.number === current);
-    const materials = order === undefined
-      ? [
-        {
-          id: Math.random(),
-          materialId: null,
-          model: '',
-          importance: 1,
-          amount: 1,
-          additionalInfo: '',
-          class: ''
-        }
-      ]
-      : order.materials;
-  const [materialsList, setMaterialsList] = useState(materials);
   useEffect(
     () => {
       const handleOnOuterClick = (e) => {
@@ -39,11 +22,11 @@ const NewOrderTableBody = (props) => {
   return (
     <>
       {
-        materialsList.map((material, index) => {
+        props.materials.map((material, index) => {
           const isActive = material.id === activeLinkIndex ? true : false
           return (
             <NewOrderTableRow
-              updateMaterialsList={setMaterialsList}
+              dispatch={props.dispatch}
               index={index}
               class={material.class}
               id={material.id}
@@ -57,7 +40,7 @@ const NewOrderTableBody = (props) => {
           )
         })
       }
-      <NewOrderTableRowAdd updateMaterialsList={setMaterialsList} />
+      <NewOrderTableRowAdd dispatch={props.dispatch} />
     </>
   )
 }
