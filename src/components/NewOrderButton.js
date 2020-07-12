@@ -7,8 +7,6 @@ const NewOrderContent = React.lazy(() => import('./modal content/NewOrder'))
 const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleClick = (action) => {
-    const blurVal = isModalVisible ? 'none' : 'blur(6px)';
-    props.wrapperRef.current.style.filter = blurVal;
     setIsModalVisible(_ => action);
   }
   return (

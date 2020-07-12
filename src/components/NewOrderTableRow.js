@@ -16,7 +16,6 @@ const NewOrderTableRow = (props) => {
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
-    console.log(value, name);
     if (value === '' || Number(value) > 0)
       updateMaterialsList('updateRow', { name: name, value: value, rowid: props.id })
   }

@@ -11,7 +11,7 @@ const NewOrderTableBody = (props) => {
           const activeOptions = (!target.classList.contains('importance-div') || activeLinkIndex === target.id)
             ? null
             : target.id;
-          setActiveLinkIndex(_ => activeOptions);
+          setActiveLinkIndex(activeOptions);
         }
       }
       document.addEventListener('click', handleOnOuterClick, false);

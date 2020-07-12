@@ -9,7 +9,7 @@ export const orders = [
         action: ' ',
         materials: [
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'wdasd',
                 importance: 1,
@@ -18,7 +18,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 2,
                 model: 'dasfads',
                 importance: 2,
@@ -27,7 +27,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 3,
                 model: 'awdavds',
                 importance: 3,
@@ -50,7 +50,7 @@ export const orders = [
         action: ' ',
         materials: [
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'afvdas',
                 importance: 1,
@@ -59,7 +59,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'fwampvo',
                 importance: 3,
@@ -81,7 +81,7 @@ export const orders = [
         action: ' ',
         materials: [
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: '1d5c1a6acs',
                 importance: 1,
@@ -90,7 +90,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 2,
                 model: 'da ci us',
                 importance: 2,
@@ -99,7 +99,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 3,
                 model: 'dacmop',
                 importance: 3,
@@ -119,7 +119,7 @@ export const orders = [
         action: ' ',
         materials: [
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 3,
                 model: 'ca jk ',
                 importance: 3,
@@ -139,7 +139,7 @@ export const orders = [
         action: ' ',
         materials: [
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'dac iujk',
                 importance: 1,
@@ -148,7 +148,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'fncawoi kl',
                 importance: 3,
@@ -168,7 +168,7 @@ export const orders = [
         action: ' ',
         materials: [
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'fa cjksnl',
                 importance: 1,
@@ -177,7 +177,7 @@ export const orders = [
                 class: ''
             },
             {
-                id: Math.random(),
+                id: Math.random().toString(),
                 materialId: 1,
                 model: 'daconij09',
                 importance: 2,
