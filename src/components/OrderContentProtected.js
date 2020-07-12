@@ -55,6 +55,7 @@ const OrderContentProtected = (props) => {
         setModalContent(_ => content);
         setIsModalOpen(true);
     }
+    // useEffect(() => console.log('red'),[props.participantsRef])
     return (
         <>
             <div>

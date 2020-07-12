@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { orders } from '../../data/data.js'
 import NewOrderTableBody from '../NewOrderTableBody'
 
@@ -17,40 +17,50 @@ const newOrderReducer = (state, action) => {
     case 'updateRowSync':
       {
         return {
-          ...state, materials: state.materials.map(material => 
+          ...state, materials: state.materials.map(material =>
             material.id === action.payload.rowid && parseInt(material.amount) > 0
-            ? {...material,
-              amount: action.payload.operation === 'dec'
-              ? parseInt(material.amount) - 1
-              : parseInt(material.amount) + 1}
-            : material
+              ? {
+                ...material,
+                amount: action.payload.operation === 'dec'
+                  ? parseInt(material.amount) - 1
+                  : parseInt(material.amount) + 1
+              }
+              : material
           )
         }
       }
     case 'addRow':
-      return {...state, materials: [...state.materials, action.payload.rowData]}
+      return { ...state, materials: [...state.materials, action.payload.rowData] }
     default:
       return state
   }
-
 }
+
 const NewOrderContent = (props) => {
+  const init = (current) => {
+    const order = orders.find(order => order.number === current);
+    const materials = order === undefined
+      ? [
+        {
+          id: Math.random().toString(),
+          materialId: null,
+          model: '',
+          importance: 1,
+          amount: 1,
+          additionalInfo: '',
+          class: ''
+        }
+      ]
+      : order.materials;
+      props.stateRef.current.init = { materials: materials }
+    return { materials: materials }
+  }
   const current = props.current;
-  const order = orders.find(order => order.number === current);
-  const materials = order === undefined
-    ? [
-      {
-        id: Math.random().toString(),
-        materialId: null,
-        model: '',
-        importance: 1,
-        amount: 1,
-        additionalInfo: '',
-        class: ''
-      }
-    ]
-    : order.materials;
-  const [state, dispatch] = useReducer(newOrderReducer, { materials: materials })
+  const [state, dispatch] = useReducer(newOrderReducer, current, init);
+  useEffect(
+    () => {
+      props.stateRef.current.latest = state;
+    }, [state, props.stateRef])
   return (
     <div className="modal-content-new-order">
       <div>

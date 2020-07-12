@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import '../App.css';
 import Table from '../components/Table'
 import Search from '../components/Search'
-import NewOrderButton from '../components/NewOderButton';
+import NewOrderButton from '../components/NewOrderButton';
 import {orders} from '../data/data'
 
 const MyOrders = () => {

@@ -19,7 +19,7 @@ const VisaContent = (props) => {
     }
     return (
         <div style={{ flex: 1, background: 'transparent', height: '100vh', overflow: 'auto', paddingTop: '56px', textAlign: 'center' }}>
-            <OrderContentProtected current={props.current} />
+            <OrderContentProtected current={props.current} participantsRef={participantsRef} />
             <div className="toggle-participants" onClick={handleParticipantsTransition}>
                 Tarixçəni göstər
                 <FaAngleDown size="36" color="royalblue"/>
