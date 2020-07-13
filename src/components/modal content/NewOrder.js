@@ -5,6 +5,8 @@ import NewOrderTableBody from '../NewOrderTableBody'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
+    case 'reset':
+      return initState(action.payload)
     case 'deleteRow':
       return { ...state, materials: state.materials.filter(material => material.id !== action.payload.rowid) }
     case 'updateRow':
@@ -35,32 +37,43 @@ const newOrderReducer = (state, action) => {
       return state
   }
 }
+const initState = (current) => {
+  const order = orders.find(order => order.number === current);
+  const materials = order === undefined
+    ? [
+      {
+        id: Math.random().toString(),
+        materialId: null,
+        model: '',
+        importance: 1,
+        amount: 1,
+        additionalInfo: '',
+        class: ''
+      }
+    ]
+    : order.materials;
+  return { materials: materials }
+}
 
 const NewOrderContent = (props) => {
   const init = (current) => {
-    const order = orders.find(order => order.number === current);
-    const materials = order === undefined
-      ? [
-        {
-          id: Math.random().toString(),
-          materialId: null,
-          model: '',
-          importance: 1,
-          amount: 1,
-          additionalInfo: '',
-          class: ''
-        }
-      ]
-      : order.materials;
-      props.stateRef.current.init = { materials: materials }
-    return { materials: materials }
+    const state = initState(current)
+    if(props.stateRef)
+      props.stateRef.current.init = state
+    return state
   }
   const current = props.current;
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
   useEffect(
     () => {
-      props.stateRef.current.latest = state;
+      if (props.stateRef)
+        props.stateRef.current.latest = state;
     }, [state, props.stateRef])
+  useEffect(
+    () => {
+      if(!props.stateRef)
+      dispatch({ type: 'reset', payload: current })
+    }, [current, props.stateRef])
   return (
     <div className="modal-content-new-order">
       <div>

@@ -20,7 +20,7 @@ const SideBar = (props) => {
 			}
 			<ul>
 				{
-					props.visas.map((visa) => {
+					props.docs.map((visa) => {
 						const active = props.active === visa.number ? true : false
 						return <VisaCard
 							key={visa.number}
