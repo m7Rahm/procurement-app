@@ -32,8 +32,8 @@ const Table =  (props) => {
   return (
     <ul className='table'>
       <li key={-1}>
-        <div style={{ width: '30px', textAlign: 'center' }}> #</div>
-        <div style={{ minWidth: '80px', textAlign: 'center' }}> Status</div>
+        <div style={{ width: '30px' }}> #</div>
+        <div style={{ minWidth: '80px' }}> Status</div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left', paddingRight: '10px' }}> Tarix {createDateFilterIcon}</div>
         <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
         <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> Deadline {deadlineIcon}</div>

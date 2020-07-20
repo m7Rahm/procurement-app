@@ -23,8 +23,8 @@ const ListItem = (props) => {
   const handleClose = () => {
     setIsModalOpen(_ => false);
   }
-  const onParticipantsClick = (participants, number) => {
-    setModalContent(_ => (props) => <ParticipantsModal participants={participants} number={number} {...props} />)
+  const onParticipantsClick = (number) => {
+    setModalContent(_ => (props) => <ParticipantsModal number={number} {...props} />)
     setIsModalOpen(prevState => !prevState)
   }
   const onStatusClick = (number) => {
@@ -62,15 +62,15 @@ const ListItem = (props) => {
             </Suspense>
           }
         </div>
-        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{props.deadline}</div>
+        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{props.date}</div>
         <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> {props.number}</div>
         <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> {props.deadline}</div>
         <div style={{ minWidth: '70px', overflow: 'hidden', width: '20%', textAlign: 'left' }}> {props.category}</div>
         <div style={{ width: '20%', textAlign: 'left' }}>
           {
-            'sfagdsgasfadadasda'
+            props.participants
           }
-          <IoMdPeople onClick={_ => onParticipantsClick(props.participants, props.number)} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
+          <IoMdPeople onClick={_ => onParticipantsClick(props.number)} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
         </div>
         <div style={{ width: '5%' }}>
           <CommentContainer remark={props.remark} number={props.number} />

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Visas from './pages/Visas'
 import MyOrders from './pages/MyOrders'
 import logo from './logo.svg'
@@ -9,16 +9,38 @@ import {
 import LeftSidePane from './components/LeftSidePane';
 import Drafts from './pages/Drafts';
 import Archived from './pages/Archived';
+// import useWebSocket from './hooks/useWebSocket'
 
 const App = () => {
   const leftPaneRef = useRef(null);
-  const [backgroundVisibility, setBackgroundVisibility] = useState(false)
+  const [backgroundVisibility, setBackgroundVisibility] = useState(false);
+  const [wSock, setWSock] = useState(null);
+
+  useEffect(() => {
+    const webSocket = new WebSocket('ws://172.16.3.101:12345');
+    webSocket.onopen = () => {
+      const data = {
+        action: "recognition",
+        person: 73
+      }
+      console.log('connected');
+      webSocket.send(JSON.stringify(data));
+      // setWebSocketRef(webSocket);
+      setWSock(webSocket);
+    }
+    return () => {
+      webSocket.close();
+      console.log('connection closed');
+      // setWebSocketRef(null);
+    }
+  }, [])
 
   const handleNavClick = () => {
     leftPaneRef.current.classList.toggle('left-side-pane-open');
     setBackgroundVisibility(prev => !prev)
   }
   return (
+    wSock &&
     <BrowserRouter>
       <>
         <nav>
@@ -44,7 +66,7 @@ const App = () => {
       <LeftSidePane ref={leftPaneRef} handleNavClick={handleNavClick} />
       <Switch>
         <Route path="/visas">
-          <Visas />
+          <Visas webSocketRef={wSock} />
         </Route>
         <Route path="/archived">
           <Archived />
@@ -53,7 +75,7 @@ const App = () => {
           <Drafts />
         </Route>
         <Route path="/">
-          <MyOrders />
+          <MyOrders webSocketRef={wSock} />
         </Route>
       </Switch>
     </BrowserRouter>

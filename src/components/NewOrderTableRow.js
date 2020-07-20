@@ -35,7 +35,7 @@ const NewOrderTableRow = (props) => {
   }
   const handleRowDelete = () => {
     rowRef.current.classList.add('delete-row');
-    rowRef.current.addEventListener('animationend', () => updateMaterialsList('updateRow', { rowid: props.id })
+    rowRef.current.addEventListener('animationend', () => updateMaterialsList('deleteRow', { rowid: props.id })
     )
   }
   return (

@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect } from 'react'
 import { orders } from '../../data/data.js'
 import NewOrderTableBody from '../NewOrderTableBody'
-
+import NewOrderFooter from '../NewOrderFooter'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
@@ -58,7 +58,7 @@ const initState = (current) => {
 const NewOrderContent = (props) => {
   const init = (current) => {
     const state = initState(current)
-    if(props.stateRef)
+    if (props.stateRef)
       props.stateRef.current.init = state
     return state
   }
@@ -71,8 +71,8 @@ const NewOrderContent = (props) => {
     }, [state, props.stateRef])
   useEffect(
     () => {
-      if(!props.stateRef)
-      dispatch({ type: 'reset', payload: current })
+      if (!props.stateRef)
+        dispatch({ type: 'reset', payload: current })
     }, [current, props.stateRef])
   return (
     <div className="modal-content-new-order">
@@ -106,24 +106,7 @@ const NewOrderContent = (props) => {
         </li>
         <NewOrderTableBody dispatch={dispatch} materials={state.materials} stateRef={props.stateRef} />
       </ul>
-      <div className="new-order-footer-wrapper">
-        <textarea placeholder="Sifariş barədə əlavə qeydlər..." />
-        <div className="forwarded-person">
-          <label htmlFor="forwardedPerson">Yönləndirilən şəxs</label>
-          <br />
-          <select name="forwardedPerson">
-            <option>
-              Rahman Mustafayev
-        </option>
-            <option>
-              Bill Clinton
-        </option>
-            <option>
-              Bill Gates
-        </option>
-          </select>
-        </div>
-      </div>
+      <NewOrderFooter />
       <div className="send-order">
         Göndər
       </div>

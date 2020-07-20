@@ -19,11 +19,12 @@ const NewOrderTableBody = (props) => {
     }
     , [activeLinkIndex]
   )
+  console.log(props.materials.length)
   return (
     <>
       {
         props.materials.map((material, index) => {
-          const isActive = material.id === activeLinkIndex ? true : false
+          const isActive = material.id === activeLinkIndex ? true : false;
           return (
             <NewOrderTableRow
               dispatch={props.dispatch}

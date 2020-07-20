@@ -29,12 +29,13 @@ return (
         setModalVisibility={props.setModalVisibility}
         index={index}
         key={index}
+        date={order.create_date_time}
         status={order.status}
-        number={order.number}
-        category={order.category}
+        number={order.id}
+        category={order.assignment}
         participants={order.participants}
         deadline={order.deadline}
-        remark=''
+        remark={order.comment}
         activeLinkIndex={active}
         setActiveLink={setActiveLinkIndex}
       />
