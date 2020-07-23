@@ -2,6 +2,7 @@ import React, { useReducer, useEffect } from 'react'
 import { orders } from '../../data/data.js'
 import NewOrderTableBody from '../NewOrderTableBody'
 import NewOrderFooter from '../NewOrderFooter'
+import NewOrderHeader from '../NewOrderHeader.js'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
@@ -33,17 +34,26 @@ const newOrderReducer = (state, action) => {
       }
     case 'addRow':
       return { ...state, materials: [...state.materials, action.payload.rowData] }
+    case 'setDepid':
+      return { ...state, assignmentid: action.payload.value }
+    case 'setDeadline':
+      return { ...state, deadline: action.payload.value }
+    case 'setComment':
+      return { ...state, comment: action.payload.value }
+    case 'setRec':
+      return { ...state, receiverid: action.payload.value }
     default:
       return state
   }
 }
+
 const initState = (current) => {
   const order = orders.find(order => order.number === current);
   const materials = order === undefined
     ? [
       {
         id: Math.random().toString(),
-        materialId: null,
+        materialId: 1,
         model: '',
         importance: 1,
         amount: 1,
@@ -52,10 +62,17 @@ const initState = (current) => {
       }
     ]
     : order.materials;
-  return { materials: materials }
+  return {
+    materials: materials,
+    deadline: '',
+    receiverid: 2,
+    assignmentid: 1,
+    comment: ''
+  }
 }
 
 const NewOrderContent = (props) => {
+  // console.log(props)
   const init = (current) => {
     const state = initState(current)
     if (props.stateRef)
@@ -69,31 +86,56 @@ const NewOrderContent = (props) => {
       if (props.stateRef)
         props.stateRef.current.latest = state;
     }, [state, props.stateRef])
+
   useEffect(
     () => {
       if (!props.stateRef)
-        dispatch({ type: 'reset', payload: current })
+        dispatch({ type: 'reset', payload: current });
     }, [current, props.stateRef])
+  
+  console.log(props);
+  const handleSendClick = () => {
+    const parsedMaterials = state.materials.map(material =>
+        ({
+          material_id: material.materialId,
+          amount: material.amount,
+          comment: material.additionalInfo,
+          model: material.model,
+          importance: material.importance
+        })
+      )
+    const data = {
+      deadline: state.deadline,
+      mats: parsedMaterials,
+      receiverid: state.receiverid,
+      comment: state.comment,
+      assignment_id: state.assignmentid
+    }
+    fetch('http://172.16.3.101:54321/api/neworder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': JSON.stringify(data).length
+      },
+      body: JSON.stringify(data)
+    })
+    .then(resp => resp.json())
+    // .then(respJ => console.log(respJ))
+    .then(respJ => {
+      console.log(respJ[0].result);
+      if (respJ[0].result === 'success')
+      fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
+      .then(resp => resp.json())
+      .then(respJ => {
+        props.closeModal(respJ);
+      })
+      .catch(err => console.log(err))
+    })
+    .catch(err =>console.log(err))
+  }
   return (
     <div className="modal-content-new-order">
-      <div>
-        <div className="new-order-header">
-          <div>
-            <label htmlFor="destination">Təyinatı</label>
-            <br />
-            <select type="text">
-              <option>Informasiya Texnologiyaları</option>
-              <option>Təsərrüfat</option>
-              <option>Təmir</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="deadline">Deadline</label>
-            <br />
-            <input name="deadline" required={true} type="date" />
-          </div>
-        </div>
-      </div>
+      <NewOrderHeader deadline={state.deadline} departmentid={state.assignmentid} dispatch={dispatch} />
       <ul className="new-order-table">
         <li>
           <div>#</div>
@@ -104,10 +146,10 @@ const NewOrderContent = (props) => {
           <div>Əlavə məlumat</div>
           <div> </div>
         </li>
-        <NewOrderTableBody dispatch={dispatch} materials={state.materials} stateRef={props.stateRef} />
+        <NewOrderTableBody dispatch={dispatch} materials={state.materials} />
       </ul>
-      <NewOrderFooter />
-      <div className="send-order">
+      <NewOrderFooter comment={state.comment} receiverid={state.receiverid} dispatch={dispatch} />
+      <div className="send-order" onClick={handleSendClick}>
         Göndər
       </div>
     </div>

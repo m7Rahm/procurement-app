@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import VisaCard from '../components/VisaCard'
 import {
 	IoIosArchive,
@@ -8,7 +8,14 @@ import {
 const SideBar = (props) => {
 	const checkedAmount = useRef(0);
 	const iconsPanel = useRef(null);
+	const [visas, setVisas] = useState([])
 	const [iconsVisible, setIconsVisible] = useState(false);
+	useEffect(() => {
+		fetch('http://172.16.3.101:54321/api/visas?from=0&until=20')
+		.then(resp => resp.json())
+		.then(respJ =>setVisas(respJ))
+		.catch(err => console.log(err))
+	}, [])
 	return (
 		<div className='side-bar'>
 			{
@@ -20,22 +27,22 @@ const SideBar = (props) => {
 			}
 			<ul>
 				{
-					props.docs.map((visa) => {
+					visas.map((visa) => {
 						const active = props.active === visa.number ? true : false
 						return <VisaCard
-							key={visa.number}
+							key={visa.order_id}
 							iconsPanel={iconsPanel}
 							checkedAmount={checkedAmount}
 							setIconsVisible={setIconsVisible}
 							setActive={props.setActive}
 							active={active}
-							number={visa.number}
-							isOpened={visa.isOpened}
-							from={visa.from}
-							category={visa.category}
+							number={visa.order_id}
+							isOpened={visa.is_read}
+							from={visa.sender_full_name}
+							category={visa.assignment}
 							deadline={visa.deadline}
-							remark={visa.remark}
-							date={visa.date}
+							remark={visa.comment}
+							date={visa.date_time}
 						/>
 					})
 				}

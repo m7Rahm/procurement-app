@@ -7,14 +7,23 @@ const NewOrderFooter = (props) => {
             .then(resp => resp.json())
             .then(respJ => setEmpList(respJ))
             .catch(err => console.log(err))
-    }, [])
+    }, []);
+    const handleChange = (e) => {
+        const type = e.target.name === 'comment' ? 'setComment' : 'setRec';
+        props.dispatch({
+            type,
+            payload: {
+                value: e.target.value
+            }
+        })
+    }
     return (
         <div className="new-order-footer-wrapper">
-            <textarea placeholder="Sifariş barədə əlavə qeydlər..." />
+            <textarea onChange={handleChange} name="comment" value={props.comment} placeholder="Sifariş barədə əlavə qeydlər..." />
             <div className="forwarded-person">
                 <label htmlFor="forwardedPerson">Yönləndirilən şəxs</label>
                 <br />
-                <select name="forwardedPerson">
+                <select value={props.receiverid} onChange={handleChange} name="receiverid">
                     {
                         empList.map((group, index) =>
                             <optgroup key={index} >
@@ -31,4 +40,4 @@ const NewOrderFooter = (props) => {
         </div>
     )
 }
-export default NewOrderFooter
+export default React.memo(NewOrderFooter)

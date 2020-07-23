@@ -8,7 +8,12 @@ const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleClick = (action) => {
     setIsModalVisible(_ => action);
-  }
+  };
+  // const setOrdersCallback = useCallback(props.setOrders,[]);
+  const handleClose = (data) => {
+    setIsModalVisible(_ => false);
+    props.setOrders(data);
+  };
   return (
     <>
       <div title="yeni sifariş" className="new-order-button" onClick={() => handleClick(true)}>
@@ -19,7 +24,7 @@ const NewOrder = (props) => {
         <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
           {
             (props) => <Suspense fallback="loading..">
-              <NewOrderContent current={-1} {...props} />
+              <NewOrderContent closeModal={handleClose} current={-1} {...props} />
             </Suspense>
           }
         </Modal>

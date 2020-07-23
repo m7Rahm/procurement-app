@@ -19,7 +19,6 @@ const NewOrderTableBody = (props) => {
     }
     , [activeLinkIndex]
   )
-  console.log(props.materials.length)
   return (
     <>
       {

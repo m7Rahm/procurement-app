@@ -550,6 +550,7 @@ div.send-order {
   padding: 10px;
   border-radius: 3px;
   height: 40px;
+  cursor: pointer;
 }
 
 .importance-div {

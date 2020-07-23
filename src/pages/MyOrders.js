@@ -20,7 +20,6 @@ const MyOrders = (props) => {
       props.webSocketRef.onmessage = (msg) => {
         // console.log(msg)
       };
-      console.log(props.webSocketRef);
     }
   }, [props.webSocketRef])
   return (
@@ -29,7 +28,7 @@ const MyOrders = (props) => {
       <div className="wrapper" ref={wrapperRef}>
         <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
-      <NewOrderButton wrapperRef={wrapperRef} />
+      <NewOrderButton setOrders={setOrders} wrapperRef={wrapperRef} />
     </div>
   )
 }
