@@ -326,23 +326,28 @@ div.icons-panel-hide {
   padding: 0px 20px;
   box-shadow: 0px 0px 5px 2px rgba(0, 0, 0, 0.1);
 }
-.alert-box>div:first-of-type{
+
+.alert-box>div:first-of-type {
   padding: 20px 0px
 }
+
 .alert-box>div:not(:last-of-type):not(:first-of-type) {
   color: gray;
 }
-.alert-box>div:not(:first-of-type):not(:last-of-type)>div:first-of-type{
+
+.alert-box>div:not(:first-of-type):not(:last-of-type)>div:first-of-type {
   font-size: 22px;
   color: #333333;
   font-weight: 600;
   padding-bottom: 10px;
 }
-.alert-box>div:last-of-type{
+
+.alert-box>div:last-of-type {
   display: flex;
   justify-content: space-evenly;
 }
-.alert-box>div:last-of-type>div{
+
+.alert-box>div:last-of-type>div {
   margin: 30px 0px;
   padding: 10px 40px;
   border-radius: 3px;
@@ -350,6 +355,7 @@ div.icons-panel-hide {
   color: white;
   cursor: pointer;
 }
+
 @keyframes blur-in {
   from {
     background-color: transparent;
@@ -497,21 +503,55 @@ div.icons-panel-hide {
   box-shadow: 0px 0px 2px 1.6px royalblue;
   /* outline: 3px royalblue solid; */
 }
-
+div.forwarded-person-card{
+  float: left;
+  background-color: dodgerblue;
+  border-radius: 2px;
+  color: white;
+  margin: 0px 2px;
+  height: 28px;
+}
+div.forwarded-person-card>div {
+  padding: 5px;
+  float: left;
+}
+div.forwarded-person-card>div>svg{
+  display: block;
+  margin: auto;
+}
+div.forwarded-person-card>div:first-of-type {
+  height: 100%;
+}
+div.forwarded-person-card>div:first-of-type:hover {
+  background-color: gray;
+}
+div.forwarded-person-card>div:last-of-type {
+  border-left: 1px white solid;
+  padding-right: 10px;
+}
 div.new-order-footer-wrapper {
   margin: 0px 50px;
   margin-top: 30px;
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: column wrap;
 }
 
-div.new-order-footer-wrapper>textarea {
+div.new-order-footer-wrapper>div:first-of-type {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+div.new-order-footer-wrapper>div:first-of-type>textarea {
   flex: 1;
   margin-right: 50px;
 }
-
+div.new-order-footer-wrapper>div:last-of-type {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid gray;
+}
 div.forwarded-person {
-  width: 190px;
+  min-width: 200px;
 }
 
 div.forwarded-person:focus-within>label {
@@ -524,21 +564,74 @@ div.forwarded-person>label {
   font-size: 20px;
   font-weight: 600;
   color: #222222;
+  margin-left: 10px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-div.forwarded-person>select {
+div.forwarded-person>div {
   height: 40px;
-  padding: 0px 10px;
-}
-
-div.forwarded-person>select:focus {
-  border: none;
+  cursor: default;
+  max-width: 200px;
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  clear: both;
+  text-align: left;
   border-radius: 3px;
-  outline: none;
-  box-shadow: 0px 0px 2px 3px rgb(255, 174, 0);
 }
-
+div.forwarded-person>div>div>svg{
+  float: right;
+  z-index: 2;
+  color:  rgb(24, 139, 192);
+}
+div.forwarded-person>div>div>svg:hover{
+  color: rgb(24, 139, 192) !important;
+}
+div.forwarded-person>div>ul {
+  margin-top: 40px;
+  list-style-type: none;
+  background-image: linear-gradient(to bottom, white, #f3f3f3);
+  padding: 0px;
+  margin: 0px;
+  max-height: 192px;
+  position: relative;
+  overflow: auto;
+  border-radius: 3px;
+  border: 2px solid rgb(255, 174, 0);
+}
+div.forwarded-person>div>div {
+  height: 100%;
+  background-color: #f3f3f3;
+  padding: 5px
+}
+div.forwarded-person>div>div>input {
+  color: #545454;
+  /* margin-right: 40px; */
+  max-width: 100%;
+  border: none;
+  outline: none;
+  height: 100%;
+}
+div.forwarded-person>div>ul::-webkit-scrollbar {
+  width: 5px;
+}
+div.forwarded-person>div>ul::-webkit-scrollbar-track {
+  background-color:  transparent
+}
+div.forwarded-person>div>ul::-webkit-scrollbar-thumb {
+  background-color:  rgb(24, 139, 192);
+}
+div.forwarded-person>div>ul>li {
+  padding-left: 20px;
+  font-size: 16px;
+  height: 40px;
+  padding: 5px;
+  border: 1px white solid;
+}
+div.forwarded-person>div>ul>li:hover {
+  background-color:  rgb(24, 139, 192);
+  color: white;
+}
 div.send-order {
   align-self: flex-end;
   color: white;
@@ -563,6 +656,7 @@ div.send-order {
 }
 
 .importance-dropdown>li {
+  background-color: #fafafa;
   height: 30px;
   padding: 5px 5px 5px 15px;
 }
@@ -574,11 +668,11 @@ div.send-order {
 
 .importance-dropdown-visible {
   display: block !important;
-  animation: show-up 0.4s ease-in-out both;
+  animation: show-up 0.2s ease-in-out both;
 }
 
 .importance-dropdown>li:hover {
-  background-color: steelblue;
+  background-color: rgb(24, 139, 192);
   color: white;
   cursor: default;
 }

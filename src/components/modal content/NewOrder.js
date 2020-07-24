@@ -93,7 +93,6 @@ const NewOrderContent = (props) => {
         dispatch({ type: 'reset', payload: current });
     }, [current, props.stateRef])
   
-  console.log(props);
   const handleSendClick = () => {
     const parsedMaterials = state.materials.map(material =>
         ({
@@ -122,7 +121,6 @@ const NewOrderContent = (props) => {
     .then(resp => resp.json())
     // .then(respJ => console.log(respJ))
     .then(respJ => {
-      console.log(respJ[0].result);
       if (respJ[0].result === 'success')
       fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
       .then(resp => resp.json())

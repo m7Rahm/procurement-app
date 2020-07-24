@@ -28,7 +28,7 @@ const MyOrders = (props) => {
       <div className="wrapper" ref={wrapperRef}>
         <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
-      <NewOrderButton setOrders={setOrders} wrapperRef={wrapperRef} />
+      <NewOrderButton webSocketRef={props.webSocketRef} setOrders={setOrders} wrapperRef={wrapperRef} />
     </div>
   )
 }
