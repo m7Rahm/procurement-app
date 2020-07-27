@@ -31,7 +31,7 @@ return (
         key={index}
         date={order.create_date_time}
         status={order.status}
-        number={order.id}
+        number={order.ord_numb}
         category={order.assignment}
         participants={order.participants}
         deadline={order.deadline}

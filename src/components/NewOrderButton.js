@@ -13,7 +13,7 @@ const NewOrder = (props) => {
   const handleClose = (data) => {
     setIsModalVisible(_ => false);
     // todo: send notif on new order to receivers
-    //props.webSocketRef.current.send(JSON.stringify(data.receivers)) 
+    // props.webSocketRef.current.send({action: 'newOrder', people: JSON.stringify(data.receivers)}) 
     props.setOrders(data);
   };
   return (
@@ -26,7 +26,7 @@ const NewOrder = (props) => {
         <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
           {
             (props) => <Suspense fallback="loading..">
-              <NewOrderContent closeModal={handleClose} current={-1} {...props} />
+              <NewOrderContent closeModal={handleClose} {...props} />
             </Suspense>
           }
         </Modal>

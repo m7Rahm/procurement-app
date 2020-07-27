@@ -31,13 +31,13 @@ const VisaContent = (props) => {
                         {
                             participantsVisiblity &&
                             <div ref={participantsRef} className="visa-content-participants-show">
-                                <Participants number={props.current} />
+                                <Participants number={props.current.number} />
                             </div>
                         }
                     </>
                     : <>
                         <div style={{ marginTop: '100px' }}>
-                            <IoIosInformationCircleOutline size="170" color="#0096B7" />
+                            <IoIosInformationCircleOutline size="170" color="skyblue" />
                             <br />
                             <span style={{color: 'gray', fontSize: 20}}>Baxmaq üçün sənədi seçin</span>
                         </div>

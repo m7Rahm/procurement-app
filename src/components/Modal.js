@@ -8,7 +8,7 @@ const modalContent = (Content) => ({ ...props }) =>
 const Modal = (props) => {
   const closeModalCallback = useCallback(props.changeModalState, []);
   //todo: send ref to child and update every time needed
-  //todo: onClose check if initial state changeed
+  //todo: onClose check if initial state changed
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
   const [alertVisible, setAlertVisible] = useState(false);
@@ -40,7 +40,7 @@ const Modal = (props) => {
           Sifariş № {props.number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
-        <ModalContent stateRef={stateRef} />
+        <ModalContent current={props.number} stateRef={stateRef} />
       </div>
       {
         alertVisible &&

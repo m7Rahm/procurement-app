@@ -244,3 +244,20 @@ export const visas = [
 		date: '11/07/2020'
 	}
 ]
+export const newOrderInitial = {
+    materials: [
+      {
+        id: Math.random().toString(),
+        materialId: 1,
+        model: '',
+        importance: 1,
+        amount: 1,
+        additionalInfo: '',
+        class: ''
+      }
+    ],
+    deadline: '',
+    receivers: [],
+    assignment: '',
+    comment: ''
+  }

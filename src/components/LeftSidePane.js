@@ -21,7 +21,7 @@ const setStyle = (active) => {
     return style
 }
 const LeftSidePane = (props, ref) => {
-    const [activeLink, setActiveLink] = useState(0)
+    const [activeLink, setActiveLink] = useState(0);
     const handleNavClick = props.handleNavClick;
     return (
         <div ref={ref} className="left-side-pane">

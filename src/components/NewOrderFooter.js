@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react'
 import VisaForwardPerson from './VisaForwardPerson'
 const NewOrderFooter = (props) => {
     const [empListState, setEmpListState] = useState([]);
-    // const listRef = useRef(null);
     const wrapperRef = useRef(null);
     const empListRef = useRef(null);
     const [searchKey, setSearchKey] = useState('');
@@ -27,22 +26,18 @@ const NewOrderFooter = (props) => {
     }, []);
     const handleTextAreaChange = (e) => {
         props.dispatch({
-            action: e.target.name,
+            type: 'setComment',
             payload: {
                 value: e.target.value
             }
         })
     }
-    const handleSelectChange = (empid) => {
-        props.dispatch({
-            action: 'setRec',
-            payload: {
-                value: empid
-            }
-        });
-        const receiver = empListRef.current.find(emp => emp.id === empid);
+    const handleSelectChange = (employee) => {
+              const res = receivers.find(emp => emp.id === employee.id);
+              const newReceivers = !res ? [...receivers, employee] : receivers.filter(emp => emp.id !== employee.id);
+        props.empListRef.current = newReceivers;
+        setReceivers(newReceivers);
         setSearchKey('');
-        setReceivers(prev => [...prev, receiver])
     }
     const displayList = () => {
         wrapperRef.current.style.overflow = 'visible';
@@ -67,7 +62,7 @@ const NewOrderFooter = (props) => {
                         <ul>
                             {
                                 empListState.map(employee =>
-                                    <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee.id)}>
+                                    <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
                                         {employee.full_name}
                                     </li>
                                 )
@@ -78,10 +73,10 @@ const NewOrderFooter = (props) => {
             </div>
             <div>
                 {
-                    receivers.map((elem, index) => <VisaForwardPerson key={index} id={elem.id} name={elem.full_name} setReceivers={setReceivers} />)
+                    receivers.map(emp => <VisaForwardPerson key={Math.random()} emp={emp} handleSelectChange={handleSelectChange} />)
                 }
             </div>
         </div>
     )
 }
-export default React.memo(NewOrderFooter)
+export default NewOrderFooter

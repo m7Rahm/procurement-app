@@ -39,6 +39,16 @@ const App = () => {
     leftPaneRef.current.classList.toggle('left-side-pane-open');
     setBackgroundVisibility(prev => !prev)
   }
+  useEffect(() => {
+    const closeNav = (e) => {
+      if (e.keyCode === 27 && leftPaneRef.current.classList.contains('left-side-pane-open')) {
+        leftPaneRef.current.classList.toggle('left-side-pane-open');
+        setBackgroundVisibility(prev => !prev)
+      }
+    }
+    document.addEventListener('keyup', closeNav, false);
+    return () => document.removeEventListener('keyup', closeNav, false)
+  }, []);
   return (
     wSock &&
     <BrowserRouter>
@@ -59,7 +69,7 @@ const App = () => {
         </nav>
         {
           backgroundVisibility &&
-          <div style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 1 }}>
+          <div onClick={handleNavClick} style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 1 }}>
           </div>
         }
       </>

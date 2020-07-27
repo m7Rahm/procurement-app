@@ -1,8 +1,8 @@
-import React, { useReducer, useEffect } from 'react'
-import { orders } from '../../data/data.js'
+import React, { useReducer, useEffect, useRef } from 'react'
 import NewOrderTableBody from '../NewOrderTableBody'
 import NewOrderFooter from '../NewOrderFooter'
-import NewOrderHeader from '../NewOrderHeader.js'
+import NewOrderHeader from '../NewOrderHeader.js';
+import { newOrderInitial } from '../../data/data.js'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
@@ -18,64 +18,61 @@ const newOrderReducer = (state, action) => {
             : material)
       }
     case 'updateRowSync':
-      {
-        return {
-          ...state, materials: state.materials.map(material =>
-            material.id === action.payload.rowid && parseInt(material.amount) > 0
-              ? {
-                ...material,
-                amount: action.payload.operation === 'dec'
-                  ? parseInt(material.amount) - 1
-                  : parseInt(material.amount) + 1
-              }
-              : material
-          )
-        }
+      return {
+        ...state, materials: state.materials.map(material =>
+          material.id === action.payload.rowid && parseInt(material.amount) > 0
+            ? {
+              ...material,
+              amount: action.payload.operation === 'dec'
+                ? parseInt(material.amount) - 1
+                : parseInt(material.amount) + 1
+            }
+            : material
+        )
       }
     case 'addRow':
       return { ...state, materials: [...state.materials, action.payload.rowData] }
-    case 'setDepid':
-      return { ...state, assignmentid: action.payload.value }
+    case 'setAssign':
+      return { ...state, assignment: action.payload.value }
     case 'setDeadline':
       return { ...state, deadline: action.payload.value }
     case 'setComment':
       return { ...state, comment: action.payload.value }
-    case 'setRec':
-      return { ...state, receiverid: action.payload.value }
+    case 'setOrderid':
+      return { ...state, orderid: action.payload.value }
+    case 'init':
+      return action.payload
     default:
       return state
   }
 }
 
-const initState = (current) => {
-  const order = orders.find(order => order.number === current);
-  const materials = order === undefined
-    ? [
-      {
+const initState = (current, content) => {
+  if (!current)
+    return newOrderInitial
+  else
+    return {
+      materials: content.map(elem => ({
         id: Math.random().toString(),
-        materialId: 1,
-        model: '',
-        importance: 1,
-        amount: 1,
-        additionalInfo: '',
+        materialId: elem.material_id,
+        model: elem.model,
+        amount: elem.amount,
+        importance: elem.importance,
+        additionalInfo: elem.material_comment,
         class: ''
-      }
-    ]
-    : order.materials;
-  return {
-    materials: materials,
-    deadline: '',
-    receiverid: 2,
-    assignmentid: 1,
-    comment: ''
-  }
+      })),
+      deadline: content[0].deadline,
+      receivers: [],
+      assignment: content[0].assignment,
+      comment: content[0].comment
+    }
 }
 
 const NewOrderContent = (props) => {
-  // console.log(props)
+  const empListRef = useRef(null);
   const init = (current) => {
-    const state = initState(current)
-    if (props.stateRef)
+    const state = initState(current, props.content)
+    if (props.stateRef);
       props.stateRef.current.init = state
     return state
   }
@@ -87,30 +84,43 @@ const NewOrderContent = (props) => {
         props.stateRef.current.latest = state;
     }, [state, props.stateRef])
 
-  useEffect(
-    () => {
-      if (!props.stateRef)
-        dispatch({ type: 'reset', payload: current });
-    }, [current, props.stateRef])
-  
+  // useEffect(() => {
+  //   if (!current) {
+  //     //todo: fetch order content;
+  //     fetch(`http://172.16.3.101:54321/api/order/`)
+  //       .then(resp => resp.json())
+  //       .then(respJ => {
+  //         console.log(respJ);
+  //         dispatch({ action: 'init', payload: respJ });
+  //         if (!props.stateRef)
+  //           props.stateRef.current.init = respJ
+  //       })
+  //   }
+  // }, [current, props.stateRef])
+  // useEffect(
+  //   () => {
+  //     if (!props.stateRef)
+  //       dispatch({ type: 'reset', payload: current });
+  //   }, [current, props.stateRef])
+
   const handleSendClick = () => {
     const parsedMaterials = state.materials.map(material =>
-        ({
-          material_id: material.materialId,
-          amount: material.amount,
-          comment: material.additionalInfo,
-          model: material.model,
-          importance: material.importance
-        })
-      )
+      ({
+        material_id: material.materialId,
+        amount: material.amount,
+        comment: material.additionalInfo,
+        model: material.model,
+        importance: material.importance
+      })
+    )
     const data = {
       deadline: state.deadline,
       mats: parsedMaterials,
-      receiverid: state.receiverid,
+      receivers: empListRef.current.map(emp => emp.id),
       comment: state.comment,
-      assignment_id: state.assignmentid
+      assignment: state.assignment
     }
-    fetch('http://172.16.3.101:54321/api/neworder', {
+    fetch('http://172.16.3.101:54321/api/new-order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -118,22 +128,22 @@ const NewOrderContent = (props) => {
       },
       body: JSON.stringify(data)
     })
-    .then(resp => resp.json())
-    // .then(respJ => console.log(respJ))
-    .then(respJ => {
-      if (respJ[0].result === 'success')
-      fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
       .then(resp => resp.json())
+      // .then(respJ => console.log(respJ))
       .then(respJ => {
-        props.closeModal(respJ);
+        if (respJ[0].result === 'success')
+          fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
+            .then(resp => resp.json())
+            .then(respJ => {
+              props.closeModal(respJ);
+            })
+            .catch(err => console.log(err))
       })
       .catch(err => console.log(err))
-    })
-    .catch(err =>console.log(err))
   }
   return (
     <div className="modal-content-new-order">
-      <NewOrderHeader deadline={state.deadline} departmentid={state.assignmentid} dispatch={dispatch} />
+      <NewOrderHeader deadline={state.deadline} assignment={state.assignment} dispatch={dispatch} />
       <ul className="new-order-table">
         <li>
           <div>#</div>
@@ -146,7 +156,7 @@ const NewOrderContent = (props) => {
         </li>
         <NewOrderTableBody dispatch={dispatch} materials={state.materials} />
       </ul>
-      <NewOrderFooter comment={state.comment} receiverid={state.receiverid} dispatch={dispatch} />
+      <NewOrderFooter comment={state.comment} empListRef={empListRef} dispatch={dispatch} />
       <div className="send-order" onClick={handleSendClick}>
         Göndər
       </div>

@@ -17,7 +17,7 @@ const VisaCard = (props) => {
         }
     }
     return (
-        <li onClick={() => props.setActive(_ => props.number)} style={{ background: props.active ? 'skyblue' : '' }}>
+        <li onClick={() => props.setActive(_ => ({number: props.number, senderid: props.senderid}))} style={{ background: props.active ? 'skyblue' : '' }}>
             <div style={{ height: 'inherit' }}>
                 {
                     props.isOpened &&

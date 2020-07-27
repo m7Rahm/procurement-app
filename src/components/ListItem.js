@@ -28,7 +28,7 @@ const ListItem = (props) => {
     setIsModalOpen(prevState => !prevState)
   }
   const onStatusClick = (number) => {
-    setModalContent(_ => (props) => <StatusModal number={number} {...props}/>)
+    setModalContent(_ => (props) => <StatusModal number={number} {...props} />)
     setIsModalOpen(prevState => !prevState)
   }
   const icon = props.status === 'Baxılır'
@@ -55,7 +55,9 @@ const ListItem = (props) => {
             <Suspense fallback={
               <div className="loading">
                 <IoMdRefreshCircle size="50" color="#a4a4a4" />
-              </div>}>
+              </div>
+            }
+            >
               <Modal changeModalState={handleClose} >
                 {modalContent}
               </Modal>
