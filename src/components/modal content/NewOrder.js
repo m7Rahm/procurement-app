@@ -47,7 +47,7 @@ const newOrderReducer = (state, action) => {
   }
 }
 
-const initState = (current, content) => {
+const initState = (current, content, isDraft) => {
   if (!current)
     return newOrderInitial
   else
@@ -62,18 +62,18 @@ const initState = (current, content) => {
         class: ''
       })),
       deadline: content[0].deadline,
-      receivers: [],
+      receivers: !isDraft ? [] : content.map(elem => elem.receiver_id),
       assignment: content[0].assignment,
-      comment: content[0].comment
+      comment: !isDraft ? '' : content[0].comment
     }
 }
 
 const NewOrderContent = (props) => {
   const empListRef = useRef(null);
   const init = (current) => {
-    const state = initState(current, props.content)
+    const state = initState(current, props.content, props.isDraft)
     if (props.stateRef);
-      props.stateRef.current.init = state
+    props.stateRef.current.init = state
     return state
   }
   const current = props.current;
@@ -84,62 +84,54 @@ const NewOrderContent = (props) => {
         props.stateRef.current.latest = state;
     }, [state, props.stateRef])
 
-  // useEffect(() => {
-  //   if (!current) {
-  //     //todo: fetch order content;
-  //     fetch(`http://172.16.3.101:54321/api/order/`)
-  //       .then(resp => resp.json())
-  //       .then(respJ => {
-  //         console.log(respJ);
-  //         dispatch({ action: 'init', payload: respJ });
-  //         if (!props.stateRef)
-  //           props.stateRef.current.init = respJ
-  //       })
-  //   }
-  // }, [current, props.stateRef])
-  // useEffect(
-  //   () => {
-  //     if (!props.stateRef)
-  //       dispatch({ type: 'reset', payload: current });
-  //   }, [current, props.stateRef])
-
   const handleSendClick = () => {
-    const parsedMaterials = state.materials.map(material =>
-      ({
-        material_id: material.materialId,
-        amount: material.amount,
-        comment: material.additionalInfo,
-        model: material.model,
-        importance: material.importance
+    if (!current && !props.isDraft) {
+      const parsedMaterials = state.materials.map(material =>
+        ({
+          material_id: material.materialId,
+          amount: material.amount,
+          comment: material.additionalInfo,
+          model: material.model,
+          importance: material.importance
+        })
+      )
+      const data = {
+        deadline: state.deadline,
+        mats: parsedMaterials,
+        receivers: empListRef.current.map(emp => emp.id),
+        comment: state.comment,
+        assignment: state.assignment,
+        ordNumb: '',
+        review: ''
+      }
+      fetch('http://172.16.3.101:54321/api/new-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': JSON.stringify(data).length
+        },
+        body: JSON.stringify(data)
       })
-    )
-    const data = {
-      deadline: state.deadline,
-      mats: parsedMaterials,
-      receivers: empListRef.current.map(emp => emp.id),
-      comment: state.comment,
-      assignment: state.assignment
+        .then(resp => resp.json())
+        // .then(respJ => console.log(respJ))
+        .then(respJ => {
+          if (respJ[0].result === 'success')
+            fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
+              .then(resp => resp.json())
+              .then(respJ => {
+                props.closeModal(respJ);
+              })
+              .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))
     }
-    fetch('http://172.16.3.101:54321/api/new-order', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': JSON.stringify(data).length
-      },
-      body: JSON.stringify(data)
-    })
-      .then(resp => resp.json())
-      // .then(respJ => console.log(respJ))
-      .then(respJ => {
-        if (respJ[0].result === 'success')
-          fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
-            .then(resp => resp.json())
-            .then(respJ => {
-              props.closeModal(respJ);
-            })
-            .catch(err => console.log(err))
-      })
-      .catch(err => console.log(err))
+    else if(current && !props.isDraft){
+      //todo: check if any changes made props.stateRef.current.latest === props.stateRef.current.init
+      //todo: change order content and send it
+    }
+    else if (props.isDraft){
+      //todo: send draft
+    }
   }
   return (
     <div className="modal-content-new-order">
@@ -156,7 +148,7 @@ const NewOrderContent = (props) => {
         </li>
         <NewOrderTableBody dispatch={dispatch} materials={state.materials} />
       </ul>
-      <NewOrderFooter comment={state.comment} empListRef={empListRef} dispatch={dispatch} />
+      <NewOrderFooter isDraft={props.isDraft} comment={state.comment} empListRef={empListRef} dispatch={dispatch} />
       <div className="send-order" onClick={handleSendClick}>
         Göndər
       </div>

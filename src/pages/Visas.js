@@ -11,7 +11,7 @@ const Visas = (props) => {
     }
   }, [props.webSocketRef])
   return (
-    <div style={{ minHeight: '100vh', display: 'flex' }}>
+    <div style={{ maxHeight: '100vh', display: 'flex', overflow: 'hidden' }}>
       <SideBar active={active} setActive={setActive} />
       <VisaContent current={active} />
     </div>

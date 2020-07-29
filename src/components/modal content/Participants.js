@@ -40,7 +40,7 @@ const Participants = (props) => {
                 <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{'Mütəxəssis'}</div>
               </div>
               <div>{participant.result === 1 ? 'Təsdiq' : participant.result === 0 ? 'Etiraz' : 'Baxılır'}</div>
-              <div>{participant.date_time}</div>
+              <div>{participant.act_date_time || participant.date_time}</div>
               <div style={{ textAlign: 'left' }}>{participant.comment}</div>
             </li>
           )
@@ -79,7 +79,7 @@ const Reviewers = (props) => {
                 <div>{reviewer.full_name}
                   <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{'Mütəxəssis'}</div>
                 </div>
-                <div>{reviewer.date_time}</div>
+                <div>{reviewer.act_date_time || reviewer.date_time}</div>
                 <div style={{ textAlign: 'left' }}>{reviewer.comment}</div>
               </li>
             )
@@ -87,8 +87,8 @@ const Reviewers = (props) => {
         </ul>
       </>
       : <div className="loading">
-          <IoMdRefreshCircle size="50" color="#a4a4a4" />
-        </div>
+        <IoMdRefreshCircle size="50" color="#a4a4a4" />
+      </div>
   )
 }
 export default Participants

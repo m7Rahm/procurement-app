@@ -16,11 +16,12 @@ const VisaCard = (props) => {
                 props.setIconsVisible(prev => !prev)
         }
     }
+    // console.log(props);
     return (
-        <li onClick={() => props.setActive(_ => ({number: props.number, senderid: props.senderid}))} style={{ background: props.active ? 'skyblue' : '' }}>
+        <li onClick={() => props.setActive(_ => ({ number: props.number, senderid: props.senderid }))} style={{ background: props.active ? 'skyblue' : '' }}>
             <div style={{ height: 'inherit' }}>
                 {
-                    props.isOpened &&
+                    !props.isOpened &&
                     <div style={{ width: '3px', float: 'right', height: '100%', background: 'steelblue' }}></div>
                 }
                 <div style={{ padding: '5px', height: '100%' }}>

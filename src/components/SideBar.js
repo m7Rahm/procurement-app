@@ -44,7 +44,7 @@ const SideBar = (props) => {
 			<ul>
 				{
 					visas.map((visa) => {
-						const active = props.active === visa.number ? true : false
+						const active = props.active && props.active.number === visa.ord_numb ? true : false
 						return <VisaCard
 							key={visa.ord_numb}
 							iconsPanel={iconsPanel}

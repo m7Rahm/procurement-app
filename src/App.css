@@ -142,6 +142,7 @@ nav>ul>li {
 .side-bar>ul>li:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
 .side-bar>.new-visa-notification {
   position: fixed;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.2);
@@ -190,7 +191,15 @@ div.icons-panel-hide {
   overflow: hidden;
 }
 
+.accept-decline>div:not(:first-of-type):not(:last-of-type) {
+  margin-top: 20px;
+  overflow: hidden;
+  padding: 15px;
+  border: 1px solid gray;
+}
+
 .accept-decline>div:last-of-type {
+  margin-top: 20px;
   float: right;
   padding: 10px 25px;
   color: white;
@@ -244,7 +253,20 @@ div.icons-panel-hide {
   margin: 40px 0px;
   box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.2);
 }
-
+.reviewed-comment>span{
+  float: left;
+  clear: both;
+}
+.reviewed-comment>span:last-of-type{
+  font-family: monospace;
+}
+.reviewed-comment>span:first-of-type{
+  font-size: 22px;
+  color: #505050;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 15px;
+}
 .comment-cointainer {
   color: gray;
   border-radius: 5px;
@@ -264,6 +286,7 @@ div.icons-panel-hide {
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
+  width: 150px;
 }
 
 .modal-close-button:hover {
@@ -488,14 +511,17 @@ div.icons-panel-hide {
   border-radius: 3px;
   border: 1px solid #3f3f3f;
 }
-.new-order-header>div>input[type="text"]{
+
+.new-order-header>div>input[type="text"] {
   border: none;
   border-bottom: 2px solid royalblue;
 }
+
 div.toggle-container {
   padding: 10px 10px 20px 10px;
   overflow: hidden;
 }
+
 span.toggle-container {
   height: 30px;
   width: 58px;
@@ -507,7 +533,8 @@ span.toggle-container {
   cursor: pointer;
   transition: all 300ms;
 }
-span.toggle-container + span {
+
+span.toggle-container+span {
   padding: 4px 10px;
   display: block;
   height: 22px;
@@ -515,9 +542,11 @@ span.toggle-container + span {
   float: left;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
-span.toggle-container.active + span {
+
+span.toggle-container.active+span {
   font-weight: 600;
 }
+
 span.toggle-container>span {
   border-radius: 50%;
   background-color: white;
@@ -528,15 +557,19 @@ span.toggle-container>span {
   width: 22px;
   transition: all 300ms;
 }
+
 span.toggle-container.active {
   background-color: rgb(76, 175, 221);
 }
-span.toggle-container.active>span{
+
+span.toggle-container.active>span {
   transform: translateX(28px);
 }
+
 .new-order-header>div>input:focus {
   outline: none;
 }
+
 .new-order-header>div>input[type="date"]:focus {
   border-color: transparent;
   box-shadow: 0px 0px 2px 3px royalblue;
@@ -568,7 +601,8 @@ span.toggle-container.active>span{
   box-shadow: 0px 0px 2px 1.6px royalblue;
   /* outline: 3px royalblue solid; */
 }
-div.forwarded-person-card{
+
+div.forwarded-person-card {
   float: left;
   background-color: dodgerblue;
   border-radius: 2px;
@@ -576,24 +610,30 @@ div.forwarded-person-card{
   margin: 1px 2px;
   height: 28px;
 }
+
 div.forwarded-person-card>div {
   padding: 5px;
   float: left;
 }
-div.forwarded-person-card>div>svg{
+
+div.forwarded-person-card>div>svg {
   display: block;
   margin: auto;
 }
+
 div.forwarded-person-card>div:first-of-type {
   height: 100%;
 }
+
 div.forwarded-person-card>div:first-of-type:hover {
   background-color: gray;
 }
+
 div.forwarded-person-card>div:last-of-type {
   border-left: 1px white solid;
   padding-right: 10px;
 }
+
 div.new-order-footer-wrapper {
   margin: 0px 50px;
   margin-top: 30px;
@@ -610,11 +650,13 @@ div.new-order-footer-wrapper>div:first-of-type>textarea {
   flex: 1;
   margin-right: 50px;
 }
+
 div.new-order-footer-wrapper>div:last-of-type {
   margin-top: 20px;
   padding: 15px;
   border: 1px solid gray;
 }
+
 div.forwarded-person {
   min-width: 200px;
 }
@@ -645,7 +687,8 @@ div.forwarded-person>div {
   text-align: left;
   border-radius: 3px;
 }
-div.forwarded-person>div>ul {
+
+ul.employees-list {
   margin-top: 40px;
   list-style-type: none;
   background-image: linear-gradient(to bottom, white, #f3f3f3);
@@ -657,40 +700,47 @@ div.forwarded-person>div>ul {
   border-radius: 3px;
   border: 2px solid rgb(255, 174, 0);
 }
+
 div.forwarded-person>div>div {
   height: 100%;
   /* padding: 3px; */
   border-bottom: 1px solid rgb(255, 174, 0);
 }
-div.forwarded-person>div>div>input {
-  
+
+input.search-with-query {
   color: #545454;
   /* margin-right: 40px; */
   max-width: 100%;
   border: none;
   outline: none;
-  height: 100%;
+  height: 39px;
 }
-div.forwarded-person>div>ul::-webkit-scrollbar {
+
+ul.employees-list::-webkit-scrollbar {
   width: 5px;
 }
-div.forwarded-person>div>ul::-webkit-scrollbar-track {
-  background-color:  transparent
+
+ul.employees-list::-webkit-scrollbar-track {
+  background-color: transparent
 }
-div.forwarded-person>div>ul::-webkit-scrollbar-thumb {
-  background-color:  rgb(24, 139, 192);
+
+ul.employees-list::-webkit-scrollbar-thumb {
+  background-color: rgb(24, 139, 192);
 }
-div.forwarded-person>div>ul>li {
+
+ul.employees-list>li {
   padding-left: 20px;
   font-size: 16px;
   height: 40px;
   padding: 5px;
   border: 1px white solid;
 }
-div.forwarded-person>div>ul>li:hover {
-  background-color:  rgb(24, 139, 192);
+
+ul.employees-list>li:hover {
+  background-color: rgb(24, 139, 192);
   color: white;
 }
+
 div.send-order {
   align-self: flex-end;
   color: white;
@@ -765,26 +815,41 @@ li.delete-row {
     max-height: 0px;
   }
 }
-
-.protex-order-header {
+.protex-order-header-container{
+  overflow: hidden;
+  margin: 35px 50px;
+}
+.protex-order-header-container>h1{
   font-size: 26px;
   text-align: left;
-  margin: 50px 20px;
   color: #606066;
-  width: 250px;
+  margin: 0px;
+  /* width: 250px; */
+  float: left;
 }
-
-.protex-order-header>svg {
+.protex-order-header-container>span>svg{
+  margin-left: 20px;
+}
+.protex-order-header-container>span{
+  font-size: 24px;
+  font-weight: 600;
+  color: gray;
+  float: right;
+}
+.protex-order-header-container>svg{
+  vertical-align: middle;
+}
+.protex-order-header-container>h1>svg {
   margin-left: 7px;
   color: #f8942a;
   cursor: pointer;
 }
 
-.protex-order-header>svg:hover {
+.protex-order-header-container>h1>svg:hover {
   color: #ffb362;
 }
 
-.order-table-protex{
+.order-table-protex {
   margin-top: 20px;
 }
 
@@ -797,11 +862,13 @@ li.delete-row {
   display: flex;
   justify-content: space-around;
 }
-.order-table-protex+div.review-container{
+
+.order-table-protex+div.review-container {
   margin: 20px 0px;
   padding: 20px
 }
-.order-table-protex+div.review-container>textarea{
+
+.order-table-protex+div.review-container>textarea {
   display: block;
   border-color: gray;
   width: 100%;
@@ -809,7 +876,8 @@ li.delete-row {
   border-radius: 3px;
   min-height: 50px;
 }
-.order-table-protex+div.review-container>div{
+
+.order-table-protex+div.review-container>div {
   margin-top: 50px;
   color: white;
   cursor: pointer;
@@ -819,12 +887,27 @@ li.delete-row {
   padding: 10px 20px;
   min-width: 170px;
 }
+
 .order-table-protex+div.accept-decline-container>div {
   padding: 10px 20px;
   cursor: pointer;
   min-width: 170px;
   color: white;
   border-radius: 2px;
+}
+
+.visa-content-container {
+  flex: 1;
+  background: transparent;
+  height: 100vh;
+  padding-top: 56px;
+  text-align: center;
+  overflow: auto;
+}
+
+.visa-content-container>div {
+  max-width: 1256px;
+  margin: auto;
 }
 
 .order-table-protex>li:first-of-type {
@@ -902,6 +985,7 @@ li.delete-row {
   text-align: left;
   font-weight: 600;
 }
+
 span.reviewers-header {
   margin: 10px auto;
   display: block;
@@ -911,6 +995,7 @@ span.reviewers-header {
   color: #545454;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
+
 .participants {
   list-style-type: none;
   padding-left: 0px;
@@ -981,13 +1066,16 @@ span.reviewers-header {
   background-color: rgba(0, 0, 0, 0.1);
   color: #222222;
 }
+
 .participants.reviewers>li:first-of-type {
   list-style-type: none;
   background-color: rgb(24, 139, 192);
 }
+
 .participants.reviewers>li>div:nth-of-type(3) {
   width: 50%;
 }
+
 .participants>li>div {
   display: flex;
   flex-direction: column;

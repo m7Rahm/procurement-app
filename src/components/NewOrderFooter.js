@@ -51,15 +51,20 @@ const NewOrderFooter = (props) => {
     return (
         <div className="new-order-footer-wrapper">
             <div>
-                <textarea onChange={handleTextAreaChange} name="comment" value={props.comment} placeholder="Sifariş barədə əlavə qeydlər..." />
+                <textarea
+                    onChange={handleTextAreaChange}
+                    name="comment"
+                    value={props.comment}
+                    placeholder={props.isDraft ? "Sifariş barədə əlavə qeydlər..." : 'Qeyd'}
+                />
                 <div className="forwarded-person">
                     <label htmlFor="forwardedPerson">Rəy üçün yönəlt</label>
                     <br />
                     <div id="emp-list-container" ref={wrapperRef} onClick={displayList}>
                         <div id="emp-list-upper">
-                            <input type="text" placeholder="İşçinin adını daxil edin.." value={searchKey} onChange={handleSearch}></input>
+                            <input className="search-with-query" type="text" placeholder="İşçinin adını daxil edin.." value={searchKey} onChange={handleSearch}></input>
                         </div>
-                        <ul>
+                        <ul className="employees-list">
                             {
                                 empListState.map(employee =>
                                     <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
