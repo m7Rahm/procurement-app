@@ -9,7 +9,8 @@ const Visas = (props) => {
     if (props.webSocketRef) {
       props.webSocketRef.onmessage = (msg) => console.log(`${msg} \nfrom VISAS page`);
     }
-  }, [props.webSocketRef])
+  }, [props.webSocketRef]);
+  // console.log(active);
   return (
     <div style={{ maxHeight: '100vh', display: 'flex', overflow: 'hidden' }}>
       <SideBar active={active} setActive={setActive} />

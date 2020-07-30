@@ -44,11 +44,12 @@ const SideBar = (props) => {
 			<ul>
 				{
 					visas.map((visa) => {
-						const active = props.active && props.active.number === visa.ord_numb ? true : false
+						const active = props.active && props.active[0].id === visa.id ? true : false
 						return <VisaCard
 							key={visa.ord_numb}
 							iconsPanel={iconsPanel}
 							checkedAmount={checkedAmount}
+							iconsVisible={iconsVisible}
 							setIconsVisible={setIconsVisible}
 							setActive={props.setActive}
 							active={active}

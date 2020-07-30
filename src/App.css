@@ -259,6 +259,7 @@ div.icons-panel-hide {
 }
 .reviewed-comment>span:last-of-type{
   font-family: monospace;
+  font-size: 18px;
 }
 .reviewed-comment>span:first-of-type{
   font-size: 22px;

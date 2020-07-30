@@ -10,7 +10,6 @@ const AcceptDecline = (props) => {
     const placeholder = props.accept
         ? "Əlavə qeydlərinizi daxil edin.."
         : "Etirazın səbəbini göstərin";
-        console.log(props);
     useEffect(() => {
         fetch('http://172.16.3.101:54321/api/emplist')
             .then(resp => resp.json())

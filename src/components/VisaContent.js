@@ -30,7 +30,7 @@ const VisaContent = (props) => {
                             {
                                 participantsVisiblity &&
                                 <div ref={participantsRef} className="visa-content-participants-show">
-                                    <Participants number={props.current.number} />
+                                    <Participants number={props.current[0].ord_numb} />
                                 </div>
                             }
                         </>
