@@ -259,5 +259,7 @@ export const newOrderInitial = {
     deadline: '',
     receivers: [],
     assignment: '',
-    comment: ''
+    comment: '',
+    review: '',
+    ordNumb: ''
   }

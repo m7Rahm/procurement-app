@@ -38,6 +38,8 @@ const newOrderReducer = (state, action) => {
       return { ...state, deadline: action.payload.value }
     case 'setComment':
       return { ...state, comment: action.payload.value }
+    case 'setReview':
+      return { ...state, review: action.payload.value }
     case 'setOrderid':
       return { ...state, orderid: action.payload.value }
     case 'init':
@@ -62,14 +64,16 @@ const initState = (current, content, isDraft) => {
         class: ''
       })),
       deadline: content[0].deadline,
-      receivers: !isDraft ? [] : content.map(elem => elem.receiver_id),
+      receivers: current && isDraft ? content.map(elem => elem.receiver_id) : [],
       assignment: content[0].assignment,
-      comment: !isDraft ? '' : content[0].comment
+      comment: content[0].comment,
+      review: content[0].review ? content[0].review : ''
     }
 }
 
 const NewOrderContent = (props) => {
-  const empListRef = useRef(null);
+  // console.log(props.content)
+  const empListRef = useRef([]);
   const init = (current) => {
     const state = initState(current, props.content, props.isDraft)
     if (props.stateRef);
@@ -83,53 +87,91 @@ const NewOrderContent = (props) => {
       if (props.stateRef)
         props.stateRef.current.latest = state;
     }, [state, props.stateRef])
-
+  const createApproveNewOrder = () => {
+    const parsedMaterials = state.materials.map(material =>
+      ({
+        material_id: material.materialId,
+        amount: material.amount,
+        comment: material.additionalInfo,
+        model: material.model,
+        importance: material.importance
+      })
+    )
+    const data = {
+      deadline: state.deadline,
+      mats: parsedMaterials,
+      receivers: empListRef.current.map(emp => emp.id),
+      comment: state.comment,
+      assignment: state.assignment,
+      ordNumb: current ? current : '',
+      review: state.review
+    }
+    fetch('http://172.16.3.101:54321/api/new-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': JSON.stringify(data).length
+      },
+      body: JSON.stringify(data)
+    })
+      .then(resp => resp.json())
+      // .then(respJ => console.log(respJ))
+      .then(respJ => {
+        if (respJ[0].result === 'success'){
+          const recs = [data.receivers, respJ[0].head_id];
+          fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
+            .then(resp => resp.json())
+            .then(respJ => {
+              if (!current)
+                props.closeModal(respJ, recs);
+              else
+                props.closeUpdateModal(respJ)
+            })
+            .catch(err => console.log(err))}
+      })
+      .catch(err => console.log(err))
+  }
   const handleSendClick = () => {
     if (!current && !props.isDraft) {
-      const parsedMaterials = state.materials.map(material =>
-        ({
-          material_id: material.materialId,
-          amount: material.amount,
-          comment: material.additionalInfo,
-          model: material.model,
-          importance: material.importance
-        })
-      )
-      const data = {
-        deadline: state.deadline,
-        mats: parsedMaterials,
-        receivers: empListRef.current.map(emp => emp.id),
-        comment: state.comment,
-        assignment: state.assignment,
-        ordNumb: '',
-        review: ''
-      }
-      fetch('http://172.16.3.101:54321/api/new-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': JSON.stringify(data).length
-        },
-        body: JSON.stringify(data)
-      })
-        .then(resp => resp.json())
-        // .then(respJ => console.log(respJ))
-        .then(respJ => {
-          if (respJ[0].result === 'success')
-            fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
-              .then(resp => resp.json())
-              .then(respJ => {
-                props.closeModal(respJ);
-              })
-              .catch(err => console.log(err))
-        })
-        .catch(err => console.log(err))
+      createApproveNewOrder()
     }
-    else if(current && !props.isDraft){
-      //todo: check if any changes made props.stateRef.current.latest === props.stateRef.current.init
+    else if (current && !props.isDraft) {
+      // todo: check if any changes made
+      const { review: reviewInit, ...initStateMain } = props.stateRef.current.init;
+      const { review: reviewLatest, ...latestStateMain } = props.stateRef.current.latest;
+      if (JSON.stringify(initStateMain) === JSON.stringify(latestStateMain)) {
+        const data = {
+          receivers: latestStateMain.receivers,
+          action: 1,
+          empVersion: props.content[0].emp_version_id,
+          comment: latestStateMain.review
+        }
+        fetch(`http://172.16.3.101:54321/api/accept-decline/${current}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': JSON.stringify(data).length
+          },
+          body: JSON.stringify(data)
+        })
+          .then(resp => resp.json())
+          .then(respJ => {
+            if (respJ[0].result === 'success')
+              fetch(`http://172.16.3.101:54321/api/refresh-order-content?empVersion=${props.version}&orderNumb=${props.current}`)
+                .then(resp => resp.json())
+                .then(respJ => {
+                    props.closeUpdateModal(respJ)
+                })
+                .catch(err => console.log(err));
+          })
+      }
+      else {
+        //todo: change order content and send it
+        createApproveNewOrder()
+      }
       //todo: change order content and send it
     }
-    else if (props.isDraft){
+    else if (props.isDraft) {
       //todo: send draft
     }
   }
@@ -148,7 +190,7 @@ const NewOrderContent = (props) => {
         </li>
         <NewOrderTableBody dispatch={dispatch} materials={state.materials} />
       </ul>
-      <NewOrderFooter isDraft={props.isDraft} comment={state.comment} empListRef={empListRef} dispatch={dispatch} />
+      <NewOrderFooter isDraft={props.isDraft} comment={state.comment} current={current} empListRef={empListRef} dispatch={dispatch} />
       <div className="send-order" onClick={handleSendClick}>
         Göndər
       </div>

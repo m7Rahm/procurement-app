@@ -6,8 +6,9 @@ import NewOrderButton from '../components/NewOrderButton';
 // import { orders } from '../data/data'
 
 const MyOrders = (props) => {
-  const wrapperRef = useRef(props.webSocketRef);
-  const [orders, setOrders] = useState([])
+  const wrapperRef = useRef(null);
+  const [orders, setOrders] = useState([]);
+  const webSocketRef = useRef(props.webSocketRef.current);
   useEffect(() => {
     //todo: create socket and connect
     fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
@@ -16,19 +17,19 @@ const MyOrders = (props) => {
       setOrders(respJ)
     })
     .catch(err => console.log(err))
-    if (props.webSocketRef) {
-      props.webSocketRef.onmessage = (msg) => {
-        // console.log(msg)
+    // if (props.webSocketRef) {
+      webSocketRef.current.onmessage = (msg) => {
+        console.log('My Orders')
       };
-    }
-  }, [props.webSocketRef])
+    // }
+  }, [])
   return (
     <div className="app">
       <Search />
       <div className="wrapper" ref={wrapperRef}>
         <Table wrapperRef={wrapperRef} orders={orders} />
       </div>
-      <NewOrderButton webSocketRef={props.webSocketRef} setOrders={setOrders} wrapperRef={wrapperRef} />
+      <NewOrderButton webSocketRef={webSocketRef} setOrders={setOrders} wrapperRef={wrapperRef} />
     </div>
   )
 }

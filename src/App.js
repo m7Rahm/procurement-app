@@ -14,22 +14,25 @@ import Archived from './pages/Archived';
 const App = () => {
   const leftPaneRef = useRef(null);
   const [backgroundVisibility, setBackgroundVisibility] = useState(false);
-  const [wSock, setWSock] = useState(null);
+  const [wSockConnected, setWSockConnected] = useState(false);
+  const webSocketRef = useRef(null)
 
   useEffect(() => {
     const webSocket = new WebSocket('ws://172.16.3.101:12345');
     webSocket.onopen = () => {
       const data = {
         action: "recognition",
-        person: 73
+        person: 73 // todo: get from session
       }
       console.log('connected');
       webSocket.send(JSON.stringify(data));
       // setWebSocketRef(webSocket);
-      setWSock(webSocket);
+      webSocketRef.current = webSocket
+      setWSockConnected(true);
     }
     return () => {
       webSocket.close();
+      setWSockConnected(false);
       console.log('connection closed');
       // setWebSocketRef(null);
     }
@@ -50,7 +53,7 @@ const App = () => {
     return () => document.removeEventListener('keyup', closeNav, false)
   }, []);
   return (
-    wSock &&
+    wSockConnected &&
     <BrowserRouter>
       <>
         <nav>
@@ -69,14 +72,14 @@ const App = () => {
         </nav>
         {
           backgroundVisibility &&
-          <div onClick={handleNavClick} style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 1 }}>
+          <div onClick={handleNavClick} style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 2 }}>
           </div>
         }
       </>
       <LeftSidePane ref={leftPaneRef} handleNavClick={handleNavClick} />
       <Switch>
         <Route path="/visas">
-          <Visas webSocketRef={wSock} />
+          <Visas webSocketRef={webSocketRef} />
         </Route>
         <Route path="/archived">
           <Archived />
@@ -85,7 +88,7 @@ const App = () => {
           <Drafts />
         </Route>
         <Route path="/">
-          <MyOrders webSocketRef={wSock} />
+          <MyOrders webSocketRef={webSocketRef} />
         </Route>
       </Switch>
     </BrowserRouter>

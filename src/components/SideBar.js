@@ -7,8 +7,14 @@ import {
 import {
 	BsArrowUpShort
 } from 'react-icons/bs'
+import {
+	GoChevronDown
+} from 'react-icons/go'
+import SearchBox from './SearchBox';
 
 const SideBar = (props) => {
+	const notifIcon = useRef(null);
+	const webSocketRef = useRef(props.webSocketRef.current);
 	const checkedAmount = useRef(0);
 	const iconsPanel = useRef(null);
 	const [visas, setVisas] = useState([])
@@ -18,12 +24,27 @@ const SideBar = (props) => {
 			.then(resp => resp.json())
 			.then(respJ => setVisas(respJ))
 			.catch(err => console.log(err))
+		webSocketRef.current.onmessage = (msg) => {
+			// console.log(msg)
+			const data = JSON.parse(msg.data);
+			if (data.action === 'newOrder') {
+				notifIcon.current.style.display = 'block';
+			}
+		}
 	}, []);
 	const updateList = () => {
 		fetch('http://172.16.3.101:54321/api/visas?from=0&until=20')
 			.then(resp => resp.json())
-			.then(respJ => setVisas(respJ))
+			.then(respJ => {
+				setVisas(respJ);
+				notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
+				notifIcon.current.addEventListener('animationend', function () {
+					this.style.display = 'none';
+					this.style.animation = 'animation: show-up 0.2s ease-in both';
+				})
+			})
 			.catch(err => console.log(err))
+
 	}
 	return (
 		<div className='side-bar'>
@@ -36,8 +57,16 @@ const SideBar = (props) => {
 						<IoIosMailOpen color="dodgerblue" title="Oxunmuş et" size="25" />
 					</>
 				}
+				{
+					!iconsVisible &&
+					<div>
+						<input type="text" placeholder="Axtarış.." />
+						<GoChevronDown size="24" />
+						<SearchBox/>
+					</div>
+				}
 			</div>
-			<div onClick={updateList} className="new-visa-notification">
+			<div onClick={updateList} ref={notifIcon} className="new-visa-notification">
 				<BsArrowUpShort size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
 				Yeni bildiriş
 			</div>
@@ -46,7 +75,7 @@ const SideBar = (props) => {
 					visas.map((visa) => {
 						const active = props.active && props.active[0].id === visa.id ? true : false
 						return <VisaCard
-							key={visa.ord_numb}
+							key={visa.id}
 							iconsPanel={iconsPanel}
 							checkedAmount={checkedAmount}
 							iconsVisible={iconsVisible}

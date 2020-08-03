@@ -37,6 +37,7 @@ const VisaContentFooter = (props) => {
                             comment: respJ[0].comment
                         })
                     })
+                    .catch(err => console.log(err))
             })
             .catch(err => console.log(err))
     }

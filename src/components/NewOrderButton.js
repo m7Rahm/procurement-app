@@ -10,10 +10,10 @@ const NewOrder = (props) => {
     setIsModalVisible(_ => action);
   };
   // const setOrdersCallback = useCallback(props.setOrders,[]);
-  const handleClose = (data) => {
+  const handleClose = (data, receivers) => {
     setIsModalVisible(_ => false);
     // todo: send notif on new order to receivers
-    // props.webSocketRef.current.send({action: 'newOrder', people: JSON.stringify(data.receivers)}) 
+    props.webSocketRef.current.send({action: 'newOrder', people: JSON.stringify(receivers)}) 
     props.setOrders(data);
   };
   return (

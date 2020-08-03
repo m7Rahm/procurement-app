@@ -2,19 +2,12 @@ import React from 'react'
 import {
   IoIosAdd
 } from 'react-icons/io'
+import {newOrderInitial} from '../data/data'
 const NewOrderTableRowAdd = (props) => {
   const handleClick = () => {
     props.dispatch({
       type: 'addRow', payload: {
-        rowData: {
-          id: Math.random().toString(),
-          materialId: null,
-          model: '',
-          importance: 1,
-          amount: 1,
-          additionalInfo: '',
-          class: 'new-row'
-        }
+        rowData: {...newOrderInitial.materials[0], id: Math.random().toString(), class: 'new-row'}
       }
     })
   }

@@ -1,17 +1,15 @@
 import React, { useState, Suspense } from 'react';
 import Modal from './Modal'
 import {
-	FaEdit,
-	FaUndo,
-	FaCheck,
-	FaTimes
+	FaUndo
 } from 'react-icons/fa'
 import VisaContentFooter from './VisaContentFooter'
 import VisaContentMaterials from './VisaContentMaterials'
-const NewOrderContent = React.lazy(() => import('./modal content/NewOrder'));
+import VisaContentHeader from './VisaContentHeader';
 
 
 const OrderContentProtected = (props) => {
+	// console.log(props);
 	const current = props.current;
 	// const senderid = props.current.senderid;
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,21 +19,21 @@ const OrderContentProtected = (props) => {
 		setIsModalOpen(false)
 	}
 	const currentState = updatedContent.id === current[0].id
-	?  updatedContent
-	: {
-		actDateTime: current[0].act_date_time,
-		result: current[0].result,
-		comment: current[0].comment
-	}
+		? updatedContent
+		: {
+			actDateTime: current[0].act_date_time,
+			result: current[0].result,
+			comment: current[0].comment
+		}
 	// console.log(props.current);
 	const handleEditClick = (content) => {
 		setModalContent(_ => content);
 		setIsModalOpen(true);
 	}
 	return (
-		props.current  &&
+		props.current &&
 		<>
-			<div>
+			<>
 				{
 					isModalOpen &&
 					<Suspense fallback={
@@ -46,47 +44,27 @@ const OrderContentProtected = (props) => {
 						<Modal number={current[0].ord_numb} changeModalState={handleModalClose}>
 							{modalContent}
 						</Modal>
-					</Suspense>
+					</Suspense>				
 				}
-				<div className="protex-order-header-container">
-					<h1>
-						{`Sifariş № ${current[0].ord_numb}`}
-						{
-							current[0].intention === 1 &&
-							<FaEdit onClick={() => handleEditClick((props) => <NewOrderContent content={props.current} {...props} />)} title="düzəliş et" size="20" />
-						}
-					</h1>
-					{
-						currentState.result === 1 ?
-							<span>
-								{currentState.actDateTime}
-								<FaCheck size="30" title="Təsdiq" color="#34A853" />
-							</span>
-							: currentState.result !== null ?
-								<span>
-									{currentState.actDateTime}
-									<FaTimes title="Etiraz" size="30" color="#EA4335" />
-								</span>
-								: ''
-					}
-				</div>
-				<div className="new-order-header">
-					<div>
-						<label htmlFor="destination" color="#555555">Təyinatı</label>
-						<br />
-						<div style={{ clear: 'both', fontSize: '22px', fontWeight: '555', color: 'gray' }}>{props.current[0].assignment}</div>
-					</div>
-					<div>
-						<label htmlFor="deadline" color="#555555">Deadline</label>
-						<div style={{ clear: 'both', fontSize: '22px', fontWeight: '550', color: 'gray' }}>{props.current[0].deadline}</div>
-					</div>
-				</div>
-			</div>
+					<VisaContentHeader
+						deadline={current[0].deadline}
+						setUpdatedContent={setUpdatedContent}
+						setIsModalOpen={setIsModalOpen}
+						current={current}
+						version={props.current[0].emp_version_id}
+						currentState={currentState}
+						handleEditClick={handleEditClick}
+						assignment={current[0].assignment}
+						intention={current[0].intention}
+						orderNumb={current[0].ord_numb}
+					/>
+			</>
 			<VisaContentMaterials orderContent={props.current} />
 			<VisaContentFooter
 				current={props.current[0].ord_numb}
 				version={props.current[0].emp_version_id}
 				orderContent={currentState}
+				intention={props.current[0].intention}
 				handleEditClick={handleEditClick}
 				setIsModalOpen={setIsModalOpen}
 				setUpdatedContent={setUpdatedContent}
