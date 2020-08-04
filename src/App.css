@@ -252,8 +252,8 @@ nav>ul>li {
   padding: 6px 10px;
   width: 160px;
   border-radius: 5px;
-  border-color: rgb(204, 204, 204);
-  border-width: 0.5px;
+  border-color: gray;
+  border-width: 1px;
   margin-right: 5px;
 }
 .side-bar>div:first-of-type div.search-ribbon{
@@ -262,19 +262,143 @@ nav>ul>li {
   margin: 10px 0px;
 }
 .calendar{
-  height: 285px;
+  height: 313px;
   width: 270px;
   position: absolute;
   top: 36px;
-  display: none;
+  display: block;
   left: 0px;
   padding: 8px 16px;
   background-color: white;
-  border: 1px solid rgb(204, 204, 204);
+  border: 0.5px solid rgb(204, 204, 204);
+}
+.calendar>div svg{
+  cursor: pointer;
 }
 .calendar>div {
-  background-color: red;
+  /* background-color: red; */
   height: 100%;
+}
+.calendar>div>table, .calendar>div>table>tbody{
+  width: 100%;
+}
+.calendar>div>table>tbody td{
+  font-size: 0.75rem;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  width: 32px;
+  padding: 8px 0px;
+  text-align: center;
+  background-color: transparent;
+}
+.calendar>div>table>tbody th{
+  width: 32px;
+  font-family: cursive;
+}
+.calendar>div>table>tfoot td:last-of-type>div{
+  display: block;
+  float: right;
+  font-size: 0.750rem;
+  position: relative;
+  cursor: pointer;
+  font-weight: 550;
+  font-family: monospace;
+  z-index: 1;
+}
+.calendar>div>table>tfoot td:last-of-type>div:hover::before{
+  transform: scale(1);
+}
+.calendar>div>table>tfoot td:last-of-type>div::before{
+  content: "";
+  top: -10px;
+  cursor: pointer;
+  transition: all .15s cubic-bezier(0.4,0.0,0.2,1);
+  bottom: -10px;
+  transform: scale(0);
+  left: -10px;
+  font-size: 14px;
+  right: -10px;
+  z-index: -1;
+  border-radius: 50%;
+  background-color: rgba(32,33,36,0.059);
+  position: absolute;
+}
+.calendar>div>table>tbody td::before{
+  background-clip: border-box;
+  border-radius: 50%;
+  content: "";
+  position: absolute;
+  height: 28px;
+  width: 28px;
+  z-index: -1;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  left: 2px;
+}
+.calendar>div>table>thead button{
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  position: relative;
+  margin-left: 5px;
+  background-image: url('https://www.gstatic.com/images/icons/material/system/2x/chevron_left_black_20dp.png');
+  z-index: 0;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-color: transparent;
+}
+.calendar>div>table>thead>tr>td>button#right{
+  background-image: url('https://www.gstatic.com/images/icons/material/system/2x/chevron_right_black_20dp.png');
+}
+.calendar>div>table>thead button:hover::after{
+  transform: scale(1);
+  background-color: rgba(32,33,36,0.059);
+  border: none;
+}
+/* .calendar>div>table>thead span>svg{
+  vertical-align: middle;
+} */
+.calendar>div>table>thead button:focus{
+  outline: none;
+}
+.calendar>div>table>thead button::after{
+  outline: none;
+  content: "";
+  display: block;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  z-index: -1;
+  cursor: pointer;
+  background: none;
+  box-sizing: border-box;
+  transform: scale(0);
+  background: none;
+  transition: all .15s cubic-bezier(0.4,0.0,0.2,1);
+}
+.calendar>div>table>tbody td:hover::before{
+  background-color: #fcc6f5;
+}
+.calendar>div>table>tbody td:hover{
+  color: white;
+}
+.calendar>div>table>tbody td.not-current-month-days{
+  color: rgb(145, 145, 145);
+}
+.calendar>div>table>thead>tr{
+  height: 40px;
+  padding: 10px 8px;
+}
+.calendar>div>table>tbody>tr:first-of-type>th{
+  font-size: 0.875rem;
+  padding: 8px 0px;
+  color: #f174b7;
 }
 .side-bar>div:first-of-type div.search-ribbon>div:first-of-type{
   color: white;

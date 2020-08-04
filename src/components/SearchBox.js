@@ -1,6 +1,7 @@
 import React from 'react'
 import Calendar from './Calendar'
 const SearchBox = (props) => {
+    const date = new Date();
     return (
         <div>
             <div>
@@ -15,7 +16,7 @@ const SearchBox = (props) => {
                 <span>
                     <input type="text" />
                     <span>Başlanğıc</span>
-                    <Calendar/>
+                    <Calendar year={date.getFullYear()} month={date.getMonth()} />
                 </span>
             </div>
             <div className="search-ribbon">
