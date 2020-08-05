@@ -13,12 +13,26 @@ import {
 import SearchBox from './SearchBox';
 
 const SideBar = (props) => {
+	const searchBoxRef = useRef(null)
 	const notifIcon = useRef(null);
 	const webSocketRef = useRef(props.webSocketRef.current);
 	const checkedAmount = useRef(0);
 	const iconsPanel = useRef(null);
 	const [visas, setVisas] = useState([])
 	const [iconsVisible, setIconsVisible] = useState(false);
+	const onAdvSearchClick = () => {
+		if (searchBoxRef.current.style.display === 'none') {
+			searchBoxRef.current.classList.remove('advanced-search-bar-hide');
+			searchBoxRef.current.style.display = 'block';
+		}
+		else {
+			searchBoxRef.current.classList.add('advanced-search-bar-hide')
+		}
+		searchBoxRef.current.addEventListener('animationend', function () {
+			if (this.classList.contains('advanced-search-bar-hide'))
+				this.style.display = 'none';
+		}, false);
+	}
 	useEffect(() => {
 		fetch('http://172.16.3.101:54321/api/visas?from=0&until=20')
 			.then(resp => resp.json())
@@ -61,8 +75,8 @@ const SideBar = (props) => {
 					!iconsVisible &&
 					<div>
 						<input type="text" placeholder="Axtarış.." />
-						<GoChevronDown size="24" />
-						<SearchBox/>
+						<GoChevronDown size="24" onClick={onAdvSearchClick} />
+						<SearchBox ref={searchBoxRef} />
 					</div>
 				}
 			</div>

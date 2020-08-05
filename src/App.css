@@ -199,62 +199,89 @@ nav>ul>li {
 .side-bar>div:first-of-type>div>input:focus + svg {
   color: #3f3f3f ;
 }
-.side-bar>div:first-of-type>div>div{
+div.advanced-search-bar{
   z-index: 0;
   position: absolute;
   right: 0px;
   left: 0px;
   top: 50px;
   /* display: none; */
+  /* max-height: 0px; */
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 5px;
   font-family: sans-serif;
+  animation: show-up 0.4s ease-in-out both;
 }
-.side-bar>div:first-of-type>div>div>div>span{
+div.advanced-search-bar-hide {
+  animation: visibility-hide 0.4s ease-in both
+}
+div.advanced-search-bar>div:first-of-type{
+  position: relative;
+  z-index: 2;
+}
+div.advanced-search-bar>div>span{
   position: relative;
   display: block;
+  height: 100%;
   float: right;
+  width: 135px;
 }
-.side-bar>div:first-of-type>div>div>div{
+div.advanced-search-bar>div:first-of-type>input{
+  display: block;
   height: 36px;
+  padding: 6px 16px;
 }
-.side-bar>div:first-of-type>div>div>div>span>span{
+div.advanced-search-bar>div:nth-of-type(2){
+  height: 36px;
+  width: fit-content;
+  position: relative;
+  z-index: 1;
+  margin: 20px auto;
+}
+div.advanced-search-bar>div>span>span{
   position: absolute;
   left: 10px;
   z-index: -1;
   /* bottom: 5px; */
-  top: 5px;
+  top: 6px;
   background-color: white;
   transition: all 0.2s;
   padding: 0px 3px;
 }
-.side-bar>div:first-of-type>div>div>div>span>input:focus{
+div.advanced-search-bar>div>span>input:focus{
   /* border-color:#1a73e8; */
   outline-color: #1a73e8;
   border-color: transparent;
 }
-.side-bar>div:first-of-type>div>div>div>span>input:focus + span{
+div.advanced-search-bar>div>span>input:focus + span{
   top: -5px;
   font-size: 12px;
   color: #1a73e8;
   z-index: 1;
 }
-.side-bar>div:first-of-type>div>div>div>span>input:focus ~ .calendar{
-  display: block;
-}
-.side-bar>div:first-of-type>div>div>div>span>input{
+
+div.advanced-search-bar>div>span>input{
   caret-color: #1a73e8;
   display: block;
   background-color: transparent;
-  /* caret-color: #1a73e8; */
+  caret-color: #1a73e8;
   line-height: 1;
-  /* height: 30px; */
-  padding: 6px 10px;
-  width: 160px;
-  border-radius: 5px;
-  border-color: gray;
-  border-width: 1px;
+  height: 100%;
+  width: 100%;
+  padding: 6px 16px;
+  /* border-radius: 5px; */
+  border-style: solid;
+  border-color: #a1a1a1;
+  border-width: 0.5px;
   margin-right: 5px;
+}
+div.advanced-search-bar>div>span:first-of-type>input{
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+div.advanced-search-bar>div>span:last-of-type>input{
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 .side-bar>div:first-of-type div.search-ribbon{
   padding: 10px 5px;
@@ -266,23 +293,23 @@ nav>ul>li {
   width: 270px;
   position: absolute;
   top: 36px;
-  display: block;
+  z-index: 1;
+  bottom: 0px;
+  /* display: block; */
   left: 0px;
+  display: none;
   padding: 8px 16px;
   background-color: white;
   border: 0.5px solid rgb(204, 204, 204);
 }
-.calendar>div svg{
+.calendar svg{
   cursor: pointer;
 }
-.calendar>div {
-  /* background-color: red; */
-  height: 100%;
-}
-.calendar>div>table, .calendar>div>table>tbody{
+
+.calendar>table, .calendar>table>tbody{
   width: 100%;
 }
-.calendar>div>table>tbody td{
+.calendar>table>tbody td{
   font-size: 0.75rem;
   cursor: pointer;
   position: relative;
@@ -292,24 +319,24 @@ nav>ul>li {
   text-align: center;
   background-color: transparent;
 }
-.calendar>div>table>tbody th{
+.calendar>table>tbody th{
   width: 32px;
   font-family: cursive;
 }
-.calendar>div>table>tfoot td:last-of-type>div{
+.calendar>table>tfoot td:last-of-type>div{
   display: block;
   float: right;
-  font-size: 0.750rem;
+  font-size: 0.8rem;
   position: relative;
   cursor: pointer;
   font-weight: 550;
   font-family: monospace;
   z-index: 1;
 }
-.calendar>div>table>tfoot td:last-of-type>div:hover::before{
+.calendar>table>tfoot td:last-of-type>div:hover::before{
   transform: scale(1);
 }
-.calendar>div>table>tfoot td:last-of-type>div::before{
+.calendar>table>tfoot td:last-of-type>div::before{
   content: "";
   top: -10px;
   cursor: pointer;
@@ -324,7 +351,7 @@ nav>ul>li {
   background-color: rgba(32,33,36,0.059);
   position: absolute;
 }
-.calendar>div>table>tbody td::before{
+.calendar>table>tbody td::before{
   background-clip: border-box;
   border-radius: 50%;
   content: "";
@@ -337,7 +364,7 @@ nav>ul>li {
   bottom: 2px;
   left: 2px;
 }
-.calendar>div>table>thead button{
+.calendar>table>thead button{
   background-position: center;
   background-repeat: no-repeat;
   background-size: 20px;
@@ -350,10 +377,10 @@ nav>ul>li {
   border: none;
   background-color: transparent;
 }
-.calendar>div>table>thead>tr>td>button#right{
+.calendar>table>thead>tr>td>button#right{
   background-image: url('https://www.gstatic.com/images/icons/material/system/2x/chevron_right_black_20dp.png');
 }
-.calendar>div>table>thead button:hover::after{
+.calendar>table>thead button:hover::after{
   transform: scale(1);
   background-color: rgba(32,33,36,0.059);
   border: none;
@@ -361,10 +388,10 @@ nav>ul>li {
 /* .calendar>div>table>thead span>svg{
   vertical-align: middle;
 } */
-.calendar>div>table>thead button:focus{
+.calendar>table>thead button:focus{
   outline: none;
 }
-.calendar>div>table>thead button::after{
+.calendar>table>thead button::after{
   outline: none;
   content: "";
   display: block;
@@ -382,20 +409,20 @@ nav>ul>li {
   background: none;
   transition: all .15s cubic-bezier(0.4,0.0,0.2,1);
 }
-.calendar>div>table>tbody td:hover::before{
+.calendar>table>tbody td:hover::before{
   background-color: #fcc6f5;
 }
-.calendar>div>table>tbody td:hover{
+.calendar>table>tbody td:hover{
   color: white;
 }
-.calendar>div>table>tbody td.not-current-month-days{
+.calendar>table>tbody td.not-current-month-days{
   color: rgb(145, 145, 145);
 }
-.calendar>div>table>thead>tr{
+.calendar>table>thead>tr{
   height: 40px;
   padding: 10px 8px;
 }
-.calendar>div>table>tbody>tr:first-of-type>th{
+.calendar>table>tbody>tr:first-of-type>th{
   font-size: 0.875rem;
   padding: 8px 0px;
   color: #f174b7;

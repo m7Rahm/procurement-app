@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 const Calendar = (props) => {
+	const calendarRef = useRef(null);
 	const months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avqust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'];
 	const getDays = (year, month) => {
 		const dayOfWeek = new Date(year, month - 1, 1).getDay();
 		const currentDate = new Date(year, month, 0);
 		const prevD = new Date(year, month - 1, 0);
-		let days = [Array(7).fill(''), Array(7).fill(''), Array(7).fill(''), Array(7).fill(''), Array(7).fill(''), Array(7).fill('')];
+		let days = [Array(7), Array(7), Array(7), Array(7), Array(7), Array(7)];
 		let k = 0;
 		let pr = prevD.getDate();
 		const prevMonth = month - 1 === 0 ? 12 : month - 1
@@ -14,21 +15,21 @@ const Calendar = (props) => {
 		const nCurrentYear = month === 12 ?
 			year + 1 :
 			month === 1 ?
-			year - 1 :
-			year;
+				year - 1 :
+				year;
 		const offset = dayOfWeek === 0 ? 7 : dayOfWeek
-		for(let i = offset - 1; i >= 0; i --){
-			days[0][i] = {date: pr, className: 'not-current-month-days', val: `${nCurrentYear}/${prevMonth}/${pr}`};
+		for (let i = offset - 1; i >= 0; i--) {
+			days[0][i] = { date: pr, className: 'not-current-month-days', val: `${nCurrentYear}/${prevMonth}/${pr}` };
 			pr--;
 		}
 		for (let i = offset; i < currentDate.getDate() + offset; i++) {
 			k++;
-			days[Math.trunc(i / 7)][i % 7] = {date: k, className: '', val: `${year}/${month}/${k}`};
+			days[Math.trunc(i / 7)][i % 7] = { date: k, className: '', val: `${year}/${month}/${k}` };
 		}
 		let nxt = 0;
 		for (let i = currentDate.getDate() + offset; i < 42; i++) {
-			nxt ++;
-			days[Math.trunc(i / 7)][i % 7] = {date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}/${nextMonth}/${nxt}`};
+			nxt++;
+			days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}/${nextMonth}/${nxt}` };
 		}
 		return days;
 	}
@@ -37,7 +38,10 @@ const Calendar = (props) => {
 		days: getDays(props.year, props.month + 1)
 	});
 
-	const handleClick = (val) => console.log(val)
+	const handleClick = (val) => {
+		console.log(val);
+		calendarRef.current.style.display = 'none'
+	}
 	const handleDateInc = () => {
 		setDate(prev => {
 			const month = prev.date.getMonth() + 2 > 12 ? 1 : prev.date.getMonth() + 2;
@@ -60,9 +64,22 @@ const Calendar = (props) => {
 			}
 		})
 	}
+	const handleFocusLose = (e) => {
+		// const relatedTarget = e.relatedTarget;
+		props.active.current = calendarRef.current;
+		props.active.current.customName = props.name;
+
+	}
+	const handleInputFocus = () => {
+		calendarRef.current.style.display = 'block';
+	}
 	return (
-		<div className="calendar">
-			<div>
+		<>
+		<span>
+			<input type="text" name={props.name}  onBlur={handleFocusLose}  className="date-picker" onClick={handleInputFocus} />
+			<span>Başlanğıc</span>
+			</span>
+			<div ref={calendarRef} className="calendar">
 				<table>
 					<thead>
 						<tr>
@@ -70,13 +87,11 @@ const Calendar = (props) => {
 								{`${months[date.date.getMonth()]} ${date.date.getFullYear()}`}
 							</td>
 							<td>
-								<button id="left" onClick={handleDateDec}>
-									{/* <MdChevronLeft onClick={handleDateDec} /> */}
+								<button id="left" className="arrows" onClick={handleDateDec}>
 								</button>
 							</td>
 							<td>
-								<button id="right" onClick={handleDateInc}>
-									{/* <MdChevronRight onClick={handleDateInc} /> */}
+								<button id="right" className="arrows" onClick={handleDateInc}>
 								</button>
 							</td>
 						</tr>
@@ -109,7 +124,7 @@ const Calendar = (props) => {
 					</tfoot>
 				</table>
 			</div>
-		</div>
+		</>
 	)
 }
 export default Calendar;
