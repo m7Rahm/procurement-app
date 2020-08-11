@@ -1,53 +1,44 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import VisaCard from '../components/VisaCard'
+
 import {
-	IoIosArchive,
-	IoIosMailOpen,
-} from 'react-icons/io';
-import {
-	BsArrowUpShort
+	BsArrowUpShort,
 } from 'react-icons/bs'
-import {
-	GoChevronDown
-} from 'react-icons/go'
-import SearchBox from './SearchBox';
+
+import IconsPanel from './IconsPanel';
 
 const SideBar = (props) => {
-	const searchBoxRef = useRef(null)
 	const notifIcon = useRef(null);
-	const webSocketRef = useRef(props.webSocketRef.current);
-	const checkedAmount = useRef(0);
-	const iconsPanel = useRef(null);
-	const [visas, setVisas] = useState([])
+	const checkedAmountRef = useRef([]);
+	const iconsPanelRef = useRef(null);
+	const [visas, setVisas] = useState([]);
+	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
-	const onAdvSearchClick = () => {
-		if (searchBoxRef.current.style.display === 'none') {
-			searchBoxRef.current.classList.remove('advanced-search-bar-hide');
-			searchBoxRef.current.style.display = 'block';
-		}
-		else {
-			searchBoxRef.current.classList.add('advanced-search-bar-hide')
-		}
-		searchBoxRef.current.addEventListener('animationend', function () {
-			if (this.classList.contains('advanced-search-bar-hide'))
-				this.style.display = 'none';
-		}, false);
-	}
+	console.log(visas)
+	
+	const mountFunc = useCallback(props.mountFunc, []);
+	// console.log(mountFunc);
 	useEffect(() => {
-		fetch('http://172.16.3.101:54321/api/visas?from=0&until=20')
-			.then(resp => resp.json())
-			.then(respJ => setVisas(respJ))
-			.catch(err => console.log(err))
-		webSocketRef.current.onmessage = (msg) => {
-			// console.log(msg)
-			const data = JSON.parse(msg.data);
-			if (data.action === 'newOrder') {
-				notifIcon.current.style.display = 'block';
-			}
-		}
-	}, []);
+		mountFunc(setVisas, notifIcon)
+	}, [mountFunc]);
 	const updateList = () => {
-		fetch('http://172.16.3.101:54321/api/visas?from=0&until=20')
+		const data = {
+			userName: '',
+			deadline: '',
+			startDate: null,
+			endDate: null,
+			docType: 0,
+			from: 0,
+			until: 20
+		}
+		fetch('http://172.16.3.101:54321/api/visas', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Content-Length': JSON.stringify(data).length
+			},
+			body: JSON.stringify(data)
+		})
 			.then(resp => resp.json())
 			.then(respJ => {
 				setVisas(respJ);
@@ -60,25 +51,11 @@ const SideBar = (props) => {
 			.catch(err => console.log(err))
 
 	}
+
 	return (
 		<div className='side-bar'>
-
-			<div ref={iconsPanel}>
-				{
-					iconsVisible &&
-					<>
-						<IoIosArchive color="dodgerblue" title="Arxiv et" size="25" />
-						<IoIosMailOpen color="dodgerblue" title="Oxunmuş et" size="25" />
-					</>
-				}
-				{
-					!iconsVisible &&
-					<div>
-						<input type="text" placeholder="Axtarış.." />
-						<GoChevronDown size="24" onClick={onAdvSearchClick} />
-						<SearchBox ref={searchBoxRef} />
-					</div>
-				}
+			<div ref={iconsPanelRef}>
+					<IconsPanel checkedAmountRef={checkedAmountRef} setVisas={setVisas}/>
 			</div>
 			<div onClick={updateList} ref={notifIcon} className="new-visa-notification">
 				<BsArrowUpShort size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
@@ -87,19 +64,23 @@ const SideBar = (props) => {
 			<ul>
 				{
 					visas.map((visa) => {
-						const active = props.active && props.active[0].id === visa.id ? true : false
+						// const isActive = active === visa.id ? true : false
 						return <VisaCard
 							key={visa.id}
-							iconsPanel={iconsPanel}
-							checkedAmount={checkedAmount}
+							id={visa.id}
+							iconsPanelRef={iconsPanelRef}
+							checkedAmount={checkedAmountRef}
 							iconsVisible={iconsVisible}
 							setIconsVisible={setIconsVisible}
-							setActive={props.setActive}
-							active={active}
+							// setAsetActive={setActive}
+							setActiveVisa={props.setActive}
+							activeRef={activeRef}
 							number={visa.ord_numb}
 							isOpened={visa.is_read}
 							from={visa.sender_full_name}
-							senderid={visa.sender_id}
+							empVersion={visa.emp_version_id}
+							// senderid={visa.sender_id}
+							isPinned={visa.is_pinned}
 							category={visa.assignment}
 							deadline={visa.deadline}
 							remark={visa.comment}
@@ -111,4 +92,4 @@ const SideBar = (props) => {
 		</div>
 	)
 }
-export default SideBar
+export default React.memo(SideBar, () => true)

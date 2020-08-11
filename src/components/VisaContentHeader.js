@@ -9,7 +9,7 @@ const NewOrderContent = React.lazy(() => import('./modal content/NewOrder'));
 const VisaContentHeader = (props) => {
 	const version = props.version;
 	const current = props.current;
-	const closeUpdateModal = (respJ) => {
+	const closeModal = (respJ) => {
 		props.setIsModalOpen(false);
 		props.setUpdatedContent({
 			id: respJ[0].id,
@@ -25,7 +25,7 @@ const VisaContentHeader = (props) => {
 					{`Sifariş № ${props.orderNumb}`}
 					{
 						props.intention === 1 && !props.currentState.result &&
-						<FaEdit onClick={() => props.handleEditClick((props) => <NewOrderContent closeUpdateModal={closeUpdateModal} version={version} content={current} {...props} />)} title="düzəliş et" size="20" />
+						<FaEdit onClick={() => props.handleEditClick((props) => <NewOrderContent closeModal={closeModal} version={version} content={current} {...props} />)} title="düzəliş et" size="20" />
 					}
 				</h1>
 				{

@@ -85,7 +85,7 @@ const App = () => {
           <Archived />
         </Route>
         <Route path="/drafts">
-          <Drafts />
+          <Drafts webSocketRef={webSocketRef}/>
         </Route>
         <Route path="/">
           <MyOrders webSocketRef={webSocketRef} />

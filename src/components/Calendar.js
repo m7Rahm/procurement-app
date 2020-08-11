@@ -10,8 +10,10 @@ const Calendar = (props) => {
 		let days = [Array(7), Array(7), Array(7), Array(7), Array(7), Array(7)];
 		let k = 0;
 		let pr = prevD.getDate();
-		const prevMonth = month - 1 === 0 ? 12 : month - 1
+		const prevMonth = month - 1 === 0 ? 12 : month - 1;
+		const prevMonthFormat = prevMonth < 10 ? '0' + prevMonth : prevMonth
 		const nextMonth = month !== 12 ? month + 1 : 1;
+		const nextMonthFormat = nextMonth < 10 ? '0' + nextMonth : nextMonth
 		const nCurrentYear = month === 12 ?
 			year + 1 :
 			month === 1 ?
@@ -19,17 +21,17 @@ const Calendar = (props) => {
 				year;
 		const offset = dayOfWeek === 0 ? 7 : dayOfWeek
 		for (let i = offset - 1; i >= 0; i--) {
-			days[0][i] = { date: pr, className: 'not-current-month-days', val: `${nCurrentYear}/${prevMonth}/${pr}` };
+			days[0][i] = { date: pr, className: 'not-current-month-days', val: `${nCurrentYear}/${prevMonthFormat}/${pr < 10 ? '0' + pr : pr}` };
 			pr--;
 		}
 		for (let i = offset; i < currentDate.getDate() + offset; i++) {
 			k++;
-			days[Math.trunc(i / 7)][i % 7] = { date: k, className: '', val: `${year}/${month}/${k}` };
+			days[Math.trunc(i / 7)][i % 7] = { date: k, className: '', val: `${year}/${month < 10 ? '0' + month : month}/${k < 10 ? '0' + k : k}` };
 		}
 		let nxt = 0;
 		for (let i = currentDate.getDate() + offset; i < 42; i++) {
 			nxt++;
-			days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}/${nextMonth}/${nxt}` };
+			days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}/${nextMonthFormat}/${nxt < 10 ? '0' + nxt : nxt}` };
 		}
 		return days;
 	}
@@ -38,10 +40,6 @@ const Calendar = (props) => {
 		days: getDays(props.year, props.month + 1)
 	});
 
-	const handleClick = (val) => {
-		console.log(val);
-		calendarRef.current.style.display = 'none'
-	}
 	const handleDateInc = () => {
 		setDate(prev => {
 			const month = prev.date.getMonth() + 2 > 12 ? 1 : prev.date.getMonth() + 2;
@@ -64,20 +62,39 @@ const Calendar = (props) => {
 			}
 		})
 	}
-	const handleFocusLose = (e) => {
-		// const relatedTarget = e.relatedTarget;
+	const handleFocusLose = () => {
 		props.active.current = calendarRef.current;
-		props.active.current.customName = props.name;
+		props.active.current.customName = props.actionType;
 
 	}
 	const handleInputFocus = () => {
 		calendarRef.current.style.display = 'block';
 	}
+	const handleDatePickerChange = e => {
+		const value = e.target.value;
+		props.dispatch({ type: props.actionType, payload: value })
+	}
+	const handleClick = (value) => {
+		props.dispatch({ type: props.actionType, payload: value });
+		calendarRef.current.style.display = 'none'
+	}
+	const clearDate = () => {
+		props.dispatch({ type: props.actionType, payload: '' });
+		calendarRef.current.style.display = 'none'
+	}
 	return (
 		<>
-		<span>
-			<input type="text" name={props.name}  onBlur={handleFocusLose}  className="date-picker" onClick={handleInputFocus} />
-			<span>Başlanğıc</span>
+			<span>
+				<input
+					name={props.actionType}
+					type="text"
+					onChange={handleDatePickerChange}
+					value={props.value}
+					onBlur={handleFocusLose}
+					className="date-picker"
+					onClick={handleInputFocus}
+				/>
+				<span>{props.placeholder}</span>
 			</span>
 			<div ref={calendarRef} className="calendar">
 				<table>
@@ -110,7 +127,11 @@ const Calendar = (props) => {
 							date.days.map((week, index) =>
 								<tr key={index}>
 									{
-										week.map((day, index) => <td onClick={() => handleClick(day.val)} className={day.className} key={index}>{day.date}</td>)
+										week.map((day, index) =>
+										<td onClick={() => handleClick(day.val)} className={props.value === day.val ? 'active' : day.className} key={index}>
+											{day.date}
+										</td>
+										)
 									}
 								</tr>
 							)
@@ -119,7 +140,7 @@ const Calendar = (props) => {
 					<tfoot>
 						<tr>
 							<td colSpan="5"></td>
-							<td colSpan="2"><div>None</div></td>
+							<td colSpan="2"><div onClick={clearDate}>Sıfırla</div></td>
 						</tr>
 					</tfoot>
 				</table>

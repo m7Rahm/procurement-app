@@ -17,6 +17,7 @@ const NewOrderFooter = (props) => {
             }
         })
     }
+    console.log(props.empListRef.current)
     return (
         <div className="new-order-footer-wrapper">
             <div>
@@ -37,7 +38,7 @@ const NewOrderFooter = (props) => {
                             placeholder={"Qeyd"}
                         />}
                 </div>
-                <InputWithSearch empListRef={props.empListRef} />
+                <InputWithSearch empListRef={props.empListRef} receiversRef={props.receiversRef} />
             </div>
 
         </div>

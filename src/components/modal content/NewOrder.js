@@ -73,15 +73,23 @@ const initState = (current, content, isDraft) => {
 
 const NewOrderContent = (props) => {
   // console.log(props.content)
-  const empListRef = useRef([]);
+  const empListRef = useRef([])
   const init = (current) => {
     const state = initState(current, props.content, props.isDraft)
-    if (props.stateRef);
-    props.stateRef.current.init = state
+    if (props.stateRef)
+      props.stateRef.current.init = state
     return state
   }
   const current = props.current;
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
+  useEffect(() => {
+    fetch('http://172.16.3.101:54321/api/emplist')
+    .then(resp => resp.json())
+    .then(respJ => {
+      empListRef.current = respJ;
+    })
+    .catch(err => console.log(err));
+  }, [])
   useEffect(
     () => {
       if (props.stateRef)
@@ -89,18 +97,18 @@ const NewOrderContent = (props) => {
     }, [state, props.stateRef])
   const createApproveNewOrder = () => {
     const parsedMaterials = state.materials.map(material =>
-      ({
-        material_id: material.materialId,
-        amount: material.amount,
-        comment: material.additionalInfo,
-        model: material.model,
-        importance: material.importance
-      })
+      [
+        material.materialId,
+        material.amount,
+        material.additionalInfo,
+        material.model,
+        material.importance
+      ]
     )
     const data = {
       deadline: state.deadline,
       mats: parsedMaterials,
-      receivers: empListRef.current.map(emp => emp.id),
+      receivers: props.receiversRef.current.map(emp => emp.id),
       comment: state.comment,
       assignment: state.assignment,
       ordNumb: current ? current : '',
@@ -117,24 +125,21 @@ const NewOrderContent = (props) => {
       .then(resp => resp.json())
       // .then(respJ => console.log(respJ))
       .then(respJ => {
-        if (respJ[0].result === 'success'){
-          const recs = [data.receivers, respJ[0].head_id];
+        if (respJ[0].result === 'success') {
+          const recs = [...data.receivers, respJ[0].head_id];
           fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
             .then(resp => resp.json())
             .then(respJ => {
-              if (!current)
-                props.closeModal(respJ, recs);
-              else
-                props.closeUpdateModal(respJ)
+              props.closeModal(respJ, recs);
             })
-            .catch(err => console.log(err))}
+            .catch(err => console.log(err))
+        }
       })
       .catch(err => console.log(err))
   }
   const handleSendClick = () => {
-    if (!current && !props.isDraft) {
+    if (!current && !props.isDraft)
       createApproveNewOrder()
-    }
     else if (current && !props.isDraft) {
       // todo: check if any changes made
       const { review: reviewInit, ...initStateMain } = props.stateRef.current.init;
@@ -160,7 +165,7 @@ const NewOrderContent = (props) => {
               fetch(`http://172.16.3.101:54321/api/refresh-order-content?empVersion=${props.version}&orderNumb=${props.current}`)
                 .then(resp => resp.json())
                 .then(respJ => {
-                    props.closeUpdateModal(respJ)
+                  props.closeModal(respJ)
                 })
                 .catch(err => console.log(err));
           })
@@ -169,12 +174,12 @@ const NewOrderContent = (props) => {
         //todo: change order content and send it
         createApproveNewOrder()
       }
-      //todo: change order content and send it
     }
     else if (props.isDraft) {
       //todo: send draft
     }
   }
+  console.log(empListRef.current)
   return (
     <div className="modal-content-new-order">
       <NewOrderHeader deadline={state.deadline} assignment={state.assignment} dispatch={dispatch} />
@@ -190,7 +195,14 @@ const NewOrderContent = (props) => {
         </li>
         <NewOrderTableBody dispatch={dispatch} materials={state.materials} />
       </ul>
-      <NewOrderFooter isDraft={props.isDraft} comment={state.comment} current={current} empListRef={empListRef} dispatch={dispatch} />
+      <NewOrderFooter
+        isDraft={props.isDraft}
+        comment={state.comment}
+        current={current}
+        receiversRef={props.receiversRef}
+        dispatch={dispatch}
+        empListRef={empListRef}
+      />
       <div className="send-order" onClick={handleSendClick}>
         Göndər
       </div>

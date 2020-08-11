@@ -4,14 +4,13 @@ import VisaForwardPerson from './VisaForwardPerson'
 const InputWithSearch = (props) => {
 	const [receivers, setReceivers] = useState([]);
 	const [searchKey, setSearchKey] = useState('');
-	const empListRef = useRef(null);
-	const [empListState, setEmpListState] = useState([]);
+	// const empListRef = useRef(null);
+	const [empListState, setEmpListState] = useState(() => props.empListRef.current);
 	const wrapperRef = useRef(null);
-
 	const handleSelectChange = (employee) => {
 		const res = receivers.find(emp => emp.id === employee.id);
 		const newReceivers = !res ? [...receivers, employee] : receivers.filter(emp => emp.id !== employee.id);
-		props.empListRef.current = newReceivers;
+		props.receiversRef.current = newReceivers;
 		setReceivers(newReceivers);
 		setSearchKey('');
 	}
@@ -20,18 +19,11 @@ const InputWithSearch = (props) => {
 	}
 	const handleSearch = (e) => {
 		const str = e.target.value.toLowerCase();
-		const searchResult = empListRef.current.filter(emp => emp.full_name.toLowerCase().includes(str));
+		const searchResult = props.empListRef.current.filter(emp => emp.full_name.toLowerCase().includes(str));
 		setSearchKey(str);
 		setEmpListState(searchResult);
 	}
 	useEffect(() => {
-		fetch('http://172.16.3.101:54321/api/emplist')
-			.then(resp => resp.json())
-			.then(respJ => {
-				setEmpListState(respJ);
-				empListRef.current = respJ;
-			})
-			.catch(err => console.log(err));
 		const handleOnOuterClick = (e) => {
 			const target = e.target.closest('div');
 

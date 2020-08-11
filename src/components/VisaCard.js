@@ -1,64 +1,91 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 
 const VisaCard = (props) => {
+	const stateRef = useRef(null);
 	const [checked, setChecked] = useState(false);
-	// console.log(props);
+	const isReadRef = useRef(null);
 	const handleCheck = (e) => {
-		const prevAmount = props.checkedAmount.current;
+		const prevAmount = props.checkedAmount.current.length;
 		const checked = e.target.checked;
-		setChecked(_ => checked);
-		props.checkedAmount.current = checked ? props.checkedAmount.current + 1 : props.checkedAmount.current - 1;
-		if (prevAmount * props.checkedAmount.current === 0) {
+		setChecked(checked);
+		if (checked)
+			props.checkedAmount.current.push({
+				id: props.id,
+				val: [props.id],
+				isPinned: props.isPinned,
+				isRead: props.isOpened
+			})
+		else {
+			for (let i = 0; i < props.checkedAmount.current.length; i++)
+				if (props.checkedAmount.current[i].id === props.id)
+					props.checkedAmount.current.splice(i, 1);
+		}
+		// console.log(props.checkedAmount.current);
+		if (prevAmount * props.checkedAmount.current.length === 0) {
 			if (props.iconsVisible) {
-				props.iconsPanel.current.classList.toggle('icons-panel-hide');
-				props.iconsPanel.current.addEventListener('animationend', () => {
+				props.iconsPanelRef.current.classList.toggle('icons-panel-hide');
+				props.iconsPanelRef.current.addEventListener('animationend', () => {
 					props.setIconsVisible(false);
-					props.iconsPanel.current.classList.remove('icons-panel-hide');
+					props.iconsPanelRef.current.classList.remove('icons-panel-hide');
 				})
-				// props.setIconsVisible(prev => !prev);
-				// console.log(props.iconsPanel.current);
 			}
 			else
 				props.setIconsVisible(prev => !prev)
 		}
 	}
+
 	const handleClick = () => {
-		const data = {
-			orderid: props.number,
-			senderid: props.senderid
-		};
-		
-		if (!props.active)
-		fetch(`http://172.16.3.101:54321/api/order`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Content-Length': JSON.stringify(data).length
-			},
-			body: JSON.stringify(data)
-		})
-			.then(resp => resp.json())
-			.then(respJ => {
-				// console.log(respJ);
-				props.setActive(respJ)
+		if (isReadRef.current.style.display === 'block') {
+			const data = { visaCards: [[props.id, 0, 1, props.isPinned]], update: 0 }
+			fetch(`http://172.16.3.101:54321/api/change-visa-state`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Content-Length': JSON.stringify(data).length
+				},
+				body: JSON.stringify(data)
 			})
-			.catch(error => console.log(error));
-		// props.setActive(data)
+				.then(resp => resp.json())
+				.then(respJ => {
+					if (respJ[0].result === 'success')
+						isReadRef.current.style.display = 'none'
+				})
+				.catch(error => console.log(error));
+		}
+		if (props.activeRef.current !== stateRef.current) {
+			const data = {
+				orderid: props.number,
+				empVersion: props.empVersion
+			};
+			fetch(`http://172.16.3.101:54321/api/order`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Content-Length': JSON.stringify(data).length
+				},
+				body: JSON.stringify(data)
+			})
+				.then(resp => resp.json())
+				.then(respJ => {
+					props.setActiveVisa(respJ);
+					props.activeRef.current.style.background = 'none';
+					stateRef.current.style.background = 'skyblue'
+					props.activeRef.current = stateRef.current;
+				})
+				.catch(error => console.log(error));
+		}
 	}
 	return (
-		<li onClick={handleClick} style={{ background: props.active ? 'skyblue' : '' }}>
+		<li onClick={handleClick} ref={stateRef}>
 			<div style={{ height: 'inherit' }}>
-				{
-					!props.isOpened &&
-					<div style={{ width: '3px', float: 'right', height: '100%', background: 'steelblue' }}></div>
-				}
+				<div ref={isReadRef} style={{ width: '3px', float: 'right', height: '100%', background: 'steelblue', display: !props.isOpened ? 'block' : 'none' }}></div>
 				<div style={{ padding: '5px', height: '100%' }}>
 					<div style={{ height: '100%', float: 'left', padding: '15px 15px 0px 10px' }}>
 						<input checked={checked} type="checkbox" onChange={handleCheck} style={{ padding: '3px' }} ></input>
 					</div>
 					<div style={{ height: '29px', paddingTop: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 						<span style={{ fontSize: '17px', fontWeight: 200 }}>
-							{props.from}
+							{props.from ? props.from : '[DRAFT]'}
 						</span>
 						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: 'gray' }}>
 							{props.date}

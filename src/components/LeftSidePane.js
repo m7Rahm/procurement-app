@@ -36,9 +36,14 @@ const LeftSidePane = (props, ref) => {
                         links.map((link, index) => {
                             const active = index === activeLink ? true : false
                             const Icon = icon(link.icon, active)
-                            return <div key={index} style={setStyle(active)} onClick={() => setActiveLink(index)}>
-                                <Icon size="24" />
-                                <Link style={{color: active ? '#222222' : '', fontWeight: active ? 600 : ''}} to={link.link}>{link.text}</Link>
+                            return <div key={index} style={setStyle(active)} >
+                                <Link
+                                    onClick={() => setActiveLink(index)}
+                                    style={{color: active ? '#222222' : '', fontWeight: active ? 600 : '', display: 'flex', width: '100%', alignItems: 'flex-end'}}
+                                    to={link.link}>
+                                    <Icon size="24" style={{marginRight: '5px'}} />
+                                    {link.text}
+                                </Link>
                             </div>
                         })
                     }
