@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useRef } from 'react'
+import React, { useReducer, useEffect, useRef, useImperativeHandle } from 'react'
 import NewOrderTableBody from '../NewOrderTableBody'
 import NewOrderFooter from '../NewOrderFooter'
 import NewOrderHeader from '../NewOrderHeader.js';
@@ -64,7 +64,7 @@ const initState = (current, content, isDraft) => {
         class: ''
       })),
       deadline: content[0].deadline,
-      receivers: current && isDraft ? content.map(elem => elem.receiver_id) : [],
+      receivers: [],
       assignment: content[0].assignment,
       comment: content[0].comment,
       review: content[0].review ? content[0].review : ''
@@ -72,12 +72,13 @@ const initState = (current, content, isDraft) => {
 }
 
 const NewOrderContent = (props) => {
-  // console.log(props.content)
-  const empListRef = useRef([])
+  const stateRef = useRef({})
+  const empListRef = useRef([]);
+  const receiversRef = useRef([]);
   const init = (current) => {
     const state = initState(current, props.content, props.isDraft)
-    if (props.stateRef)
-      props.stateRef.current.init = state
+      stateRef.current.init = state;
+      receiversRef.current = state.receivers
     return state
   }
   const current = props.current;
@@ -90,11 +91,12 @@ const NewOrderContent = (props) => {
     })
     .catch(err => console.log(err));
   }, [])
-  useEffect(
-    () => {
-      if (props.stateRef)
-        props.stateRef.current.latest = state;
-    }, [state, props.stateRef])
+
+    useImperativeHandle(props.stateRef, () => ({
+      changed: JSON.stringify(stateRef.current.init) !==  JSON.stringify(state),
+      latest: state,
+      receivers: receiversRef.current
+    }), [state])
   const createApproveNewOrder = () => {
     const parsedMaterials = state.materials.map(material =>
       [
@@ -108,7 +110,7 @@ const NewOrderContent = (props) => {
     const data = {
       deadline: state.deadline,
       mats: parsedMaterials,
-      receivers: props.receiversRef.current.map(emp => emp.id),
+      receivers: receiversRef.current.map(emp => emp.id),
       comment: state.comment,
       assignment: state.assignment,
       ordNumb: current ? current : '',
@@ -142,8 +144,8 @@ const NewOrderContent = (props) => {
       createApproveNewOrder()
     else if (current && !props.isDraft) {
       // todo: check if any changes made
-      const { review: reviewInit, ...initStateMain } = props.stateRef.current.init;
-      const { review: reviewLatest, ...latestStateMain } = props.stateRef.current.latest;
+      const { review: reviewInit, ...initStateMain } = stateRef.current.init;
+      const { review: reviewLatest, ...latestStateMain } = state;
       if (JSON.stringify(initStateMain) === JSON.stringify(latestStateMain)) {
         const data = {
           receivers: latestStateMain.receivers,
@@ -179,7 +181,6 @@ const NewOrderContent = (props) => {
       //todo: send draft
     }
   }
-  console.log(empListRef.current)
   return (
     <div className="modal-content-new-order">
       <NewOrderHeader deadline={state.deadline} assignment={state.assignment} dispatch={dispatch} />
@@ -199,8 +200,9 @@ const NewOrderContent = (props) => {
         isDraft={props.isDraft}
         comment={state.comment}
         current={current}
-        receiversRef={props.receiversRef}
+        receiversRef={receiversRef}
         dispatch={dispatch}
+        empVersion={props.content[0].emp_id}
         empListRef={empListRef}
       />
       <div className="send-order" onClick={handleSendClick}>

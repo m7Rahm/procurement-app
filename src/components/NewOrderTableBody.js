@@ -30,6 +30,7 @@ const NewOrderTableBody = (props) => {
               index={index}
               class={material.class}
               id={material.id}
+              materialId={material.materialId}
               key={material.id}
               isActive={isActive}
               amount={material.amount}

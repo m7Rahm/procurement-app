@@ -14,10 +14,8 @@ const SideBar = (props) => {
 	const [visas, setVisas] = useState([]);
 	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
-	console.log(visas)
 	
 	const mountFunc = useCallback(props.mountFunc, []);
-	// console.log(mountFunc);
 	useEffect(() => {
 		mountFunc(setVisas, notifIcon)
 	}, [mountFunc]);
@@ -55,7 +53,7 @@ const SideBar = (props) => {
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>
-					<IconsPanel checkedAmountRef={checkedAmountRef} setVisas={setVisas}/>
+					<IconsPanel iconsVisible={iconsVisible} checkedAmountRef={checkedAmountRef} setVisas={setVisas}/>
 			</div>
 			<div onClick={updateList} ref={notifIcon} className="new-visa-notification">
 				<BsArrowUpShort size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
@@ -70,13 +68,12 @@ const SideBar = (props) => {
 							id={visa.id}
 							iconsPanelRef={iconsPanelRef}
 							checkedAmount={checkedAmountRef}
-							iconsVisible={iconsVisible}
 							setIconsVisible={setIconsVisible}
-							// setAsetActive={setActive}
 							setActiveVisa={props.setActive}
 							activeRef={activeRef}
 							number={visa.ord_numb}
 							isOpened={visa.is_read}
+							handleCardClick={props.handleCardClick}
 							from={visa.sender_full_name}
 							empVersion={visa.emp_version_id}
 							// senderid={visa.sender_id}

@@ -5,6 +5,16 @@ const InputWithSearch = (props) => {
 	const [receivers, setReceivers] = useState([]);
 	const [searchKey, setSearchKey] = useState('');
 	// const empListRef = useRef(null);
+	const current = props.current;
+	const empVersion = props.empVersion;
+	useEffect(() => {
+		if(props.isDraft)
+		fetch(`http://172.16.3.101:54321/api/participants/${current}?type=2&empVersion=${empVersion}`)
+		  .then(resp => resp.json())
+		  .then(respJ => setReceivers(respJ)
+		  )
+		  .catch(err => console.log(err))
+	  }, [current, empVersion, props.isDraft])
 	const [empListState, setEmpListState] = useState(() => props.empListRef.current);
 	const wrapperRef = useRef(null);
 	const handleSelectChange = (employee) => {

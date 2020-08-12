@@ -11,10 +11,9 @@ const Modal = (props) => {
   //todo: onClose check if initial state changed
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
-  const empListRef = useRef([]);
   const [alertVisible, setAlertVisible] = useState(false);
   const closeModal = () => {
-    if (JSON.stringify(stateRef.current.init) === JSON.stringify(stateRef.current.latest))
+    if (!stateRef.current.changed)
       closeModalCallback()
     else
       setAlertVisible(true)
@@ -23,7 +22,7 @@ const Modal = (props) => {
     () => {
       const onEscPress = (e) => {
         if (e.keyCode === 27) {
-          if (JSON.stringify(stateRef.current.init) === JSON.stringify(stateRef.current.latest))
+          if (!stateRef.current.changed)
             closeModalCallback()
           else
             setAlertVisible(true)
@@ -41,11 +40,11 @@ const Modal = (props) => {
           Sifariş № {props.number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
-        <ModalContent empListRef={empListRef} current={props.number} stateRef={stateRef} />
+        <ModalContent current={props.number} stateRef={stateRef} />
       </div>
       {
         alertVisible &&
-        <AlertBox stateRef={stateRef} receiversRef={empListRef} setAlertVisible={setAlertVisible} changeModalState={props.changeModalState} />
+        <AlertBox stateRef={stateRef} setAlertVisible={setAlertVisible} changeModalState={props.changeModalState} />
       }
     </>
   )

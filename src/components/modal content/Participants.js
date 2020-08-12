@@ -11,12 +11,12 @@ const Participants = (props) => {
   }
 
   useEffect(() => {
-    fetch(`http://172.16.3.101:54321/api/participants/${props.number}?type=1`)
+    fetch(`http://172.16.3.101:54321/api/participants/${props.number}?type=1&empVersion=${props.empVersion}`)
       .then(resp => resp.json())
       .then(respJ => setParticipants(respJ)
       )
       .catch(err => console.log(err))
-  }, [props.number])
+  }, [props.number, props.empVersion])
   return (
     participants &&
     <>
@@ -48,7 +48,7 @@ const Participants = (props) => {
       </ul>
       {
         checked &&
-        <Reviewers id={props.number} />
+        <Reviewers empVersion={props.empVersion} id={props.number} />
       }
     </>
   )
@@ -57,12 +57,12 @@ const Participants = (props) => {
 const Reviewers = (props) => {
   const [reviewers, setReviewers] = useState(null);
   useEffect(() => {
-    fetch(`http://172.16.3.101:54321/api/participants/${props.id}?type=2`)
+    fetch(`http://172.16.3.101:54321/api/participants/${props.id}?type=2&empVersion=${props.empVersion}`)
       .then(resp => resp.json())
       .then(respJ => setReviewers(respJ)
       )
       .catch(err => console.log(err))
-  }, [props.id])
+  }, [props.id, props.empVersion])
   return (
     reviewers ?
       <>

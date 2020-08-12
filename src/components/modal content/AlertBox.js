@@ -19,7 +19,7 @@ const AlertBox = props => {
             const data = {
                 deadline: props.stateRef.current.latest.deadline,
                 mats: parsedMaterials,
-                receivers: props.empListRef.current.map(emp => emp.id),
+                receivers: props.stateRef.current.receivers.map(emp => emp.id),
                 comment: props.stateRef.current.latest.comment,
                 assignment: props.stateRef.current.latest.assignment,
                 ordNumb: '',
