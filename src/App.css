@@ -1252,12 +1252,14 @@ li.delete-row {
   height: 100vh;
   padding-top: 56px;
   text-align: center;
-  min-width: 1256px;
+  min-width: 906px;
   overflow: auto;
 }
 
 .visa-content-container>div {
   max-width: 1256px;
+  width: 100%;
+  overflow-y: auto;
   margin: auto;
 }
 
@@ -1597,7 +1599,78 @@ span.reviewers-header {
   outline-offset: 0px;
   outline: 3px #ffae00 solid;
 }
-
+div.price-offer-container{
+  padding-top: 60px;
+}
+table.price-offer-table{
+  clear: both;
+  min-width: 100%;
+  background-color: white;
+  border-collapse: collapse;
+}
+table.price-offer-table td{
+  border: 1px solid gray;
+  font-size: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+table.price-offer-table>tbody>tr>td:not(:first-of-type),
+table.price-offer-table>thead>tr:not(:nth-of-type(2))>td{
+  padding: 6px 4px;
+}
+table.price-offer-table>thead>tr:nth-of-type(2)>td:first-of-type{
+  padding: 3px
+}
+table.price-offer-table input, table.price-offer-table select{
+  width: 100%;
+  padding: 3px 2px
+}
+table.price-offer-table>thead>tr:nth-of-type(3)>td>div{
+  position: relative;
+  /* height: 2px; */
+}
+table.price-offer-table>thead>tr:nth-of-type(3)>td:hover>div>span{
+  display: flex;
+  /* position: relative; */
+  /* height: 2px; */
+}
+table.price-offer-table>thead>tr:nth-of-type(3)>td>div>span{
+  position: absolute;
+  width: 100%;
+  height: 30px;
+  z-index: 1;
+  background-color:rgba(10, 165, 226, 0.4);
+  border-radius: 5px;
+  backdrop-filter: blur(6px);
+  top: -32px;
+  left: 0px;
+  display: none;
+  flex-flow: wrap row-reverse;
+  align-items: center;
+}
+table.price-offer-table>thead>tr:nth-of-type(3)>td>div>span>svg{
+  margin: 0px 3px;
+  color: white;
+  cursor: pointer;
+}
+table.price-offer-table>tbody>tr>td:nth-of-type(n+6){
+  width: 80px;
+  text-align: right;
+}
+table.price-offer-table>thead>tr:nth-of-type(2)>td:nth-of-type(2){
+  min-width: 100px;
+}
+table.price-offer-table>thead td, table.price-offer-table>tfoot td, table.price-offer-table>tbody td:first-of-type{
+  font-weight: 650;
+  text-align: center;
+}
+div.add-new-price-offerer{
+  margin: 20px 50px;
+  padding: 8px 12px;
+  float: right;
+  background-color: #00acee;
+  color: white;
+  cursor: pointer;
+}
 @media screen and (min-width: 992px) {
   .wrapper {
     width: 90%;

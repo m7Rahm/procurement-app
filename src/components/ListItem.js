@@ -24,7 +24,7 @@ const ListItem = (props) => {
     setIsModalOpen(_ => false);
   }
   const onParticipantsClick = (number) => {
-    setModalContent(_ => (props) => <ParticipantsModal number={number} {...props} />)
+    setModalContent(_ => (props) => <ParticipantsModal empVersion={73} number={number} {...props} />)
     setIsModalOpen(prevState => !prevState)
   }
   const onStatusClick = (number) => {

@@ -77,7 +77,7 @@ const Visas = (props) => {
 
 
   return (
-    <div style={{ maxHeight: '100vh', display: 'flex', overflow: 'hidden' }}>
+    <div style={{ maxHeight: '100vh', display: 'flex', overflowY: 'hidden' }}>
       <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
       <VisaContent current={active} />
     </div>

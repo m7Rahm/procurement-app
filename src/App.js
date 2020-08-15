@@ -9,6 +9,7 @@ import {
 import LeftSidePane from './components/LeftSidePane';
 import Drafts from './pages/Drafts';
 import Archived from './pages/Archived';
+import Inbox from './pages/Inbox'
 // import useWebSocket from './hooks/useWebSocket'
 
 const App = () => {
@@ -37,7 +38,6 @@ const App = () => {
       // setWebSocketRef(null);
     }
   }, [])
-
   const handleNavClick = () => {
     leftPaneRef.current.classList.toggle('left-side-pane-open');
     setBackgroundVisibility(prev => !prev)
@@ -55,42 +55,45 @@ const App = () => {
   return (
     wSockConnected &&
     <BrowserRouter>
-      <>
-        <nav>
-          <ul>
-            <li>
-              <div>
-                <div className="left-side-toggle">
-                  <IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
-                </div>
+        <>
+          <nav>
+            <ul>
+              <li>
                 <div>
-                  <img style={{ height: '32px' }} src={logo} alt='user pic'></img>
+                  <div className="left-side-toggle">
+                    <IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
+                  </div>
+                  <div>
+                    <img style={{ height: '32px' }} src={logo} alt='user pic'></img>
+                  </div>
                 </div>
-              </div>
-            </li>
-          </ul>
-        </nav>
-        {
-          backgroundVisibility &&
-          <div onClick={handleNavClick} style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 2 }}>
-          </div>
-        }
-      </>
-      <LeftSidePane ref={leftPaneRef} handleNavClick={handleNavClick} />
-      <Switch>
-        <Route path="/visas">
-          <Visas webSocketRef={webSocketRef} />
-        </Route>
-        <Route path="/archived">
-          <Archived />
-        </Route>
-        <Route path="/drafts">
-          <Drafts webSocketRef={webSocketRef}/>
-        </Route>
-        <Route path="/">
-          <MyOrders webSocketRef={webSocketRef} />
-        </Route>
-      </Switch>
+              </li>
+            </ul>
+          </nav>
+          {
+            backgroundVisibility &&
+            <div onClick={handleNavClick} style={{ position: 'fixed', height: '100%', width: '100%', top: 0, left: 0, background: 'rgba(0, 0, 0, 0.6)', zIndex: 2 }}>
+            </div>
+          }
+        </>
+        <LeftSidePane ref={leftPaneRef} handleNavClick={handleNavClick} />
+        <Switch>
+          <Route path="/visas">
+            <Visas webSocketRef={webSocketRef} />
+          </Route>
+          <Route path="/archived">
+            <Archived />
+          </Route>
+          <Route path="/drafts">
+            <Drafts webSocketRef={webSocketRef} />
+          </Route>
+          <Route path="/inbox">
+            <Inbox webSocketRef={webSocketRef} />
+          </Route>
+          <Route path="/">
+            <MyOrders webSocketRef={webSocketRef} />
+          </Route>
+        </Switch>
     </BrowserRouter>
   );
 }

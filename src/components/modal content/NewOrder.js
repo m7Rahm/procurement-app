@@ -82,6 +82,7 @@ const NewOrderContent = (props) => {
     return state
   }
   const current = props.current;
+  const empVersionId = props.content ? props.content[0].emp_id : undefined
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
   useEffect(() => {
     fetch('http://172.16.3.101:54321/api/emplist')
@@ -202,7 +203,7 @@ const NewOrderContent = (props) => {
         current={current}
         receiversRef={receiversRef}
         dispatch={dispatch}
-        empVersion={props.content[0].emp_id}
+        empVersion={empVersionId}
         empListRef={empListRef}
       />
       <div className="send-order" onClick={handleSendClick}>

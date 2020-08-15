@@ -7,7 +7,9 @@ import {
     IoMdCart,
     IoMdCheckmarkCircleOutline
 } from 'react-icons/io'
-
+import {
+    FaEnvelopeOpenText
+} from 'react-icons/fa'
 const icon = (Icon, active) => ({ ...props }) =>
     <Icon color={active ? "red" : '#808080'} {...props} />
 
@@ -72,6 +74,12 @@ const links = [
         text: 'Arxiv',
         link: '/archived',
         icon: IoIosArchive
+    },
+    {
+        text: 'Inbox',
+        link: '/inbox',
+        icon: FaEnvelopeOpenText
+
     },
 ]
 export default React.forwardRef(LeftSidePane)
