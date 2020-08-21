@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react'
 import OrderContentProtected from '../components/OrderContentProtected'
 import Participants from '../components/modal content/Participants'
+import VisaContentFooter from '../components/VisaContentFooter'
+
 import {
     FaAngleDown,
 } from 'react-icons/fa'
@@ -22,7 +24,7 @@ const VisaContent = (props) => {
                 {
                     props.current
                         ? <>
-                            <OrderContentProtected current={props.current} />
+                            <OrderContentProtected footerComponent={VisaContentFooter} current={props.current} />
                             <div className="toggle-participants" onClick={handleParticipantsTransition}>
                                 Tarixçəni göstər
                             <FaAngleDown size="36" color="royalblue" />

@@ -49,7 +49,6 @@ const SideBar = (props) => {
 			.catch(err => console.log(err))
 
 	}
-
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>

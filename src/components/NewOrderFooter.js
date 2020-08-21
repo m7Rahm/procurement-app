@@ -50,4 +50,4 @@ const NewOrderFooter = (props) => {
         </div>
     )
 }
-export default NewOrderFooter
+export default React.memo(NewOrderFooter)

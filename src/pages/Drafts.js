@@ -56,7 +56,9 @@ const Drafts = () => {
             <div style={{ flex: 1, background: 'transparent', height: '100vh', overflow: 'auto', paddingTop: '56px', textAlign: 'center' }}>
                 {
                     active
-                        ? <NewOrderContent isDraft={true} current={active[0].ord_numb} content={active} />
+                        ? <div style={{maxWidth: '1256px', margin: 'auto'}}>
+                            <NewOrderContent isDraft={true} current={active[0].ord_numb} content={active} />
+                        </div>
                         : <>
                             <div style={{ marginTop: '100px' }}>
                                 <img

@@ -3,7 +3,6 @@ import Modal from './Modal'
 import {
 	FaUndo
 } from 'react-icons/fa'
-import VisaContentFooter from './VisaContentFooter'
 import VisaContentMaterials from './VisaContentMaterials'
 import VisaContentHeader from './VisaContentHeader';
 
@@ -11,6 +10,7 @@ import VisaContentHeader from './VisaContentHeader';
 const OrderContentProtected = (props) => {
 	// console.log(props);
 	const current = props.current;
+	const Component = props.footerComponent
 	// const senderid = props.current.senderid;
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
@@ -60,7 +60,7 @@ const OrderContentProtected = (props) => {
 					/>
 			</>
 			<VisaContentMaterials orderContent={props.current} />
-			<VisaContentFooter
+			<Component
 				current={props.current[0].ord_numb}
 				version={props.current[0].emp_version_id}
 				orderContent={currentState}
