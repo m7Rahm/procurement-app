@@ -10,14 +10,33 @@ import {
 	RiListSettingsLine
 } from 'react-icons/ri'
 import POIndivPrice from './POIndivPrice';
-import { suppliers } from '../data/data'
+import { suppliers, incoTerms } from '../data/data'
 const PriceOffererDetailed = React.lazy(() => import('../components/modal content/PriceOffererDetailed'))
 
-const calcVals = (current, total, amount) => {
-	const impFee = (total / 1.18 - amount).toFixed(2) > 0 ? (total / 1.357) * 0.15 : 0
-	current['total'] = total.toFixed(2);
-	current['vat'] = (total - total / 1.18).toFixed(2);
-	current['impFee'] = impFee.toFixed(2);
+const calcVals = (current, compRes, amount) => {
+	const amnt = Number(amount);
+	const approxTranFee = Number(current.approxTranFee);
+	current.impFee = Number((compRes ? (amnt + approxTranFee) * 0.15 : 0).toFixed(2));
+	current.vat = Number((compRes ? (amnt + current.impFee + approxTranFee) * 0.18 : 0).toFixed(2));
+	current.total = Number((amnt + current.vat + current.impFee + approxTranFee).toFixed(2));
+	// console.log(current)
+}
+const calcDelType = (current, value, amount) => {
+	if (value > 8) {
+		current.impFee = 0;
+		current.vat = 0;
+		current.total = amount
+	}
+	else if (value < 10) {
+		// console.log(current)
+		const approxTranFee = Number(current.approxTranFee)
+		const sum = Number(amount)
+		current.impFee = Number(((approxTranFee + sum) * 0.15).toFixed(2));
+		current.vat = Number((sum + current.impFee + approxTranFee).toFixed(2));
+		current.total = Number(((approxTranFee + sum) * 1.357).toFixed(2))
+	}
+	if (value > 9)
+		current.approxTranFee = 0;
 }
 const reducer = (state, action) => {
 	const type = action.type;
@@ -26,18 +45,21 @@ const reducer = (state, action) => {
 			return { ...state, files: [...state.files, ...action.payload] }
 		case 'supplier':
 			return { ...state, [type]: action.payload }
-		case 'delType':
-			return { ...state, [type]: action.payload }
+		case 'delType': {
+			const current = state;
+			current.delType = action.payload;
+			calcDelType(current, action.payload, current.sum)
+			return { ...current }
+		}
 		case 'delDur':
 			return { ...state, [type]: action.payload }
 		case 'approxTranFee': {
 			const current = state;
-			current[type] = action.payload;
-			const total = Number(action.payload) !== 0
-						? (Number(action.payload) + Number(current['sum'])) * 1.357
-						: Number(current['sum']) * 1.18;
-			calcVals(state, total, state.sum);
-			return { ...state, ...current }
+			if (current.delType < 10) {
+				current[type] = action.payload;
+				calcVals(current, current.delType < 10, current.sum);
+			}
+			return { ...current }
 		}
 		case 'adv': {
 			switch (action.payload.name) {
@@ -50,24 +72,22 @@ const reducer = (state, action) => {
 					const currentVals = state.values[index];
 					currentVals[name] = action.payload.value;
 					currentVals['amount'] = amount;
-					const total = (amount + (Number(currentVals['approxTranFee']) !== 0 ? (amount + currentVals['approxTranFee']) * 1.15 : 0)) * 1.18;
-					calcVals(currentVals, total, amount);
+					calcVals(currentVals, currentVals.delType < 9, amount);
 					const sum = Number(Object.keys(state.values)
 						.filter(index => index !== action.payload.index.toString())
 						.reduce((acc, val) => acc += Number(state.values[val].amount), 0) + amount);
 					const current = state;
 					current.values[index] = currentVals;
 					current.sum = sum;
-					const sumTotal = (sum + (Number(current['approxTranFee']) !== 0 ? (sum + current['approxTranFee']) * 1.15 : 0)) * 1.18
-					calcVals(current, sumTotal, current.sum)
+					calcVals(current, current.delType < 9, sum);
 					return { ...current }
 				}
 				case 'delType': {
 					const value = action.payload.value;
 					const currentVals = state.values;
-					const index = action.payload.index
 					const name = action.payload.name;
-					currentVals[index][name] = value;
+					currentVals[action.payload.index][name] = value;
+					calcDelType(currentVals[action.payload.index], value, currentVals[action.payload.index].amount)
 					return { ...state, values: { ...currentVals } }
 				}
 				case 'delDur': {
@@ -79,34 +99,34 @@ const reducer = (state, action) => {
 					return { ...state, values: { ...currentVals } }
 				}
 				case 'amount': {
-					const value = Number(action.payload.value).toFixed(2);
+					const value = Number(Number(action.payload.value).toFixed(2));
 					const quantity = action.payload.quantity;
 					const name = action.payload.name;
 					const index = action.payload.index
 					const currentVals = state.values[index];
-					currentVals[name] = action.payload.value;
-					currentVals['price'] = value / quantity;
-					const total = (value + (Number(currentVals['approxTranFee']) !== 0 ? (value + currentVals['approxTranFee']) * 1.15 : 0)) * 1.18;
-					calcVals(currentVals, total, value);
+					currentVals[name] = Number(action.payload.value);
+					currentVals.price = value / quantity;
+					// console.log(value)
+					calcVals(currentVals, currentVals.delType < 9, value);
 					const sum = Number(Object.keys(state.values)
 						.filter(index => index !== action.payload.index.toString())
 						.reduce((acc, val) => acc += Number(state.values[val].amount), 0) + value);
+					// console.log(sum)
 					const current = state;
 					current.values[index] = currentVals;
 					current.sum = sum;
-					const sumTotal = (sum + (Number(current['approxTranFee']) !== 0 ? (sum + current['approxTranFee']) * 1.15 : 0)) * 1.18
-					calcVals(current, sumTotal, current.sum)
+					calcVals(current, current.delType < 9, sum)
 					return { ...current }
 				}
 				case 'approxTranFee': {
+					const index = action.payload.index;
 					const currentVals = state.values;
-					const index = action.payload.index
 					const name = action.payload.name;
-					currentVals[index][name] = action.payload.value;
-					const total = Number(action.payload.value) !== 0
-						? (Number(action.payload.value) + Number(currentVals[index]['amount'])) * 1.357
-						: Number(currentVals[index]['amount']) * 1.18;
-					calcVals(currentVals[index], total, currentVals[index]['amount']);
+					if (currentVals[index].delType < 10) {
+						currentVals[index][name] = action.payload.value;
+						// console.log(currentVals);
+						calcVals(currentVals[index], currentVals[index].delType < 10, currentVals[index].amount);
+					}
 					return { ...state, values: { ...currentVals } }
 				}
 				default:
@@ -120,7 +140,7 @@ const reducer = (state, action) => {
 const init = (initVal) => {
 	return ({
 		supplier: '1',
-		delType: '',
+		delType: '1',
 		delDur: '',
 		sum: 0,
 		approxTranFee: 0,
@@ -131,12 +151,12 @@ const init = (initVal) => {
 			{
 				...accum,
 				[current.id]: {
+					materialid: current.id,
 					quantity: current.amount,
 					price: '',
-					amount: '',
-					delType: '',
+					amount: 0,
+					delType: '1',
 					delDur: '',
-					sum: 0,
 					approxTranFee: 0,
 					impFee: 0,
 					vat: 0,
@@ -148,12 +168,13 @@ const init = (initVal) => {
 	})
 }
 const PriceOfferer = (props) => {
-	
+
 	const [state, dispatch] = useReducer(reducer, props.orderDetails, init);
 	const [advancedViewDisp, setAdvancedViewDisp] = useState(false);
 	// console.log(state);
 	useEffect(() => {
 		props.offerers.current[props.id].state = state;
+		// console.log(state)
 	}, [props.offerers, state, props.id])
 	const handleChange = (e) => {
 		const name = e.target.name;
@@ -172,8 +193,11 @@ const PriceOfferer = (props) => {
 	const handleFileUpload = (e) => {
 		const files = [];
 		if (e.target.files) {
-			for (let i = 0; i < e.target.files.length; i++)
-				files.push(e.target.files[i]);
+			for (let i = 0; i < e.target.files.length; i++) {
+				const file = e.target.files[i];
+				file.supplier = state.supplier
+				files.push(file);
+			}
 			dispatch({ type: 'setFiles', payload: files })
 		}
 	}
@@ -213,7 +237,15 @@ const PriceOfferer = (props) => {
 					/>
 				</div>
 			</div>
-			<div><input onChange={handleChange} value={state.delType} name="delType" placeholder="Təslim növü" /></div>
+			<div>
+				<select style={{ backgroundColor: 'white' }} onChange={handleChange} value={state.delType} name="delType">
+					{
+						incoTerms.map(term =>
+							<option value={term.id} key={term.id}>{term.name}</option>
+						)
+					}
+				</select>
+			</div>
 			<div><input onChange={handleChange} value={state.delDur} name="delDur" placeholder="Təslim müddəti" /></div>
 			{
 				props.orderDetails.map(material =>
@@ -248,4 +280,4 @@ const PriceOfferer = (props) => {
 		</div>
 	)
 }
-export default PriceOfferer
+export default React.memo(PriceOfferer, () => true)

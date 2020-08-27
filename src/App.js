@@ -10,6 +10,7 @@ import LeftSidePane from './components/LeftSidePane';
 import Drafts from './pages/Drafts';
 import Archived from './pages/Archived';
 import Inbox from './pages/Inbox'
+import PriceOffers from './pages/PriceOffers'
 // import useWebSocket from './hooks/useWebSocket'
 
 const App = () => {
@@ -17,14 +18,19 @@ const App = () => {
   const [backgroundVisibility, setBackgroundVisibility] = useState(false);
   const [wSockConnected, setWSockConnected] = useState(false);
   const webSocketRef = useRef(null)
-
   useEffect(() => {
     const webSocket = new WebSocket('ws://172.16.3.101:12345');
     webSocket.onopen = () => {
+      console.log(document.cookie.split(';'));
+      const id = document.cookie.split(';')
+      .find(cookie => cookie.includes('id='))
+      .trim()
+      .substr(3);
       const data = {
         action: "recognition",
-        person: 73 // todo: get from session
+        person: id // todo: get from session
       }
+      console.log(id)
       console.log('connected');
       webSocket.send(JSON.stringify(data));
       // setWebSocketRef(webSocket);
@@ -89,6 +95,9 @@ const App = () => {
           </Route>
           <Route path="/inbox">
             <Inbox webSocketRef={webSocketRef} />
+          </Route>
+          <Route path="/priceoffs">
+            <PriceOffers webSocketRef={webSocketRef} />
           </Route>
           <Route path="/">
             <MyOrders webSocketRef={webSocketRef} />

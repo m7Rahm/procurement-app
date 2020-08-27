@@ -7,7 +7,7 @@ const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
     case 'reset':
-      return initState(action.payload)
+      return initState(true, action.payload)
     case 'deleteRow':
       return { ...state, materials: state.materials.filter(material => material.id !== action.payload.rowid) }
     case 'updateRow':
@@ -49,7 +49,7 @@ const newOrderReducer = (state, action) => {
   }
 }
 
-const initState = (current, content, isDraft) => {
+const initState = (current, content) => {
   if (!current)
     return newOrderInitial
   else
@@ -76,29 +76,36 @@ const NewOrderContent = (props) => {
   const empListRef = useRef([]);
   const receiversRef = useRef([]);
   const init = (current) => {
-    const state = initState(current, props.content, props.isDraft)
-      stateRef.current.init = state;
-      receiversRef.current = state.receivers
+    const state = initState(current, props.content)
+    stateRef.current.init = state;
+    console.log(state.materials);
+    receiversRef.current = state.receivers
     return state
   }
+  // console.log(receiversRef.current)
   const current = props.current;
   const empVersionId = props.content ? props.content[0].emp_id : undefined
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
   useEffect(() => {
     fetch('http://172.16.3.101:54321/api/emplist')
-    .then(resp => resp.json())
-    .then(respJ => {
-      empListRef.current = respJ;
-    })
-    .catch(err => console.log(err));
+      .then(resp => resp.json())
+      .then(respJ => {
+        empListRef.current = respJ;
+      })
+      .catch(err => console.log(err));
   }, [])
-
-    useImperativeHandle(props.stateRef, () => ({
-      changed: JSON.stringify(stateRef.current.init) !==  JSON.stringify(state),
-      latest: state,
-      receivers: receiversRef.current
-    }), [state])
-  const createApproveNewOrder = () => {
+  useEffect(() => {
+    if (props.content && props.isDraft) {
+      dispatch({ type: 'reset', payload: props.content })
+    }
+  }, [props.content, props.isDraft])
+  // console.log(stateRef.current.init, state)
+  useImperativeHandle(props.stateRef, () => ({
+    changed: JSON.stringify(stateRef.current.init) !== JSON.stringify(state),
+    latest: state,
+    receivers: receiversRef.current
+  }), [state])
+  const createApproveNewOrder = (url, onSuccess) => {
     const parsedMaterials = state.materials.map(material =>
       [
         material.materialId,
@@ -115,9 +122,10 @@ const NewOrderContent = (props) => {
       comment: state.comment,
       assignment: state.assignment,
       ordNumb: current ? current : '',
-      review: state.review
+      review: state.review,
+      empVersion: props.content ? props.content[0].emp_version_id: null
     }
-    fetch('http://172.16.3.101:54321/api/new-order', {
+    fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -126,23 +134,27 @@ const NewOrderContent = (props) => {
       body: JSON.stringify(data)
     })
       .then(resp => resp.json())
-      // .then(respJ => console.log(respJ))
       .then(respJ => {
+        console.log(respJ);
         if (respJ[0].result === 'success') {
-          const recs = [...data.receivers, respJ[0].head_id];
-          fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
-            .then(resp => resp.json())
-            .then(respJ => {
-              props.closeModal(respJ, recs);
-            })
-            .catch(err => console.log(err))
+          onSuccess(data, respJ)
         }
       })
       .catch(err => console.log(err))
   }
   const handleSendClick = () => {
-    if (!current && !props.isDraft)
-      createApproveNewOrder()
+    if (!current && !props.isDraft) {
+      const onSuccess = (data, respJ) => {
+        const recs = [...data.receivers, respJ[0].head_id];
+        fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
+          .then(resp => resp.json())
+          .then(respJ => {
+            props.closeModal(respJ, recs);
+          })
+          .catch(err => console.log(err))
+      }
+      createApproveNewOrder('http://172.16.3.101:54321/api/new-order', onSuccess)
+    }
     else if (current && !props.isDraft) {
       // todo: check if any changes made
       const { review: reviewInit, ...initStateMain } = stateRef.current.init;
@@ -152,7 +164,8 @@ const NewOrderContent = (props) => {
           receivers: latestStateMain.receivers,
           action: 1,
           empVersion: props.content[0].emp_version_id,
-          comment: latestStateMain.review
+          comment: latestStateMain.review,
+          forwardedVersion: props.content[0].emp_version_id
         }
         fetch(`http://172.16.3.101:54321/api/accept-decline/${current}`, {
           method: 'POST',
@@ -165,21 +178,25 @@ const NewOrderContent = (props) => {
           .then(resp => resp.json())
           .then(respJ => {
             if (respJ[0].result === 'success')
-              fetch(`http://172.16.3.101:54321/api/refresh-order-content?empVersion=${props.version}&orderNumb=${props.current}`)
-                .then(resp => resp.json())
-                .then(respJ => {
-                  props.closeModal(respJ)
-                })
-                .catch(err => console.log(err));
+              props.closeModal(respJ)
           })
       }
       else {
         //todo: change order content and send it
-        createApproveNewOrder()
+        const onSuccess = (data, respJ) => {
+          const recs = [...data.receivers, respJ[0].head_id];
+          props.closeModal(respJ, recs);
+        }
+        createApproveNewOrder('http://172.16.3.101:54321/api/new-order', onSuccess)
       }
     }
     else if (props.isDraft) {
-      //todo: send draft
+      console.log(receiversRef.current)
+      const onSuccess = (data, respJ) => {
+        const recs = [...data.receivers, respJ[0].head_id];
+        props.onSuccess(recs)
+      }
+      createApproveNewOrder('http://172.16.3.101:54321/api/create-order-from-draft', onSuccess)
     }
   }
   return (

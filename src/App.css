@@ -1744,14 +1744,18 @@ div.price-offer-table-container>div:not(.header-container) div {
   padding: 0px 2px 1px 1px;
 }
 
-div.price-offer-table-container>div:not(.header-container) input, div.price-offer-table-container>div:not(.header-container) select {
+div.price-offer-table-container>div:not(.header-container) input,
+div.price-offer-table-container>div:not(.header-container) select {
   border: none;
   text-align: right;
   padding-right: 5px;
   width: 100%;
   height: 100%;
 }
-
+div.price-offer-table-container>div:not(.header-container) select {
+  background-color: rgba(195, 225, 255, 0.5);
+  color: #555555;
+}
 div.price-offer-table-container>div:not(.header-container) input:focus, div.price-offer-table-container>div:not(.header-container) select:focus {
   outline: none;
   caret-color: #1a73e8;
@@ -2132,6 +2136,9 @@ div.price-offer-detailed>div>div>table>tbody td>input{
 div.price-offer-detailed>div>div>table>tbody>tr:nth-of-type(2n + 1){
  background-color: rgba(0, 0, 0,0.05);
 }
+div.price-offer-detailed>div>div>table>tbody>tr:not(:nth-of-type(2n + 1)){
+  background-color: rgba(128, 128, 128, 0.05);
+ }
 div.big-picture-ref>div>span>svg {
   position: absolute;
   cursor: pointer;

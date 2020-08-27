@@ -9,14 +9,14 @@ const NewOrderContent = React.lazy(() => import('./modal content/NewOrder'));
 const VisaContentHeader = (props) => {
 	const version = props.version;
 	const current = props.current;
-	const closeModal = (respJ) => {
-		props.setIsModalOpen(false);
-		props.setUpdatedContent({
-			id: respJ[0].id,
-			actDateTime: respJ[0].act_date_time,
-			result: respJ[0].result,
-			comment: respJ[0].comment
+	const closeModal = (respJ, receivers) => {
+		props.updateContent(receivers, {
+			id: respJ[1].id,
+			actDateTime: respJ[1].act_date_time,
+			result: respJ[1].result,
+			comment: respJ[1].comment
 		})
+		props.setIsModalOpen(false);
 	}
 	return (
 		<>
@@ -25,7 +25,17 @@ const VisaContentHeader = (props) => {
 					{`Sifariş № ${props.orderNumb}`}
 					{
 						props.intention === 1 && !props.currentState.result &&
-						<FaEdit onClick={() => props.handleEditClick((props) => <NewOrderContent closeModal={closeModal} version={version} content={current} {...props} />)} title="düzəliş et" size="20" />
+						<FaEdit onClick={() => props.handleEditClick((props) =>
+							<NewOrderContent
+								closeModal={closeModal}
+								version={version}
+								content={current}
+								{...props}
+							/>
+						)}
+							title="düzəliş et"
+							size="20"
+						/>
 					}
 				</h1>
 				{
@@ -34,7 +44,7 @@ const VisaContentHeader = (props) => {
 							{props.currentState.actDateTime}
 							<FaCheck size="30" title="Təsdiq" color="#34A853" />
 						</span>
-						: props.currentState.result !== null ?
+						: props.currentState.result !== null && props.currentState.result !== undefined ?
 							<span>
 								{props.currentState.actDateTime}
 								<FaTimes title="Etiraz" size="30" color="#EA4335" />

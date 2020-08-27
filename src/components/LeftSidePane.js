@@ -5,7 +5,8 @@ import {
     IoMdDocument,
     IoIosArchive,
     IoMdCart,
-    IoMdCheckmarkCircleOutline
+    IoMdCheckmarkCircleOutline,
+    IoMdPricetags
 } from 'react-icons/io'
 import {
     FaEnvelopeOpenText
@@ -79,6 +80,12 @@ const links = [
         text: 'Inbox',
         link: '/inbox',
         icon: FaEnvelopeOpenText
+
+    },
+    {
+        text: 'Price Offers',
+        link: '/priceoffs',
+        icon: IoMdPricetags
 
     },
 ]

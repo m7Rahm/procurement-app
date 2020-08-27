@@ -2,7 +2,7 @@ import React, { useState, Suspense } from 'react'
 import PriceOfferer from './PriceOfferer'
 const OfferPictures = React.lazy(() => import('../components/modal content/OfferPictures'))
 
-const OrderDetails = (props) => {
+const OrderDetails = React.memo((props) => {
     return (
         <div>
             <div>1</div>
@@ -12,11 +12,11 @@ const OrderDetails = (props) => {
             <div>{props.unit}</div>
         </div>
     )
-}
+}, () => true)
 const PriceOfferList = (props) => {
     const [modalState, setModalState] = useState(false);
     const [pictures, setPictures] = useState([]);
-
+    
     return (
         <div>
             {

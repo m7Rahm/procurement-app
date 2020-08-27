@@ -13,7 +13,7 @@ const Modal = (props) => {
   const stateRef = useRef({});
   const [alertVisible, setAlertVisible] = useState(false);
   const closeModal = () => {
-    if (!stateRef.current.changed)
+    if (!stateRef.current.changed || props.token)
       closeModalCallback()
     else
       setAlertVisible(true)
@@ -22,7 +22,7 @@ const Modal = (props) => {
     () => {
       const onEscPress = (e) => {
         if (e.keyCode === 27) {
-          if (!stateRef.current.changed)
+          if (!stateRef.current.changed || props.token)
             closeModalCallback()
           else
             setAlertVisible(true)
@@ -30,7 +30,7 @@ const Modal = (props) => {
       }
       document.addEventListener('keyup', onEscPress, false);
       return () => document.removeEventListener('keyup', onEscPress, false)
-    }, [closeModalCallback])
+    }, [closeModalCallback, props.token])
   return (
     <>
       <div className="modal" onClick={closeModal}>

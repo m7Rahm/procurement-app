@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import SideBar from '../components/SideBar';
 import NewOrderContent from '../components/modal content/NewOrder';
 
@@ -25,39 +25,59 @@ const onMountFunction = (setVisas) => {
 const handleCardClick = (_, props, stateRef) => {
     if (props.activeRef.current !== stateRef.current) {
         const data = {
-          draftid: props.number,
-          empVersion: props.empVersion
+            draftid: props.number,
+            empVersion: props.empVersion
         };
         fetch(`http://172.16.3.101:54321/api/draft`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': JSON.stringify(data).length
-          },
-          body: JSON.stringify(data)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': JSON.stringify(data).length
+            },
+            body: JSON.stringify(data)
         })
-          .then(resp => resp.json())
-          .then(respJ => {
-            props.setActiveVisa(respJ);
-            props.activeRef.current.style.background = 'none';
-            stateRef.current.style.background = 'skyblue'
-            props.activeRef.current = stateRef.current;
-          })
-          .catch(error => console.log(error));
-      }
+            .then(resp => resp.json())
+            .then(respJ => {
+                props.activeCardRef.current = stateRef.current;
+                props.setActiveVisa(respJ);
+                props.activeRef.current.style.background = 'none';
+                stateRef.current.style.background = 'skyblue'
+                props.activeRef.current = stateRef.current;
+            })
+            .catch(error => console.log(error));
+    }
 }
-
-const Drafts = () => {
+const Drafts = (props) => {
+    const activeCardRef = useRef(null);
     const [active, setActive] = useState(null);
+    console.log(active);
+    const onSuccess = (receivers) => {
+        if (props.webSocketRef.current) {
+            props.webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }))
+            activeCardRef.current.style.display = 'none';
+            setActive(null)
+        }
+    }
     // const NewComponent = () => <NewOrderContent current={active}/>
     return (
         <div style={{ minHeight: '100vh', display: 'flex', backgroundColor: 'transparent' }}>
-            <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
+            <SideBar
+                activeCardRef={activeCardRef}
+                isDraft={true}
+                handleCardClick={handleCardClick}
+                mountFunc={onMountFunction}
+                setActive={setActive}
+            />
             <div style={{ flex: 1, background: 'transparent', height: '100vh', overflow: 'auto', paddingTop: '56px', textAlign: 'center' }}>
                 {
                     active
-                        ? <div style={{maxWidth: '1256px', margin: 'auto'}}>
-                            <NewOrderContent isDraft={true} current={active[0].ord_numb} content={active} />
+                        ? <div style={{ maxWidth: '1256px', margin: 'auto' }}>
+                            <NewOrderContent
+                                isDraft={true}
+                                current={active[0].ord_numb}
+                                content={active}
+                                onSuccess={onSuccess}
+                            />
                         </div>
                         : <>
                             <div style={{ marginTop: '100px' }}>

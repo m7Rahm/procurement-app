@@ -11,7 +11,7 @@ const onMountFunction = (setVisas) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-ready-orders', {
+    fetch('http://172.16.3.101:54321/api/get-price-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
-const Inbox = () => {
+const PriceOffers = () => {
     const [active, setActive] = useState(null);
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
@@ -70,4 +70,4 @@ const Inbox = () => {
         </div>
     )
 }
-export default Inbox
+export default PriceOffers

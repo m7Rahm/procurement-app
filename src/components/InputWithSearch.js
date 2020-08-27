@@ -5,16 +5,21 @@ const InputWithSearch = (props) => {
 	const [receivers, setReceivers] = useState([]);
 	const [searchKey, setSearchKey] = useState('');
 	// const empListRef = useRef(null);
+	// console.log(receivers)
 	const current = props.current;
 	const empVersion = props.empVersion;
 	useEffect(() => {
-		if(props.isDraft)
-		fetch(`http://172.16.3.101:54321/api/participants/${current}?type=2&empVersion=${empVersion}`)
-		  .then(resp => resp.json())
-		  .then(respJ => setReceivers(respJ)
-		  )
-		  .catch(err => console.log(err))
-	  }, [current, empVersion, props.isDraft])
+		if (props.isDraft)
+			fetch(`http://172.16.3.101:54321/api/participants/${current}?type=2&empVersion=${empVersion}`)
+				.then(resp => resp.json())
+				.then(respJ => {
+					console.log(respJ)
+					setReceivers(respJ);
+					props.receiversRef.current = respJ.map(resp => ({ id: resp.receiver_id, full_name: resp.full_name }))
+				}
+				)
+				.catch(err => console.log(err))
+	}, [current, empVersion, props.isDraft, props.receiversRef])
 	const [empListState, setEmpListState] = useState(() => props.empListRef.current);
 	const wrapperRef = useRef(null);
 	const handleSelectChange = (employee) => {
@@ -67,7 +72,13 @@ const InputWithSearch = (props) => {
 			<div>
 				<div>
 					{
-						receivers.map(emp => <VisaForwardPerson key={Math.random()} emp={emp} handleSelectChange={handleSelectChange} />)
+						receivers.map(emp =>
+							<VisaForwardPerson
+								key={Math.random()}
+								emp={emp}
+								handleSelectChange={handleSelectChange}
+							/>
+						)
 					}
 				</div>
 			</div>

@@ -2,8 +2,17 @@ import React, { useState } from 'react'
 const AcceptDecline = React.lazy(() => import('./modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {
-   //  console.log(props);
     const [comment, setComment] = useState('');
+    const setIsModalOpen = (recs, order) => {
+        props.setIsModalOpen(false);
+        props.updateContent(recs, {
+            id: order.id,
+            actDateTime: order.act_date_time,
+            result: order.result,
+            comment: order.comment
+        })
+    }
+    const version = props.version;
     const handleTextChange = (e) => {
         const text = e.target.value;
         setComment(text)
@@ -12,8 +21,9 @@ const VisaContentFooter = (props) => {
         const data = {
             receivers: [],
             action: null,
-            empVersion: null,
-            comment
+            empVersion: version,
+            comment,
+            forwardedVersion: version
         }
         fetch(`http://172.16.3.101:54321/api/accept-decline/${props.current}`,
             {
@@ -26,18 +36,16 @@ const VisaContentFooter = (props) => {
             })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ[0].result === 'success')
-                    fetch(`http://172.16.3.101:54321/api/refresh-order-content?empVersion=${props.version}&orderNumb=${props.current}`)
-                    .then(resp => resp.json())
-                    .then(respJ => {
-                        props.setUpdatedContent({
-                            id: respJ[0].id,
-                            actDateTime: respJ[0].act_date_time,
-                            result: respJ[0].result,
-                            comment: respJ[0].comment
-                        })
+                if (respJ[0].result === 'success'){
+                    console.log(respJ)
+                    setComment('');
+                    props.updateContent([], {
+                        id: respJ[1].id,
+                        actDateTime: respJ[1].act_date_time,
+                        result: respJ[1].result,
+                        comment: respJ[1].comment
                     })
-                    .catch(err => console.log(err))
+                }
             })
             .catch(err => console.log(err))
     }
@@ -49,9 +57,9 @@ const VisaContentFooter = (props) => {
                         <div
                             onClick={() => props.handleEditClick((props) =>
                                 <AcceptDecline
-                                    closeModal={props.setIsModalOpen(false)}
-                                    version={props.version}
-                                    accept={false}
+                                    closeModal={setIsModalOpen}
+                                    version={version}
+                                    vers={false}
                                     backgroundColor='#D93404'
                                     {...props}
                                 />)
@@ -63,8 +71,8 @@ const VisaContentFooter = (props) => {
                         <div
                             onClick={() => props.handleEditClick((props) =>
                                 <AcceptDecline
-                                    closeModal={props.setIsModalOpen(false)}
-                                    version={props.version}
+                                    closeModal={setIsModalOpen}
+                                    version={version}
                                     accept={true}
                                     backgroundColor='rgb(15, 157, 88)'
                                     {...props}
@@ -88,7 +96,7 @@ const VisaContentFooter = (props) => {
                             <div onClick={handleClick}>Göndər</div>
                         </div>
                         : <div className="review-container reviewed-comment">
-                            <span >Sifarişə {props.orderContent.act_date_time} tarixində rəy verilmişdir:</span>
+                            <span >Sifarişə {props.orderContent.actDateTime} tarixində rəy verilmişdir:</span>
                             <br />
                             <span>{props.orderContent.comment}</span>
                         </div>

@@ -8,7 +8,7 @@ import VisaContentHeader from './VisaContentHeader';
 
 
 const OrderContentProtected = (props) => {
-	// console.log(props);
+	// console.log(props.current);
 	const current = props.current;
 	const Component = props.footerComponent
 	// const senderid = props.current.senderid;
@@ -30,6 +30,10 @@ const OrderContentProtected = (props) => {
 		setModalContent(_ => content);
 		setIsModalOpen(true);
 	}
+	const updateContent = (recs, updatedCtnt) => {
+		props.sendNotification(recs);
+		setUpdatedContent(updatedCtnt)
+	}
 	return (
 		props.current &&
 		<>
@@ -41,14 +45,14 @@ const OrderContentProtected = (props) => {
 							<FaUndo size="50" color="#a4a4a4" />
 						</div>
 					}>
-						<Modal number={current[0].ord_numb} changeModalState={handleModalClose}>
+						<Modal token={true} number={current[0].ord_numb} changeModalState={handleModalClose}>
 							{modalContent}
 						</Modal>
 					</Suspense>				
 				}
 					<VisaContentHeader
 						deadline={current[0].deadline}
-						setUpdatedContent={setUpdatedContent}
+						updateContent={updateContent}
 						setIsModalOpen={setIsModalOpen}
 						current={current}
 						version={props.current[0].emp_version_id}
@@ -61,13 +65,14 @@ const OrderContentProtected = (props) => {
 			</>
 			<VisaContentMaterials orderContent={props.current} />
 			<Component
+				sendNotification={props.sendNotification}
 				current={props.current[0].ord_numb}
 				version={props.current[0].emp_version_id}
 				orderContent={currentState}
 				intention={props.current[0].intention}
 				handleEditClick={handleEditClick}
 				setIsModalOpen={setIsModalOpen}
-				setUpdatedContent={setUpdatedContent}
+				updateContent={updateContent}
 			/>
 		</>
 	)

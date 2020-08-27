@@ -8,12 +8,15 @@ const VisaCard = (props) => {
 	const handleCheck = (e) => {
 		const prevAmount = props.checkedAmount.current.length;
 		const checked = e.target.checked;
+		console.log(props)
 		if (checked)
 			props.checkedAmount.current.push({
 				id: props.id,
-				val: [props.id],
+				val: props.id,
 				isPinned: props.isPinned,
-				isRead: props.isOpened
+				isRead: props.isOpened,
+				number: props.number,
+				empVersion: props.empVersion
 			})
 		else {
 			for (let i = 0; i < props.checkedAmount.current.length; i++)

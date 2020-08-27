@@ -12,9 +12,15 @@ import {
 import SearchBox from './SearchBox';
 const IconsPanel = (props) => {
     const searchBoxRef = useRef(null);
+    // const countRef = useRef(0)
     const [searchBoxState, setSearchBoxState] = useState(false);
     const handleBulkDelete = () => {
-        const data = { visaCards: props.checkedAmountRef.current.map(visaCard => [...visaCard.val, 1, visaCard.isRead, visaCard.isPinned]), update: 1 }
+        console.log(props.checkedAmountRef.current);
+        const data = {
+            visaCards: props.checkedAmountRef.current.map(visaCard =>
+                [visaCard.val, 1, visaCard.isRead, visaCard.isPinned, visaCard.number, visaCard.empVersion]),
+            update: 1
+        }
         fetch(`http://172.16.3.101:54321/api/change-visa-state`, {
             method: 'POST',
             headers: {
@@ -30,7 +36,11 @@ const IconsPanel = (props) => {
             .catch(error => console.log(error));
     }
     const handleBulkRead = () => {
-        const data = { visaCards: props.checkedAmountRef.current.map(visaCard => [...visaCard.val, 0, 1, visaCard.isPinned]), update: 0 }
+        const data = {
+            visaCards: props.checkedAmountRef.current.map(visaCard =>
+                [visaCard.val, 0, 1, visaCard.isPinned, visaCard.number, visaCard.empVersion]
+            ), update: 0
+        }
         fetch(`http://172.16.3.101:54321/api/change-visa-state`, {
             method: 'POST',
             headers: {
@@ -43,7 +53,11 @@ const IconsPanel = (props) => {
             .catch(error => console.log(error));
     }
     const handleBulkPin = () => {
-        const data = { visaCards: props.checkedAmountRef.current.map(visaCard => [...visaCard.val, 0, visaCard.isRead, 1]), update: 1 }
+        const data = {
+            visaCards: props.checkedAmountRef.current.map(visaCard =>
+                [visaCard.val, 0, visaCard.isRead, 1, visaCard.number, visaCard.empVersion]),
+            update: 1
+        }
         fetch(`http://172.16.3.101:54321/api/change-visa-state`, {
             method: 'POST',
             headers: {
@@ -59,6 +73,7 @@ const IconsPanel = (props) => {
             .catch(error => console.log(error));
     }
     const onAdvSearchClick = () => {
+        // console.log(searchBoxState);
         if (!searchBoxState)
             setSearchBoxState(true);
         else if (searchBoxRef.current.style.display === 'none') {
@@ -68,12 +83,7 @@ const IconsPanel = (props) => {
         else {
             searchBoxRef.current.classList.add('advanced-search-bar-hide')
         }
-        if (searchBoxRef.current)
-            searchBoxRef.current.addEventListener('animationend', function () {
-                if (this.classList.contains('advanced-search-bar-hide')) {
-                    this.style.display = 'none';
-                }
-            }, false);
+        // if (countRef.current)
     }
     return (
         <>
@@ -85,7 +95,7 @@ const IconsPanel = (props) => {
                         <AiTwotonePushpin onClick={handleBulkPin} color="dodgerblue" title="Oxunmuş et" size="25" />
                     </>
                     : <div>
-                        <GoChevronDown size="24" onClick={onAdvSearchClick} />
+                        <GoChevronDown style={{display: props.isDraft ? 'none' : ''}} size="24" onClick={onAdvSearchClick} />
                         {
                             searchBoxState &&
                             <SearchBox setVisas={props.setVisas} ref={searchBoxRef} />

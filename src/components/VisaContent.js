@@ -24,7 +24,7 @@ const VisaContent = (props) => {
                 {
                     props.current
                         ? <>
-                            <OrderContentProtected footerComponent={VisaContentFooter} current={props.current} />
+                            <OrderContentProtected sendNotification={props.sendNotification} footerComponent={VisaContentFooter} current={props.current} />
                             <div className="toggle-participants" onClick={handleParticipantsTransition}>
                                 Tarixçəni göstər
                             <FaAngleDown size="36" color="royalblue" />
@@ -32,7 +32,10 @@ const VisaContent = (props) => {
                             {
                                 participantsVisiblity &&
                                 <div ref={participantsRef} className="visa-content-participants-show">
-                                    <Participants empVersion={props.current[0].emp_version_id} number={props.current[0].ord_numb} />
+                                    <Participants
+                                        empVersion={props.current[0].emp_version_id}
+                                        number={props.current[0].ord_numb}
+                                    />
                                 </div>
                             }
                         </>

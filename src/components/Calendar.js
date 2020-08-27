@@ -21,17 +21,17 @@ const Calendar = (props) => {
 				year;
 		const offset = dayOfWeek === 0 ? 7 : dayOfWeek
 		for (let i = offset - 1; i >= 0; i--) {
-			days[0][i] = { date: pr, className: 'not-current-month-days', val: `${nCurrentYear}/${prevMonthFormat}/${pr < 10 ? '0' + pr : pr}` };
+			days[0][i] = { date: pr, className: 'not-current-month-days', val: `${nCurrentYear}-${prevMonthFormat}-${pr < 10 ? '0' + pr : pr}` };
 			pr--;
 		}
 		for (let i = offset; i < currentDate.getDate() + offset; i++) {
 			k++;
-			days[Math.trunc(i / 7)][i % 7] = { date: k, className: '', val: `${year}/${month < 10 ? '0' + month : month}/${k < 10 ? '0' + k : k}` };
+			days[Math.trunc(i / 7)][i % 7] = { date: k, className: '', val: `${year}-${month < 10 ? '0' + month : month}-${k < 10 ? '0' + k : k}` };
 		}
 		let nxt = 0;
 		for (let i = currentDate.getDate() + offset; i < 42; i++) {
 			nxt++;
-			days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}/${nextMonthFormat}/${nxt < 10 ? '0' + nxt : nxt}` };
+			days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}-${nextMonthFormat}-${nxt < 10 ? '0' + nxt : nxt}` };
 		}
 		return days;
 	}

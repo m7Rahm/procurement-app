@@ -281,3 +281,49 @@ export const suppliers = [
         id: '4'
     },
 ]
+export const incoTerms = [
+    {
+        name: 'EXW',
+        id: '1'
+    },
+    {
+        name: 'FCA',
+        id: '2'
+    },
+    {
+        name: 'FAS',
+        id: '3'
+    },
+    {
+        name: 'FOB',
+        id: '4'
+    },
+    {
+        name: 'CFR',
+        id: '5'
+    },
+    {
+        name: 'CIF',
+        id: '6'
+    },
+    {
+        name: 'CPT',
+        id: '7'
+    },
+    {
+        name: 'CIP',
+        id: '8'
+    },
+    {
+        name: 'DAP',
+        id: '9'
+    },
+    {
+        name: 'DPU',
+        id: '10'
+    },
+    {
+        name: 'DDP',
+        id: '11'
+    },
+]

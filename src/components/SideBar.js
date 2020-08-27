@@ -52,7 +52,12 @@ const SideBar = (props) => {
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>
-					<IconsPanel iconsVisible={iconsVisible} checkedAmountRef={checkedAmountRef} setVisas={setVisas}/>
+				<IconsPanel
+					isDraft={props.isDraft}
+					iconsVisible={iconsVisible}
+					checkedAmountRef={checkedAmountRef}
+					setVisas={setVisas}
+				/>
 			</div>
 			<div onClick={updateList} ref={notifIcon} className="new-visa-notification">
 				<BsArrowUpShort size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
@@ -65,6 +70,7 @@ const SideBar = (props) => {
 						return <VisaCard
 							key={visa.id}
 							id={visa.id}
+							activeCardRef={props.activeCardRef}
 							iconsPanelRef={iconsPanelRef}
 							checkedAmount={checkedAmountRef}
 							setIconsVisible={setIconsVisible}

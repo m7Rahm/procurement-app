@@ -2,8 +2,9 @@ import React from 'react'
 import {
     IoMdClose
 } from 'react-icons/io'
+import { incoTerms } from '../../data/data'
 const PriceOffererDetailed = (props) => {
-    console.log(props);
+    // console.log(props);
     return (
         <div className="price-offer-detailed">
             <div>
@@ -39,14 +40,63 @@ const PriceOffererDetailed = (props) => {
                                         <td>{detail.model}</td>
                                         <td>{detail.amount}</td>
                                         <td>{detail.unit || 'ədəd'}</td>
-                                        <td><input name="delType" value={props.state.values[detail.id].delType} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="delDur" value={props.state.values[detail.id].delDur} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="price" value={props.state.values[detail.id].price} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="amount" value={props.state.values[detail.id].amount} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="approxTranFee" value={props.state.values[detail.id].approxTranFee} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="impFee" value={props.state.values[detail.id].impFee} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="vat" value={props.state.values[detail.id].vat} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
-                                        <td><input name="total" value={props.state.values[detail.id].total} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}/></td>
+                                        <td>
+                                            <select style={{ backgroundColor: 'white', fontSize: '14px', minWidth: '60px' }} name="delType" value={props.state.values[detail.id].delType} onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}>
+                                                {
+                                                    incoTerms.map(supplier =>
+                                                        <option value={supplier.id} key={supplier.id}>{supplier.name}</option>
+                                                    )
+                                                }
+                                            </select></td>
+                                        <td>
+                                            <input
+                                                name="delDur"
+                                                value={props.state.values[detail.id].delDur}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                name="price"
+                                                value={props.state.values[detail.id].price}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                name="amount"
+                                                value={props.state.values[detail.id].amount}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                name="approxTranFee"
+                                                value={props.state.values[detail.id].approxTranFee}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                name="impFee"
+                                                value={props.state.values[detail.id].impFee}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                name="vat"
+                                                value={props.state.values[detail.id].vat}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                name="total"
+                                                value={props.state.values[detail.id].total}
+                                                onChange={(e) => props.handleAdvChange(e, detail.id, detail.amount)}
+                                            />
+                                        </td>
                                     </tr>
                                 )
                             }

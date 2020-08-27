@@ -42,7 +42,6 @@ const OfferPictures = (props) => {
         if (e.target.tagName.toLowerCase() !== 'img')
             setModalState({ show: false })
     }
-    console.log(props.pictures);
     return (
         <div id="offer-pictures" onClick={closeThumbsModal} className="offer-pictures">
             <div>

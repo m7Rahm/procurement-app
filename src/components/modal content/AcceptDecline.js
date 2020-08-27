@@ -24,7 +24,8 @@ const AcceptDecline = (props) => {
             receivers,
             action: props.accept ? 1 : 0,
             empVersion: props.version,
-            comment
+            comment,
+            forwardedVersion: props.version
         }
         fetch(`http://172.16.3.101:54321/api/accept-decline/${props.current}`,
             {
@@ -37,8 +38,9 @@ const AcceptDecline = (props) => {
             })
             .then(resp => resp.json())
             .then(respJ => {
+                console.log(respJ);
                 if(respJ[0].result === 'success')
-                props.closeModal()
+                props.closeModal([...receivers, respJ[0].head_id], respJ[1])
             })
             .catch(err => console.log(err))
     }

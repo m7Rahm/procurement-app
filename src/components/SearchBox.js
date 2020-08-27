@@ -35,9 +35,15 @@ const SearchBox = (props, ref) => {
                 // console.log('none')
             }
         }
+        ref.current.addEventListener('animationend', function () {
+            console.log('entered')
+            if (this.classList.contains('advanced-search-bar-hide')) {
+                this.style.display = 'none';
+            }
+        }, false);
         document.addEventListener('click', handleClick, false);
         return () => document.removeEventListener('click', handleClick, false);
-    }, []);
+    }, [ref]);
     const handleSearchClick = () => {
         const data = {
 			userName: searchState.userName,
@@ -88,7 +94,7 @@ const SearchBox = (props, ref) => {
                     placeholder="Deadline"
                     year={date.getFullYear()}
                     month={date.getMonth()}
-                    />
+                />
             </div>
             <div>
                 <Calendar
