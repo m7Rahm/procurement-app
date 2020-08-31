@@ -1,22 +1,41 @@
-import React, { useState, Suspense } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
 import PriceOfferer from './PriceOfferer'
 const OfferPictures = React.lazy(() => import('../components/modal content/OfferPictures'))
 
 const OrderDetails = React.memo((props) => {
     return (
         <div>
-            <div>1</div>
+            <div>{props.index}</div>
             <div>{props.material}</div>
             <div>{props.model}</div>
             <div>{props.quantity}</div>
-            <div>{props.unit}</div>
+            <div>{props.unit || 'ədəd'}</div>
         </div>
     )
 }, () => true)
 const PriceOfferList = (props) => {
     const [modalState, setModalState] = useState(false);
     const [pictures, setPictures] = useState([]);
-    
+    const [orderDetails, setOrderDetails] = useState([]);
+    const ordNumb = props.orderDetails[0].ord_numb;
+    const empVersion = props.orderDetails[0].emp_version_id
+    useEffect(() => {
+        const data = {
+            ordNumb,
+            empVersion
+        }
+        fetch('http://172.16.3.101:54321/api/get-order-not-accepted-materials', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': JSON.stringify(data).length
+            },
+            body: JSON.stringify(data)
+        })
+        .then(resp => resp.json())
+        .then(respJ => setOrderDetails(respJ))
+    }, [ordNumb, empVersion])
+    // console.log(props)
     return (
         <div>
             {
@@ -35,8 +54,9 @@ const PriceOfferList = (props) => {
                         <div>Say</div>
                     </div>
                     {
-                        props.orderDetails.map(material =>
+                        orderDetails.map((material, index) =>
                             <OrderDetails
+                                index={index += 1}
                                 key={material.id}
                                 material={material.material_name}
                                 model={material.model}
@@ -63,7 +83,7 @@ const PriceOfferList = (props) => {
                             key={offerer.key}
                             id={index}
                             setOfferersCount={props.setOfferersCount}
-                            orderDetails={props.orderDetails}
+                            orderDetails={orderDetails}
                         />)
                 }
             </div>

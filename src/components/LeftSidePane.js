@@ -9,7 +9,8 @@ import {
     IoMdPricetags
 } from 'react-icons/io'
 import {
-    FaEnvelopeOpenText
+    FaEnvelopeOpenText,
+    FaTasks
 } from 'react-icons/fa'
 const icon = (Icon, active) => ({ ...props }) =>
     <Icon color={active ? "red" : '#808080'} {...props} />
@@ -77,16 +78,19 @@ const links = [
         icon: IoIosArchive
     },
     {
-        text: 'Inbox',
+        text: 'Gələnlər',
         link: '/inbox',
         icon: FaEnvelopeOpenText
-
     },
     {
-        text: 'Price Offers',
+        text: 'Qiymət təklifləri',
         link: '/priceoffs',
         icon: IoMdPricetags
-
+    },
+    {
+        text: 'Tapşırıqlar',
+        link: '/tasks',
+        icon: FaTasks
     },
 ]
-export default React.forwardRef(LeftSidePane)
+export default React.memo(React.forwardRef(LeftSidePane))

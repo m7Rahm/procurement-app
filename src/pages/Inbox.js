@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import OrdersContent from '../components/OrdersContent'
-
+import PriceOffer from '../components/modal content/PriceOffer' 
 import SideBar from '../components/SideBar'
 const onMountFunction = (setVisas) => {
     const data = {
@@ -54,7 +54,7 @@ const Inbox = () => {
             <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
             {
                 active
-                    ? <OrdersContent current={active} />
+                    ? <OrdersContent childComp={PriceOffer} current={active} />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img

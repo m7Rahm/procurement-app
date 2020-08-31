@@ -11,6 +11,7 @@ import Drafts from './pages/Drafts';
 import Archived from './pages/Archived';
 import Inbox from './pages/Inbox'
 import PriceOffers from './pages/PriceOffers'
+import Tasks from './pages/Tasks'
 // import useWebSocket from './hooks/useWebSocket'
 
 const App = () => {
@@ -24,11 +25,11 @@ const App = () => {
       console.log(document.cookie.split(';'));
       const id = document.cookie.split(';')
       .find(cookie => cookie.includes('id='))
-      .trim()
-      .substr(3);
+      // .trim()
+      // .substr(3);
       const data = {
         action: "recognition",
-        person: id // todo: get from session
+        person: id || 73 // todo: get from session
       }
       console.log(id)
       console.log('connected');
@@ -98,6 +99,9 @@ const App = () => {
           </Route>
           <Route path="/priceoffs">
             <PriceOffers webSocketRef={webSocketRef} />
+          </Route>
+          <Route path="/tasks">
+            <Tasks webSocketRef={webSocketRef} />
           </Route>
           <Route path="/">
             <MyOrders webSocketRef={webSocketRef} />

@@ -1744,18 +1744,19 @@ div.price-offer-table-container>div:not(.header-container) div {
   padding: 0px 2px 1px 1px;
 }
 
-div.price-offer-table-container>div:not(.header-container) input,
-div.price-offer-table-container>div:not(.header-container) select {
+div.price-offer-table-container>div:not(.header-container) input, div.price-offer-table-container>div:not(.header-container) select {
   border: none;
   text-align: right;
   padding-right: 5px;
   width: 100%;
   height: 100%;
 }
+
 div.price-offer-table-container>div:not(.header-container) select {
   background-color: rgba(195, 225, 255, 0.5);
   color: #555555;
 }
+
 div.price-offer-table-container>div:not(.header-container) input:focus, div.price-offer-table-container>div:not(.header-container) select:focus {
   outline: none;
   caret-color: #1a73e8;
@@ -1988,15 +1989,18 @@ div.add-new-price-offerer {
   height: 260px;
   overflow: auto;
 }
-.offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type)::-webkit-scrollbar{
+
+.offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type)::-webkit-scrollbar {
   width: 10px;
 }
-.offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type)::-webkit-scrollbar-thumb{
+
+.offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type)::-webkit-scrollbar-thumb {
   border: 1px solid transparent;
   border-radius: 20px;
   background-clip: padding-box;
   background-color: rgba(0, 0, 0, 0.2);
 }
+
 .offer-pictures>div>div>table {
   width: 100%;
   table-layout: fixed;
@@ -2019,9 +2023,11 @@ div.add-new-price-offerer {
 .offer-pictures>div>div>table td:first-of-type {
   width: 40px;
 }
+
 .offer-pictures>div>div>table td:last-of-type {
   width: 70px;
 }
+
 .offer-pictures>div>div>table td:nth-of-type(2) {
   width: 130px;
 }
@@ -2069,7 +2075,8 @@ div.big-picture-ref>div>span {
   float: right;
   display: block;
 }
-div.price-offer-detailed{
+
+div.price-offer-detailed {
   position: fixed;
   top: 0;
   z-index: 2;
@@ -2079,12 +2086,14 @@ div.price-offer-detailed{
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.4);
 }
-div.price-offer-detailed>div{
+
+div.price-offer-detailed>div {
   width: 80%;
   margin: auto;
   max-width: 2048px;
 }
-div.price-offer-detailed>div>div:first-of-type{
+
+div.price-offer-detailed>div>div:first-of-type {
   padding: 10px 20px !important;
   background-image: linear-gradient(to bottom, rgb(57, 65, 87), rgb(0, 6, 8));
   border-radius: 5px 5px 0px 0px;
@@ -2093,52 +2102,123 @@ div.price-offer-detailed>div>div:first-of-type{
   text-align: left;
   overflow: auto;
 }
-div.price-offer-detailed>div>div:not(:first-of-type){
+
+div.price-offer-detailed>div>div:not(:first-of-type) {
   background-color: white;
   padding: 50px 20px;
 }
-div.price-offer-detailed>div>div:first-of-type>svg{
+
+div.price-offer-detailed>div>div:first-of-type>svg {
   float: right;
   margin-right: 10px;
   cursor: pointer;
   color: white;
 }
-div.price-offer-detailed>div>div>table{
+
+div.price-offer-detailed>div>div>table {
   border-collapse: collapse;
   width: 100%;
 }
-div.price-offer-detailed>div>div>table>thead{
- background-color: cornflowerblue;
- border-radius: 5px 5px 0px 0px;
- overflow: hidden;
- color: white;
+
+div.price-offer-detailed>div>div>table>thead {
+  background-color: cornflowerblue;
+  border-radius: 5px 5px 0px 0px;
+  overflow: hidden;
+  color: white;
 }
-div.price-offer-detailed>div>div>table td:nth-of-type(-n + 5){
+
+div.price-offer-detailed>div>div>table td:nth-of-type(-n+5) {
   text-align: left;
 }
-div.price-offer-detailed>div>div>table>thead td{
+
+div.price-offer-detailed>div>div>table>thead td {
   overflow: hidden;
   padding: 15px 10px;
   font-size: 14px;
- }
-div.price-offer-detailed>div>div>table>tbody td{
+}
+
+div.price-offer-detailed>div>div>table>tbody td {
   padding: 0px 10px;
   font-size: 14px;
 }
-div.price-offer-detailed>div>div>table>tbody>tr>td:nth-of-type(2){
+
+div.price-offer-detailed>div>div>table>tbody>tr>td:nth-of-type(2) {
   min-width: 150px;
 }
-div.price-offer-detailed>div>div>table>tbody td>input{
+
+div.price-offer-detailed>div>div>table>tbody td>input {
   margin: 5px 0px;
   max-width: 150px;
   padding: 4px 2px;
 }
-div.price-offer-detailed>div>div>table>tbody>tr:nth-of-type(2n + 1){
- background-color: rgba(0, 0, 0,0.05);
+
+div.price-offer-detailed>div>div>table>tbody>tr:nth-of-type(2n+1) {
+  background-color: rgba(0, 0, 0, 0.05);
 }
-div.price-offer-detailed>div>div>table>tbody>tr:not(:nth-of-type(2n + 1)){
+
+div.price-offer-version+div {
+  padding: 20px 0px 0px 100px;
+  margin: 0px 20px;
+}
+
+div.create-price-offer {
+  color: white;
+  background-color: rgb(74, 160, 230);
+  padding: 12px 15px;
+  margin: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+div.price-offer-version {
+  display: flex;
+  align-items: center;
+  margin: 60px 20px 0px 20px;
+  background-image: linear-gradient(to right, rgb(255, 182, 24), rgb(255, 240, 190));
+  border-radius: 5px;
+  box-shadow: 0px 0px 8px 3px rgba(185, 184, 184, 0.1);
+  color: white;
+  font-size: 20px;
+  text-align: left;
+  padding: 8px 50px;
+  overflow: hidden;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+div.price-offer-card:nth-of-type(2n) {
+  background-color: #0495ce;
+  color: white;
+}
+
+div.price-offer-card {
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 8px;
+}
+
+div.price-offer-card>span:first-of-type {
+  float: left;
+}
+
+div.price-offer-card>span:nth-of-type(2) {
+  float: right;
+}
+
+div.price-offer-version>span {
+  flex: 1;
+}
+
+div.price-offer-version>svg {
+  color: rgb(255, 255, 255);
+  float: right;
+}
+
+div.price-offer-detailed>div>div>table>tbody>tr:not(:nth-of-type(2n+1)) {
   background-color: rgba(128, 128, 128, 0.05);
- }
+}
+
 div.big-picture-ref>div>span>svg {
   position: absolute;
   cursor: pointer;

@@ -14,7 +14,7 @@ const SideBar = (props) => {
 	const [visas, setVisas] = useState([]);
 	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
-	
+	// console.log(visas)
 	const mountFunc = useCallback(props.mountFunc, []);
 	useEffect(() => {
 		mountFunc(setVisas, notifIcon)
@@ -87,6 +87,7 @@ const SideBar = (props) => {
 							deadline={visa.deadline}
 							remark={visa.comment}
 							date={visa.date_time}
+							priceOffProcessed={visa.processed}
 						/>
 					})
 				}

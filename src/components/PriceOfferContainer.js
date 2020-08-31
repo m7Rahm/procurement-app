@@ -1,10 +1,16 @@
 import React from 'react'
-import PriceOffer from './modal content/PriceOffer'
+
+
+const HOC = (Component) => (props) => {
+    return (
+        <Component {...props}/>
+    )
+}
 const PriceOfferContainer = (props) => {
-    const Compo = () => <PriceOffer active={props.active}/>
+    const Compo = HOC(props.children)
     return (
         <div className="price-offer-container">
-            <Compo/>
+            <Compo active={props.active}/>
         </div>
     )
 }

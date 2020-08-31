@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
+import OrdersContent from '../components/OrdersContent'
 import PriceOffReady from '../components/PriceOffReady' 
 import SideBar from '../components/SideBar'
-import PriceOfferContainer from '../components/PriceOfferContainer'
-import OrderContentProtected from '../components/OrderContentProtected'
 const onMountFunction = (setVisas) => {
     const data = {
         deadline: '',
@@ -53,7 +52,7 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
-const PriceOffers = () => {
+const Tasks = () => {
     const [active, setActive] = useState(null);
     // console.log(active);
     return (
@@ -61,24 +60,7 @@ const PriceOffers = () => {
             <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
             {
                 active
-                    ? <div
-                    style={{
-                        display: 'flex',
-                        flexFlow: 'column wrap',
-                        flex: 1,
-                        maxWidth: '1256px',
-                        paddingTop: '100px',
-                        margin: ' 0px auto',
-                        overflowY: 'hidden',
-                        maxHeight: '100vh'
-                        }}>
-                    <div style={{overflow: 'auto'}}>
-                        <OrderContentProtected footerComponent={() => <></>} current={active} />
-                            <PriceOfferContainer active={active}>
-                                {PriceOffReady}
-                            </PriceOfferContainer>
-                    </div>
-                </div>
+                    ? <OrdersContent childComp={PriceOffReady} current={active} />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img
@@ -94,4 +76,4 @@ const PriceOffers = () => {
         </div>
     )
 }
-export default PriceOffers
+export default Tasks
