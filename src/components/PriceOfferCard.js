@@ -22,8 +22,9 @@ const PriceOfferCard = (props) => {
                             poNumb: priceOfferNumb,
                             empVersion: props.offerVersion
                         }}
+                        active={props.active}
                         priceOfferNumb={priceOfferNumb}
-                        canBeChanged={false}
+                        canBeChanged={props.canBeChanged}
                     />
                 </div>
             }

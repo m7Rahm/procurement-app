@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 import PriceOfferCard from './PriceOfferCard'
 const PriceOfferVersion = (props) => {
+    console.log(props)
     const [offers, setOffers] = useState([])
     const loadOfferVersion = () => {
         if (offers.length === 0) {
@@ -40,6 +41,7 @@ const PriceOfferVersion = (props) => {
                             offerNumb={offer.price_offer_numb}
                             date={offer.create_date_time}
                             userid={offer.user_id}
+                            canBeChanged={props.canBeChanged}
                             offerVersion={props.offerVersion}
                             active={props.active}
                         />

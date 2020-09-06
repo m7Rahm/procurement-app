@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import OrdersContent from '../components/OrdersContent'
 import PriceOffer from '../components/modal content/PriceOffer' 
 import SideBar from '../components/SideBar'
+import CreatePriceOfferFooter from '../components/CreatePriceOfferFooter'
+
 const onMountFunction = (setVisas) => {
     const data = {
         deadline: '',
@@ -47,14 +49,24 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
+const footerComp = (props) =>
+    <CreatePriceOfferFooter
+        {...props}
+        childComp={PriceOffer}
+    />
 const Inbox = () => {
+    const canBeChanged = false
     const [active, setActive] = useState(null);
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
             <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
             {
                 active
-                    ? <OrdersContent childComp={PriceOffer} current={active} />
+                    ? <OrdersContent
+                        current={active}
+                        canBeChanged={canBeChanged}
+                        footerComp={footerComp}
+                    />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img

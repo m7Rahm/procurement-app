@@ -1,8 +1,7 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useRef } from 'react'
 import SideBar from '../components/SideBar'
 import VisaContent from '../components/VisaContent'
 const handleCardClick = (isReadRef, props, stateRef) => {
-  console.log(props)
   if (isReadRef.current.style.display === 'block') {
     const data = {
       visaCards: [[props.id, 0, 1, props.isPinned, props.number, props.empVersion]],
@@ -37,7 +36,7 @@ const handleCardClick = (isReadRef, props, stateRef) => {
 }
 const Visas = (props) => {
   const [active, setActive] = useState(null);
-  const onMountFunction = useCallback((setVisas, notifIcon) => {
+  const onMountFunction = useRef((setVisas,notifIcon) => {
     const data = {
       userName: '',
       deadline: '',
@@ -56,7 +55,9 @@ const Visas = (props) => {
       body: JSON.stringify(data)
     })
       .then(resp => resp.json())
-      .then(respJ => setVisas(respJ))
+      .then(respJ => {
+        const totalCount = respJ[0] ? respJ[0].total_count : 0;
+        setVisas({count: totalCount, visas: respJ})})
       .catch(err => console.log(err))
     props.webSocketRef.current.onmessage = (msg) => {
       // console.log(msg)
@@ -66,7 +67,7 @@ const Visas = (props) => {
         notifIcon.current.style.display = 'block';
       }
     }
-  }, [props.webSocketRef])
+  })
   const sendNotification = (receivers) => {
     props.webSocketRef.current.send(JSON.stringify({action: 'newOrder', people: receivers}));
   }
@@ -74,7 +75,7 @@ const Visas = (props) => {
     <div style={{ maxHeight: '100vh', display: 'flex', overflowY: 'hidden' }}>
       <SideBar
         handleCardClick={handleCardClick}
-        mountFunc={onMountFunction}
+        mountFunc={onMountFunction.current}
         setActive={setActive}
       />
       <VisaContent sendNotification={sendNotification} current={active} />

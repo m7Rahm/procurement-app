@@ -2,7 +2,6 @@ import React, { useState, useLayoutEffect } from 'react'
 
 import OrderContentProtected from './OrderContentProtected'
 import PriceOfferVersion from './PriceOfferVersion'
-import CreatePriceOfferFooter from './CreatePriceOfferFooter'
 const footerComponent = () =>
     <>
     </>
@@ -32,7 +31,7 @@ const OrdersContent = (props) => {
         .catch(ex => console.log(ex))
     }, [empVersion, ordNumb]);
     const finished = priceOfferVersions.length === 0 ? false : priceOfferVersions[0].finished;
-    console.log(priceOfferVersions)
+    // console.log(priceOfferVersions)
     return (
         <div
             style={{
@@ -51,6 +50,7 @@ const OrdersContent = (props) => {
                     priceOfferVersions.map(version => 
                         <PriceOfferVersion
                             ordNumb={ordNumb}
+                            canBeChanged={props.canBeChanged}
                             key={version.user_id}
                             name={version.full_name}
                             offerVersion={version.user_id}
@@ -58,10 +58,9 @@ const OrdersContent = (props) => {
                         />
                     )
                 }
-                <CreatePriceOfferFooter
+                <props.footerComp
                     finished={finished}
                     active={props.current}
-                    childComp={props.childComp}
                 />
             </div>
         </div>

@@ -205,7 +205,7 @@ const PriceOfferer = (props) => {
 		props.setPictures(state.files);
 		props.setModalState(true);
 	}
-	const foo = () => {
+	const showDetailedView = () => {
 		setAdvancedViewDisp(true)
 	}
 	return (
@@ -227,7 +227,7 @@ const PriceOfferer = (props) => {
 					<label htmlFor={`file-upload ${props.id}`}>
 						<IoIosAttach onClick={handleFileUpload} title="şəkil əlavə et" size="20" />
 					</label>
-					<RiListSettingsLine onClick={foo} title="ətraflı" size="20" />
+					<RiListSettingsLine onClick={showDetailedView} title="ətraflı" size="20" />
 					<input
 						id={`file-upload ${props.id}`}
 						style={{ display: 'none' }}

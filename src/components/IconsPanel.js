@@ -31,7 +31,8 @@ const IconsPanel = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                props.setVisas(respJ)
+                const totalCount = respJ[0] ? respJ[0].total_count : 0;
+                props.setVisas({ count: totalCount, visas: respJ });
             })
             .catch(error => console.log(error));
     }
@@ -68,7 +69,8 @@ const IconsPanel = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                props.setVisas(respJ)
+                const totalCount = respJ[0] ? respJ[0].total_count : 0;
+                props.setVisas({ count: totalCount, visas: respJ });
             })
             .catch(error => console.log(error));
     }
@@ -95,10 +97,14 @@ const IconsPanel = (props) => {
                         <AiTwotonePushpin onClick={handleBulkPin} color="dodgerblue" title="Oxunmuş et" size="25" />
                     </>
                     : <div>
-                        <GoChevronDown style={{display: props.isDraft ? 'none' : ''}} size="24" onClick={onAdvSearchClick} />
+                        <GoChevronDown style={{ display: props.isDraft ? 'none' : '' }} size="24" onClick={onAdvSearchClick} />
                         {
                             searchBoxState &&
-                            <SearchBox setVisas={props.setVisas} ref={searchBoxRef} />
+                            <SearchBox
+                                searchParamsRef={props.searchParamsRef}
+                                setVisas={props.setVisas}
+                                ref={searchBoxRef}
+                            />
                         }
                     </div>
             }

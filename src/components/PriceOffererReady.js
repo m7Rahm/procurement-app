@@ -2,8 +2,11 @@ import React, { useState, useRef, useLayoutEffect } from 'react'
 import {
     AiOutlinePicture
 } from 'react-icons/ai'
+import {
+    RiListSettingsLine
+} from 'react-icons/ri'
 import { incoTerms } from '../data/data'
-
+import PriceOffererDetailedProtex from './modal content/PriceOffererDetailedProtex'
 const styleSuitable = (suitable, result) => (
     {
         backgroundColor: result ? 'rgba(30, 143, 255, 0.514)' : suitable ? 'rgb(253, 95, 95)' : '',
@@ -50,9 +53,10 @@ const PriceRow = (props) => {
 
 const PriceOffererReady = (props) => {
     // console.log(props);
+    const [advancedViewDisp, setAdvancedViewDisp] = useState(false)
     const supplierRef = useRef(null)
     const [prices, setPrices] = useState([])
-    console.log(prices)
+    // console.log(prices)
     const handleSupplierSelect = () => {
         if(props.selectedSupplierRef.current.ref){
             props.selectedSupplierRef.current.ref.style.backgroundColor = 'transparent'
@@ -85,19 +89,26 @@ const PriceOffererReady = (props) => {
         .then(respJ =>setPrices(respJ))
         .catch(ex => console.log(ex));
     }, [props.offerer])
+    const showDetailedView = () => {
+        setAdvancedViewDisp(true)
+    }
+    const offerExtendedInfo = prices.map((price, index) => ({ ...price, ...props.offerDetailsRef.current[index] }));
+    const handlePictureClick = () => {
+        const picturesModal = props.picturesModalHOC(props.offerer.offerer_id)
+        props.setModalState({state: true, content: picturesModal})
+    }
     return (
         <div style={{backgroundColor: props.result ? 'rgba(30, 143, 255, 0.514)' : ''}} ref={supplierRef}>
             <div style={{cursor: 'pointer'}} onClick={!props.processed ? handleSupplierSelect : () => {}}>
-                <div>{props.offerer.offerer_name}</div>
+                {props.offerer.offerer_name}
                 <div style={{cursor: 'default'}}>
-                    <AiOutlinePicture className="pictures-thumb" size="20" />
+                    <AiOutlinePicture onClick={handlePictureClick} className="pictures-thumb" size="20" />
+                    <RiListSettingsLine onClick={showDetailedView} title="ətraflı" size="20" />
                 </div>
             </div>
             <div>
                <div>
-                    {
-                        incoTerms.find(term => term.id === props.offerer.del_type).name
-                    }
+                    {incoTerms.find(term => term.id === props.offerer.del_type).name}
                 </div>
             </div>
             <div>
@@ -131,16 +142,14 @@ const PriceOffererReady = (props) => {
                 >{props.offerer.total}</div>
             <div>
                 {
-                    // advancedViewDisp &&
-                    // <Suspense fallback="">
-                    // 	<PriceOffererDetailed
-                    // 		supplier={suppliers.find(supplier => supplier.id === state.supplier)}
-                    // 		closeModal={setAdvancedViewDisp}
-                    // 		orderDetails={props.orderDetails}
-                    // 		state={state}
-                    // 		handleAdvChange={handleAdvChange}
-                    // 	/>
-                    // </Suspense>
+                    advancedViewDisp &&
+                    	<PriceOffererDetailedProtex
+                    		supplier={props.offerer}
+                    		closeModal={setAdvancedViewDisp}
+                    		orderDetails={props.orderDetails}
+                    		prices={offerExtendedInfo}
+                    		// handleAdvChange={() => {}}
+                    	/>
                 }
             </div>
         </div>

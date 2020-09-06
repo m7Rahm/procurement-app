@@ -19,7 +19,6 @@ const MyOrders = (props) => {
     .catch(err => console.log(err))
     // if (props.webSocketRef) {
       webSocketRef.current.onmessage = (msg) => {
-        console.log('My Orders')
       };
     // }
   }, [])

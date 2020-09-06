@@ -53,7 +53,10 @@ const PriceOffer = (props) => {
             body: formData
         })
             .then(resp => resp.json())
-            .then(respJ => console.log(respJ))
+            .then(respJ => {
+                if(respJ[0].result === 'success')
+                props.containerRef.current.style.display = 'none'
+            })
             .catch(ex => console.log(ex));
     }
 

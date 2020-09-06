@@ -78,7 +78,6 @@ const NewOrderContent = (props) => {
   const init = (current) => {
     const state = initState(current, props.content)
     stateRef.current.init = state;
-    console.log(state.materials);
     receiversRef.current = state.receivers
     return state
   }

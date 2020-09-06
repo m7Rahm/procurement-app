@@ -9,8 +9,8 @@ const HOC = (Component) => (props) => {
 const PriceOfferContainer = (props) => {
     const Compo = HOC(props.children)
     return (
-        <div className="price-offer-container">
-            <Compo active={props.active}/>
+        <div className="price-offer-container" ref={props.containerRef}>
+            <Compo containerRef={props.containerRef} active={props.active}/>
         </div>
     )
 }

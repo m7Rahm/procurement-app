@@ -6,29 +6,33 @@ import {
 } from 'react-icons/bs'
 
 import IconsPanel from './IconsPanel';
+import Pagination from './Pagination';
 
 const SideBar = (props) => {
 	const notifIcon = useRef(null);
+	const activePageRef = useRef(0)
 	const checkedAmountRef = useRef([]);
 	const iconsPanelRef = useRef(null);
-	const [visas, setVisas] = useState([]);
+	const [visas, setVisas] = useState({count: 0, visas: []});
 	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
+	const searchParamsRef = useRef({userName: '', startDate: null, endDate: null, deadline: '', docType: 0 })
 	// console.log(visas)
 	const mountFunc = useCallback(props.mountFunc, []);
 	useEffect(() => {
-		mountFunc(setVisas, notifIcon)
+		mountFunc(setVisas,notifIcon)
 	}, [mountFunc]);
-	const updateList = () => {
-		const data = {
-			userName: '',
-			deadline: '',
-			startDate: null,
-			endDate: null,
-			docType: 0,
-			from: 0,
-			until: 20
+
+	const updateList = (from) => {
+		const searchRefData = {
+			userName: searchParamsRef.current.userName,
+			startDate: searchParamsRef.current.startDate,
+			endDate: searchParamsRef.current.endDate,
+			deadline: searchParamsRef.current.deadline,
+			docType: searchParamsRef.current.docType,
 		}
+		const data = { ...searchRefData, from, until: 20}
+		console.log(data);
 		fetch('http://172.16.3.101:54321/api/visas', {
 			method: 'POST',
 			headers: {
@@ -39,33 +43,36 @@ const SideBar = (props) => {
 		})
 			.then(resp => resp.json())
 			.then(respJ => {
-				setVisas(respJ);
+				const totalCount = respJ[0] ? respJ[0].total_count : 0;
+				setVisas({count: totalCount, visas: respJ});
 				notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
 				notifIcon.current.addEventListener('animationend', function () {
 					this.style.display = 'none';
 					this.style.animation = 'animation: show-up 0.2s ease-in both';
 				})
 			})
-			.catch(err => console.log(err))
+			.catch(ex => console.log(ex))
 
 	}
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>
 				<IconsPanel
+					searchParamsRef={searchParamsRef}
 					isDraft={props.isDraft}
 					iconsVisible={iconsVisible}
 					checkedAmountRef={checkedAmountRef}
 					setVisas={setVisas}
+					mountFunc={mountFunc}
 				/>
 			</div>
-			<div onClick={updateList} ref={notifIcon} className="new-visa-notification">
+			<div onClick={() => updateList(0)} ref={notifIcon} className="new-visa-notification">
 				<BsArrowUpShort size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
 				Yeni bildiriş
 			</div>
 			<ul>
 				{
-					visas.map((visa) => {
+					visas.visas.map((visa) => {
 						// const isActive = active === visa.id ? true : false
 						return <VisaCard
 							key={visa.id}
@@ -92,6 +99,11 @@ const SideBar = (props) => {
 					})
 				}
 			</ul>
+			<Pagination
+				count={215}
+				activePageRef={activePageRef}
+				updateList={updateList}
+			/>
 		</div>
 	)
 }

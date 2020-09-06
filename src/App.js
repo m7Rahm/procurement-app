@@ -29,7 +29,7 @@ const App = () => {
       // .substr(3);
       const data = {
         action: "recognition",
-        person: id || 73 // todo: get from session
+        person: 73 // todo: get from session
       }
       console.log(id)
       console.log('connected');

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import PriceOffReady from '../components/PriceOffReady' 
 import SideBar from '../components/SideBar'
-import PriceOfferContainer from '../components/PriceOfferContainer'
-import OrderContentProtected from '../components/OrderContentProtected'
+import OrdersContent from '../components/OrdersContent'
 const onMountFunction = (setVisas) => {
     const data = {
         deadline: '',
@@ -25,6 +23,7 @@ const onMountFunction = (setVisas) => {
         .catch(err => console.log(err))
 }
 const handleCardClick = (_, props, stateRef) => {
+    console.log(props)
     if (props.activeRef.current !== stateRef.current) {
         const data = {
             orderid: props.number,
@@ -40,12 +39,7 @@ const handleCardClick = (_, props, stateRef) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                const cards = respJ.map(priceOfferInfo => ({
-                    ...priceOfferInfo,
-                    priceOfferIden: props.id,
-                    processed: props.priceOffProcessed
-                }))
-                props.setActiveVisa(cards);
+                props.setActiveVisa(respJ);
                 props.activeRef.current.style.background = 'none';
                 stateRef.current.style.background = 'skyblue'
                 props.activeRef.current = stateRef.current;
@@ -53,32 +47,20 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
+const canBeChanged = true
+const footerComponent = () => <></>
 const PriceOffers = () => {
     const [active, setActive] = useState(null);
-    // console.log(active);
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
             <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
             {
                 active
-                    ? <div
-                    style={{
-                        display: 'flex',
-                        flexFlow: 'column wrap',
-                        flex: 1,
-                        maxWidth: '1256px',
-                        paddingTop: '100px',
-                        margin: ' 0px auto',
-                        overflowY: 'hidden',
-                        maxHeight: '100vh'
-                        }}>
-                    <div style={{overflow: 'auto'}}>
-                        <OrderContentProtected footerComponent={() => <></>} current={active} />
-                            <PriceOfferContainer active={active}>
-                                {PriceOffReady}
-                            </PriceOfferContainer>
-                    </div>
-                </div>
+                    ? <OrdersContent
+                        current={active}
+                        canBeChanged={canBeChanged}
+                        footerComp={footerComponent}
+                    />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img

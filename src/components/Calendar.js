@@ -72,14 +72,14 @@ const Calendar = (props) => {
 	}
 	const handleDatePickerChange = e => {
 		const value = e.target.value;
-		props.dispatch({ type: props.actionType, payload: value })
+		props.dispatch({ type: props.actionType, payload: value, ref: props.searchParamsRef })
 	}
 	const handleClick = (value) => {
-		props.dispatch({ type: props.actionType, payload: value });
+		props.dispatch({ type: props.actionType, payload: value, ref: props.searchParamsRef });
 		calendarRef.current.style.display = 'none'
 	}
 	const clearDate = () => {
-		props.dispatch({ type: props.actionType, payload: '' });
+		props.dispatch({ type: props.actionType, payload: '', ref: props.searchParamsRef });
 		calendarRef.current.style.display = 'none'
 	}
 	return (

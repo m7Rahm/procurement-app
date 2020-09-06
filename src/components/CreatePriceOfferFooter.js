@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PriceOfferContainer from './PriceOfferContainer'
 const CreatePriceOfferFooter = (props) => {
     const [createButtonClicked, setCreateButtonClicked] = useState(false);
+    const newPriceOfferFormRef = useRef(null)
     const ordNumb = props.active[0].ord_numb
     const onCreateButtonClick = () => {
         setCreateButtonClicked(true)
@@ -19,7 +20,10 @@ const CreatePriceOfferFooter = (props) => {
             }
             {
                 createButtonClicked &&
-                <PriceOfferContainer active={props.active}>
+                <PriceOfferContainer
+                    active={props.active}
+                    containerRef={newPriceOfferFormRef}
+                >
                     {props.childComp}
                 </PriceOfferContainer>
             }
