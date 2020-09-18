@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import VisaForwardPerson from '../VisaForwardPerson'
-
+import { token } from '../../data/data'
 const AcceptDecline = (props) => {
     const [comment, setComment] = useState('');
     const [empList, setEmpList] = useState([]);
@@ -11,7 +11,11 @@ const AcceptDecline = (props) => {
         ? "Əlavə qeydlərinizi daxil edin.."
         : "Etirazın səbəbini göstərin";
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/emplist')
+        fetch('http://172.16.3.101:54321/api/emplist', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
             .then(resp => resp.json())
             .then(respJ => {
                 setEmpList(respJ);
@@ -32,7 +36,8 @@ const AcceptDecline = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Content-Length': JSON.stringify(data).length
+                    'Content-Length': JSON.stringify(data).length,
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(data)
             })

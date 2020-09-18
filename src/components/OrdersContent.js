@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import OrderContentProtected from './OrderContentProtected'
 import PriceOfferVersion from './PriceOfferVersion'
@@ -11,16 +11,18 @@ const OrdersContent = (props) => {
     const empVersion = props.current[0].emp_version_id
     const ordNumb = props.current[0].ord_numb;
     
-    useLayoutEffect(() => {
+    useEffect(() => {
         const data = {
             empVersion,
             ordNumb
         }
+        const token = localStorage.getItem('token');
         fetch('http://172.16.3.101:54321/api/get-price-offer-versions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })

@@ -77,11 +77,13 @@ const PriceOffererReady = (props) => {
             priceOfferNumb: props.offerer.price_offer_numb,
             offererid: props.offerer.offerer_id
         }
+        const token = localStorage.getItem('token');
         fetch('http://172.16.3.101:54321/api/offerer-prices', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { token } from '../data/data'
 const AcceptDecline = React.lazy(() => import('./modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {
@@ -30,7 +31,8 @@ const VisaContentFooter = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Content-Length': JSON.stringify(data).length
+                    'Content-Length': JSON.stringify(data).length,
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(data)
             })

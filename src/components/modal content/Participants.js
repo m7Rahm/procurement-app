@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {
   IoMdRefreshCircle
 } from 'react-icons/io'
+import { token } from '../../data/data' 
 const Participants = (props) => {
   // console.log(props.number)
   const [checked, setChecked] = useState(false);
@@ -11,7 +12,11 @@ const Participants = (props) => {
   }
 
   useEffect(() => {
-    fetch(`http://172.16.3.101:54321/api/participants/${props.number}?type=1&empVersion=${props.empVersion}`)
+    fetch(`http://172.16.3.101:54321/api/participants/${props.number}?type=1&empVersion=${props.empVersion}`, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
       .then(resp => resp.json())
       .then(respJ => setParticipants(respJ)
       )
@@ -57,7 +62,11 @@ const Participants = (props) => {
 const Reviewers = (props) => {
   const [reviewers, setReviewers] = useState(null);
   useEffect(() => {
-    fetch(`http://172.16.3.101:54321/api/participants/${props.id}?type=2&empVersion=${props.empVersion}`)
+    fetch(`http://172.16.3.101:54321/api/participants/${props.id}?type=2&empVersion=${props.empVersion}`, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
       .then(resp => resp.json())
       .then(respJ => setReviewers(respJ)
       )

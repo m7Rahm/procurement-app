@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
+import { token } from '../../data/data'
 const PicturesModal = (props) => {
     const priceOfferNumb = props.priceOfferNumb;
     const offererid = props.offererid;
@@ -14,7 +14,8 @@ const PicturesModal = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })

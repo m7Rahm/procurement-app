@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useRef } from 'react';
 import Calendar from './Calendar';
-
+import { token } from '../data/data'
 const advancedSearchReducser = (state, action) => {
     const type = action.type;
     switch (type) {
@@ -60,7 +60,6 @@ const SearchBox = (props, ref) => {
             }
         }
         ref.current.addEventListener('animationend', function () {
-            console.log('entered')
             if (this.classList.contains('advanced-search-bar-hide')) {
                 this.style.display = 'none';
             }
@@ -82,7 +81,8 @@ const SearchBox = (props, ref) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -90,6 +90,7 @@ const SearchBox = (props, ref) => {
             .then(respJ => {
                 ref.current.classList.add('advanced-search-bar-hide');
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
+                props.activePageRef.current = 0;
                 props.setVisas({ count: totalCount, visas: respJ });
             })
             .catch(err => console.log(err))

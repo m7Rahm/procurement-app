@@ -3,7 +3,7 @@ import OrdersContent from '../components/OrdersContent'
 import PriceOffer from '../components/modal content/PriceOffer' 
 import SideBar from '../components/SideBar'
 import CreatePriceOfferFooter from '../components/CreatePriceOfferFooter'
-
+import { token } from '../data/data'
 const onMountFunction = (setVisas) => {
     const data = {
         deadline: '',
@@ -17,12 +17,16 @@ const onMountFunction = (setVisas) => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Content-Length': JSON.stringify(data).length
+            'Content-Length': JSON.stringify(data).length,
+            'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(data)
     })
         .then(resp => resp.json())
-        .then(respJ => setVisas(respJ))
+        .then(respJ => {
+            const totalCount = respJ[0] ? respJ[0].total_count : 0;
+            setVisas({ count: totalCount, visas: respJ })
+        })
         .catch(err => console.log(err))
 }
 const handleCardClick = (_, props, stateRef) => {
@@ -35,7 +39,8 @@ const handleCardClick = (_, props, stateRef) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })

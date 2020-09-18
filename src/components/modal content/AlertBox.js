@@ -2,6 +2,7 @@ import React from 'react'
 import {
     AiOutlineInfoCircle
 } from 'react-icons/ai'
+import { token } from '../../data/data'
 const AlertBox = props => {
     const handleClick = (action) => {
         // props.stateRef.current.latest.receivers = props.empListRef.current;
@@ -30,7 +31,8 @@ const AlertBox = props => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Content-Length': JSON.stringify(data).length
+                    'Content-Length': JSON.stringify(data).length,
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(data)
             })

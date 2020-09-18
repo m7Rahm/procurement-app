@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 import PriceOfferCard from './PriceOfferCard'
+import { token } from '../data/data'
+
 const PriceOfferVersion = (props) => {
-    console.log(props)
     const [offers, setOffers] = useState([])
     const loadOfferVersion = () => {
         if (offers.length === 0) {
@@ -14,7 +15,8 @@ const PriceOfferVersion = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Content-Length': JSON.stringify(data).length
+                    'Content-Length': JSON.stringify(data).length,
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(data)
             })

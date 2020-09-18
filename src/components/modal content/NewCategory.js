@@ -8,6 +8,7 @@ import {
 import {
     FaPlus
 } from 'react-icons/fa'
+import { token } from '../../data/data'
 const NewCategory = (props) => {
     const closeModal = () => props.setSysParamsModalState(false);
     const [departments, setDepartments] = useState([]);
@@ -18,7 +19,8 @@ const NewCategory = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -39,7 +41,11 @@ const NewCategory = (props) => {
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments')
+        fetch('http://172.16.3.101:54321/api/departments', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
             .then(resp => resp.json())
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex))

@@ -20,7 +20,7 @@ useEffect(
   , [handleOnOuterClick]
 )
 return (
-  props.orders.map((order, index) => {
+  props.orders.orders.map((order, index) => {
     const active = index === activeLinkIndex ? true : false;
     return (
       <ListItem

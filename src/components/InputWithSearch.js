@@ -9,8 +9,13 @@ const InputWithSearch = (props) => {
 	const current = props.current;
 	const empVersion = props.empVersion;
 	useEffect(() => {
+		const token = localStorage.getItem('token');
 		if (props.isDraft)
-			fetch(`http://172.16.3.101:54321/api/participants/${current}?type=2&empVersion=${empVersion}`)
+			fetch(`http://172.16.3.101:54321/api/participants/${current}?type=2&empVersion=${empVersion}`,{
+				headers: {
+					'Authorization': 'Bearer ' + token
+				}
+			})
 				.then(resp => resp.json())
 				.then(respJ => {
 					console.log(respJ)

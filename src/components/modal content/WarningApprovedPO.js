@@ -1,7 +1,6 @@
 import React from 'react'
 
 const WarningApprovedPO = (props) => {
-    console.log(props)
     const bodyGenInfo = props.approvedData.map(data =>
         ({
             materialName: data.material_name,

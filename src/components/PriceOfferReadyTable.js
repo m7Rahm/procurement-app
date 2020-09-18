@@ -3,7 +3,7 @@ import PriceOffererReady from './PriceOffererReady'
 import WarningApprovedPO from './modal content/WarningApprovedPO'
 import Modal from './Modal'
 import PicturesModal from './modal content/PicturesModal'
-
+import { token } from '../data/data'
 const OrderDetails = React.memo((props) => {
     const [offerDetails, setOfferDetails] = useState([]);
     useEffect(() => {
@@ -14,7 +14,8 @@ const OrderDetails = React.memo((props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -43,9 +44,10 @@ const PriceOfferReadyTable = (props) => {
     const selectedSupplierRef = useRef({})
     const actionsRibbon = useRef(null);
     const [offerers, setOfferers] = useState([]);
-    const [approvedData, setApprovedData] = useState([]);
+    // const [approvedData, setApprovedData] = useState([]);
     const ordNumb = props.active[0].ord_numb;
-    const empVersion = props.priceOfferInfo.empVersion
+    const empVersion = props.priceOfferInfo.empVersion;
+    const orderVersion = props.active[0].emp_version_id;
     const poNumb = props.priceOfferInfo.poNumb;
     const offerDetailsRef = useRef(null);
     const picturesModalHOC = (offererid) => (props) =>
@@ -54,17 +56,12 @@ const PriceOfferReadyTable = (props) => {
             priceOfferNumb={poNumb}
             {...props}
         />
-
+        console.log(empVersion)
     const [modalState, setModalState] = useState({ state: false, content: null });
     // console.log(props)
     const closeModal = () => {
         setModalState({ state: false, content: null })
     }
-    const warningDuplicate = (props) =>
-        <WarningApprovedPO
-            {...props}
-            approvedData={approvedData}
-        />
     useLayoutEffect(() => {
         const data = {
             poNumb: poNumb,
@@ -74,17 +71,18 @@ const PriceOfferReadyTable = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
             .then(resp => resp.json())
             .then(respJ => {
+                console.log(respJ)
                 setOfferers(respJ)
             })
     }, [poNumb, empVersion])
     const confirmSelected = () => {
-        console.log(indivPricesRef.current, selectedSupplierRef.current)
         const partial = selectedSupplierRef.current.ref ? false : true;
         const approvedPriceIds = Object.values(indivPricesRef.current).map(priceInfo => priceInfo.val);
         const data = {
@@ -94,26 +92,32 @@ const PriceOfferReadyTable = (props) => {
             offererid: selectedSupplierRef.current.value,
             approvedPriceIds: approvedPriceIds,
             ordNumb,
-            empVersion
+            empVersion: orderVersion
         }
+        console.log(data)
         fetch('http://172.16.3.101:54321/api/app-dec-price-offer', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
             .then(resp => resp.json())
             .then(respJ => {
-                // console.log(respJ);
+                console.log(respJ);
                 if (respJ[0].result === 'success') {
                     actionsRibbon.current.style.display = 'none'
                 }
                 else if (respJ[0].result === 'exists') {
-
+                    const warningDuplicate = (props) =>
+                        <WarningApprovedPO
+                            {...props}
+                            approvedData={respJ}
+                        />
+                    // setApprovedData(respJ)
                     setModalState({ state: true, content: warningDuplicate })
-                    setApprovedData(respJ)
                 }
             })
     }
@@ -129,7 +133,8 @@ const PriceOfferReadyTable = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -139,7 +144,7 @@ const PriceOfferReadyTable = (props) => {
                     actionsRibbon.current.style.display = 'none'
                 }
                 else if (respJ[0].result === 'exists') {
-                    setApprovedData(respJ)
+                    // setApprovedData(respJ)
                 }
             })
     }

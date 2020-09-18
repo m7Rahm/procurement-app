@@ -5,7 +5,8 @@ import NewCategory from './modal content/NewCategory'
 const NewOrderTableBody = (props) => {
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
   const [materials, setMaterials] = useState([]);
-  const modelsListRef = useRef(null)
+  const [units, setUnits] = useState([])
+  const modelsListRef = useRef(null);
   const [sysParamsModlaState, setSysParamsModalState] = useState(false)
   useEffect(
     () => {
@@ -23,9 +24,22 @@ const NewOrderTableBody = (props) => {
     }, [activeLinkIndex]
   )
   useEffect(() => {
-    fetch('http://172.16.3.101:54321/api/get-material-categories')
+    const token = localStorage.getItem('token');
+    fetch('http://172.16.3.101:54321/api/get-material-categories', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
     .then(resp => resp.json())
     .then(respJ => setMaterials(respJ))
+    .catch(ex => console.log(ex))
+    fetch('http://172.16.3.101:54321/api/get-units', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+    .then(resp => resp.json())
+    .then(respJ => setUnits(respJ))
     .catch(ex => console.log(ex))
   }, []);
   return (
@@ -36,6 +50,7 @@ const NewOrderTableBody = (props) => {
           return (
             <NewOrderTableRow
               dispatch={props.dispatch}
+              units={units}
               index={index}
               setSysParamsModalState={setSysParamsModalState}
               materials={materials}
@@ -45,6 +60,7 @@ const NewOrderTableBody = (props) => {
               materialId={material.materialId}
               key={material.id}
               isActive={isActive}
+              unitid={material.unitid}
               amount={material.amount}
               model={material.model}
               additionalInfo={material.additionalInfo}

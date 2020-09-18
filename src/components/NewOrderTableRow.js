@@ -16,7 +16,6 @@ const NewOrderTableRow = (props) => {
     e.target.name = 'importance';
     handleChange(e);
   }
-  console.log(modelsList)
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -51,11 +50,13 @@ const NewOrderTableRow = (props) => {
       const data = {
         materialid: value
       }
+      const token = localStorage.getItem('token');
       fetch(`http://172.16.3.101:54321/api/get-models`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Content-Length': JSON.stringify(data).length
+          'Content-Length': JSON.stringify(data).length,
+          'Authorization': 'Bearer ' + token
         },
         body: JSON.stringify(data)
       })
@@ -147,8 +148,27 @@ const NewOrderTableRow = (props) => {
           <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
         </div>
       </div>
-      <div><input style={{ width: '100%' }} placeholder="Link və ya əlavə məlumat" name="additionalInfo" value={props.additionalInfo} type="text" onChange={handleChange} /></div>
-      <div><FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" /></div>
+      <div>
+        <select name="unitid" onChange={handleChange} value={props.unitid}>
+          {
+            props.units.map(unit =>
+              <option value={unit.id} key={unit.id}>{unit.title}</option>
+            )}
+        </select>
+      </div>
+      <div>
+        <input
+          style={{ width: '100%' }}
+          placeholder="Link və ya əlavə məlumat"
+          name="additionalInfo"
+          value={props.additionalInfo}
+          type="text"
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
+        </div>
     </li>
   )
 }

@@ -7,6 +7,7 @@ const PriceOfferCard = (props) => {
     const handleOfferVisibility = () => {
         setShowOffer(prev => !prev)
     }
+    console.log(props)
     return (
         <>
             <div onClick={handleOfferVisibility} className="price-offer-card">

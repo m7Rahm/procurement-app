@@ -7,6 +7,7 @@ import {
 
 import IconsPanel from './IconsPanel';
 import Pagination from './Pagination';
+import { token } from '../data/data'
 
 const SideBar = (props) => {
 	const notifIcon = useRef(null);
@@ -37,7 +38,8 @@ const SideBar = (props) => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'Content-Length': JSON.stringify(data).length
+				'Content-Length': JSON.stringify(data).length,
+				'Authorization': 'Bearer ' + token
 			},
 			body: JSON.stringify(data)
 		})
@@ -64,6 +66,7 @@ const SideBar = (props) => {
 					checkedAmountRef={checkedAmountRef}
 					setVisas={setVisas}
 					mountFunc={mountFunc}
+					activePageRef={activePageRef}
 				/>
 			</div>
 			<div onClick={() => updateList(0)} ref={notifIcon} className="new-visa-notification">
@@ -100,7 +103,7 @@ const SideBar = (props) => {
 				}
 			</ul>
 			<Pagination
-				count={215}
+				count={visas.count}
 				activePageRef={activePageRef}
 				updateList={updateList}
 			/>

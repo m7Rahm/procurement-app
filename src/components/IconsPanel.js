@@ -13,6 +13,7 @@ import SearchBox from './SearchBox';
 const IconsPanel = (props) => {
     const searchBoxRef = useRef(null);
     // const countRef = useRef(0)
+    const token = localStorage.getItem('token');
     const [searchBoxState, setSearchBoxState] = useState(false);
     const handleBulkDelete = () => {
         console.log(props.checkedAmountRef.current);
@@ -25,7 +26,8 @@ const IconsPanel = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -46,7 +48,8 @@ const IconsPanel = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -63,7 +66,8 @@ const IconsPanel = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
+                'Content-Length': JSON.stringify(data).length,
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
@@ -103,6 +107,7 @@ const IconsPanel = (props) => {
                             <SearchBox
                                 searchParamsRef={props.searchParamsRef}
                                 setVisas={props.setVisas}
+                                activePageRef={props.activePageRef}
                                 ref={searchBoxRef}
                             />
                         }

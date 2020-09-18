@@ -244,6 +244,7 @@ export const visas = [
         date: '11/07/2020'
     }
 ]
+export const token = localStorage.getItem('token');
 export const newOrderInitial = {
     materials: [
         {
@@ -253,7 +254,8 @@ export const newOrderInitial = {
             importance: 1,
             amount: 1,
             additionalInfo: '',
-            class: ''
+            class: '',
+            unitid: 2
         }
     ],
     deadline: '',
@@ -279,6 +281,20 @@ export const suppliers = [
     {
         name: 'Caspien Supplies',
         id: '4'
+    },
+]
+export const importance = [
+    {
+        title: 'orta',
+        val: 1
+    },
+    {
+        title: 'vacib',
+        val: 2
+    },
+    {
+        title: 'çox vacib',
+        val: 3
     },
 ]
 export const incoTerms = [

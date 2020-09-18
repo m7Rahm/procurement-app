@@ -12,9 +12,9 @@ const NewOrder = (props) => {
   const handleClose = (data, receivers) => {
     setIsModalVisible(_ => false);
     // todo: send notif on new order to receivers
-    props.webSocketRef.current.send(JSON.stringify({action: 'newOrder', people: receivers}));
-    console.log(receivers)
-    props.setOrders(data);
+    props.webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }));
+    // console.log(receivers)
+    props.setOrders({ count: data[0].total_count, orders: data });
   };
   return (
     <>

@@ -2,7 +2,7 @@ import React, { useReducer, useEffect, useRef, useImperativeHandle } from 'react
 import NewOrderTableBody from '../NewOrderTableBody'
 import NewOrderFooter from '../NewOrderFooter'
 import NewOrderHeader from '../NewOrderHeader.js';
-import { newOrderInitial } from '../../data/data.js'
+import { newOrderInitial, token } from '../../data/data.js'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
@@ -61,7 +61,8 @@ const initState = (current, content) => {
         amount: elem.amount,
         importance: elem.importance,
         additionalInfo: elem.material_comment,
-        class: ''
+        class: '',
+        unitid: 1
       })),
       deadline: content[0].deadline,
       receivers: [],
@@ -86,7 +87,11 @@ const NewOrderContent = (props) => {
   const empVersionId = props.content ? props.content[0].emp_id : undefined
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
   useEffect(() => {
-    fetch('http://172.16.3.101:54321/api/emplist')
+    fetch('http://172.16.3.101:54321/api/emplist', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
       .then(resp => resp.json())
       .then(respJ => {
         empListRef.current = respJ;
@@ -111,7 +116,8 @@ const NewOrderContent = (props) => {
         material.amount,
         material.additionalInfo,
         material.model,
-        material.importance
+        material.importance,
+        material.unitid
       ]
     )
     const data = {
@@ -128,13 +134,14 @@ const NewOrderContent = (props) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': JSON.stringify(data).length
+        'Content-Length': JSON.stringify(data).length,
+        'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify(data)
     })
       .then(resp => resp.json())
       .then(respJ => {
-        console.log(respJ);
+        // console.log(respJ);
         if (respJ[0].result === 'success') {
           onSuccess(data, respJ)
         }
@@ -145,7 +152,11 @@ const NewOrderContent = (props) => {
     if (!current && !props.isDraft) {
       const onSuccess = (data, respJ) => {
         const recs = [...data.receivers, respJ[0].head_id];
-        fetch('http://172.16.3.101:54321/api/orders?from=0&until=20')
+        fetch('http://172.16.3.101:54321/api/orders?from=0&until=20', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        })
           .then(resp => resp.json())
           .then(respJ => {
             props.closeModal(respJ, recs);
@@ -170,7 +181,8 @@ const NewOrderContent = (props) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Content-Length': JSON.stringify(data).length
+            'Content-Length': JSON.stringify(data).length,
+            'Authorization': 'Bearer ' + token
           },
           body: JSON.stringify(data)
         })
@@ -190,7 +202,7 @@ const NewOrderContent = (props) => {
       }
     }
     else if (props.isDraft) {
-      console.log(receiversRef.current)
+      // console.log(receiversRef.current)
       const onSuccess = (data, respJ) => {
         const recs = [...data.receivers, respJ[0].head_id];
         props.onSuccess(recs)
@@ -208,6 +220,7 @@ const NewOrderContent = (props) => {
           <div>Model</div>
           <div style={{ width: '170px', maxWidth: '200px' }}>Vaciblik</div>
           <div style={{ maxWidth: '140px' }}>Say</div>
+          <div>Kəmiyyət</div>
           <div>Əlavə məlumat</div>
           <div> </div>
         </li>

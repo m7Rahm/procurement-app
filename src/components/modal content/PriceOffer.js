@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import PriceOfferList from '../PriceOfferList'
+import { token } from '../../data/data'
 const PriceOffer = (props) => {
     const offerers = useRef([]);
     const [offerersCount, setOfferersCount] = useState(0)
@@ -50,12 +51,16 @@ const PriceOffer = (props) => {
         formData.append('fileMetaData', JSON.stringify(fileMetaData));
         fetch('http://172.16.3.101:54321/api/price-offer', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if(respJ[0].result === 'success')
-                props.containerRef.current.style.display = 'none'
+                console.log(respJ)
+                if (respJ[0].result === 'success')
+                    props.containerRef.current.style.display = 'none'
             })
             .catch(ex => console.log(ex));
     }

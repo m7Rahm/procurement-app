@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import SideBar from '../components/SideBar'
 import VisaContent from '../components/VisaContent'
+import { token } from '../data/data'
 const handleCardClick = (isReadRef, props, stateRef) => {
   if (isReadRef.current.style.display === 'block') {
     const data = {
@@ -11,7 +12,8 @@ const handleCardClick = (isReadRef, props, stateRef) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': JSON.stringify(data).length
+        'Content-Length': JSON.stringify(data).length,
+        'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify(data)
     })
@@ -23,7 +25,11 @@ const handleCardClick = (isReadRef, props, stateRef) => {
       .catch(error => console.log(error));
   }
   if (props.activeRef.current !== stateRef.current) {
-    fetch(`http://172.16.3.101:54321/api/tran-info?tranid=${props.id}`)
+    fetch(`http://172.16.3.101:54321/api/tran-info?tranid=${props.id}`, {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
       .then(resp => resp.json())
       .then(respJ => {
         props.setActiveVisa(respJ);
@@ -50,7 +56,8 @@ const Visas = (props) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': JSON.stringify(data).length
+        'Content-Length': JSON.stringify(data).length,
+        'Authorization': 'Bearer ' + token
       },
       body: JSON.stringify(data)
     })
