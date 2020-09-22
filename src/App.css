@@ -166,9 +166,36 @@ nav>ul>li {
   left: 100px;
   cursor: pointer;
   color: white;
-  animation: anim-up-to-down .5s ease-in both;
+  animation: anim-up-to-down 1.5s ease-in both;
   padding: 5px 10px;
   border-radius: 20px;
+}
+div.operation-result{
+  padding: 20px 15px;
+  position: fixed;
+  top: 200px;
+  left: 0px;
+  right: 0px;
+  width: 350px;
+  margin: auto;
+  background-color: #73b4ce;
+  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+  color: white;
+  border-radius: 5px;
+  font-size: 20px;
+  text-align: center;
+  animation-name: show-up, visibility-hide;
+  animation-duration: 0.8s, 0.6s;
+  animation-delay: 0ms, 2s;
+  animation-fill-mode: forwards;
+  /* animation-timing-function: ease-in-out; */
+}
+div.operation-result>div{
+  padding: 10px;
+}
+div.operation-result>div>svg{
+  display: block;
+  margin: auto;
 }
 
 @keyframes anim-up-to-down {
@@ -1375,16 +1402,105 @@ table.users-table>thead>tr{
 }
 table.users-table>thead>tr>th:not(:first-of-type){
   text-align: left;
-  padding: 6px 4px;
+  padding: 10px 1px;
+}
+table.users-table>thead>tr>th:nth-last-of-type(-n+2){
+  width: 40px;
 }
 table svg{
   cursor: pointer;
+  color: rgb(238, 163, 1);
 }
 table.users-table>tbody>tr:nth-of-type(2n){
-  background-color: #dadada;
+  background-color: #c5c5c5;
+  color: rgb(255, 255, 255);
+}
+/* table.users-table>tbody>tr:hover{
+  background-color: rgba(0, 0, 0, 0.1)
+} */
+div.edit-user{
+  position: relative;
+  padding-top: 30px;
+}
+div.edit-user>div>h1{
+  margin: 20px 40px;
+  color: rgb(146, 100, 0);
+  font-size: large;
+}
+div.edit-user ul{
+  list-style: none;
+}
+div.edit-user div.security>div{
+  margin: 20px 0px;
+  color: white;
+  background-color: #1a73e8;
+  padding: 8px 15px;
+  cursor: pointer;
+  float: left;
+}
+div.edit-user div.save-button{
+  float: right;
+  padding: 8px 15px;
+  background-color: #1a73e8;
+  color: white;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+div.edit-user li.menu-item{
+  padding: 5px 10px;
+  background-color: #1a73e8;
+  color: white;
+  margin: 1px
+}
+div.edit-user div.section-row{
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+div.edit-user>div>div{
+  margin: 0px 80px;
+  display: flex;
+  flex-flow: wrap column; 
+  justify-content: space-between;
+}
+div.edit-user>div:nth-of-type(2)>div{
+  display: flex;
+  flex-flow: row wrap;
+}
+
+div.edit-user>div>div label{
+  font-size: 18px;
+  display: block;
+  margin: 5px 0px;
+  font-weight: 600;
+  color: gray;
+}
+div.edit-user input:focus,
+div.edit-user select:focus{
+  outline: none;
+  box-shadow: 0px 0px 2px 2px #1a73e8;
+}
+div.edit-user input,
+div.edit-user select{
+  display: block;
+  background-color: white;
+  border-width: 0px;
+  border-radius: 5px;
+  clear: both;
+  padding: 6px 3px;
+}
+div.edit-user> svg{
+  position: absolute;
+  cursor: pointer;
+  right: 20px;
+  top: 20px;
+  z-index: 1;
 }
 table.users-table>tbody>tr>td:first-of-type{
   text-align: center;
+}
+table.users-table>tbody>tr>td{
+  padding: 3px 1px;
 }
 div.login label{
   font-size: 18px;

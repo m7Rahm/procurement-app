@@ -37,7 +37,7 @@ const Modal = (props) => {
       </div>
       <div className='modal-content wrapper'>
         <div style={{ marginBottom: '20px' }}>
-          Sifariş № {props.number}
+          {props.title ||' Sifariş №'} {props.number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
         <ModalContent current={props.number} stateRef={stateRef} />

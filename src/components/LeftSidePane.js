@@ -51,4 +51,4 @@ const LeftSidePane = (props, ref) => {
     )
 }
 
-export default React.memo(React.forwardRef(LeftSidePane))
+export default React.memo(React.forwardRef(LeftSidePane), () => true)

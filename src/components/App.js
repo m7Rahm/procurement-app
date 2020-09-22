@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import Visas from '../pages/Visas'
-import MyOrders from '../pages/MyOrders'
-import logo from '../logo.svg'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, useHistory } from 'react-router-dom'
 import {
     IoMdMenu
 } from 'react-icons/io'
+import Visas from '../pages/Visas'
+import MyOrders from '../pages/MyOrders'
+import logo from '../logo.svg'
 import LeftSidePane from './LeftSidePane';
 import Drafts from '../pages/Drafts';
 import Archived from '../pages/Archived';
@@ -13,7 +13,7 @@ import Inbox from '../pages/Inbox'
 import PriceOffers from '../pages/PriceOffers'
 import WareHouse from '../pages/WareHouse'
 import AdminPage from '../pages/AdminPage'
-import Users from '../components/admin/Users'
+import Users from '../pages/Users'
 import {
     IoMdDocument,
     IoIosArchive,
@@ -33,7 +33,7 @@ import {
 import {
     MdDashboard
 } from 'react-icons/md'
-const userLinks = [
+const availableLinks = [
     {
         text: 'Sifarişlərim',
         link: '/',
@@ -76,9 +76,6 @@ const userLinks = [
         icon: MdDashboard,
         component: WareHouse
     },
-];
-
-const adminLinks = [
     {
         text: 'Users',
         link: '/users',
@@ -104,11 +101,13 @@ const adminLinks = [
         component: AdminPage
     },
 ];
+
 const App = () => {
     const leftPaneRef = useRef(null);
     const [backgroundVisibility, setBackgroundVisibility] = useState(false);
     const [wSockConnected, setWSockConnected] = useState(false);
     const webSocketRef = useRef(null);
+    const history = useHistory();
     const [links, setLinks] = useState([]);
     // const userData = 
     // console.log(localStorage.getItem(''))
@@ -117,32 +116,28 @@ const App = () => {
         if (token) {
             const webSocket = new WebSocket('ws://172.16.3.101:12345');
             webSocket.onopen = () => {
-                fetch('http://172.16.3.101:54321/api/get-user-data',{
+                fetch('http://172.16.3.101:54321/api/get-user-data', {
                     headers: {
-                      'Authorization': 'Bearer ' + token
+                        'Authorization': 'Bearer ' + token
                     }
-                  })
-                .then(resp => resp.json())
-                .then(respJ => {
-                    console.log(respJ)
-                    const id = respJ.userData.response.id;
-                    const status = respJ.userData.response.status;
-                    if(status === 'admin')
-                        setLinks(adminLinks)
-                    else   
-                        setLinks(userLinks)
-                    const data = {
-                        action: "recognition",
-                        person: id // todo: get from session
-                    }
-                    console.log(id)
-                    console.log('connected');
-                    webSocket.send(JSON.stringify(data));
-                    // setWebSocketRef(webSocket);
-                    webSocketRef.current = webSocket
-                    setWSockConnected(true);
                 })
-                .catch(ex => console.log(ex))
+                    .then(resp => resp.json())
+                    .then(respJ => {
+                        const id = respJ.userData.response.id;
+                        const availableMenus = respJ.userData.response.availableMenus.split(',');
+                        const userMenus = availableLinks.filter(menu => availableMenus.find(availableMenu => availableMenu === menu.text));
+                        setLinks(userMenus)
+                        const data = {
+                            action: "recognition",
+                            person: id // todo: get from session
+                        }
+                        console.log('connected');
+                        webSocket.send(JSON.stringify(data));
+                        // setWebSocketRef(webSocket);
+                        webSocketRef.current = webSocket
+                        setWSockConnected(true);
+                    })
+                    .catch(ex => console.log(ex))
                 // console.log(document.cookie.split(';'));
                 // const id = document.cookie.split(';')
                 //   .find(cookie => cookie.includes('id='))
@@ -171,6 +166,10 @@ const App = () => {
         document.addEventListener('keyup', closeNav, false);
         return () => document.removeEventListener('keyup', closeNav, false)
     }, []);
+    const handleLogOut = () => {
+        localStorage.removeItem('token');
+        history.push('/login')
+    }
     return (
         wSockConnected &&
         <>
@@ -183,7 +182,7 @@ const App = () => {
                                     <IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
                                 </div>
                                 <div>
-                                    <img style={{ height: '32px' }} src={logo} alt='user pic'></img>
+                                    <img style={{ height: '32px', cursor: 'pointer' }} onClick={handleLogOut} src={logo} alt='user pic'></img>
                                 </div>
                             </div>
                         </li>
@@ -208,10 +207,13 @@ const App = () => {
             <LeftSidePane links={links} ref={leftPaneRef} handleNavClick={handleNavClick} />
             <Switch>
                 {
-                    links.map(link =>
-                        <Route key={link.link} path={link.link}>
-                            <link.component webSocketRef={webSocketRef} />
-                        </Route>
+                    links.map((link, index) => {
+                        return (
+                            <Route exact={true} key={index} path={link.link}>
+                                <link.component webSocketRef={webSocketRef} />
+                            </Route>
+                        )
+                    }
                     )
                 }
                 {/* <Route path="/visas" >

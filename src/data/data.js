@@ -265,6 +265,29 @@ export const newOrderInitial = {
     review: '',
     ordNumb: ''
 }
+export const availableLinks = [
+        'Sifarişlərim',
+        'Vizalarım',
+        'Drafts',
+        'Arxiv',
+        'Gələnlər',
+        'Qiymət təklifləri',
+        'Anbar',
+        'Users',
+        'System Params',
+        'Structure',
+        'Dashboard',
+    ];
+export const availableOperations = [
+        'Sifariş yaratmaq',
+        'Sifarişə etiraz etmək',
+        'Sifarişi ləğv etmək',
+        'Sifarişə düzəliş etmək',
+        'Sifarişə düzəliş etmək üçün geri çevirmək',
+        'Sifarişi təsdiq etmək',
+        'Məhsula görə büccə təyin etmək',
+        'Yeni məhsulun əlavə edilməsi'
+    ];
 export const suppliers = [
     {
         name: 'Shanghai Electric International',
