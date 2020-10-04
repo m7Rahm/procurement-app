@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
-import NewCategory from './modal content/NewCategory'
+
 const NewOrderTableBody = (props) => {
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
   const [materials, setMaterials] = useState([]);
   const [units, setUnits] = useState([])
   const modelsListRef = useRef(null);
-  const [sysParamsModlaState, setSysParamsModalState] = useState(false)
+  // const [sysParamsModlaState, setSysParamsModalState] = useState(false)
   useEffect(
     () => {
       const handleOnOuterClick = (e) => {
@@ -52,7 +52,6 @@ const NewOrderTableBody = (props) => {
               dispatch={props.dispatch}
               units={units}
               index={index}
-              setSysParamsModalState={setSysParamsModalState}
               materials={materials}
               setMaterials={setMaterials}
               class={material.class}
@@ -71,14 +70,14 @@ const NewOrderTableBody = (props) => {
         })
       }
       <NewOrderTableRowAdd dispatch={props.dispatch} />
-      {
+      {/* {
         sysParamsModlaState &&
         <NewCategory
           setMaterials={setMaterials}
           setSysParamsModalState={setSysParamsModalState}
           materials={materials}
         />
-      }
+      } */}
     </>
   )
 }

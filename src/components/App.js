@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import {
     IoMdMenu
 } from 'react-icons/io'
 import Visas from '../pages/Visas'
-import MyOrders from '../pages/MyOrders'
+import MyOrders from '../pages/Orders/MyOrders'
 import logo from '../logo.svg'
 import LeftSidePane from './LeftSidePane';
 import Drafts from '../pages/Drafts';
@@ -14,6 +14,9 @@ import PriceOffers from '../pages/PriceOffers'
 import WareHouse from '../pages/WareHouse'
 import AdminPage from '../pages/AdminPage'
 import Users from '../pages/Users'
+import SysParams from '../pages/Admin/SysParams'
+import Budget from '../pages/Budget'
+import { availableOperations } from '../data/data'
 import {
     IoMdDocument,
     IoIosArchive,
@@ -33,18 +36,19 @@ import {
 import {
     MdDashboard
 } from 'react-icons/md'
+
 const availableLinks = [
-    {
-        text: 'Sifarişlərim',
-        link: '/',
-        icon: IoMdCart,
-        component: MyOrders
-    },
     {
         text: 'Vizalarım',
         link: '/visas',
         icon: IoMdCheckmarkCircleOutline,
         component: Visas
+    },
+    {
+        text: 'Büccə',
+        link: '/budget',
+        icon: IoMdCheckmarkCircleOutline,
+        component: Budget
     },
     {
         text: 'Drafts',
@@ -86,7 +90,7 @@ const availableLinks = [
         text: 'System Params',
         link: '/sys',
         icon: IoMdSettings,
-        component: MyOrders
+        component: SysParams
     },
     {
         text: 'Structure',
@@ -100,19 +104,25 @@ const availableLinks = [
         icon: FaWarehouse,
         component: AdminPage
     },
+    {
+        text: 'Sifarişlərim',
+        link: '/',
+        icon: IoMdCart,
+        component: MyOrders
+    },
 ];
 
-const App = () => {
+const App = (props) => {
     const leftPaneRef = useRef(null);
-    const [backgroundVisibility, setBackgroundVisibility] = useState(false);
+    const backgroundRef = useRef(null);
+    // const [backgroundVisibility, setBackgroundVisibility] = useState(false);
     const [wSockConnected, setWSockConnected] = useState(false);
     const webSocketRef = useRef(null);
-    const history = useHistory();
-    const [links, setLinks] = useState([]);
+    const [userData, setUserData] = useState({links: [], previliges: []});
     // const userData = 
-    // console.log(localStorage.getItem(''))
+    const token = props.token
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        // console.log(token);
         if (token) {
             const webSocket = new WebSocket('ws://172.16.3.101:12345');
             webSocket.onopen = () => {
@@ -125,8 +135,10 @@ const App = () => {
                     .then(respJ => {
                         const id = respJ.userData.response.id;
                         const availableMenus = respJ.userData.response.availableMenus.split(',');
+                        const previliges = respJ.userData.response.previliges.split(',');
                         const userMenus = availableLinks.filter(menu => availableMenus.find(availableMenu => availableMenu === menu.text));
-                        setLinks(userMenus)
+                        const userPreviliges = availableOperations.filter(operation => previliges.find(previlige => previlige === operation));
+                        setUserData({links: userMenus, previliges: userPreviliges})
                         const data = {
                             action: "recognition",
                             person: id // todo: get from session
@@ -138,37 +150,33 @@ const App = () => {
                         setWSockConnected(true);
                     })
                     .catch(ex => console.log(ex))
-                // console.log(document.cookie.split(';'));
-                // const id = document.cookie.split(';')
-                //   .find(cookie => cookie.includes('id='))
-                // .trim()
-                // .substr(3);
             }
             return () => {
                 webSocket.close();
                 setWSockConnected(false);
                 console.log('connection closed');
-                // setWebSocketRef(null);
             }
         }
-    }, [])
+    }, [token])
     const handleNavClick = () => {
         leftPaneRef.current.classList.toggle('left-side-pane-open');
-        setBackgroundVisibility(prev => !prev)
+        const backgroundDisplay = backgroundRef.current.style.display === 'none' ? 'block' : 'none'
+        backgroundRef.current.style.display = backgroundDisplay
     }
     useEffect(() => {
         const closeNav = (e) => {
             if (e.keyCode === 27 && leftPaneRef.current.classList.contains('left-side-pane-open')) {
                 leftPaneRef.current.classList.toggle('left-side-pane-open');
-                setBackgroundVisibility(prev => !prev)
+                const backgroundDisplay = backgroundRef.current.style.display === 'none' ? 'block' : 'none'
+                backgroundRef.current.style.display = backgroundDisplay
             }
         }
         document.addEventListener('keyup', closeNav, false);
         return () => document.removeEventListener('keyup', closeNav, false)
     }, []);
     const handleLogOut = () => {
+        props.setToken('')
         localStorage.removeItem('token');
-        history.push('/login')
     }
     return (
         wSockConnected &&
@@ -188,58 +196,32 @@ const App = () => {
                         </li>
                     </ul>
                 </nav>
-                {
-                    backgroundVisibility &&
-                    <div
-                        onClick={handleNavClick}
-                        style={{
-                            position: 'fixed',
-                            height: '100%',
-                            width: '100%',
-                            top: 0,
-                            left: 0,
-                            background: 'rgba(0, 0, 0, 0.6)',
-                            zIndex: 2
-                        }}>
-                    </div>
-                }
+                <div
+                    onClick={handleNavClick}
+                    ref={backgroundRef}
+                    style={{
+                        position: 'fixed',
+                        height: '100%',
+                        width: '100%',
+                        top: 0,
+                        left: 0,
+                        display: 'none',
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        zIndex: 2
+                    }}>
+                </div>
             </>
-            <LeftSidePane links={links} ref={leftPaneRef} handleNavClick={handleNavClick} />
+            <LeftSidePane links={userData.links} ref={leftPaneRef} handleNavClick={handleNavClick} />
             <Switch>
                 {
-                    links.map((link, index) => {
+                    userData.links.map((link, index) => {
                         return (
-                            <Route exact={true} key={index} path={link.link}>
-                                <link.component webSocketRef={webSocketRef} />
+                            <Route key={index} path={link.link}>
+                                <link.component token={token} userData={userData} webSocketRef={webSocketRef} />
                             </Route>
                         )
-                    }
-                    )
+                    })
                 }
-                {/* <Route path="/visas" >
-                    <Visas webSocketRef={webSocketRef} />
-                </Route>
-                <Route path="/archived">
-                    <Archived />
-                </Route>
-                <Route path="/drafts">
-                    <Drafts webSocketRef={webSocketRef} />
-                </Route>
-                <Route path="/inbox">
-                    <Inbox webSocketRef={webSocketRef} />
-                </Route>
-                <Route path="/priceoffs">
-                    <PriceOffers webSocketRef={webSocketRef} />
-                </Route>
-                <Route path="/warehouse">
-                    <WareHouse webSocketRef={webSocketRef} />
-                </Route>
-                <Route path="/admin">
-                    <AdminPage/>
-                </Route>
-                <Route path="/">
-                    <MyOrders webSocketRef={webSocketRef} />
-                </Route> */}
             </Switch>
         </>
     )

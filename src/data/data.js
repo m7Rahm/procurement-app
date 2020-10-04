@@ -1,249 +1,4 @@
-export const orders = [
-    {
-        status: 'Etiraz',
-        number: 4,
-        category: 'İnformasiya Texnologiyaları',
-        participants: [{ fullname: 'A', name: 'Linonel', surname: 'Messi' }],
-        deadline: '17/05/2020',
-        remark: ' ',
-        action: ' ',
-        materials: [
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'wdasd',
-                importance: 1,
-                amount: 81,
-                additionalInfo: '',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 2,
-                model: 'dasfads',
-                importance: 2,
-                amount: 11,
-                additionalInfo: 'sadafs',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 3,
-                model: 'awdavds',
-                importance: 3,
-                amount: 123,
-                additionalInfo: 'dwaewa',
-                class: ''
-            }
-        ]
-    },
-    {
-        status: 'Gözlənilir',
-        number: 12,
-        category: 'Elektronika',
-        participants: [{ fullname: 'Lala Musaeva', name: 'Lala', surname: 'Musayeva' },
-        { fullname: 'Mustafayev Rahman', name: 'Rahman', surname: 'Mustafayev' },
-        { fullname: 'Baghirov Emin', name: 'Emin', surname: 'Baghirov' },
-        { fullname: 'Cristiano Ronaldo', name: 'Cristiano', surname: 'Ronaldo' }],
-        deadline: '18/05/2020',
-        remark: ' ',
-        action: ' ',
-        materials: [
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'afvdas',
-                importance: 1,
-                amount: 81,
-                additionalInfo: '',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'fwampvo',
-                importance: 3,
-                amount: 123,
-                additionalInfo: 'sdfwe',
-                class: ''
-            }
-        ]
-    },
-    {
-        status: 'Təsdiq edilib',
-        number: 123,
-        category: 'Kadrlar',
-        participants: [{ fullname: 'A', name: 'Rahman', surname: 'Mustafayev' },
-        { fullname: 'B', name: 'Cesc', surname: 'Fabregas' },
-        { fullname: 'C', name: 'Gabriel', surname: 'Martinelli' }],
-        deadline: '19/05/2020',
-        remark: ' ',
-        action: ' ',
-        materials: [
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: '1d5c1a6acs',
-                importance: 1,
-                amount: 81,
-                additionalInfo: '',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 2,
-                model: 'da ci us',
-                importance: 2,
-                amount: 11,
-                additionalInfo: 'sadafs',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 3,
-                model: 'dacmop',
-                importance: 3,
-                amount: 123,
-                additionalInfo: 'dwaewa',
-                class: ''
-            }
-        ]
-    },
-    {
-        status: 'Baxılır',
-        number: 1234,
-        category: 'Energetika',
-        participants: [{ fullname: 'Mustafayev Rahman', name: 'Rahman', surname: 'Mustafayev' }],
-        deadline: '20/05/2020',
-        remark: ' ',
-        action: ' ',
-        materials: [
-            {
-                id: Math.random().toString(),
-                materialId: 3,
-                model: 'ca jk ',
-                importance: 3,
-                amount: 123,
-                additionalInfo: 'dwaewa',
-                class: ''
-            }
-        ]
-    },
-    {
-        status: 'Anbarda',
-        number: 12345,
-        category: 'Təsərüfat',
-        participants: [{ fullname: 'Sergio Ramos', name: 'Sergio', surname: 'Ramos' }],
-        deadline: '21/05/2020',
-        remark: ' ',
-        action: ' ',
-        materials: [
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'dac iujk',
-                importance: 1,
-                amount: 81,
-                additionalInfo: '',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'fncawoi kl',
-                importance: 3,
-                amount: 123,
-                additionalInfo: 'sdfwe',
-                class: ''
-            }
-        ]
-    },
-    {
-        status: 'Tamamlanmışdır',
-        number: 123456,
-        category: 'Digər',
-        participants: [{ fullname: 'Sergio Ramos', name: 'Sergio', surname: 'Ramos' }],
-        deadline: '21/05/2020',
-        remark: ' ',
-        action: ' ',
-        materials: [
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'fa cjksnl',
-                importance: 1,
-                amount: 81,
-                additionalInfo: '',
-                class: ''
-            },
-            {
-                id: Math.random().toString(),
-                materialId: 1,
-                model: 'daconij09',
-                importance: 2,
-                amount: 11,
-                additionalInfo: 'sadafs',
-                class: ''
-            }
-        ]
-    }
-]
-export const visas = [
-    {
-        isOpened: false,
-        number: 1,
-        from: 'Johnny Depp',
-        category: 'İnformasiya Texnologiyaları',
-        deadline: '17/05/2020',
-        remark: 'asfas',
-        date: '10/07/2020'
-    },
-    {
-        isOpened: true,
-        number: 12,
-        from: 'Antonio Banderas',
-        category: 'Elektronika',
-        deadline: '18/05/2020',
-        remark: 'asfaew',
-        date: '25/07/2020'
-    },
-    {
-        isOpened: false,
-        number: 123,
-        from: 'Emily Browning',
-        category: 'Kadrlar',
-        deadline: '19/05/2020',
-        remark: 'fwqeafas24fc',
-        date: '12/07/2020'
-    },
-    {
-        isOpened: true,
-        number: 1234,
-        from: 'Marshall Mathers',
-        category: 'Energetika',
-        deadline: '20/05/2020',
-        remark: 'fas4f1d5sf',
-        date: '30/07/2020'
-    },
-    {
-        number: 12345,
-        isOpened: true,
-        from: 'J Balvin',
-        category: 'Təsərüfat',
-        deadline: '21/05/2020',
-        remark: 'navdkjsdbvkj',
-        date: '20/07/2020'
-    },
-    {
-        number: 123456,
-        isOpened: false,
-        from: 'Granit Xhaka',
-        category: 'Digər',
-        deadline: '21/05/2020',
-        remark: 'csd1s5d1cf6eac5',
-        date: '11/07/2020'
-    }
-]
+
 export const token = localStorage.getItem('token');
 export const newOrderInitial = {
     materials: [
@@ -265,6 +20,58 @@ export const newOrderInitial = {
     review: '',
     ordNumb: ''
 }
+export const months = [
+    {
+        name: 'Yanvar',
+        value: '01'
+    },
+    {
+        name: 'Fevral',
+        value: '02'
+    },
+    {
+        name: 'Mart',
+        value: '03'
+    },
+    {
+        name: 'Aprel',
+        value: '04'
+    },
+    {
+        name: 'May',
+        value: '05'
+    },
+    {
+        name: 'Iyun',
+        value: '06'
+    },
+    {
+        name: 'Iyul',
+        value: '07'
+    },
+    {
+        name: 'Avqust',
+        value: '08'
+    },
+    {
+        name: 'Sentyabr',
+        value: '09'
+    },
+    {
+        name: 'Oktyabr',
+        value: '10'
+    },
+    {
+        name: 'Noyabr',
+        value: '11'
+    },
+    {
+        name: 'Dekabr',
+        value: '12'
+    }
+]
+
+
 export const availableLinks = [
         'Sifarişlərim',
         'Vizalarım',
@@ -277,16 +84,16 @@ export const availableLinks = [
         'System Params',
         'Structure',
         'Dashboard',
+        'Büccə'
     ];
 export const availableOperations = [
         'Sifariş yaratmaq',
-        'Sifarişə etiraz etmək',
-        'Sifarişi ləğv etmək',
-        'Sifarişə düzəliş etmək',
-        'Sifarişə düzəliş etmək üçün geri çevirmək',
         'Sifarişi təsdiq etmək',
-        'Məhsula görə büccə təyin etmək',
-        'Yeni məhsulun əlavə edilməsi'
+        'Sifarişə etiraz etmək',
+        'Sifarişi redaktəyə qaytarmaq',
+        'Sifarişi redaktə etmək',
+        'Büccə daxil etmək',
+        'Yeni məhsul əlavə etmək'
     ];
 export const suppliers = [
     {
@@ -365,4 +172,233 @@ export const incoTerms = [
         name: 'DDP',
         id: '11'
     },
+];
+export const modules = [
+    {
+        text: 'Admin',
+        link: '/admin'
+    },
+    {
+        text: 'Budget',
+        link: '/budget'
+    },
+    {
+        text: 'Orders',
+        link:'/orders'
+    },
+    {
+        text: 'Contracts',
+        link: '/contracts'
+    },
+    {
+        text: 'Tender',
+        link: '/tender'
+    }
+]
+export const glCategories = [
+    {
+        code: 90024,
+        name: 'İşçilərlə bağlı digər fondlara ayırmalar',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90025,
+        name: 'İşçilərin tədrisi üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90026,
+        name: 'Yeni işçilərin qəbulu üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90029,
+        name: 'İşçilər ilə bağlı digər xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90050,
+        name: 'Binalar və qurğuların təmir və saxlanma xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90051,
+        name: 'Mebel və avadanlığın təmir və saxlanma xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90052,
+        name: 'Kompüterlər avadanlıqlarının təmir və saxlanmaxərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90053,
+        name: 'Nəqliyyat vasitələrinin təmirvə saxlanmaxərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90054,
+        name: 'Digər əsas vəsaitlərin təmirvə saxlanma xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90055,
+        name: 'Maliyyə icarəsinə götürülmüş əsas vəsaitlərin təmirvə saxlanma xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90056,
+        name: 'İcarəyə alınmış əsas vəsaitlərin təmir və saxlanma xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90057,
+        name: 'İnvestisiya mülkiyyəti üzrə təmir və saxlanma xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90060,
+        name: 'Avadanlıqların dəstəklənməsi üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90061,
+        name: 'Proqram təminatlarının dəstəklənməsi üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90069,
+        name: 'Digər dəstəklənmə xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90070,
+        name: 'Nəqliyyat vasitələri üzrə istismarxərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90071,
+        name: 'Əmlakın sığortası üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90072,
+        name: 'Avadanlığın icarəsi üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90073,
+        name: 'Mühafizə xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90074,
+        name: 'Enerji və qızdırıcı sistemlərüzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90075,
+        name: 'Kommunal xidmətlər üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90076,
+        name: 'İnvestisiya mülkiyyəti üzrə digərxərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90077,
+        name: 'Əsas vəsaitlər vəqeyri-maddi aktivlərlə bağlı vergilər və gömrük rüsumları',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90080,
+        name: 'Rabitə xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90081,
+        name: 'Mətbəə xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90082,
+        name: 'Mal-materialların alınması üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90083,
+        name: 'Reklam xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90085,
+        name: 'Məsləhət, audit və digər peşəkar xidmətlər üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90086,
+        name: 'İcarə haqqı',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90087,
+        name: 'Üzvlük haqqı',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90089,
+        name: 'Digər xidmətlər üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90090,
+        name: 'Əmanətlərin sığortalanması fondu üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90110,
+        name: 'Mülki müdafiə xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90111,
+        name: 'Ümidsiz borclarüzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90112,
+        name: 'Hərrac xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90113,
+        name: 'Ödənilmiş cərimə və dəbbə məbləğləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90114,
+        name: 'Hüquq məsrəfləri vəməhkəmə xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90115,
+        name: 'Nümayəndəlik xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90116,
+        name: 'Xeyriyyə məqsədləri üzrə xərclər',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90118,
+        name: 'Vergi xərcləri',
+        currency: 'milli valyuta'
+    },
+    {
+        code: 90119,
+        name: 'Digər xərclər',
+        currency: 'milli valyuta'
+    }
 ]

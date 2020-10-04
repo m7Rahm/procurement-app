@@ -38,7 +38,7 @@ const LeftSidePane = (props, ref) => {
                                         handleNavClick();
                                     }}
                                     style={{color: active ? '#222222' : '', fontWeight: active ? 600 : '', display: 'flex', width: '100%', alignItems: 'flex-end'}}
-                                    to={link.link}>
+                                    to={`${props.url}${link.link}`}>
                                     <Icon size="24" style={{marginRight: '5px'}} />
                                     {link.text}
                                 </Link>
@@ -51,4 +51,4 @@ const LeftSidePane = (props, ref) => {
     )
 }
 
-export default React.memo(React.forwardRef(LeftSidePane), () => true)
+export default React.forwardRef(LeftSidePane)

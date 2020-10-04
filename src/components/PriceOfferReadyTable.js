@@ -3,7 +3,7 @@ import PriceOffererReady from './PriceOffererReady'
 import WarningApprovedPO from './modal content/WarningApprovedPO'
 import Modal from './Modal'
 import PicturesModal from './modal content/PicturesModal'
-import { token } from '../data/data'
+const token = localStorage.getItem('token');
 const OrderDetails = React.memo((props) => {
     const [offerDetails, setOfferDetails] = useState([]);
     useEffect(() => {

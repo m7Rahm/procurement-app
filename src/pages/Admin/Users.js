@@ -1,44 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import {
 	MdAdd,
 	MdEdit
 } from 'react-icons/md'
-import Pagination from '../components/Pagination'
-import Modal from '../components/Modal'
-import EditUser from '../components/admin/EditUser'
-import NewUser from '../components/modal content/NewUser'
-const StatusButton = (props) => {
-	const [status, setStatus] = useState(props.status)
-	const changeStatus = () => {
-		setStatus(prev => {
-			const stat = !prev ? 1 : 0
-			fetch(`http://172.16.3.101:54321/api/change-user-status?userid=${props.id}&status=${stat}`, {
-				headers: {
-					'Authorization': 'Bearer ' + localStorage.getItem('token')
-				}
-			})
-			.then(resp => resp.json())
-			.then(respJ => console.log(respJ))
-			.catch(ex => console.log(ex))
-			return !prev
-		})
-	}
-	return (
-		<div
-			onClick={changeStatus}
-			title={status ? 'deaktiv et' : 'aktivləşdir'}
-			style={{
-				borderRadius: '50%',
-				padding: '5px',
-				cursor: 'pointer',
-				backgroundColor: status ? 'green' : 'red',
-				width: '10px',
-				height: '10px'
-			}}>
-		</div>
-	)
-}
+import Pagination from '../../components/Pagination'
+import Modal from '../../components/Modal'
+import EditUser from '../../components/admin/EditUser'
+import NewUser from '../../components/modal content/NewUser'
+import StatusButton from '../../components/StatusButton';
+import { TokenContext } from '../../App'
 const Users = () => {
+	const tokenContext = useContext(TokenContext);
+	const token = tokenContext[0]
 	const [users, setUsers] = useState({ count: 0, users: [] });
 	const activePageRef = useRef(0);
 	const [modal, setModal] = useState({ visible: false, content: undefined });
@@ -49,7 +22,7 @@ const Users = () => {
 	const updateList = (from) => {
 		fetch(`http://172.16.3.101:54321/api/get-users?from=${from}&next=20`, {
 			headers: {
-				'Authorization': 'Bearer ' + localStorage.getItem('token')
+				'Authorization': 'Bearer ' + token
 			}
 		})
 			.then(resp => resp.json())
@@ -62,7 +35,7 @@ const Users = () => {
 	useEffect(() => {
 		fetch(`http://172.16.3.101:54321/api/get-users?from=0&next=20`, {
 			headers: {
-				'Authorization': 'Bearer ' + localStorage.getItem('token')
+				'Authorization': 'Bearer ' + token
 			}
 		})
 			.then(resp => resp.json())
@@ -71,19 +44,23 @@ const Users = () => {
 				setUsers({ count: totalCount, users: respJ })
 			})
 			.catch(ex => console.log(ex))
-	}, []);
+	}, [token]);
 	const closeModal = () => setModal({ visible: false, content: undefined })
 	const editUserData = (id) => {
 		const editUser = (props) => <EditUser closeModal={closeModal} id={id} {...props}/>
 		setModal({ visible: true, content: editUser})
 	}
+	const updateFunc = (id, state) => fetch(`http://172.16.3.101:54321/api/change-user-status?userid=${id}&status=${state}`, {
+		headers: {
+			'Authorization': 'Bearer ' + token
+		}
+	})
+		.then(resp => resp.json())
+		.then(respJ => console.log(respJ))
+		.catch(ex => console.log(ex))
 	return (
 		<div style={{ paddingTop: '56px' }}>
-			<div style={{
-				paddingTop: '40px',
-				maxWidth: '1256px',
-				margin: 'auto'
-			}}>
+			<div className="users-page">
 				<table className="users-table">
 					<thead>
 						<tr>
@@ -110,7 +87,11 @@ const Users = () => {
 									<td>{user.shobe}</td>
 									<td>{user.status}</td>
 									<td>
-										<StatusButton id={user.id} status={user.active_passive} />
+										<StatusButton
+											id={user.id}
+											status={user.active_passive}
+											updateFunc={updateFunc}
+										/>
 									</td>
 									<td>
 										<MdEdit

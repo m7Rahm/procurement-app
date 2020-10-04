@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import VisaForwardPerson from '../VisaForwardPerson'
-import { token } from '../../data/data'
+const token = localStorage.getItem('token');
 const AcceptDecline = (props) => {
     const [comment, setComment] = useState('');
     const [empList, setEmpList] = useState([]);

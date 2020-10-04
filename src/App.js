@@ -1,23 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import Login from './pages/Login'
 import PrivateRoute from './components/PrivateRoute'
-import AppComponent from './components/App'
-// import useWebSocket from './hooks/useWebSocket'
+import SelectModule from './pages/SelectModule'
+import './App.css'
 
+export const TokenContext = React.createContext();
 const App = () => {
-  const token = localStorage.getItem('token');
-  // console.log(token);
-  // localStorage.removeItem('token')
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  // localStorage.removeItem('token');
   return (
-    // wSockConnected &&
-
     <BrowserRouter>
       <Switch>
-        <Route path="/login" render={() => !token ? <Login /> : <Redirect to="/"/>}>
+        <Route path="/login" render={() => !token ? <Login setToken={setToken} /> : <Redirect to="/"/>}>
         </Route>
         <PrivateRoute path="/">
-          <AppComponent/>
+          <TokenContext.Provider value={[token, setToken]}>
+            <SelectModule/>
+          </TokenContext.Provider>
         </PrivateRoute>
       </Switch>
     </BrowserRouter>

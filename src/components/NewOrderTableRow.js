@@ -46,7 +46,7 @@ const NewOrderTableRow = (props) => {
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
-    if (value !== 'add-new') {
+    // if (value !== 'add-new') {
       const data = {
         materialid: value
       }
@@ -67,10 +67,10 @@ const NewOrderTableRow = (props) => {
         })
         .catch(ex => console.log(ex))
       updateMaterialsList('updateRow', { name: name, value: value, rowid: props.id })
-    }
-    else {
-      props.setSysParamsModalState(true)
-    }
+    // }
+    // else {
+    //   props.setSysParamsModalState(true)
+    // }
   }
   const handleBlur = (e) => {
     const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
@@ -103,7 +103,6 @@ const NewOrderTableRow = (props) => {
               <option key={material.id} value={material.id}>{material.product_title}</option>
             )
           }
-          <option value="add-new">Yeni Material</option>
         </select>
       </div>
       <div style={{ position: 'relative' }}>

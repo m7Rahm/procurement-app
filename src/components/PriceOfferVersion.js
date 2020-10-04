@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 import PriceOfferCard from './PriceOfferCard'
-import { token } from '../data/data'
+const token = localStorage.getItem('token');
 
 const PriceOfferVersion = (props) => {
     const [offers, setOffers] = useState([])

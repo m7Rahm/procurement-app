@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import SideBar from '../components/SideBar';
-import NewOrderContent from '../components/modal content/NewOrder';
-import { token } from '../data/data'
-const onMountFunction = (setVisas) => {
+import SideBar from '../../components/SideBar';
+import NewOrderContent from '../../components/modal content/NewOrder';
+const onMountFunction = (setVisas, _, props) => {
+    const token = props.token;
     const data = {
         deadline: '',
         startDate: null,
@@ -27,6 +27,7 @@ const onMountFunction = (setVisas) => {
         .catch(err => console.log(err))
 }
 const handleCardClick = (_, props, stateRef) => {
+    const token = props.token;
     if (props.activeRef.current !== stateRef.current) {
         const data = {
             draftid: props.number,
@@ -66,6 +67,7 @@ const Drafts = (props) => {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', backgroundColor: 'transparent' }}>
             <SideBar
+                token={props.token}
                 activeCardRef={activeCardRef}
                 isDraft={true}
                 handleCardClick={handleCardClick}
@@ -86,7 +88,7 @@ const Drafts = (props) => {
                         : <>
                             <div style={{ marginTop: '100px' }}>
                                 <img
-                                    src={require('../Konvert.svg')}
+                                    src={require('../../Konvert.svg')}
                                     alt="blah"
                                     height="70"
                                     style={{ marginBottom: '20px' }} />

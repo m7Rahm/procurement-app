@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useRef } from 'react';
 import Calendar from './Calendar';
-import { token } from '../data/data'
+const token = localStorage.getItem('token');
 const advancedSearchReducser = (state, action) => {
     const type = action.type;
     switch (type) {

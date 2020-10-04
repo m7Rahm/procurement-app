@@ -11,7 +11,7 @@ import {
 import {
 	IoIosTrash
 } from 'react-icons/io';
-import { token } from '../data/data'
+const token = localStorage.getItem('token');
 const WarehousemanVersion = (props) => {
 	const ordNumb = props.ordNumb;
 	const [data, setData] = useState([])

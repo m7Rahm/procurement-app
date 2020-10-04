@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
+import WareHouseOrderContent from '../components/WareHouseOrderContent'
 import SideBar from '../components/SideBar'
-import OrdersContent from '../components/OrdersContent'
-import { token } from '../data/data'
-const onMountFunction = (setVisas) => {
+const onMountFunction = (setVisas, _, token) => {
     const data = {
         deadline: '',
         userName: '',
@@ -11,7 +10,7 @@ const onMountFunction = (setVisas) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-price-offers', {
+    fetch('http://172.16.3.101:54321/api/warehouse-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -23,18 +22,18 @@ const onMountFunction = (setVisas) => {
         .then(resp => resp.json())
         .then(respJ => {
             const totalCount = respJ[0] ? respJ[0].total_count : 0;
-            setVisas({ count: totalCount, visas: respJ })
+            setVisas({ count: totalCount, visas: respJ });
         })
         .catch(err => console.log(err))
 }
 const handleCardClick = (_, props, stateRef) => {
-    console.log(props)
+    const token = props.token;
     if (props.activeRef.current !== stateRef.current) {
         const data = {
-            orderid: props.number,
+            ordNumb: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/order`, {
+        fetch(`http://172.16.3.101:54321/api/warehouse-offer-content`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,21 +51,37 @@ const handleCardClick = (_, props, stateRef) => {
             })
             .catch(error => console.log(error));
     }
-}
-const canBeChanged = true
-const footerComponent = () => <></>
-const PriceOffers = () => {
+};
+const WareHouse = (props) => {
     const [active, setActive] = useState(null);
+    const token = props.token;
+    // const activeCardRef = useRef(null);
+    // console.log(active);
+    // const onSuccess = (receivers) => {
+    //     if (props.webSocketRef.current) {
+    //         props.webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }))
+    //         activeCardRef.current.style.display = 'none';
+    //         setActive(null)
+    //     }
+    // }
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
-            <SideBar handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
+            <SideBar
+                handleCardClick={handleCardClick}
+                mountFunc={onMountFunction}
+                setActive={setActive}
+                token={token}
+            />
             {
                 active
-                    ? <OrdersContent
-                        current={active}
-                        canBeChanged={canBeChanged}
-                        footerComp={footerComponent}
-                    />
+                    ? <div className="warehouse-container">
+                        <WareHouseOrderContent
+                            setActive={setActive}
+                            ordNumb={active[0].ord_numb}
+                            active={active}
+                            forProcurement={active[0].for_procurement}
+                            />
+                    </div>
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img
@@ -79,7 +94,7 @@ const PriceOffers = () => {
                         </div>
                     </>
             }
-        </div>
+        </div >
     )
 }
-export default PriceOffers
+export default WareHouse

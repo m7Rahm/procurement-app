@@ -1,10 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
     useHistory
 } from 'react-router-dom'
-const Login = () => {
+import {
+    IoIosCloseCircle
+} from 'react-icons/io'
+const Login = (props) => {
     const [userCreds, setUserCreds] = useState({username: '', password: ''});
     const history = useHistory();
+    const [isPasswordCorrect, setIsPasswordCorrect] = useState(true);
+    const operationResultDiv = useRef(null);
     const handleLoginCheck = () => {
         fetch('http://172.16.3.101:54321/api/login', {
             method: 'POST',
@@ -14,13 +19,18 @@ const Login = () => {
             },
             body: JSON.stringify(userCreds)
         })
-        .then(resp => resp.json())
-        .then(respJ => {
-            localStorage.setItem('token', respJ.token);
-            // localStorage.setUserData(JSON.stringify(respJ.data));
-            history.push('/');
-        })
-        .catch(ex => console.log(ex))
+            .then(resp => resp.json())
+            .then(respJ => {
+                if (!respJ.token)
+                    setIsPasswordCorrect(false);
+                else {
+                    localStorage.setItem('token', respJ.token);
+                    props.setToken(respJ.token);
+                    // localStorage.setUserData(JSON.stringify(respJ.data));
+                    history.push('/');
+                }
+            })
+            .catch(ex => console.log(ex))
     }
     const handleChange = (e) => {
         const name = e.target.name;
@@ -42,6 +52,15 @@ const Login = () => {
                     <div tabIndex="0" onClick={handleLoginCheck} className="log-in-button">login</div>
                 </div>
             </div>
+            {
+                !isPasswordCorrect &&
+                <div ref={operationResultDiv} style={{backgroundColor: '#D93404'}} className="operation-result">
+                    <div>
+                        <IoIosCloseCircle size="88" />
+                    </div>
+                Daxil etdiyiniz şifrə yanlışdır
+			    </div>
+            }
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import PriceOfferList from '../PriceOfferList'
-import { token } from '../../data/data'
+const token = localStorage.getItem('token');
 const PriceOffer = (props) => {
     const offerers = useRef([]);
     const [offerersCount, setOfferersCount] = useState(0)

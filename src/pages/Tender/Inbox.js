@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import WareHouseOrderContent from '../components/WareHouseOrderContent'
+import OrdersContent from '../components/OrdersContent'
+import PriceOffer from '../components/modal content/PriceOffer' 
 import SideBar from '../components/SideBar'
-import { token } from '../data/data'
-const onMountFunction = (setVisas) => {
+import CreatePriceOfferFooter from '../components/CreatePriceOfferFooter'
+const onMountFunction = (setVisas, _, token) => {
     const data = {
         deadline: '',
         userName: '',
@@ -11,7 +12,7 @@ const onMountFunction = (setVisas) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/warehouse-offers', {
+    fetch('http://172.16.3.101:54321/api/get-ready-orders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -23,17 +24,18 @@ const onMountFunction = (setVisas) => {
         .then(resp => resp.json())
         .then(respJ => {
             const totalCount = respJ[0] ? respJ[0].total_count : 0;
-            setVisas({ count: totalCount, visas: respJ });
+            setVisas({ count: totalCount, visas: respJ })
         })
         .catch(err => console.log(err))
 }
 const handleCardClick = (_, props, stateRef) => {
+    const token = props.token
     if (props.activeRef.current !== stateRef.current) {
         const data = {
-            ordNumb: props.number,
+            orderid: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/warehouse-offer-content`, {
+        fetch(`http://172.16.3.101:54321/api/order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,35 +53,25 @@ const handleCardClick = (_, props, stateRef) => {
             })
             .catch(error => console.log(error));
     }
-};
-const WareHouse = (props) => {
+}
+const footerComp = (props) =>
+    <CreatePriceOfferFooter
+        {...props}
+        childComp={PriceOffer}
+    />
+const Inbox = (props) => {
+    const canBeChanged = false
     const [active, setActive] = useState(null);
-    // const activeCardRef = useRef(null);
-    // console.log(active);
-    // const onSuccess = (receivers) => {
-    //     if (props.webSocketRef.current) {
-    //         props.webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }))
-    //         activeCardRef.current.style.display = 'none';
-    //         setActive(null)
-    //     }
-    // }
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
-            <SideBar
-                handleCardClick={handleCardClick}
-                mountFunc={onMountFunction}
-                setActive={setActive}
-            />
+            <SideBar token={props.token} handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
             {
                 active
-                    ? <div className="warehouse-container">
-                        <WareHouseOrderContent
-                            setActive={setActive}
-                            ordNumb={active[0].ord_numb}
-                            active={active}
-                            forProcurement={active[0].for_procurement}
-                            />
-                    </div>
+                    ? <OrdersContent
+                        current={active}
+                        canBeChanged={canBeChanged}
+                        footerComp={footerComp}
+                    />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img
@@ -92,7 +84,7 @@ const WareHouse = (props) => {
                         </div>
                     </>
             }
-        </div >
+        </div>
     )
 }
-export default WareHouse
+export default Inbox

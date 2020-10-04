@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { token } from '../data/data'
+const token = localStorage.getItem('token');
 const AcceptDecline = React.lazy(() => import('./modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {

@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import OrdersContent from '../components/OrdersContent'
-import PriceOffer from '../components/modal content/PriceOffer' 
 import SideBar from '../components/SideBar'
-import CreatePriceOfferFooter from '../components/CreatePriceOfferFooter'
-import { token } from '../data/data'
+import OrdersContent from '../components/OrdersContent'
+const token = localStorage.getItem('token');
 const onMountFunction = (setVisas) => {
     const data = {
         deadline: '',
@@ -13,7 +11,7 @@ const onMountFunction = (setVisas) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-ready-orders', {
+    fetch('http://172.16.3.101:54321/api/get-price-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -30,6 +28,7 @@ const onMountFunction = (setVisas) => {
         .catch(err => console.log(err))
 }
 const handleCardClick = (_, props, stateRef) => {
+    console.log(props)
     if (props.activeRef.current !== stateRef.current) {
         const data = {
             orderid: props.number,
@@ -54,13 +53,9 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
-const footerComp = (props) =>
-    <CreatePriceOfferFooter
-        {...props}
-        childComp={PriceOffer}
-    />
-const Inbox = () => {
-    const canBeChanged = false
+const canBeChanged = true
+const footerComponent = () => <></>
+const PriceOffers = () => {
     const [active, setActive] = useState(null);
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
@@ -70,7 +65,7 @@ const Inbox = () => {
                     ? <OrdersContent
                         current={active}
                         canBeChanged={canBeChanged}
-                        footerComp={footerComp}
+                        footerComp={footerComponent}
                     />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
@@ -87,4 +82,4 @@ const Inbox = () => {
         </div>
     )
 }
-export default Inbox
+export default PriceOffers

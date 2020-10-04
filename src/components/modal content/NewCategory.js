@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import {
-    IoMdClose,
-} from 'react-icons/io'
+import React, { useState, useEffect, useContext } from 'react'
 import {
     MdModeEdit
 } from 'react-icons/md'
 import {
     FaPlus
 } from 'react-icons/fa'
-import { token } from '../../data/data'
+import { TokenContext } from '../../App'
 const NewCategory = (props) => {
-    const closeModal = () => props.setSysParamsModalState(false);
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0];
     const [departments, setDepartments] = useState([]);
     const [newCatState, setNewCatState] = useState({ catName: '', department: 1 })
+    const [tableData, setTableData] = useState([]);
     const handleAddNewCategory = () => {
         const data = newCatState;
         fetch('http://172.16.3.101:54321/api/add-new-cat', {
@@ -27,7 +26,7 @@ const NewCategory = (props) => {
             .then(resp => resp.json())
             .then(respJ => {
                 if (respJ[0].result === 'success') {
-                    props.setMaterials(prev => [...prev,
+                    setTableData(prev => [...prev,
                     {
                         id: respJ[0].row_id,
                         user: 'Default Rahman',
@@ -49,23 +48,23 @@ const NewCategory = (props) => {
             .then(resp => resp.json())
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex))
-    }, []);
+    }, [token]);
     const handleChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
-        console.log(newCatState);
         setNewCatState(prev => ({ ...prev, [name]: value }))
     }
     return (
         <div className="sys-param-modal">
-            <div><IoMdClose size="18" onClick={closeModal} /></div>
             <div>
                 <table>
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Ad</th>
                             <th>Kateqoriya</th>
-                            <th>Yöndərilən şöbə</th>
+                            <th>Alt Kateqoriya</th>
+                            <th>Yöndərilən struktur</th>
                             <th>Istifadəçi</th>
                             <th></th>
                         </tr>
@@ -83,11 +82,20 @@ const NewCategory = (props) => {
                                     }
                                 </select>
                             </td>
-                            <td>blah blah blah</td>
+                            <td>
+                                <select onChange={handleChange} name="department" value={newCatState.department}>
+                                    {
+                                        departments.map(department =>
+                                            <option key={department.id} value={department.id}>{department.name}</option>
+                                        )
+                                    }
+                                </select>
+                            </td>
+                            <td></td>
                             <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
                         </tr>
                         {
-                            props.materials.map((material, index) =>
+                            tableData.map((material, index) =>
                                 <tr key={material.id}>
                                     <th>{index + 1}</th>
                                     <td>{material.product_title}</td>

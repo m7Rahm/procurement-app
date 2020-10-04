@@ -45,23 +45,23 @@ const OrderContentProtected = (props) => {
 							<FaUndo size="50" color="#a4a4a4" />
 						</div>
 					}>
-						<Modal token={true} number={current[0].ord_numb} changeModalState={handleModalClose}>
+						<Modal canBeClosed={true} number={current[0].ord_numb} changeModalState={handleModalClose}>
 							{modalContent}
 						</Modal>
-					</Suspense>				
+					</Suspense>
 				}
-					<VisaContentHeader
-						deadline={current[0].deadline}
-						updateContent={updateContent}
-						setIsModalOpen={setIsModalOpen}
-						current={current}
-						version={props.current[0].emp_version_id}
-						currentState={currentState}
-						handleEditClick={handleEditClick}
-						assignment={current[0].assignment}
-						intention={current[0].intention}
-						orderNumb={current[0].ord_numb}
-					/>
+				<VisaContentHeader
+					deadline={current[0].deadline}
+					updateContent={updateContent}
+					setIsModalOpen={setIsModalOpen}
+					current={current}
+					version={props.current[0].emp_version_id}
+					currentState={currentState}
+					handleEditClick={handleEditClick}
+					assignment={current[0].assignment}
+					intention={current[0].intention}
+					orderNumb={current[0].ord_numb}
+				/>
 			</>
 			<VisaContentMaterials orderContent={props.current} />
 			<Component

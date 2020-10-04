@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {
   IoMdRefreshCircle
 } from 'react-icons/io'
-import { token } from '../../data/data' 
+const token = localStorage.getItem('token');
 const Participants = (props) => {
   // console.log(props.number)
   const [checked, setChecked] = useState(false);

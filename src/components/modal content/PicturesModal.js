@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { token } from '../../data/data'
+const token = localStorage.getItem('token');
 const PicturesModal = (props) => {
     const priceOfferNumb = props.priceOfferNumb;
     const offererid = props.offererid;

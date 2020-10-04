@@ -15,26 +15,25 @@ const EditUser = (props) => {
     const [password, setPassword] = useState('');
     const [showAlertModal, setShowAlertModal] = useState(false);
     const repeatPass = useRef(null);
-    console.log(roles)
     const availableMenus = userData.available_menus.split(',');
     const handleRoleChange = (e) => {
         const value = e.target.value;
         const availableMenus = roles.find(role => role.id.toString() === value).available_menus;
-        console.log(availableMenus)
         setUserData(prev => ({...prev, role_id: value, available_menus: availableMenus }))
     }
     const updateUserData = () => {
         const data = {
-            username: userData.name,
+            username: userData.username,
             fullName: userData.full_name,
             email: userData.email,
             passportData: userData.passport_data,
             fin: userData.vesiqe_fin_kod,
             structureid: userData.structure_dependency_id,
-            role: userData.procurement_user_role_id,
+            role: userData.role_id,
             id: props.id
         }
-        fetch('http://172:16.3.101:54321/api/update-user-data', {
+        fetch('http://172.16.3.101:54321/api/update-user-data', {
+            method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 'Content-Type': 'application/json',
@@ -160,7 +159,7 @@ const EditUser = (props) => {
                             >
                                 {
                                     departments.map(department =>
-                                        <option key={department.id}>{department.name}</option>
+                                        <option value={department.id} key={department.id}>{department.name}</option>
                                     )
                                 }
                             </select>
@@ -201,7 +200,7 @@ const EditUser = (props) => {
                 <h1>Təhlükəsizlik</h1>
                 <div>
                     <div className="security">
-                        <input disabled={isProtected} value={userData.username || ''} name="name" onChange={handleChange} />
+                        <input disabled={isProtected} value={userData.username || ''} name="username" onChange={handleChange} />
                         <div onClick={handlePasswordReset}>Şifrəni bərpa et</div>
                         {
                             resetPasswordVisibility &&

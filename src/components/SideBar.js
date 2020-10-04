@@ -7,9 +7,9 @@ import {
 
 import IconsPanel from './IconsPanel';
 import Pagination from './Pagination';
-import { token } from '../data/data'
 
 const SideBar = (props) => {
+	const token = props.token;
 	const notifIcon = useRef(null);
 	const activePageRef = useRef(0)
 	const checkedAmountRef = useRef([]);
@@ -21,8 +21,8 @@ const SideBar = (props) => {
 	// console.log(visas)
 	const mountFunc = useCallback(props.mountFunc, []);
 	useEffect(() => {
-		mountFunc(setVisas,notifIcon)
-	}, [mountFunc]);
+		mountFunc(setVisas, notifIcon, token)
+	}, [mountFunc, token]);
 
 	const updateList = (from) => {
 		const searchRefData = {
@@ -80,6 +80,7 @@ const SideBar = (props) => {
 						return <VisaCard
 							key={visa.id}
 							id={visa.id}
+							token={props.token}
 							activeCardRef={props.activeCardRef}
 							iconsPanelRef={iconsPanelRef}
 							checkedAmount={checkedAmountRef}

@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react'
-import SideBar from '../components/SideBar'
-import VisaContent from '../components/VisaContent'
-import { token } from '../data/data'
+import SideBar from '../../components/SideBar'
+import VisaContent from '../../components/VisaContent'
+
 const handleCardClick = (isReadRef, props, stateRef) => {
+  const token = props.token;
   if (isReadRef.current.style.display === 'block') {
     const data = {
       visaCards: [[props.id, 0, 1, props.isPinned, props.number, props.empVersion]],
@@ -42,7 +43,7 @@ const handleCardClick = (isReadRef, props, stateRef) => {
 }
 const Archived = (props) => {
   const [active, setActive] = useState(null);
-  const onMountFunction = useCallback((setVisas, notifIcon) => {
+  const onMountFunction = useCallback((setVisas, notifIcon, token) => {
     const data = {
       from: 0,
       until: 20
@@ -71,6 +72,7 @@ const Archived = (props) => {
       <SideBar
         handleCardClick={handleCardClick}
         mountFunc={onMountFunction}
+        token={props.token}
         setActive={setActive}
       />
       <VisaContent sendNotification={sendNotification} current={active} />

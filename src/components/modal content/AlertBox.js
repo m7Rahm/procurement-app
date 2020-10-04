@@ -2,7 +2,7 @@ import React from 'react'
 import {
     AiOutlineInfoCircle
 } from 'react-icons/ai'
-import { token } from '../../data/data'
+const token = localStorage.getItem('token');
 const AlertBox = props => {
     const handleClick = (action) => {
         // props.stateRef.current.latest.receivers = props.empListRef.current;

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
-import SideBar from '../components/SideBar'
-import VisaContent from '../components/VisaContent'
-import { token } from '../data/data'
+import SideBar from '../../components/SideBar'
+import VisaContent from '../../components/VisaContent'
+const token = localStorage.getItem('token');
 const handleCardClick = (isReadRef, props, stateRef) => {
   if (isReadRef.current.style.display === 'block') {
     const data = {
