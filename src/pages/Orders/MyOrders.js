@@ -35,7 +35,7 @@ const MyOrders = (props) => {
     })
       .then(resp => resp.json())
       .then(respJ => {
-        const totalCount = respJ[0] ? respJ[0].total_count : 0;
+        const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
       })
       .catch(err => console.log(err))

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useEffect } from 'react'
 
 import {
     Switch,
@@ -7,8 +7,6 @@ import {
 } from 'react-router-dom'
 import BudgetMain from './Budget/BudgetMain'
 import StructureBudget from './Budget/StructureBudget'
-import { TokenContext } from '../App'
-import LeftSidePane from '../components/LeftSidePane'
 import {
     GiReceiveMoney
 } from 'react-icons/gi'
@@ -20,22 +18,23 @@ const routes = [
         component: BudgetMain
     },
 ]
-const Budget = (props, ref) => {
-    const tokenContext = useContext(TokenContext)
-    const token = tokenContext[0];
+const Budget = (props) => {
+    const setMenuData = props.setMenuData
     const { path, url } = useRouteMatch()
+    useEffect(() => {
+        setMenuData({ url: url, routes: routes })
+    }, [url, setMenuData])
     return (
         <>
-            <LeftSidePane url={url} links={routes} ref={ref} handleNavClick={props.handleNavClick} />
             <Switch>
                 <Route exact path={`${path}`}>
-                    <BudgetMain token={token} />
+                    <BudgetMain />
                 </Route>
-                <Route path={`${path}/:structureid`} render={(props) => <StructureBudget token={token} {...props} />}>
+                <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
                 </Route>
             </Switch>
         </>
     )
 }
 
-export default React.forwardRef(Budget)
+export default Budget

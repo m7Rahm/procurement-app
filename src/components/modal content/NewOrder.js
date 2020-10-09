@@ -216,11 +216,11 @@ const NewOrderContent = (props) => {
       <ul className="new-order-table">
         <li>
           <div>#</div>
-          <div>Material</div>
-          <div>Model</div>
-          <div style={{ width: '170px', maxWidth: '200px' }}>Vaciblik</div>
+          <div>Məhsul</div>
+          <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
           <div style={{ maxWidth: '140px' }}>Say</div>
-          <div>Kəmiyyət</div>
+          <div>Kurator</div>
+          <div>Büccə</div>
           <div>Əlavə məlumat</div>
           <div> </div>
         </li>

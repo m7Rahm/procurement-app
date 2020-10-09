@@ -51,18 +51,15 @@ const AdminPage = (props) => {
 		setMenuData({ url: url, routes: routes })
 	}, [url, setMenuData])
 	return (
-		<div className="dashboard">
-
-			<Switch>
-				{
-					routes.map(route =>
-						<Route key={route.link} path={`${path}${route.link}`}>
-							<route.component />
-						</Route>
-					)
-				}
-			</Switch>
-		</div>
+		<Switch>
+			{
+				routes.map(route =>
+					<Route key={route.link} path={`${path}${route.link}`}>
+						<route.component />
+					</Route>
+				)
+			}
+		</Switch>
 	)
 }
 export default AdminPage

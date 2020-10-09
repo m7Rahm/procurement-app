@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { months } from '../../data/data'
+import Modal from '../../components/Modal'
 import {
     useRouteMatch,
     useHistory,
@@ -9,9 +10,14 @@ import Pagination from '../../components/Pagination'
 import {
     MdAdd
 } from 'react-icons/md'
-const Budget = (props) => {
-    const token = props.token;
+import { TokenContext } from '../../App'
+import NewBudget from '../../components/modal content/NewBudget'
+const Budget = () => {
+    const tokenContext = useContext(TokenContext)
+    const token = tokenContext[0];
     const location = useLocation();
+    const categories = useRef([]);
+    const [modalState, setModalState] = useState({visibility: false, content: null });
     const [budgets, setBudgets] = useState(location.state ? { count: location.state.count, budgets: location.state.budgets} : { count: 0, budgets: [] });
     const [budgetData, setBudgetData] = useState(() => {
         const date = new Date();
@@ -44,7 +50,11 @@ const Budget = (props) => {
             }
         })
             .then(resp => resp.json())
-            .then(respJ => setGlCategories(respJ))
+            .then(respJ => {
+                categories.current = respJ;
+                const glCategories = respJ.filter(category => category.dependent_id === null);
+                setGlCategories(glCategories);
+            })
             .catch(ex => console.log(ex))
     }, [token]);
     // console.log(budgetData)
@@ -81,8 +91,15 @@ const Budget = (props) => {
         setBudgetData(prev => ({ ...prev, [name]: value }))
     }
     const showExtStructureInfo = (structureid) => {
-        console.log(structureid)
-        history.push(`${path}/${structureid}`, { searchState: budgetData, budgets: budgets.budgets, count: budgets.count })
+        const structure = departments.find(department => department.id === structureid)
+        history.push(`${path}/${structureid}`, { searchState: budgetData, budgets: budgets.budgets, count: budgets.count, structure })
+    }
+    const addNewBudget = () => {
+        const newBudget = (props) => <NewBudget categories={categories} departments={departments} token={token} {...props} />
+        setModalState({ visibility: true, content: newBudget })
+    }
+    const closeModal = () => {
+        setModalState({ visibility: false, content: null })
     }
     return (
         <div className="budget">
@@ -159,7 +176,7 @@ const Budget = (props) => {
                             <td></td>
                             <td></td>
                             <td>
-                                <MdAdd title="Əlavə et" color="rgb(238, 163, 1)" size="25" />
+                                <MdAdd title="Əlavə et" onClick={addNewBudget} color="rgb(238, 163, 1)" size="25" />
                             </td>
                         </tr>
                     </tfoot>
@@ -169,6 +186,12 @@ const Budget = (props) => {
                     activePageRef={activePageRef}
                     updateList={updateList}
                 />
+                {
+                    modalState.visibility &&
+                    <Modal changeModalState={closeModal}>
+                        {modalState.content}
+                    </Modal>
+                }
             </div>
         </div>
     )

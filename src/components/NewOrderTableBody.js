@@ -70,14 +70,6 @@ const NewOrderTableBody = (props) => {
         })
       }
       <NewOrderTableRowAdd dispatch={props.dispatch} />
-      {/* {
-        sysParamsModlaState &&
-        <NewCategory
-          setMaterials={setMaterials}
-          setSysParamsModalState={setSysParamsModalState}
-          materials={materials}
-        />
-      } */}
     </>
   )
 }

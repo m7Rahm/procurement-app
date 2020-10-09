@@ -1,21 +1,16 @@
 import React, { useRef, useState } from 'react'
 import {
   FaTrashAlt,
-  FaAngleDown,
   FaPlus,
   FaMinus
 } from 'react-icons/fa'
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
   const [modelsList, setModelsList] = useState([]);
-  const importanceText = ['orta', 'vacib', 'çox vacib'];
   const modelListRef = useRef(null);
   const modelsRef = useRef([])
   const updateMaterialsList = (type, payload) => props.dispatch({ type: type, payload: payload });
-  const handleImportanceChange = (e) => {
-    e.target.name = 'importance';
-    handleChange(e);
-  }
+
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -43,35 +38,35 @@ const NewOrderTableRow = (props) => {
     updateMaterialsList('updateRow', { name: name, value: value, rowid: props.id })
 
   }
-  const handleCategoryChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
-    // if (value !== 'add-new') {
-      const data = {
-        materialid: value
-      }
-      const token = localStorage.getItem('token');
-      fetch(`http://172.16.3.101:54321/api/get-models`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': JSON.stringify(data).length,
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify(data)
-      })
-        .then(resp => resp.json())
-        .then(respJ => {
-          modelsRef.current = respJ;
-          setModelsList(respJ)
-        })
-        .catch(ex => console.log(ex))
-      updateMaterialsList('updateRow', { name: name, value: value, rowid: props.id })
-    // }
-    // else {
-    //   props.setSysParamsModalState(true)
-    // }
-  }
+  // const handleCategoryChange = (e) => {
+  //   const value = e.target.value;
+  //   const name = e.target.name;
+  //   // if (value !== 'add-new') {
+  //     const data = {
+  //       materialid: value
+  //     }
+  //     const token = localStorage.getItem('token');
+  //     fetch(`http://172.16.3.101:54321/api/get-models`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Content-Length': JSON.stringify(data).length,
+  //         'Authorization': 'Bearer ' + token
+  //       },
+  //       body: JSON.stringify(data)
+  //     })
+  //       .then(resp => resp.json())
+  //       .then(respJ => {
+  //         modelsRef.current = respJ;
+  //         setModelsList(respJ)
+  //       })
+  //       .catch(ex => console.log(ex))
+  //     updateMaterialsList('updateRow', { name: name, value: value, rowid: props.id })
+  //   // }
+  //   // else {
+  //   //   props.setSysParamsModalState(true)
+  //   // }
+  // }
   const handleBlur = (e) => {
     const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
     if (relatedTargetid === null || relatedTargetid !== 'modelListRef')
@@ -96,7 +91,7 @@ const NewOrderTableRow = (props) => {
   return (
     <li ref={rowRef} className={props.class}>
       <div>{props.index + 1}</div>
-      <div>
+      {/* <div>
         <select name="materialId" onChange={handleCategoryChange} value={props.materialId}>
           {
             props.materials.map(material =>
@@ -104,7 +99,7 @@ const NewOrderTableRow = (props) => {
             )
           }
         </select>
-      </div>
+      </div> */}
       <div style={{ position: 'relative' }}>
         <input
           onBlur={handleBlur}
@@ -124,20 +119,21 @@ const NewOrderTableRow = (props) => {
         </ul>
       </div>
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
-        <div id={props.id} style={{ height: '100%', textAlign: 'left', boxShadow: `${props.isActive ? '0px 0px 0px 1.6px royalblue' : ''}` }} className={`importance-div`}>
-          {importanceText[props.importance - 1]}
-          <FaAngleDown color="royalblue" style={{ float: 'right' }} />
-        </div>
-        <ul className={`importance-dropdown ${props.isActive ? 'importance-dropdown-visible' : ''}`}>
-          <li value="1" key="1" onClick={handleImportanceChange}>
-            orta
-          </li>
-          <li title="vacib" value="2" key="2" onClick={handleImportanceChange} >
-            vacib
-            </li>
-          <li title="çox vacib" value="3" key="3" onClick={handleImportanceChange}>
-            çox vacib
-          </li>
+      <input
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          type="text"
+          placeholder="Model"
+          value={props.model}
+          name="model"
+          onChange={handleInputSearch}
+        />
+        <ul id="modelListRef" tabIndex="0" ref={modelListRef} className="material-model-list">
+          {
+            modelsList.map(model =>
+              <li key={model.id} onClick={() => setModel(model.title)}>{model.title}</li>
+            )
+          }
         </ul>
       </div>
       <div style={{ maxWidth: '140px' }}>
@@ -155,6 +151,7 @@ const NewOrderTableRow = (props) => {
             )}
         </select>
       </div>
+      <div>12321</div>
       <div>
         <input
           style={{ width: '100%' }}

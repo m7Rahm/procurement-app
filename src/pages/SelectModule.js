@@ -12,7 +12,7 @@ import Budget from './Budget'
 import Orders from './Orders'
 import '../App.css';
 import LeftSidePane from '../components/LeftSidePane'
-
+import Tender from './Tender'
 import logo from '../logo.svg';
 const availableModules = [
 	{
@@ -38,7 +38,7 @@ const availableModules = [
 	{
 		text: 'Tender',
 		link: '/tender',
-		component: Budget
+		component: Tender
 	},
 ]
 export const UserDataContext = React.createContext();
@@ -160,12 +160,14 @@ const SelectModule = () => {
 										ref={leftPaneRef}
 										handleNavClick={handleNavClick}
 									/>
-									<route.component
-										webSocketRef={webSocketRef}
-										handleNavClick={handleNavClick}
-										menuData={menuData}
-										setMenuData={setMenuData}
-									/>
+									<div className="dashboard">
+										<route.component
+											webSocketRef={webSocketRef}
+											handleNavClick={handleNavClick}
+											menuData={menuData}
+											setMenuData={setMenuData}
+										/>
+									</div>
 								</Route>
 							)
 						}
