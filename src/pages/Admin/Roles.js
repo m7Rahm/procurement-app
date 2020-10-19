@@ -15,7 +15,9 @@ const Roles = (props) => {
     const [roles, setRoles] = useState([]);
 
     const handleRoleUpdate = (id) => {
-        const role = id !== -1 ? roles.find(role => role.id === id) : { id: -1, name: '', modules: '', previliges: '', active_passive: 1}
+        const role = id !== -1
+            ? roles.find(role => role.id === id)
+            : { id: -1, name: '', modules: '', previliges: '', active_passive: 1};
         const updateRole = (props) => <UpdateRole token={token} closeModal={changeModalState} setRoles={setRoles} {...props} role={role} />
         setModal({ content: updateRole, state: true })
     }

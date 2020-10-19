@@ -11,7 +11,8 @@ const MyOrders = (props) => {
   const webSocketRef = useRef(props.webSocketRef.current);
   const activePageRef = useRef(0);
   const token = useContext(TokenContext)[0];
-  const userData = useContext(UserDataContext);
+  const userDataContext = useContext(UserDataContext);
+  const userData = userDataContext[0];
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq')
   const updateList = (from) => {
     fetch(`http://172.16.3.101:54321/api/orders?from=${from}&until=20`, {

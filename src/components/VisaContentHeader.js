@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
 	FaEdit,
 	FaCheck,
 	FaTimes
 } from 'react-icons/fa'
-const NewOrderContent = React.lazy(() => import('./modal content/NewOrder'));
+import { UserDataContext } from '../pages/SelectModule'
+const EditOrderRequest = React.lazy(() => import('./modal content/EditOrderRequest'));
 
 const VisaContentHeader = (props) => {
 	const version = props.version;
 	const current = props.current;
+	const userDataContext = useContext(UserDataContext);
+	const userData = userDataContext[0];
+	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək')
 	const closeModal = (respJ, receivers) => {
 		props.updateContent(receivers, {
 			id: respJ[1].id,
@@ -24,9 +28,9 @@ const VisaContentHeader = (props) => {
 				<h1>
 					{`Sifariş № ${props.orderNumb}`}
 					{
-						props.intention === 1 && !props.currentState.result &&
+						canEditRequest && !props.currentState.result &&
 						<FaEdit onClick={() => props.handleEditClick((props) =>
-							<NewOrderContent
+							<EditOrderRequest
 								closeModal={closeModal}
 								version={version}
 								content={current}
@@ -44,7 +48,7 @@ const VisaContentHeader = (props) => {
 							{props.currentState.actDateTime}
 							<FaCheck size="30" title="Təsdiq" color="#34A853" />
 						</span>
-						: props.currentState.result !== null && props.currentState.result !== undefined ?
+						: props.currentState.result === -1 ?
 							<span>
 								{props.currentState.actDateTime}
 								<FaTimes title="Etiraz" size="30" color="#EA4335" />
@@ -52,7 +56,7 @@ const VisaContentHeader = (props) => {
 							: ''
 				}
 			</div>
-			<div className="new-order-header">
+			{/* <div className="new-order-header">
 				<div>
 					<label htmlFor="destination" color="#555555">Təyinatı</label>
 					<br />
@@ -62,7 +66,7 @@ const VisaContentHeader = (props) => {
 					<label htmlFor="deadline" color="#555555">Deadline</label>
 					<div style={{ clear: 'both', fontSize: '22px', fontWeight: '550', color: 'gray' }}>{props.deadline}</div>
 				</div>
-			</div>
+			</div> */}
 		</>
 	)
 }

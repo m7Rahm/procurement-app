@@ -42,7 +42,7 @@ const handleCardClick = (isReadRef, props, stateRef) => {
 }
 const Visas = (props) => {
   const [active, setActive] = useState(null);
-  const onMountFunction = useRef((setVisas,notifIcon) => {
+  const onMountFunction = useRef((setVisas, notifIcon) => {
     const data = {
       userName: '',
       deadline: '',
@@ -64,7 +64,8 @@ const Visas = (props) => {
       .then(resp => resp.json())
       .then(respJ => {
         const totalCount = respJ[0] ? respJ[0].total_count : 0;
-        setVisas({count: totalCount, visas: respJ})})
+        setVisas({ count: totalCount, visas: respJ })
+      })
       .catch(err => console.log(err))
     props.webSocketRef.current.onmessage = (msg) => {
       // console.log(msg)
@@ -76,7 +77,7 @@ const Visas = (props) => {
     }
   })
   const sendNotification = (receivers) => {
-    props.webSocketRef.current.send(JSON.stringify({action: 'newOrder', people: receivers}));
+    props.webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }));
   }
   return (
     <div style={{ maxHeight: '100vh', display: 'flex', overflowY: 'hidden' }}>
@@ -85,7 +86,10 @@ const Visas = (props) => {
         mountFunc={onMountFunction.current}
         setActive={setActive}
       />
-      <VisaContent sendNotification={sendNotification} current={active} />
+      <VisaContent
+        sendNotification={sendNotification}
+        current={active}
+      />
     </div>
   )
 }

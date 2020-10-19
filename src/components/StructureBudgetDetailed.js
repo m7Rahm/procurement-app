@@ -19,7 +19,7 @@ const TableRow = ({ budget, index }) => {
         setDisabled(false)
     }
     const handleUpdate = () => {
-        
+        console.log(budgetData)
     }
     const handleCancel = () => {
         setBudgetData(budget);

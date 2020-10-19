@@ -18,13 +18,18 @@ const VisaContent = (props) => {
         else
             setParticipantsVisiblity(prev => !prev);
     }
+    // console.log(props.current)
     return (
         <div className="visa-content-container">
             <div>
                 {
                     props.current
                         ? <>
-                            <OrderContentProtected sendNotification={props.sendNotification} footerComponent={VisaContentFooter} current={props.current} />
+                            <OrderContentProtected
+                                sendNotification={props.sendNotification}
+                                footerComponent={VisaContentFooter}
+                                current={props.current}
+                            />
                             <div className="toggle-participants" onClick={handleParticipantsTransition}>
                                 Tarixçəni göstər
                             <FaAngleDown size="36" color="royalblue" />

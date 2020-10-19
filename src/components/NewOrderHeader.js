@@ -1,37 +1,31 @@
 import React from 'react'
 
 const NewOrderHeader = (props) => {
-    // const [departments, setDepartments] = useState([]);
-    // useEffect(() => {
-    //     fetch('http://172.16.3.101:54321/api/departments')
-    //         .then(resp => resp.json())
-    //         .then(respJ => setDepartments(respJ))
-    //         .catch(err => console.log(err))
-    // }, [])
+    const mainCategories = props.categories.filter(category => category.parent_id === 34);
+    const categoryid = props.category;
     const handleChange = (e) => {
-        const type = e.target.name === 'deadline' ? 'setDeadline' : 'setAssign'
-        props.dispatch({type: type, payload: { value: e.target.value }})
+        const type = 'setCategory'
+        props.dispatch({ type: type, payload: { value: Number(e.target.value) } })
     }
     return (
         <div>
             <div className="new-order-header">
                 <div>
-                    <label htmlFor="destination">Təyinatı</label>
+                    <label htmlFor="destination">Təyinat</label>
                     <br />
-                    <input type="text" placeholder="Təyinat.." name="assignment" onChange={handleChange} value={props.assignment}></input>
-                    {/* <select onChange={handleChange} name="assignment" value={props.assignment} type="text">
+                    <select onChange={handleChange} name="category" value={categoryid} type="text">
                         {
-                            departments.map((department, index) =>
-                                <option key={index} value={department.id}>{department.name}</option>
+                            mainCategories.map((category, index) =>
+                                <option key={index} value={category.id}>{category.product_title}</option>
                             )
                         }
-                    </select> */}
+                    </select>
                 </div>
-                <div>
+                {/* <div>
                     <label required={true} htmlFor="deadline">Deadline</label>
                     <br />
                     <input onChange={handleChange} name="deadline" value={props.deadline} required={true} type="date" />
-                </div>
+                </div> */}
             </div>
         </div>
     )

@@ -1,9 +1,7 @@
 .app {
   text-align: center;
   position: relative;
-  padding-top: 56px;
   height: 100vh;
-  padding-bottom: 80px;
   overflow: auto;
 }
 
@@ -949,7 +947,7 @@ div.update-role>div:nth-of-type(2)>div {
 }
 
 .modal-content-new-order {
-  min-height: 500px;
+  /* max-height: 500px; */
   width: 100%;
   background-color: white;
   display: flex;
@@ -1009,7 +1007,9 @@ div.update-role>div:nth-of-type(2)>div {
   float: left;
   margin-left: 50px;
 }
-
+div.new-order-header select{
+  padding: 4px 6px;
+}
 .new-order-header>div>label {
   float: left;
   color: #222222;
@@ -1596,7 +1596,7 @@ div.budget>div:first-of-type {
 }
 div.months {
   display: flex;
-  height: 120px;
+  height: 90px;
   flex-flow: column wrap;
 }
 div.budget-navigation-ribbon{
@@ -1716,6 +1716,12 @@ ul.structure-budget-general>li>div:not(:last-of-type){
 div.new-budget-modal{
   padding:  20px 10px;
 }
+div.new-budget-modal table.users-table tr:hover{
+  cursor: default;
+}
+div.new-budget-modal table.users-table td>select{
+  padding: 4px 2px;
+}
 div.new-budget-modal>div:first-of-type{
   display: flex;
   justify-content: space-between;
@@ -1724,6 +1730,15 @@ div.new-budget-modal>div:first-of-type{
 div.new-budget-modal>div:first-of-type select{
   padding: 4px 6px;
   border-radius: 3px;
+}
+div.new-budget-modal>div:last-of-type{
+  margin: 20px 0px;
+  float: right;
+  color: white;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 10px 15px;
+  background-color: #00a3e4;
 }
 ul.structure-budget-general>li>div:first-of-type{
   display: flex;
@@ -2758,7 +2773,9 @@ div.sys-param-modal {
   background-color: whitesmoke;
   z-index: 2;
 }
-
+div.new-budget-modal table select{
+  width: 250px;
+}
 div.sys-param-modal>div>table input,
 div.sys-param-modal>div>table select{
   min-width: 200px;
@@ -2771,7 +2788,7 @@ div.sys-param-modal>div>table select:focus{
   outline: none;
   box-shadow: 0px 0px 4px 2px #195db6;
 }
-div.sys-param-modal>div {
+div.sys-param-modal>div:not(.new-order-button) {
   max-height: 400px;
   overflow: auto;
   margin: 8px 10px;
@@ -2843,6 +2860,7 @@ div.pagination>div:hover {
 
 .material-model-list {
   position: absolute;
+  top: 38px;
   /* background-color: red; */
   display: none;
   width: 100%;

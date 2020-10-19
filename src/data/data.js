@@ -1,21 +1,20 @@
 
-export const token = localStorage.getItem('token');
 export const newOrderInitial = {
     materials: [
         {
-            id: Math.random().toString(),
-            materialId: 1,
+            id: Date.now().toString(),
+            materialId: '',
             model: '',
-            importance: 1,
-            amount: 1,
+            // importance: 1,
+            approx_price: 0,
             additionalInfo: '',
             class: '',
-            unitid: 2
+            subCategory: '',
+            // unitid: 2,
+            category: '',
+            count: 1
         }
     ],
-    deadline: '',
-    receivers: [],
-    assignment: '',
     comment: '',
     review: '',
     ordNumb: ''
@@ -193,212 +192,5 @@ export const modules = [
     {
         text: 'Tender',
         link: '/tender'
-    }
-]
-export const glCategories = [
-    {
-        code: 90024,
-        name: 'İşçilərlə bağlı digər fondlara ayırmalar',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90025,
-        name: 'İşçilərin tədrisi üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90026,
-        name: 'Yeni işçilərin qəbulu üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90029,
-        name: 'İşçilər ilə bağlı digər xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90050,
-        name: 'Binalar və qurğuların təmir və saxlanma xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90051,
-        name: 'Mebel və avadanlığın təmir və saxlanma xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90052,
-        name: 'Kompüterlər avadanlıqlarının təmir və saxlanmaxərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90053,
-        name: 'Nəqliyyat vasitələrinin təmirvə saxlanmaxərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90054,
-        name: 'Digər əsas vəsaitlərin təmirvə saxlanma xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90055,
-        name: 'Maliyyə icarəsinə götürülmüş əsas vəsaitlərin təmirvə saxlanma xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90056,
-        name: 'İcarəyə alınmış əsas vəsaitlərin təmir və saxlanma xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90057,
-        name: 'İnvestisiya mülkiyyəti üzrə təmir və saxlanma xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90060,
-        name: 'Avadanlıqların dəstəklənməsi üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90061,
-        name: 'Proqram təminatlarının dəstəklənməsi üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90069,
-        name: 'Digər dəstəklənmə xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90070,
-        name: 'Nəqliyyat vasitələri üzrə istismarxərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90071,
-        name: 'Əmlakın sığortası üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90072,
-        name: 'Avadanlığın icarəsi üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90073,
-        name: 'Mühafizə xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90074,
-        name: 'Enerji və qızdırıcı sistemlərüzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90075,
-        name: 'Kommunal xidmətlər üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90076,
-        name: 'İnvestisiya mülkiyyəti üzrə digərxərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90077,
-        name: 'Əsas vəsaitlər vəqeyri-maddi aktivlərlə bağlı vergilər və gömrük rüsumları',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90080,
-        name: 'Rabitə xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90081,
-        name: 'Mətbəə xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90082,
-        name: 'Mal-materialların alınması üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90083,
-        name: 'Reklam xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90085,
-        name: 'Məsləhət, audit və digər peşəkar xidmətlər üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90086,
-        name: 'İcarə haqqı',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90087,
-        name: 'Üzvlük haqqı',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90089,
-        name: 'Digər xidmətlər üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90090,
-        name: 'Əmanətlərin sığortalanması fondu üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90110,
-        name: 'Mülki müdafiə xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90111,
-        name: 'Ümidsiz borclarüzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90112,
-        name: 'Hərrac xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90113,
-        name: 'Ödənilmiş cərimə və dəbbə məbləğləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90114,
-        name: 'Hüquq məsrəfləri vəməhkəmə xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90115,
-        name: 'Nümayəndəlik xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90116,
-        name: 'Xeyriyyə məqsədləri üzrə xərclər',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90118,
-        name: 'Vergi xərcləri',
-        currency: 'milli valyuta'
-    },
-    {
-        code: 90119,
-        name: 'Digər xərclər',
-        currency: 'milli valyuta'
     }
 ]

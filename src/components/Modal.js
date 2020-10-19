@@ -47,7 +47,7 @@ const Modal = (props) => {
           {title ||' Sifariş №'} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
-        <ModalContent modalWrapperRef={modalWrapperRef} current={number} stateRef={stateRef} />
+        <ModalContent closeModal={closeModalCallback} modalWrapperRef={modalWrapperRef} current={number} stateRef={stateRef} />
       </div>
       {
         alertVisible &&

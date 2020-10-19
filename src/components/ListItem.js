@@ -66,9 +66,9 @@ const ListItem = (props) => {
         </div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{props.date}</div>
         <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> {props.number}</div>
-        <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> {props.deadline}</div>
-        <div style={{ minWidth: '70px', overflow: 'hidden', width: '20%', textAlign: 'left' }}> {props.category}</div>
-        <div style={{ width: '20%', textAlign: 'left' }}>
+        {/* <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> {props.deadline}</div> */}
+        {/* <div style={{ minWidth: '70px', overflow: 'hidden', width: '20%', textAlign: 'left' }}> {props.category}</div> */}
+        <div style={{ width: '40%', textAlign: 'left' }}>
           {
             props.participants
           }

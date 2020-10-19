@@ -7,7 +7,7 @@ const NewOrderTableRowAdd = (props) => {
   const handleClick = () => {
     props.dispatch({
       type: 'addRow', payload: {
-        rowData: {...newOrderInitial.materials[0], id: Math.random().toString(), class: 'new-row'}
+        rowData: {...newOrderInitial.materials[0], id: Date.now().toString(), class: 'new-row'}
       }
     })
   }

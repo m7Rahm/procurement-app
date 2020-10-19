@@ -44,7 +44,7 @@ const Participants = (props) => {
               <div>{participant.full_name}
                 <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{'Mütəxəssis'}</div>
               </div>
-              <div>{participant.result === 1 ? 'Təsdiq' : participant.result === 0 ? 'Etiraz' : 'Baxılır'}</div>
+              <div>{participant.result === 1 ? 'Təsdiq' : participant.result === -1 ? 'Etiraz' : 'Baxılır'}</div>
               <div>{participant.act_date_time || participant.date_time}</div>
               <div style={{ textAlign: 'left' }}>{participant.comment}</div>
             </li>

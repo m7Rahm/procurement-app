@@ -3,16 +3,19 @@ import {
     IoMdClose,
     IoMdAdd
 } from 'react-icons/io'
-import { availableLinks, availableOperations } from '../../data/data'
-
+import { modules, availableOperations } from '../../data/data'
+// import { UserDataContext } from '../../pages/SelectModule'
 const UpdateRole = (props) => {
     const [roleData, setRoleData] = useState(props.role);
-    const [menus, setMenus] = useState(props.role.available_menus === '' ? [] : props.role.available_menus.split(','));
-    const [previliges, setPreviliges] = useState(props.role.previliges === '' ? [] : props.role.previliges.split(','));
+    // const userData = useContext(UserDataContext);
+    const [userModules, setUserModules] = useState(props.role.modules === '' ? [] : props.role.modules.split(','));
+    const [priviliges, setPreviliges] = useState(props.role.previliges === '' ? [] : props.role.previliges.split(','));
+    // console.log(menus, previliges)
+    console.log(roleData)
     const selectPrevRef = useRef(null);
     const selectMenusRef = useRef(null);
-    console.log(roleData)
     const saveChanges = () => {
+        // console.log(roleData)
         fetch('http://172.16.3.101:54321/api/update-role', {
             method: 'POST',
             headers: {
@@ -40,13 +43,13 @@ const UpdateRole = (props) => {
         setRoleData(prev => ({...prev, [name]: value}))
     }
     const removeMenu = (menu) => {
-        setMenus(prev => {
+        setUserModules(prev => {
             const newMenus = prev.filter(prevMenu => prevMenu !== menu);
             const reduced = newMenus.reduce((sum, current, index) => {
                 const last = index !== newMenus.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, available_menus: reduced }))
+            setRoleData(prev => ({...prev, modules: reduced }))
             return newMenus
         })
     }
@@ -57,26 +60,26 @@ const UpdateRole = (props) => {
                 const last = index !== newPrevs.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, previliges: reduced }))
+            setRoleData(prev => ({...prev, priviliges: reduced }))
             return newPrevs
         })
     }
     const addMenu = () => {
         const menu = selectMenusRef.current.value;
-        setMenus(prev => {
+        setUserModules(prev => {
             const newPrevs = [...prev, menu];
             const reduced = newPrevs.reduce((sum, current, index) => {
                 const last = index !== newPrevs.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, available_menus: reduced }))
+            setRoleData(prev => ({...prev, modules: reduced }))
             return newPrevs
         })
     }
-    const addPrev = () => {
-        const previlige = selectPrevRef.current.value;
+    const addPriv = () => {
+        const privilige = selectPrevRef.current.value;
         setPreviliges(prev => {
-            const newMenus = [...prev, previlige];
+            const newMenus = [...prev, privilige];
             const reduced = newMenus.reduce((sum, current, index) => {
                 const last = index !== newMenus.length - 1 ? ',' : '';
                 return sum + current + last
@@ -89,16 +92,15 @@ const UpdateRole = (props) => {
         <div>
             <div className="update-role">
                 <input value={roleData.name} name="name" onChange={handleChange} />
-
                 <p>
                     Menular
                     <IoMdAdd size="20" onClick={addMenu} />
                     <select ref={selectMenusRef}>
                         {
-                            availableLinks.map(link => {
-                                if (menus.indexOf(link) < 0)
+                            modules.map(module => {
+                                if (userModules.indexOf(module.text) < 0)
                                     return (
-                                        <option key={link}>{link}</option>
+                                        <option key={module.link}>{module.text}</option>
                                     )
                                 else
                                     return null;
@@ -108,18 +110,18 @@ const UpdateRole = (props) => {
                 </p>
                 <div className="role-block">
                     {
-                        menus.map((menu, index) =>
+                        userModules.map((menu, index) =>
                             <div key={index}>{menu}<IoMdClose onClick={() => removeMenu(menu)} /></div>
                         )
                     }
                 </div>
                 <p>
                     Yetkilər
-                    <IoMdAdd size="20" onClick={addPrev} />
+                    <IoMdAdd size="20" onClick={addPriv} />
                     <select ref={selectPrevRef}>
                         {
                             availableOperations.map(previlige => {
-                                if (previliges.indexOf(previlige) < 0)
+                                if (priviliges.indexOf(previlige) < 0)
                                     return (
                                         <option key={previlige} value={previlige}>{previlige}</option>
                                     )
@@ -131,7 +133,7 @@ const UpdateRole = (props) => {
                 </p>
                 <div className="role-block">
                     {
-                        previliges.map((previlige, index) =>
+                        priviliges.map((previlige, index) =>
                             <div key={index}>{previlige}<IoMdClose onClick={() => removePrevilige(previlige)} /></div>
                         )
                     }

@@ -44,7 +44,7 @@ const availableModules = [
 export const UserDataContext = React.createContext();
 const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
-	const [userData, setUserData] = useState({ modules: [], previliges: [] })
+	const [userData, setUserData] = useState({ modules: [], previliges: [], userInfo: {} })
 	const webSocketRef = useRef(null);
 	const [menuData, setMenuData] = useState({ url: '', routes: [] })
 	const [wSockConnected, setWSockConnected] = useState(false);
@@ -76,7 +76,13 @@ const SelectModule = () => {
 						webSocket.send(JSON.stringify(data));
 						// setWebSocketRef(webSocket);
 						webSocketRef.current = webSocket;
-						setUserData({ modules: userMods, previliges: previliges })
+						const structureid = respJ.userData.data.structureid;
+						const fullName = respJ.userData.data.fullName;
+						setUserData({ modules: userMods, previliges: previliges, userInfo: {
+							id,
+							structureid,
+							fullName
+						} })
 						// setWSockConnected(true);
 						setWSockConnected(true);
 					})
@@ -89,7 +95,7 @@ const SelectModule = () => {
 			}
 		}
 	}, [token]);
-	const routes = availableModules.filter(availableModule => modules.find(module => module.text === availableModule.text));
+	const routes = availableModules.filter(availableModule => userData.modules.find(module => module.text === availableModule.text));
 	// console.log(webSocketRef)
 	const handleNavClick = () => {
 		leftPaneRef.current.classList.toggle('left-side-pane-open');
@@ -106,7 +112,7 @@ const SelectModule = () => {
 				<div className="splash-screen">
 					<div className="module-select">
 						{
-							modules.map(module =>
+							routes.map(module =>
 								<Link key={module.link} to={module.link}>
 									<div className="module-card">
 										{module.text}
@@ -150,7 +156,7 @@ const SelectModule = () => {
 							}}>
 						</div>
 					</>
-					<UserDataContext.Provider value={userData}>
+					<UserDataContext.Provider value={[userData, setUserData]}>
 						{
 							routes.map(route =>
 								<Route key={route.link} path={route.link}>

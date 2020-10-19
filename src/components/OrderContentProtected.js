@@ -58,7 +58,7 @@ const OrderContentProtected = (props) => {
 					version={props.current[0].emp_version_id}
 					currentState={currentState}
 					handleEditClick={handleEditClick}
-					assignment={current[0].assignment}
+					// assignment={current[0].assignment}
 					intention={current[0].intention}
 					orderNumb={current[0].ord_numb}
 				/>
@@ -66,10 +66,8 @@ const OrderContentProtected = (props) => {
 			<VisaContentMaterials orderContent={props.current} />
 			<Component
 				sendNotification={props.sendNotification}
-				current={props.current[0].ord_numb}
-				version={props.current[0].emp_version_id}
+				current={props.current[0]}
 				orderContent={currentState}
-				intention={props.current[0].intention}
 				handleEditClick={handleEditClick}
 				setIsModalOpen={setIsModalOpen}
 				updateContent={updateContent}
