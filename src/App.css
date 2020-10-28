@@ -644,13 +644,14 @@ div.icons-panel-hide {
   cursor: pointer;
 }
 
-.accept-decline>div:first-of-type {
+.accept-decline>div:first-of-type, #procurement-edit-section {
   display: flex;
   flex-flow: wrap row;
   margin-bottom: 10px;
 }
 
-.accept-decline>div:first-of-type>textarea {
+.accept-decline>div:first-of-type>textarea,
+#procurement-edit-section>textarea {
   width: 100%;
   min-height: 100px;
   display: block;
@@ -658,7 +659,8 @@ div.icons-panel-hide {
   margin-right: 20px;
 }
 
-.accept-decline>div:first-of-type>select {
+.accept-decline>div:first-of-type>select,
+#procurement-edit-section>select {
   height: 40px;
   min-width: 238px;
   padding: 0px 10px;
@@ -949,11 +951,18 @@ div.update-role>div:nth-of-type(2)>div {
 .modal-content-new-order {
   /* max-height: 500px; */
   width: 100%;
+  padding: 15px 0px;
   background-color: white;
   display: flex;
   flex-flow: wrap column;
 }
-
+.modal-content-new-order>div:first-of-type{
+  /* align-self: flex-end; */
+  margin: 20px;
+}
+.modal-content-new-order>div:first-of-type>select{
+  padding: 10px;
+}
 .new-order-table {
   margin: 0px 20px;
   border-radius: 3px;
@@ -976,6 +985,9 @@ div.update-role>div:nth-of-type(2)>div {
 
 .new-order-table>li>div:not(:first-of-type):not(:last-of-type) {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .new-order-table>li:first-of-type {
@@ -1278,7 +1290,7 @@ div.send-order {
   font-weight: 600;
   background-color: rgb(255, 174, 0);
   min-width: 180px;
-  margin: 50px;
+  margin: 20px;
   padding: 10px;
   border-radius: 3px;
   height: 40px;
@@ -1389,7 +1401,13 @@ li.delete-row {
 .order-table-protex {
   margin-top: 20px;
 }
-
+.order-table-protex>li>div{
+  display: flex;
+  align-items: center;
+}
+.order-table-protex>li>div>span{
+  text-align: left;
+}
 .new-order-table>li:not(:nth-of-type(2n+1)) {
   background-color: #e9e9e9;
 }
@@ -1852,7 +1870,11 @@ div.security input {
   margin: 10px;
   padding: 0px 10px;
 }
-
+.toggle-participants::after{
+  display: block;
+  content: '';
+  clear: both;
+}
 div.save-button {
   float: right;
   padding: 8px 15px;
@@ -2203,10 +2225,6 @@ span.reviewers-header {
   background-color: rgb(24, 139, 192);
 }
 
-.participants.reviewers>li>div:nth-of-type(3) {
-  width: 50%;
-}
-
 .participants>li>div {
   display: flex;
   flex-direction: column;
@@ -2530,10 +2548,10 @@ div.price-offer-table-container>div:not(.header-container)>div:first-of-type>div
 }
 
 svg.pictures-thumb {
-  float: left;
-  color: white;
+  float: right;
+  color: #1a73e8;
   cursor: pointer;
-  margin-left: 10px;
+  margin-right: 10px;
 }
 
 div.price-offer-table-container>div:not(.header-container)>div:nth-of-type(-n+3)>input, div.price-offer-table-container>div:not(.header-container)>div:nth-last-of-type(-n+6)>input {
@@ -2680,7 +2698,7 @@ div.add-new-price-offerer {
   max-width: 512px;
   margin: auto;
   height: 330px;
-  border-radius: 5px;
+  border-radius: 3px;
   overflow: hidden;
   background-color: whitesmoke;
   box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
@@ -2688,10 +2706,10 @@ div.add-new-price-offerer {
 
 .offer-pictures>div>div:first-of-type {
   padding: 6px;
-  border-radius: 5px 5px 0px 0px;
+  border-radius: 3px 3px 0px 0px;
   overflow: hidden;
   height: 30px;
-  background-image: linear-gradient(to bottom, #777777, black);
+  background-image: linear-gradient(to bottom, #646464, rgb(27, 27, 27));
 }
 
 .offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type) {
@@ -2735,7 +2753,8 @@ div.add-new-price-offerer {
 }
 
 .offer-pictures>div>div>table td:last-of-type {
-  width: 70px;
+  width: 20px;
+  padding: 0px !important;
 }
 
 .offer-pictures>div>div>table td:nth-of-type(2) {
@@ -2778,7 +2797,7 @@ div.new-budget-modal table select{
 }
 div.sys-param-modal>div>table input,
 div.sys-param-modal>div>table select{
-  min-width: 200px;
+  min-width: 180px;
   border: none;
 }
 div.sys-param-modal>div>table input:focus,

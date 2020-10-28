@@ -16,10 +16,10 @@ const VisaContentFooter = (props) => {
     // console.log(props.current)
     // const [comment, setComment] = useState('');
     const setIsModalOpen = (recs, order) => {
-        props.setIsModalOpen(false);
+        console.log(order);
         props.updateContent(recs, {
             id: order.id,
-            actDateTime: order.act_date_time,
+            act_date_time: order.act_date_time,
             result: order.result,
             comment: order.comment
         })
@@ -66,82 +66,100 @@ const VisaContentFooter = (props) => {
         // props.intention === 1
         //     ? 
         props.orderContent.result === 0
-                ? <>
-                    <div className="accept-decline-container">
-                        {
-                            canDecline &&
-                            <div
-                                onClick={() => props.handleEditClick((props) =>
-                                    <AcceptDecline
-                                        closeModal={setIsModalOpen}
-                                        // version={version}
-                                        tranid={current.id}
-                                        accept={false}
-                                        backgroundColor='#D93404'
-                                        {...props}
-                                    />)
-                                }
-                                style={{ background: '#D93404' }}
-                            >
-                                Etiraz
-                    </div>
-                        }
-                        {
-                            canApprove &&
-                            <div
-                                onClick={() => props.handleEditClick((props) =>
-                                    <AcceptDecline
-                                        closeModal={setIsModalOpen}
-                                        // version={version}
-                                        tranid={current.id}
-                                        accept={true}
-                                        backgroundColor='rgb(15, 157, 88)'
-                                        {...props}
-                                    />)
-                                }
-                                style={{ background: 'rgb(15, 157, 88)' }}
-                            >
-                                Təsdiq
+            ? <>
+                <div className="accept-decline-container">
+                    {
+                        canDecline &&
+                        <div
+                            onClick={() => props.handleEditClick((props) =>
+                                <AcceptDecline
+                                    handleModalClose={setIsModalOpen}
+                                    // version={version}
+                                    tranid={current.id}
+                                    action={-1}
+                                    backgroundColor='#D93404'
+                                    {...props}
+                                />)
+                            }
+                            style={{ background: '#D93404' }}
+                        >
+                            Etiraz
                         </div>
-                        }
-                        {
-                            canReturn &&
-                            <div
-                                onClick={() => props.handleEditClick((props) =>
-                                    <AcceptDecline
-                                        closeModal={setIsModalOpen}
-                                        tranid={current.id}
-                                        // version={version}
-                                        accept={false}
-                                        backgroundColor='#F4B400'
-                                        {...props}
-                                    />)
-                                }
-                                style={{ background: '#F4B400' }}
-                            >
-                                Redaktəyə qaytar
+                    }
+                    {
+                        canApprove &&
+                        <div
+                            onClick={() => props.handleEditClick((props) =>
+                                <AcceptDecline
+                                    handleModalClose={setIsModalOpen}
+                                    // version={version}
+                                    tranid={current.id}
+                                    action={1}
+                                    backgroundColor='rgb(15, 157, 88)'
+                                    {...props}
+                                />)
+                            }
+                            style={{ background: 'rgb(15, 157, 88)' }}
+                        >
+                            Təsdiq
                         </div>
-                        }
-                    </div>
-                </>
-                :
-                <>
-                </>
-            // :
-            // <>
-            //     {
-            //         props.orderContent.comment === ''
-            //             ? <div className="review-container">
-            //                 <textarea placeholder="Rəy bildirin.." value={comment} onChange={handleTextChange}></textarea>
-            //                 <div onClick={handleClick}>Göndər</div>
-            //             </div>
-            //             : <div className="review-container reviewed-comment">
-            //                 <span >Sifarişə {props.orderContent.actDateTime} tarixində rəy verilmişdir:</span>
-            //                 <br />
-            //                 <span>{props.orderContent.comment}</span>
-            //             </div>
-            //     }
-            // </>
+                    }
+                    {
+                        canReturn && current.forward_type !== 4 &&
+                        <div
+                            onClick={() => props.handleEditClick((props) =>
+                                <AcceptDecline
+                                    handleModalClose={setIsModalOpen}
+                                    tranid={current.id}
+                                    // version={version}
+                                    action={2}
+                                    backgroundColor='#F4B400'
+                                    {...props}
+                                />)
+                            }
+                            style={{ background: '#F4B400' }}
+                        >
+                            Redaktəyə qaytar
+                        </div>
+                    }
+                    {
+                        current.forward_type === 3 &&
+                        <div
+                            onClick={() => props.handleEditClick((props) =>
+                                <AcceptDecline
+                                    handleModalClose={setIsModalOpen}
+                                    tranid={current.id}
+                                    // version={version}
+                                    action={4}
+                                    backgroundColor='#00a3e4'
+                                    {...props}
+                                />)
+                            }
+                            style={{ background: '#00a3e4' }}
+                        >
+                            Əlavə struktur cəlb et
+                        </div>
+                    }
+                </div>
+            </>
+            :
+            <>
+            </>
+        // :
+        // <>
+        //     {
+        //         props.orderContent.comment === ''
+        //             ? <div className="review-container">
+        //                 <textarea placeholder="Rəy bildirin.." value={comment} onChange={handleTextChange}></textarea>
+        //                 <div onClick={handleClick}>Göndər</div>
+        //             </div>
+        //             : <div className="review-container reviewed-comment">
+        //                 <span >Sifarişə {props.orderContent.actDateTime} tarixində rəy verilmişdir:</span>
+        //                 <br />
+        //                 <span>{props.orderContent.comment}</span>
+        //             </div>
+        //     }
+        // </>
     )
 }
 export default VisaContentFooter

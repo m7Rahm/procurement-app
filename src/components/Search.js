@@ -1,5 +1,16 @@
 import React from 'react'
-const Search = () => {
+const Search = (props) => {
+	const searchData = props.searchData;
+	const setSearchData = props.setSearchData;
+	const updateList = props.updateList;
+	const handleChange = (e) => {
+		const name = e.target.name;
+		const value = e.target.value;
+		setSearchData(prev => ({ ...prev, [name]: value }))
+	}
+	const handleSearch = () => {
+		updateList(0)
+	}
 	return (
 		<div style={{ backgroundColor: '#188bc0' }}>
 			<div className="wrapper">
@@ -7,27 +18,70 @@ const Search = () => {
 					<div>
 						<label htmlFor='status'>Status</label>
 						<br />
-						<select name='status' type='time' style={{ height: '35px', float: 'left' }}>
-							<option>Etiraz</option>
-							<option>Gözlənilir</option>
-							<option>Təsdiq</option>
-							<option>Baxılır</option>
-							<option>Anbarda</option>
-							<option>Tamamlanmışdır</option>
+						<select name='status' onChange={handleChange} value={searchData.status} style={{ height: '35px', float: 'left' }}>
+							<option value='0'>-</option>
+							<option value='1'>Etiraz</option>
+							<option value='2'>Gözlənilir</option>
+							<option value='3'>Təsdiq</option>
+							<option value='4'>Baxılır</option>
+							<option value='5'>Anbarda</option>
+							<option value='6'>Tamamlanmışdır</option>
 						</select>
 					</div>
 					<div>
-						<label htmlFor='Tarix'>Tarix</label>
+						<label htmlFor='dateFrom'>Başlanğıc</label>
 						<br />
-						<input placeholder='Tarix' name='status' type='date' style={{ height: '35px', float: 'left' }}></input>
+						<input
+							onChange={handleChange}
+							value={searchData.dateFrom}
+							placeholder='Tarix'
+							name='dateFrom'
+							type='date'
+							style={{ height: '35px', float: 'left' }}
+						/>
 					</div>
 					<div>
-						<label htmlFor='number' >Nömrə</label>
+						<label htmlFor='dateTill'>Son</label>
 						<br />
-						<input placeholder='Nömrə' name='number' type='text' style={{ height: '35px', float: 'left' }}></input>
+						<input
+							onChange={handleChange}
+							value={searchData.dateTill}
+							placeholder='Tarix'
+							name='dateTill'
+							type='date'
+							style={{ height: '35px', float: 'left' }}
+						/>
+					</div>
+					<div>
+						<label htmlFor='ordNumb' >Nömrə</label>
+						<br />
+						<input
+							onChange={handleChange}
+							value={searchData.ordNumb}
+							placeholder='Nömrə'
+							name='ordNumb'
+							type='text'
+							style={{ height: '35px', float: 'left' }}
+						/>
 					</div>
 					<div style={{ textAlign: 'left', height: '55px', display: 'flex', minWidth: '180px', flexDirection: 'column-reverse' }}>
-						<button style={{ height: '35px', marginBottom: '1.5px', cursor:'pointer', color: 'white', fontWeight: '600', padding: '3px 6px', float: 'left', minWidth: '180px', fontFamily: 'sans-serif', border: 'none', backgroundColor: '#ffae00' }}> AXTAR</button>
+						<button
+							onClick={handleSearch}
+							style={{
+								height: '35px',
+								marginBottom: '1.5px',
+								cursor: 'pointer',
+								color: 'white',
+								fontWeight: '600',
+								padding: '3px 6px',
+								float: 'left',
+								minWidth: '180px',
+								fontFamily: 'sans-serif',
+								border: 'none',
+								backgroundColor: '#ffae00'
+							}}>
+							AXTAR
+						</button>
 					</div>
 				</div>
 			</div>

@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
-import OrdersContent from '../components/OrdersContent'
-import PriceOffer from '../components/modal content/PriceOffer' 
-import SideBar from '../components/SideBar'
-import CreatePriceOfferFooter from '../components/CreatePriceOfferFooter'
+import React, { useState, useContext } from 'react'
+import SideBar from '../../components/SideBar'
+import ProcurementOrderContent from '../../components/ProcurementOrderContent'
+import { TokenContext } from '../../App'
 const onMountFunction = (setVisas, _, token) => {
     const data = {
         deadline: '',
@@ -35,7 +34,7 @@ const handleCardClick = (_, props, stateRef) => {
             orderid: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/order`, {
+        fetch(`http://172.16.3.101:54321/api/ready-order-content`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,28 +53,28 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
-const footerComp = (props) =>
-    <CreatePriceOfferFooter
-        {...props}
-        childComp={PriceOffer}
-    />
+
 const Inbox = (props) => {
-    const canBeChanged = false
     const [active, setActive] = useState(null);
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0];
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
-            <SideBar token={props.token} handleCardClick={handleCardClick} mountFunc={onMountFunction} setActive={setActive} />
+            <SideBar
+                handleCardClick={handleCardClick}
+                mountFunc={onMountFunction}
+                setActive={setActive}
+            />
             {
                 active
-                    ? <OrdersContent
-                        current={active}
-                        canBeChanged={canBeChanged}
-                        footerComp={footerComp}
+                    ? <ProcurementOrderContent
+                        order={active}
+                        token={token}
                     />
                     : <>
                         <div style={{ marginTop: '100px', flex: 1, paddingTop: '56px' }}>
                             <img
-                                src={require('../Konvert.svg')}
+                                src={require('../../Konvert.svg')}
                                 alt="blah"
                                 height="70"
                                 style={{ marginBottom: '20px' }} />

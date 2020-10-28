@@ -16,7 +16,7 @@ const Users = () => {
 	const activePageRef = useRef(0);
 	const [modal, setModal] = useState({ visible: false, content: undefined });
 	const createNewUser = () => {
-		const newUser = (props) => <NewUser closeModal={closeModal} {...props}/>
+		const newUser = (props) => <NewUser updateList={updateList} closeModal={closeModal} {...props}/>
 		setModal({ visible: true, content: newUser})
 	}
 	const updateList = (from) => {

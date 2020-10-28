@@ -5,19 +5,18 @@ export const newOrderInitial = {
             id: Date.now().toString(),
             materialId: '',
             model: '',
-            // importance: 1,
             approx_price: 0,
             additionalInfo: '',
             class: '',
             subCategory: '',
-            // unitid: 2,
             category: '',
             count: 1
         }
     ],
     comment: '',
     review: '',
-    ordNumb: ''
+    ordNumb: '',
+    orderType: 0
 }
 export const months = [
     {

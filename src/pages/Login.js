@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
     useHistory
 } from 'react-router-dom'
@@ -6,10 +6,21 @@ import {
     IoIosCloseCircle
 } from 'react-icons/io'
 const Login = (props) => {
-    const [userCreds, setUserCreds] = useState({username: '', password: ''});
+    const [userCreds, setUserCreds] = useState({ username: '', password: '' });
     const history = useHistory();
     const [isPasswordCorrect, setIsPasswordCorrect] = useState(true);
     const operationResultDiv = useRef(null);
+    const count = useRef(0)
+    useEffect(() => {
+        if (operationResultDiv.current)
+            operationResultDiv.current.addEventListener('animationend', () => {
+                count.current += 1;
+                if (count.current === 2){
+                    count.current = 0;
+                    setIsPasswordCorrect(true)
+                }
+            }, false)
+    }, [isPasswordCorrect])
     const handleLoginCheck = () => {
         fetch('http://172.16.3.101:54321/api/login', {
             method: 'POST',
@@ -26,7 +37,6 @@ const Login = (props) => {
                 else {
                     localStorage.setItem('token', respJ.token);
                     props.setToken(respJ.token);
-                    // localStorage.setUserData(JSON.stringify(respJ.data));
                     history.push('/');
                 }
             })
@@ -35,7 +45,7 @@ const Login = (props) => {
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setUserCreds(prev => ({...prev, [name]: value}))
+        setUserCreds(prev => ({ ...prev, [name]: value }))
     }
     return (
         <div className="login-container">
@@ -54,7 +64,7 @@ const Login = (props) => {
             </div>
             {
                 !isPasswordCorrect &&
-                <div ref={operationResultDiv} style={{backgroundColor: '#D93404'}} className="operation-result">
+                <div ref={operationResultDiv} style={{ backgroundColor: '#D93404' }} className="operation-result">
                     <div>
                         <IoIosCloseCircle size="88" />
                     </div>

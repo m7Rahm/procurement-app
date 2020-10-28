@@ -3,6 +3,9 @@ import ListItem from './ListItem'
 // import useMemoizeItems from './MemoizeItems'
 const TableContent = (props) => {
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
+  const orders = props.orders.orders;
+  const setOrders = props.setOrders;
+  const referer = props.referer;
   const handleOnOuterClick = useCallback((e) => {
     const target = e.target.closest('div')
     if (target) {
@@ -20,7 +23,7 @@ useEffect(
   , [handleOnOuterClick]
 )
 return (
-  props.orders.orders.map((order, index) => {
+  orders.map((order, index) => {
     const active = index === activeLinkIndex ? true : false;
     return (
       <ListItem
@@ -28,18 +31,13 @@ return (
         setModalContent={props.setModalContent}
         setModalVisibility={props.setModalVisibility}
         index={index}
-        key={index}
-        date={order.create_date_time}
-        status={order.status}
-        number={order.ord_numb}
-        category={order.assignment}
-        participants={order.participants}
-        deadline={order.deadline}
-        remark={order.comment}
+        key={order.ord_numb}
+        order={order}
         activeLinkIndex={active}
         setActiveLink={setActiveLinkIndex}
+        referer={referer}
+        setOrders={setOrders}
       />
-      // , [index, order.category, order.deadline, order.number, order.participants, order.status, active]
     )
   })
 )

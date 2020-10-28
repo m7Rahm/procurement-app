@@ -5,7 +5,7 @@ import {
 } from 'react-icons/md'
 const Pagination = (props) => {
     const active = props.activePageRef.current;
-    const count = Math.ceil(props.count / 20) <= 1 ? 0 : Math.ceil(props.count / 20) + 1;
+    const count = Math.ceil(props.count / 20) <= 1 ? 0 : Math.ceil(props.count / 20);
     const [pages, setPages] = useState([]);
     useEffect(() => {
         const elemCount = count > 4 ? 4 : count;

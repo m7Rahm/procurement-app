@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import Table from '../../components/Table'
-import Search from '../../components/Search'
-import NewOrderButton from '../../components/NewOrderButton';
+// import Search from '../../components/Search'
+// import NewOrderButton from '../../components/NewOrderButton';
 import Pagination from '../../components/Pagination';
-import { UserDataContext } from '../SelectModule'
 import { TokenContext } from '../../App'
 const MyOrders = (props) => {
   const wrapperRef = useRef(null);
@@ -11,26 +10,11 @@ const MyOrders = (props) => {
   const webSocketRef = useRef(props.webSocketRef.current);
   const activePageRef = useRef(0);
   const token = useContext(TokenContext)[0];
-  const userDataContext = useContext(UserDataContext);
-  const userData = userDataContext[0];
-  const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
-  const [searchData, setSearchData] = useState({
-    dateFrom: '',
-    dateTill: '',
-    status: 0,
-    date: '',
-    ordNumb: ''
-  })
   const updateList = (from) => {
-    const data = JSON.stringify({ ...searchData, from: from, until: 20 });
-    fetch(`http://172.16.3.101:54321/api/orders`, {
-      method: 'POST',
+    fetch(`http://172.16.3.101:54321/api/returned-orders?from=${from}&until=20`, {
       headers: {
         'Authorization': 'Bearer ' + token,
-        'Content-Length': data.length,
-        'Content-Type': 'application/json'
-      },
-      body: data
+      }
     })
       .then(resp => resp.json())
       .then(respJ => {
@@ -40,23 +24,10 @@ const MyOrders = (props) => {
       .catch(err => console.log(err))
   }
   useEffect(() => {
-    const data = JSON.stringify({
-      from: 0,
-      until: 20,
-      status: 0,
-      dateFrom: '',
-      dateTill: '',
-      ordNumb: ''
-    });
-    //todo: create socket and connect
-    fetch('http://172.16.3.101:54321/api/orders', {
-      method: 'POST',
+    fetch(`http://172.16.3.101:54321/api/returned-orders?from=0&until=20`, {
       headers: {
         'Authorization': 'Bearer ' + token,
-        'Content-Length': data.length,
-        'Content-Type': 'application/json'
       },
-      body: data
     })
       .then(resp => resp.json())
       .then(respJ => {
@@ -69,27 +40,14 @@ const MyOrders = (props) => {
   }, [token])
   return (
     <>
-      <Search
-        searchData={searchData}
-        setSearchData={setSearchData}
-        updateList={updateList}
-      />
       <div className="wrapper" ref={wrapperRef}>
         <Table
+          referer="returned"
           wrapperRef={wrapperRef}
           orders={orders}
-          referer="protected"
           setOrders={setOrders}
-          />
-      </div>
-      {
-        canCreateNewOrder &&
-        <NewOrderButton
-          webSocketRef={webSocketRef}
-          setOrders={setOrders}
-          wrapperRef={wrapperRef}
         />
-      }
+      </div>
       <div className="my-orders-footer">
         <Pagination
           count={orders.count}

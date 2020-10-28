@@ -49,6 +49,7 @@ const StructureBudget = (props) => {
                 .catch(ex => console.log(ex))
         }
     }, [structureid, searchState, token]);
+    // console.log(structureBudget)
     return (
         <div className="budget strucutre-budget">
             <div>

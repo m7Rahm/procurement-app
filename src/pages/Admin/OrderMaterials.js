@@ -13,7 +13,6 @@ const TableRow = ({ index, material, subCategoriesRef, categories, departments, 
     const [materialData, setMaterialData] = useState(material);
     const [disabled, setDisabled] = useState(true);
     const subCategories = subCategoriesRef.current.filter(subCat => subCat.parent_id.toString() === materialData.grand_parent_id.toString());
-    // console.log(subCategoriesRef.current);
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -74,6 +73,12 @@ const TableRow = ({ index, material, subCategoriesRef, categories, departments, 
                     }
                 </select>
             </td>
+            <td>
+                <select disabled={disabled} name="type" onChange={handleChange} value={materialData.type ? "1" : "0"}>
+                    <option value="0">Mal-Material</option>
+                    <option value="1">Xidmət</option>
+                </select>
+            </td>
             <td><input value={materialData.approx_price || ''} name="approx_price" disabled={disabled} onChange={handleChange} /></td>
             <td><input value={materialData.barcode || ''} name="barcode" disabled={disabled} onChange={handleChange} /></td>
             <td>
@@ -99,7 +104,8 @@ const OrderMaterials = () => {
         department: 1,
         grand_parent_id: '',
         barcode: '',
-        approxPrice: ''
+        approxPrice: '',
+        type: 0
     });
     const categoryNameRef = useRef(null);
     const parentCategoryRef = useRef(null);
@@ -204,7 +210,6 @@ const OrderMaterials = () => {
             })
             .catch(ex => console.log(ex))
     }
-    // console.log(tableData)
     return (
         <div className="sys-param-modal">
             <div >
@@ -230,6 +235,7 @@ const OrderMaterials = () => {
                             <th>Kateqoriya</th>
                             <th>Alt Kateqoriya</th>
                             <th>Yöndərilən struktur</th>
+                            <th>Növ</th>
                             <th>Qiymət</th>
                             <th>Kod</th>
                             <th></th>
@@ -264,6 +270,12 @@ const OrderMaterials = () => {
                                             <option key={department.id} value={department.id}>{department.name}</option>
                                         )
                                     }
+                                </select>
+                            </td>
+                            <td>
+                                <select onChange={handleChange} name="type" value={newCatState.type}>
+                                    <option value="0">Mal-Material</option>
+                                    <option value="1">Xidmət</option>
                                 </select>
                             </td>
                             <td><input name="approxPrice" value={newCatState.approxPrice} onChange={handleChange} /></td>

@@ -3,8 +3,9 @@ import React, { useEffect } from 'react'
 import MyOrders from './Orders/MyOrders'
 // import Drafts from './Orders/Drafts'
 import Visas from './Orders/Visas'
+import Returned from './Orders/Returned'
 import {
-    // IoMdDocument,
+    IoMdDocument,
     // IoIosArchive,
     IoMdCheckmarkCircleOutline,
     IoMdCart
@@ -27,12 +28,12 @@ const routes = [
         icon: IoMdCart,
         component: MyOrders
     },
-    // {
-    //     text: 'Drafts',
-    //     link: '/drafts',
-    //     icon: IoMdDocument,
-    //     component: Drafts
-    // },
+    {
+        text: 'Retruned',
+        link: '/returned',
+        icon: IoMdDocument,
+        component: Returned
+    },
     {
         text: 'Visas',
         link: '/visas',
@@ -48,7 +49,7 @@ const Orders = (props) => {
         setMenuData({ url: url, routes: routes })
     }, [url, setMenuData])
     return (
-        <div className="app">
+        <div className="app dashboard">
             <Switch>
                 {
                     routes.map(route =>

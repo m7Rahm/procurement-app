@@ -7,14 +7,24 @@ import {
 import {
     MdLocalOffer
 } from 'react-icons/md'
+import {
+    FaCartArrowDown
+} from 'react-icons/fa'
 import ExpressVendors from './Tender/ExpressVendors'
+import Inbox from './Tender/Inbox'
 const routes = [
     {
-        text: 'Express Vendor',
+        text: 'Express Vendors',
         link: '/express-vendors',
         icon: MdLocalOffer,
         component: ExpressVendors
     },
+    {
+        text: 'Orders',
+        link: '/orders',
+        icon: FaCartArrowDown,
+        component: Inbox
+    }
 ]
 const Tender = (props) => {
     const setMenuData = props.setMenuData;

@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState, useEffect, useContext } from 'react'
+import { TokenContext } from '../../App'
 const NewUser = (props) => {
-    const [userData, setUserData] = useState({full_name: '', passport_data: '', vesiqe_fin_kod: '', structure_dependency_id: 1, role_id: 1, email: '' });
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0];
+    const [userData, setUserData] = useState({
+        full_name: '',
+        passport_data: '',
+        vesiqe_fin_kod: '',
+        structure_dependency_id: 1,
+        role_id: 1,
+        email: '',
+        username: '',
+        password: '',
+        position_id: '0'
+    });
     const [departments, setDepartments] = useState([]);
     const [roles, setRoles] = useState([]);
-    // console.log(userData);
     useEffect(() => {
-        const token = localStorage.getItem('token');
         fetch('http://172.16.3.101:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -23,13 +33,13 @@ const NewUser = (props) => {
             .then(resp => resp.json())
             .then(respJ => setRoles(respJ))
             .catch(ex => console.log(ex));
-    }, []);
+    }, [token]);
     const handleChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
         setUserData(prev => ({ ...prev, [name]: value }))
     }
-    const availableMenus = !userData.available_menus ? [] : userData.available_menus.split(',');
+    const availableMenus = roles.length === 0 ? [] : roles.find(role => role.id.toString() === userData.role_id.toString()).modules.split(',');
     const addNewUser = () => {
         const data = userData;
         fetch('http://172.16.3.101:54321/api/add-new-user', {
@@ -37,15 +47,23 @@ const NewUser = (props) => {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': JSON.stringify(data).length,
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         })
+            .then(resp => resp.json())
+            .then(respJ => {
+                console.log(respJ);
+                if (respJ[0].result === 'success') {
+                    props.updateList(0);
+                    props.closeModal();
+                }
+            })
     }
     const handleRoleChange = (e) => {
         const value = e.target.value;
         const availableMenus = roles.find(role => role.id.toString() === value).available_menus;
-        setUserData(prev => ({...prev, available_menus: availableMenus, role_id: value }))
+        setUserData(prev => ({ ...prev, available_menus: availableMenus, role_id: value }))
     }
     return (
         <div className="edit-user">
@@ -76,6 +94,17 @@ const NewUser = (props) => {
                         <div>
                             <label>Email</label>
                             <input value={userData.email || ''} name="email" onChange={handleChange} />
+                        </div>
+                        <div>
+                            <label>Stat</label>
+                            <select
+                                value={userData.position_id}
+                                name="position_id"
+                                onChange={handleChange}
+                            >
+                                <option value="0">Işçi</option>
+                                <option value="1">Rəis</option>
+                            </select>
                         </div>
                         <div>
                             <label>Struktur</label>
@@ -127,7 +156,7 @@ const NewUser = (props) => {
                 <div>
                     <div className="security">
                         <input value={userData.username} placeholder="username" name="username" onChange={handleChange} />
-                        <input value={userData.password} placeholder="password" name="password" onChange={handleChange} />
+                        <input value={userData.password} placeholder="password" type="password" name="password" onChange={handleChange} />
                         <div onClick={addNewUser}>Tamamla</div>
                     </div>
                 </div>

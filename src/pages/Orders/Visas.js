@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react'
 import SideBar from '../../components/SideBar'
 import VisaContent from '../../components/VisaContent'
-const token = localStorage.getItem('token');
-const handleCardClick = (isReadRef, props, stateRef) => {
+const handleCardClick = (isReadRef, props, stateRef, token) => {
   if (isReadRef.current.style.display === 'block') {
     const data = {
       visaCards: [[props.id, 0, 1, props.isPinned, props.number, props.empVersion]],
@@ -42,13 +41,13 @@ const handleCardClick = (isReadRef, props, stateRef) => {
 }
 const Visas = (props) => {
   const [active, setActive] = useState(null);
-  const onMountFunction = useRef((setVisas, notifIcon) => {
+  const onMountFunction = useRef((setVisas, notifIcon, token) => {
     const data = {
       userName: '',
-      deadline: '',
+      // deadline: '',
       startDate: null,
       endDate: null,
-      docType: 0,
+      docType: -3,
       from: 0,
       until: 20
     }

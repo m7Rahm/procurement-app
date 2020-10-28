@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback, useContext } from 'react'
 import VisaCard from '../components/VisaCard'
 
 import {
@@ -7,23 +7,23 @@ import {
 
 import IconsPanel from './IconsPanel';
 import Pagination from './Pagination';
-
+import { TokenContext } from '../App'
 const SideBar = (props) => {
-	const token = props.token;
+	const tokenContext = useContext(TokenContext);
+	const token = tokenContext[0];
 	const notifIcon = useRef(null);
 	const activePageRef = useRef(0)
 	const checkedAmountRef = useRef([]);
 	const iconsPanelRef = useRef(null);
-	const [visas, setVisas] = useState({count: 0, visas: []});
+	const [visas, setVisas] = useState({ count: 0, visas: [] });
 	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
-	const searchParamsRef = useRef({userName: '', startDate: null, endDate: null, deadline: '', docType: 0 })
+	const searchParamsRef = useRef({ userName: '', startDate: null, endDate: null, deadline: '', docType: -3 })
 	// console.log(visas)
 	const mountFunc = useCallback(props.mountFunc, []);
 	useEffect(() => {
 		mountFunc(setVisas, notifIcon, token)
 	}, [mountFunc, token]);
-
 	const updateList = (from) => {
 		const searchRefData = {
 			userName: searchParamsRef.current.userName,
@@ -32,7 +32,7 @@ const SideBar = (props) => {
 			deadline: searchParamsRef.current.deadline,
 			docType: searchParamsRef.current.docType,
 		}
-		const data = { ...searchRefData, from, until: 20}
+		const data = { ...searchRefData, from, until: 20 }
 		console.log(data);
 		fetch('http://172.16.3.101:54321/api/visas', {
 			method: 'POST',
@@ -46,7 +46,7 @@ const SideBar = (props) => {
 			.then(resp => resp.json())
 			.then(respJ => {
 				const totalCount = respJ[0] ? respJ[0].total_count : 0;
-				setVisas({count: totalCount, visas: respJ});
+				setVisas({ count: totalCount, visas: respJ });
 				notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
 				notifIcon.current.addEventListener('animationend', function () {
 					this.style.display = 'none';
@@ -77,29 +77,31 @@ const SideBar = (props) => {
 				{
 					visas.visas.map((visa) => {
 						// const isActive = active === visa.id ? true : false
-						return <VisaCard
-							key={visa.id}
-							id={visa.id}
-							token={props.token}
-							activeCardRef={props.activeCardRef}
-							iconsPanelRef={iconsPanelRef}
-							checkedAmount={checkedAmountRef}
-							setIconsVisible={setIconsVisible}
-							setActiveVisa={props.setActive}
-							activeRef={activeRef}
-							number={visa.ord_numb}
-							isOpened={visa.is_read}
-							handleCardClick={props.handleCardClick}
-							from={visa.sender_full_name}
-							empVersion={visa.emp_version_id}
-							// senderid={visa.sender_id}
-							isPinned={visa.is_pinned}
-							category={visa.assignment}
-							deadline={visa.deadline}
-							remark={visa.comment}
-							date={visa.date_time}
-							priceOffProcessed={visa.processed}
-						/>
+						return (
+							<VisaCard
+								key={visa.id}
+								id={visa.id}
+								token={token}
+								activeCardRef={props.activeCardRef}
+								iconsPanelRef={iconsPanelRef}
+								checkedAmount={checkedAmountRef}
+								setIconsVisible={setIconsVisible}
+								setActiveVisa={props.setActive}
+								activeRef={activeRef}
+								number={visa.ord_numb}
+								isOpened={visa.is_read}
+								handleCardClick={props.handleCardClick}
+								from={visa.sender_full_name}
+								empVersion={visa.emp_version_id}
+								// senderid={visa.sender_id}
+								isPinned={visa.is_pinned}
+								category={visa.assignment}
+								deadline={visa.deadline}
+								remark={visa.comment}
+								date={visa.date_time}
+								priceOffProcessed={visa.processed}
+							/>
+						)
 					})
 				}
 			</ul>

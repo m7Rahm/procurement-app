@@ -79,7 +79,6 @@ const IconsPanel = (props) => {
             .catch(error => console.log(error));
     }
     const onAdvSearchClick = () => {
-        // console.log(searchBoxState);
         if (!searchBoxState)
             setSearchBoxState(true);
         else if (searchBoxRef.current.style.display === 'none') {

@@ -7,14 +7,14 @@ const ExpressVendors = (props) => {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Ad</th>
+                        <th>Name</th>
                         <th>VÖEN</th>
-                        <th>Tip</th>
-                        <th>Rezident</th>
-                        <th>Sfera</th>
-                        <th>Vergi</th>
+                        <th>Type</th>
+                        <th>Residency</th>
+                        <th>Sphere</th>
+                        <th>Tax</th>
                         <th>Risk zone</th>
-                        <th>Date of registration</th>
+                        <th>Reg Date</th>
                         <th></th>
                     </tr>
                 </thead>

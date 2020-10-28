@@ -44,13 +44,13 @@ const availableModules = [
 export const UserDataContext = React.createContext();
 const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
+	const token = tokenContext[0];
 	const [userData, setUserData] = useState({ modules: [], previliges: [], userInfo: {} })
 	const webSocketRef = useRef(null);
 	const [menuData, setMenuData] = useState({ url: '', routes: [] })
 	const [wSockConnected, setWSockConnected] = useState(false);
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);
-	const token = tokenContext[0];
 	useEffect(() => {
 		// console.log(token);
 		if (token) {
@@ -78,11 +78,13 @@ const SelectModule = () => {
 						webSocketRef.current = webSocket;
 						const structureid = respJ.userData.data.structureid;
 						const fullName = respJ.userData.data.fullName;
-						setUserData({ modules: userMods, previliges: previliges, userInfo: {
-							id,
-							structureid,
-							fullName
-						} })
+						setUserData({
+							modules: userMods, previliges: previliges, userInfo: {
+								id,
+								structureid,
+								fullName
+							}
+						})
 						// setWSockConnected(true);
 						setWSockConnected(true);
 					})
@@ -126,54 +128,52 @@ const SelectModule = () => {
 			{
 				wSockConnected &&
 				<>
-					<>
-						<nav>
-							<ul>
-								<li>
-									<div>
-										<div className="left-side-toggle">
-											<IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
-										</div>
-										<div>
-											<img style={{ height: '32px', cursor: 'pointer' }} onClick={handleLogOut} src={logo} alt='user pic'></img>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</nav>
-						<div
-							onClick={handleNavClick}
-							ref={backgroundRef}
-							style={{
-								position: 'fixed',
-								height: '100%',
-								width: '100%',
-								top: 0,
-								left: 0,
-								display: 'none',
-								background: 'rgba(0, 0, 0, 0.6)',
-								zIndex: 2
-							}}>
-						</div>
-					</>
 					<UserDataContext.Provider value={[userData, setUserData]}>
 						{
 							routes.map(route =>
 								<Route key={route.link} path={route.link}>
+									<>
+										<nav>
+											<ul>
+												<li>
+													<div>
+														<div className="left-side-toggle">
+															<IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
+														</div>
+														<div>
+															<img style={{ height: '32px', cursor: 'pointer' }} onClick={handleLogOut} src={logo} alt='user pic'></img>
+														</div>
+													</div>
+												</li>
+											</ul>
+										</nav>
+										<div
+											onClick={handleNavClick}
+											ref={backgroundRef}
+											style={{
+												position: 'fixed',
+												height: '100%',
+												width: '100%',
+												top: 0,
+												left: 0,
+												display: 'none',
+												background: 'rgba(0, 0, 0, 0.6)',
+												zIndex: 2
+											}}>
+										</div>
+									</>
 									<LeftSidePane
 										url={menuData.url}
 										links={menuData.routes}
 										ref={leftPaneRef}
 										handleNavClick={handleNavClick}
 									/>
-									<div className="dashboard">
-										<route.component
-											webSocketRef={webSocketRef}
-											handleNavClick={handleNavClick}
-											menuData={menuData}
-											setMenuData={setMenuData}
-										/>
-									</div>
+									<route.component
+										webSocketRef={webSocketRef}
+										handleNavClick={handleNavClick}
+										menuData={menuData}
+										setMenuData={setMenuData}
+									/>
 								</Route>
 							)
 						}

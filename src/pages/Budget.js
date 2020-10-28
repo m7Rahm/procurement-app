@@ -25,7 +25,7 @@ const Budget = (props) => {
         setMenuData({ url: url, routes: routes })
     }, [url, setMenuData])
     return (
-        <>
+        <div className="dashboard">
             <Switch>
                 <Route exact path={`${path}`}>
                     <BudgetMain />
@@ -33,7 +33,7 @@ const Budget = (props) => {
                 <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
                 </Route>
             </Switch>
-        </>
+        </div>
     )
 }
 

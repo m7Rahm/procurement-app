@@ -1,16 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
-
 const NewOrderTableBody = (props) => {
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
   const modelsListRef = useRef(null);
   const categories = props.categories;
   const state = props.state;
-  const materials = state.materials;
-  // const [sysParamsModlaState, setSysParamsModalState] = useState(false)
-  useEffect(
-    () => {
+  const { orderType, materials } = state;
+  useEffect(() => {
       const handleOnOuterClick = (e) => {
         const target = e.target.closest('div');
         if (target) {
@@ -24,25 +21,6 @@ const NewOrderTableBody = (props) => {
       return () => document.removeEventListener('click', handleOnOuterClick, false)
     }, [activeLinkIndex]
   )
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   fetch('http://172.16.3.101:54321/api/get-material-categories', {
-  //     headers: {
-  //       'Authorization': 'Bearer ' + token
-  //     }
-  //   })
-  //   .then(resp => resp.json())
-  //   .then(respJ => setMaterials(respJ))
-  //   .catch(ex => console.log(ex))
-  //   fetch('http://172.16.3.101:54321/api/get-units', {
-  //     headers: {
-  //       'Authorization': 'Bearer ' + token
-  //     }
-  //   })
-  //   .then(resp => resp.json())
-  //   .then(respJ => setUnits(respJ))
-  //   .catch(ex => console.log(ex))
-  // }, []);
   return (
     <>
       {
@@ -52,6 +30,7 @@ const NewOrderTableBody = (props) => {
             <NewOrderTableRow
               dispatch={props.dispatch}
               index={index}
+              orderType={orderType}
               material={material}
               key={material.id}
               isActive={isActive}

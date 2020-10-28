@@ -1,4 +1,4 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import Modal from './Modal'
 import {
 	FaUndo
@@ -8,31 +8,27 @@ import VisaContentHeader from './VisaContentHeader';
 
 
 const OrderContentProtected = (props) => {
-	// console.log(props.current);
 	const current = props.current;
-	const Component = props.footerComponent
+	const Component = props.footerComponent;
+	const forwardType = current[0].forward_type;
 	// const senderid = props.current.senderid;
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
-	const [updatedContent, setUpdatedContent] = useState({})
+	const [currentState, setCurrentState] = useState(current[0])
 	const handleModalClose = () => {
 		setIsModalOpen(false)
 	}
-	const currentState = updatedContent.id === current[0].id
-		? updatedContent
-		: {
-			actDateTime: current[0].act_date_time,
-			result: current[0].result,
-			comment: current[0].comment
-		}
-	// console.log(props.current);
+	useEffect(() => {
+		setCurrentState(current[0])
+	}, [current])
 	const handleEditClick = (content) => {
 		setModalContent(_ => content);
 		setIsModalOpen(true);
 	}
 	const updateContent = (recs, updatedCtnt) => {
 		props.sendNotification(recs);
-		setUpdatedContent(updatedCtnt)
+		setCurrentState(prev => ({ ...prev, ...updatedCtnt }));
+		setIsModalOpen(false);
 	}
 	return (
 		props.current &&
@@ -63,7 +59,10 @@ const OrderContentProtected = (props) => {
 					orderNumb={current[0].ord_numb}
 				/>
 			</>
-			<VisaContentMaterials orderContent={props.current} />
+			<VisaContentMaterials
+				orderContent={props.current}
+				forwardType={forwardType}
+			/>
 			<Component
 				sendNotification={props.sendNotification}
 				current={props.current[0]}

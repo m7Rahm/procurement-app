@@ -8,8 +8,9 @@ import { TokenContext } from '../App';
 const NewOrderTableRow = (props) => {
   const tokenContext = useContext(TokenContext);
   const rowRef = useRef(null);
+  const orderType = props.orderType;
   const token = tokenContext[0];
-  const [rowData, setRowData] = useState({
+  const emptyRow = {
     category: '',
     subCategory: '',
     model: '',
@@ -21,7 +22,8 @@ const NewOrderTableRow = (props) => {
     count: 1,
     id: '',
     additionalInfo: ''
-  });
+  }
+  const [rowData, setRowData] = useState(emptyRow);
   const modelListRef = useRef(null);
   const modelsRef = useRef([]);
   const material = props.material;
@@ -36,7 +38,6 @@ const NewOrderTableRow = (props) => {
   const updateMaterialsList = (type, payload) => props.dispatch({ type: type, payload: payload });
   const dispatch = props.dispatch;
   useEffect(() => {
-    // console.log('rerender')
     dispatch({
       type: 'updateRow', payload: {
         data: {
@@ -56,13 +57,28 @@ const NewOrderTableRow = (props) => {
     approxPrice,
     materialid,
     dispatch
-  ])
+  ]);
+  useEffect(() => {
+    const emptyRow = {
+      category: '',
+      subCategory: '',
+      model: '',
+      models: [],
+      code: '',
+      value: 0,
+      department: '',
+      budget: 0,
+      count: 1,
+      id: '',
+      additionalInfo: ''
+    }
+    setRowData(emptyRow)
+  }, [orderType])
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
       setRowData(prev => ({ ...prev, [name]: value }))
-      // updateMaterialsList('updateRow', { data: { [name]: value }, rowid: material.id });
     }
   }
   const handleAmountFocusLose = (e) => {
@@ -70,11 +86,9 @@ const NewOrderTableRow = (props) => {
     const name = e.target.name
     if (value === '')
       setRowData(prev => ({ ...prev, [name]: 1 }))
-    // updateMaterialsList('updateRow', { data: { [name]: 1 }, rowid: material.id })
   }
   const handleAmountChangeButtons = (action) => {
     setRowData(prev => ({ ...prev, count: action === 'inc' ? Number(prev.count) + 1 : Number(prev.count) - 1 }))
-    // updateMaterialsList('updateRowSync', { operation: action, rowid: material.id })
   }
   const handleFocus = () => {
     if (props.modelsListRef.current)
@@ -86,7 +100,6 @@ const NewOrderTableRow = (props) => {
     const value = e.target.value;
     const name = e.target.name;
     setRowData(prev => ({ ...prev, [name]: value }))
-    // updateMaterialsList('updateRow', { data: { [name]: value }, rowid: material.id })
   }
   const handleBlur = (e) => {
     const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
@@ -99,7 +112,6 @@ const NewOrderTableRow = (props) => {
     )
   }
   const setModel = (model) => {
-    // updateMaterialsList('updateRow', { data:  { model: model.id, approx_price : model.approx_price }, rowid: material.id });
     setRowData(prev => ({
       ...prev,
       id: model.id,
@@ -117,10 +129,6 @@ const NewOrderTableRow = (props) => {
       const searchResult = modelsRef.current.filter(model => model.title.toLowerCase().includes(value))
       setRowData(prev => ({ ...prev, [name]: value, models: searchResult }));
     }
-    // else if (name === 'code') {
-    //   const searchResult = modelsRef.current.filter(model => model.title.toLowerCase().includes(value))
-    //   setRowData(prev => ({ ...prev, models: searchResult }));
-    // }
   }
   const searchByCode = (e) => {
     const data = { product_id: e.target.value }
@@ -154,7 +162,7 @@ const NewOrderTableRow = (props) => {
   const handleSubCategoryChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    const data = { categoryid: value }
+    const data = { categoryid: value, orderType: orderType };
     fetch('http://172.16.3.101:54321/api/strucutre-budget-info', {
       method: 'POST',
       headers: {
@@ -168,7 +176,6 @@ const NewOrderTableRow = (props) => {
       .then(respJ => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-        // updateMaterialsList('updateRow', { data: { [name]: value, materialid: '' }, rowid: material.id });
         setRowData(prev => ({ ...prev, budget: budget, [name]: value, id: '', models: respJ, model: '' }));
       })
   }
@@ -222,20 +229,11 @@ const NewOrderTableRow = (props) => {
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
           onBlur={searchByCode}
-          // onFocus={handleFocus}
           type="text"
           placeholder="Kod"
           defaultValue={rowData.code}
           name="code"
-        // onChange={handleInputSearch}
         />
-        {/* <ul id="modelListRef" tabIndex="0" ref={modelListRef} className="material-model-list">
-          {
-            models.map(model =>
-              <li key={model.id} onClick={() => setModel(model.title)}>{model.title}</li>
-            )
-          }
-        </ul> */}
       </div>
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>

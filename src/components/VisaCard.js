@@ -2,13 +2,13 @@ import React, { useRef } from 'react'
 
 const VisaCard = (props) => {
 	const stateRef = useRef(null);
+	const token = props.token;
 	// const [checked, setChecked] = useState(false);
 	const checkBoxRef = useRef(null)
 	const isReadRef = useRef(null);
 	const handleCheck = (e) => {
 		const prevAmount = props.checkedAmount.current.length;
 		const checked = e.target.checked;
-		console.log(props)
 		if (checked)
 			props.checkedAmount.current.push({
 				id: props.id,
@@ -23,7 +23,6 @@ const VisaCard = (props) => {
 				if (props.checkedAmount.current[i].id === props.id)
 					props.checkedAmount.current.splice(i, 1);
 		}
-		// console.log(props.checkedAmount.current);
 		if (prevAmount * props.checkedAmount.current.length === 0) {
 			if (props.checkedAmount.current.length === 0) {
 				props.iconsPanelRef.current.classList.toggle('icons-panel-hide');
@@ -38,7 +37,7 @@ const VisaCard = (props) => {
 	}
 
 	const handleClick = () => {
-		props.handleCardClick(isReadRef, props, stateRef)
+		props.handleCardClick(isReadRef, props, stateRef, token)
 	}
 	return (
 		<li onClick={handleClick} ref={stateRef}>
@@ -57,12 +56,12 @@ const VisaCard = (props) => {
 						</span>
 					</div>
 					<div style={{ height: '15px', position: 'relative' }}>
-						<span title={`deadline: ${props.deadline}`} style={{ background: 'whitesmoke', fontSize: '12px', color: 'steelblue', position: 'absolute', right: 0, padding: '0px 5px', zIndex: 0, fontWeight: 700 }}>
+						{/* <span title={`deadline: ${props.deadline}`} style={{ background: 'whitesmoke', fontSize: '12px', color: 'steelblue', position: 'absolute', right: 0, padding: '0px 5px', zIndex: 0, fontWeight: 700 }}>
 							{props.deadline}
 						</span>
 						<span title={props.category} style={{ fontSize: '12px', color: 'steelblue', float: 'left', fontWeight: '700' }}>
 							{props.category}
-						</span>
+						</span> */}
 					</div>
 					<div style={{ height: '23px', paddingTop: '8px' }}>
 						<span style={{ fontSize: '12px', color: 'gray', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>

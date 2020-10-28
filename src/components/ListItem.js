@@ -1,4 +1,4 @@
-import React, { lazy, useState, Suspense } from 'react'
+import React, { lazy, useState, Suspense, useContext } from 'react'
 import {
   FaBoxOpen
 } from 'react-icons/fa'
@@ -9,40 +9,85 @@ import {
   IoMdDoneAll,
   IoMdPeople,
   IoIosOptions,
-  IoMdRefreshCircle
+  IoMdRefreshCircle,
+  IoMdInformationCircle
 } from 'react-icons/io'
 import CommentContainer from './CommentContainer'
 import ActionsContainer from './ActionsContainer'
+import EditOrderRequest from './modal content/EditOrderRequest'
+import { TokenContext } from '../App'
+import { UserDataContext } from '../pages/SelectModule'
 const ParticipantsModal = lazy(() => import('./modal content/Participants'))
 const StatusModal = lazy(() => import('./modal content/Status'))
 const Modal = lazy(() => import('./Modal'))
-
 const ListItem = (props) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [modalContent, setModalContent] = useState('')
+  const userDataContext = useContext(UserDataContext);
+  const userData = userDataContext[0];
+  const tokenContext = useContext(TokenContext);
+  const token = tokenContext[0];
+  const order = props.order;
+  const { status, participants } = order
+  const date = order.create_date_time;
+  const { referer, setOrders } = props;
+  const number = order.ord_numb;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState('');
   const handleClose = () => {
     setIsModalOpen(_ => false);
   }
   const onParticipantsClick = (number) => {
-    setModalContent(_ => (props) => <ParticipantsModal empVersion={73} number={number} {...props} />)
+    setModalContent(_ => (props) => <ParticipantsModal empVersion={userData.userInfo.id} number={number} {...props} />)
     setIsModalOpen(prevState => !prevState)
   }
   const onStatusClick = (number) => {
     setModalContent(_ => (props) => <StatusModal number={number} {...props} />)
+    setIsModalOpen(prev => !prev)
+  }
+  const onInfoClick = (number) => {
+    const onSendClick = (data) => {
+      const reqData = JSON.stringify(data);
+      fetch('http://172.16.3.101:54321/api/new-order', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json',
+          'Content-Length': reqData.length
+        },
+        body: reqData
+      })
+        .then(resp => resp.json())
+        .then(respJ => {
+          if (respJ[0].result === 'success') {
+            setOrders(prev => {
+              const newList = prev.orders.filter(order => order.ord_numb !== number);
+              setIsModalOpen(prev => !prev)
+              return ({ orders: newList, count: newList.count })
+            });
+          }
+        })
+    }
+    setModalContent(_ => (props) =>
+      <EditOrderRequest
+        version={-1}
+        ordNumb={number}
+        view={referer}
+        onSendClick={onSendClick}
+        {...props}
+      />)
     setIsModalOpen(prevState => !prevState)
   }
-  const icon = props.status === 'Baxılır'
-    ? <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#F4B400' title={props.status} size='20' style={{ margin: 'auto', }} />
-    : props.status === 'Tamamlanmışdır'
-      ? <IoMdDoneAll onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} />
-      : props.status === 'Etiraz'
-        ? <IoMdClose onClick={() => onStatusClick(props.number)} color='#DB4437' title={props.status} size='20' style={{ margin: 'auto', }} />
-        : props.status === 'Gözlənilir'
-          ? <IoMdPaperPlane onClick={() => onStatusClick(props.number)} color='#4285F4' title={props.status} size='20' style={{ margin: 'auto', }} />
-          : props.status === 'Anbarda'
-            ? <FaBoxOpen onClick={() => onStatusClick(props.number)} title={props.status} size='20' color='#777777' style={{ margin: 'auto', }} />
-            : props.status === 'Təsdiq edilib'
-              ? <IoMdCheckmark onClick={() => onStatusClick(props.number)} color='#0F9D58' title={props.status} size='20' style={{ margin: 'auto', }} />
+  const icon = status === 0
+    ? <IoMdCheckmark onClick={() => onStatusClick(number)} color='#F4B400' title="Baxılır" size='20' style={{ margin: 'auto', }} />
+    : status === 'Tamamlanmışdır'
+      ? <IoMdDoneAll onClick={() => onStatusClick(number)} color='#0F9D58' title={status} size='20' style={{ margin: 'auto', }} />
+      : status === -1
+        ? <IoMdClose onClick={() => onStatusClick(number)} color='#DB4437' title="Etiraz" size='20' style={{ margin: 'auto', }} />
+        : status === 'Gözlənilir'
+          ? <IoMdPaperPlane onClick={() => onStatusClick(number)} color='#4285F4' title={status} size='20' style={{ margin: 'auto', }} />
+          : status === 'Anbarda'
+            ? <FaBoxOpen onClick={() => onStatusClick(number)} title={status} size='20' color='#777777' style={{ margin: 'auto', }} />
+            : status === 'Təsdiq edilib'
+              ? <IoMdCheckmark onClick={() => onStatusClick(number)} color='#0F9D58' title={status} size='20' style={{ margin: 'auto', }} />
               : ''
   return (
     <>
@@ -64,18 +109,16 @@ const ListItem = (props) => {
             </Suspense>
           }
         </div>
-        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{props.date}</div>
-        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> {props.number}</div>
-        {/* <div style={{ minWidth: '100px', width: '10%', textAlign: 'left' }}> {props.deadline}</div> */}
-        {/* <div style={{ minWidth: '70px', overflow: 'hidden', width: '20%', textAlign: 'left' }}> {props.category}</div> */}
+        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{date}</div>
+        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> {number}</div>
         <div style={{ width: '40%', textAlign: 'left' }}>
           {
-            props.participants
+            participants
           }
-          <IoMdPeople onClick={_ => onParticipantsClick(props.number)} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
+          <IoMdPeople onClick={_ => onParticipantsClick(number)} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
         </div>
         <div style={{ width: '5%' }}>
-          <CommentContainer remark={props.remark} number={props.number} />
+          <CommentContainer remark={props.remark} number={number} />
         </div>
         <div id={props.index} className='options-button' style={{ flex: 1, overflow: 'visible', textAlign: 'center', cursor: 'pointer', display: 'inline-block', width: 'auto' }}>
           <IoIosOptions size='20' color='#606060' />
@@ -84,6 +127,9 @@ const ListItem = (props) => {
               ? <ActionsContainer />
               : ''
           }
+        </div>
+        <div style={{ padding: '0px 10px' }}>
+          <IoMdInformationCircle cursor="pointer" size='20' color='#606060' onClick={() => onInfoClick(number)} />
         </div>
       </li>
     </>

@@ -47,7 +47,13 @@ const advancedSearchReducser = (state, action) => {
 const SearchBox = (props, ref) => {
     const date = new Date();
     const activeCalendar = useRef(null)
-    const [searchState, dispatch] = useReducer(advancedSearchReducser, { userName: '', startDate: '', endDate: '', deadline: '', docType: 0 })
+    const [searchState, dispatch] = useReducer(advancedSearchReducser, {
+        userName: '',
+        startDate: '',
+        endDate: '',
+        deadline: '',
+        docType: -3
+    })
     useEffect(() => {
         const handleClick = (e) => {
             const target = e.target;
@@ -70,13 +76,14 @@ const SearchBox = (props, ref) => {
     const handleSearchClick = () => {
         const data = {
             userName: searchState.userName,
-            deadline: searchState.deadline,
+            // deadline: searchState.deadline,
             startDate: searchState.startDate === '' ? null : searchState.startDate,
             endDate: searchState.endDate === '' ? null : searchState.endDate,
             docType: searchState.docType,
             from: 0,
             until: 20
         }
+        console.log(data);
         fetch('http://172.16.3.101:54321/api/visas', {
             method: 'POST',
             headers: {
@@ -111,7 +118,7 @@ const SearchBox = (props, ref) => {
             <div>
                 <input type="text" value={searchState.userName} onChange={handleTextInputChange} placeholder="Işçinin adını daxil edin.." />
             </div>
-            <div>
+            {/* <div>
                 <Calendar
                     searchParamsRef={props.searchParamsRef}
                     dispatch={dispatch}
@@ -122,7 +129,7 @@ const SearchBox = (props, ref) => {
                     year={date.getFullYear()}
                     month={date.getMonth()}
                 />
-            </div>
+            </div> */}
             <div>
                 <Calendar
                     searchParamsRef={props.searchParamsRef}
@@ -147,9 +154,10 @@ const SearchBox = (props, ref) => {
             </div>
             <div>
                 <select value={searchState.docType} onChange={handleSelectChange}>
-                    <option value={0}>Bütün sənədlər</option>
-                    <option value={1}>Yalnız vizalar</option>
-                    <option value={2}>Yalnız rəy üçün</option>
+                    <option value={-3}>Hamısı</option>
+                    <option value={0}>Gözləyən</option>
+                    <option value={-1}>Etiraz edilmiş</option>
+                    <option value={1}>Təsdiq edilmiş</option>
                 </select>
             </div>
             <div className="search-ribbon">

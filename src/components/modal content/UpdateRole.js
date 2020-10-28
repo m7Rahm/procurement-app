@@ -40,7 +40,7 @@ const UpdateRole = (props) => {
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setRoleData(prev => ({...prev, [name]: value}))
+        setRoleData(prev => ({ ...prev, [name]: value }))
     }
     const removeMenu = (menu) => {
         setUserModules(prev => {
@@ -49,7 +49,7 @@ const UpdateRole = (props) => {
                 const last = index !== newMenus.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, modules: reduced }))
+            setRoleData(prev => ({ ...prev, modules: reduced }))
             return newMenus
         })
     }
@@ -60,7 +60,7 @@ const UpdateRole = (props) => {
                 const last = index !== newPrevs.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, priviliges: reduced }))
+            setRoleData(prev => ({ ...prev, previliges: reduced }));
             return newPrevs
         })
     }
@@ -72,7 +72,7 @@ const UpdateRole = (props) => {
                 const last = index !== newPrevs.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, modules: reduced }))
+            setRoleData(prev => ({ ...prev, modules: reduced }))
             return newPrevs
         })
     }
@@ -84,7 +84,7 @@ const UpdateRole = (props) => {
                 const last = index !== newMenus.length - 1 ? ',' : '';
                 return sum + current + last
             }, '');
-            setRoleData(prev => ({...prev, previliges: reduced }))
+            setRoleData(prev => ({ ...prev, previliges: reduced }))
             return newMenus
         })
     }
@@ -139,7 +139,7 @@ const UpdateRole = (props) => {
                     }
                 </div>
                 <div
-                    style={{backgroundColor: '#F4B400'}}
+                    style={{ backgroundColor: '#F4B400' }}
                     className='save-button'
                     onClick={saveChanges}
                 >Yadda saxla</div>

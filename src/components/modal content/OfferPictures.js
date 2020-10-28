@@ -9,6 +9,19 @@ const PictureItem = (props) => {
     const showBiggerPicter = function () {
         props.setModalState({ show: true, src: src });
     }
+    const handleDelete = () => {
+        props.setPictures(prev => {
+            const newFiles = prev.filter((_, index) => index !== props.index);
+            props.setPotentialVendors(prev =>
+                prev.map(row =>
+                    row.key === props.id
+                        ? { ...row, files: newFiles }
+                        : row
+                )
+            );
+            return newFiles
+        })
+    }
     return (
         <tr>
             <td>{props.index + 1}</td>
@@ -27,16 +40,22 @@ const PictureItem = (props) => {
                     alt="preview"
                 />
             </td>
+            <td>
+                <IoIosClose color="red" onClick={handleDelete} />
+            </td>
         </tr>
     )
 }
 const OfferPictures = (props) => {
-    const closeModal = () => props.setModalState(false);
+    const closeModal = () => props.setModalState({ display: false, vendor: null });
+    const setPotentialVendors = props.setPotentialVendors;
+    const { files, key, name } = props.vendor;
     const [modalState, setModalState] = useState(false);
+    const [pictures, setPictures] = useState(files);
     const bigPicRef = useRef(null);
     const closeThumbsModal = (e) => {
         if (e.target.closest('div').id === 'offer-pictures')
-            props.setModalState(false)
+            closeModal()
     }
     const closeBigPicModal = (e) => {
         if (e.target.tagName.toLowerCase() !== 'img')
@@ -46,7 +65,7 @@ const OfferPictures = (props) => {
         <div id="offer-pictures" onClick={closeThumbsModal} className="offer-pictures">
             <div>
                 <div style={{ marginBottom: '20px' }}>
-                    {props.number}
+                    {name}
                     <IoMdClose
                         className="modal-close-button"
                         onClick={closeModal}
@@ -76,17 +95,21 @@ const OfferPictures = (props) => {
                                 <td>№</td>
                                 <td>Tarix</td>
                                 <td>Ad</td>
+                                <td>File</td>
                                 <td></td>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                props.pictures.map((picture, index) =>
+                                pictures.map((picture, index) =>
                                     <PictureItem
                                         key={picture.name}
                                         index={index}
+                                        id={key}
                                         picture={picture}
                                         setModalState={setModalState}
+                                        setPictures={setPictures}
+                                        setPotentialVendors={setPotentialVendors}
                                     />
                                 )
                             }

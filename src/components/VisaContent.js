@@ -18,7 +18,6 @@ const VisaContent = (props) => {
         else
             setParticipantsVisiblity(prev => !prev);
     }
-    // console.log(props.current)
     return (
         <div className="visa-content-container">
             <div>
