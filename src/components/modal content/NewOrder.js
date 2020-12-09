@@ -1,7 +1,9 @@
 import React, { useReducer, useEffect, useRef, useContext, useState } from 'react'
 import NewOrderTableBody from '../NewOrderTableBody'
+import NewOrderHeader from '../NewOrderHeader'
 import { newOrderInitial } from '../../data/data.js'
 import { TokenContext } from '../../App'
+import OperationResult from '../../components/Misc/OperationResult'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
@@ -32,8 +34,8 @@ const newOrderReducer = (state, action) => {
       }
     case 'addRow':
       return { ...state, materials: [...state.materials, action.payload.rowData] }
-    case 'setCategory':
-      return { ...state, category: action.payload.value }
+    case 'setStructure':
+      return { ...state, structure: action.payload.value }
     case 'setOrderType':
       return { ...state, orderType: action.payload.value }
     case 'setComment':
@@ -54,6 +56,7 @@ const initState = () => newOrderInitial
 const NewOrderContent = (props) => {
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0];
+  const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
   const stateRef = useRef({});
   const closeModal = props.handleModalClose;
   const version = props.version;
@@ -90,6 +93,7 @@ const NewOrderContent = (props) => {
     const data = {
       mats: parsedMaterials,
       receivers: [], // receiversRef.current.map(emp => emp.id),
+      structureid: state.structure,
       ordNumb: current ? current : '',
       orderType: state.orderType
     }
@@ -104,17 +108,19 @@ const NewOrderContent = (props) => {
     })
       .then(resp => resp.json())
       .then(respJ => {
+        console.log(respJ)
         if (respJ[0].result === 'success') {
           onSuccess(data, respJ)
         }
+        else if (respJ[0].error)
+          setOperationResult({ visible: true, desc: respJ[0].error })
       })
       .catch(err => console.log(err))
   }
-  console.log(state)
   useEffect(() => {
     dispatch({
       type: 'init',
-      payload: {...newOrderInitial, orderType: state.orderType}
+      payload: { ...newOrderInitial, orderType: state.orderType }
     })
   }, [state.orderType, dispatch])
   const handleSendClick = () => {
@@ -148,18 +154,21 @@ const NewOrderContent = (props) => {
       createApproveNewOrder('http://172.16.3.101:54321/api/new-order', onSuccess)
     }
   }
-  const handleChange = (e) => {
-    const value = e.target.value;
-    dispatch({ type: 'setOrderType', payload: { value: value } })
-  }
+  // console.log('rerender')
   return (
     <div className="modal-content-new-order">
-      <div>
-        <select value={state.orderType} onChange={handleChange}>
-          <option value={0}>Mal-Material</option>
-          <option value={1}>Xidmət</option>
-        </select>
-      </div>
+      {
+        operationResult.visible &&
+        <OperationResult
+          setOperationResult={setOperationResult}
+          operationDesc={operationResult.desc}
+        />
+      }
+      <NewOrderHeader
+        state={state}
+        dispatch={dispatch}
+        token={token}
+      />
       <ul className="new-order-table">
         <li>
           <div>#</div>
@@ -171,7 +180,7 @@ const NewOrderContent = (props) => {
           <div>Kurasiya</div>
           <div>Büccə</div>
           <div>Əlavə məlumat</div>
-          <div> </div>
+          <div></div>
         </li>
         <NewOrderTableBody
           state={state}

@@ -11,7 +11,6 @@ const UpdateRole = (props) => {
     const [userModules, setUserModules] = useState(props.role.modules === '' ? [] : props.role.modules.split(','));
     const [priviliges, setPreviliges] = useState(props.role.previliges === '' ? [] : props.role.previliges.split(','));
     // console.log(menus, previliges)
-    console.log(roleData)
     const selectPrevRef = useRef(null);
     const selectMenusRef = useRef(null);
     const saveChanges = () => {
@@ -91,7 +90,7 @@ const UpdateRole = (props) => {
     return (
         <div>
             <div className="update-role">
-                <input value={roleData.name} name="name" onChange={handleChange} />
+                <input value={roleData.name} placeholder="Role name" name="name" onChange={handleChange} />
                 <p>
                     Menular
                     <IoMdAdd size="20" onClick={addMenu} />

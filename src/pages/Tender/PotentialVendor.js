@@ -1,61 +1,75 @@
-import React, { useState, Suspense, useEffect, useRef } from 'react'
+import React, { useState, Suspense, useEffect } from 'react'
 import {
     IoIosAdd
 } from 'react-icons/io'
 import PontentialVendorRow from '../../components/PotentialVendorRow'
+import ForwardDocLayout from '../../components/ForwardDocLayout'
 import OfferPictures from '../../components/modal content/OfferPictures'
-import VisaForwardPerson from '../../components/VisaForwardPerson'
 const vendorDataInit = {
     key: Date.now(),
     className: '',
     name: '',
     voen: '',
-    sphere: '',
+    sphere: '0',
     ordNumb: '',
     comment: '',
-    files: []
+    files: [],
+    orders: []
 }
 const PotentialVendor = (props) => {
-    const { token } = props;
+    const { token, ordNumb } = props;
+    const [pendingOrders, setPendingOrders] = useState([]);
     const [potentialVendors, setPotentialVendors] = useState([vendorDataInit]);
-    const [modalState, setModalState] = useState({ display: false, vendor: null });
-    const [empList, setEmpList] = useState([]);
-    const [receivers, setReceivers] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const empListRef = useRef(null);
-    const textareaRef = useRef(null);
+    const [modalState, setModalState] = useState({ display: false, vendorIndex: null });
+    const [update, setUpdate] = useState(false);
+    const addNewVendor = () => {
+        const newVendor = { ...vendorDataInit, className: 'new-row', key: Date.now() }
+        setPotentialVendors(prev => [...prev, newVendor])
+    }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/emplist', {
+        fetch('http://172.16.3.101:54321/api/get-orders-for-potven', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then(resp => resp.json())
+        .then(respJ => setPendingOrders(respJ))
+        .catch(ex => console.log(ex))
+    }, [update, token])
+    const handleSendClick = (receivers, comment) => {
+        const files = potentialVendors.flatMap(vendor => vendor.files);
+        const recs = receivers.map(receiver => [receiver.id]);
+        const toFin = receivers.length === 0 ? 1 : 0;
+        const potVends = JSON.stringify(potentialVendors.map(potentialVendor =>
+            [potentialVendor.key, potentialVendor.name, potentialVendor.voen, potentialVendor.sphere, potentialVendor.comment]
+        ));
+        const filesMetaData = files.map(file => [file.name, file.name.split('.').pop(), file.supplier]);
+        const vendorsPerOffer = potentialVendors.flatMap(vendor => vendor.orders.map(ord => [vendor.key, ord.ord_numb]));
+        const formData = new FormData();
+        formData.append('ordNumb', ordNumb);
+        formData.append('vendorsPerOffer', JSON.stringify(vendorsPerOffer))
+        formData.append('recs', JSON.stringify(recs));
+        formData.append('comment', comment);
+        formData.append('toFin', toFin);
+        formData.append('potVends', potVends);
+        formData.append('filesMetaData', JSON.stringify(filesMetaData));
+        for (let i = 0; i < files.length; i++)
+            formData.append('files', files[i]);
+        fetch('http://172.16.3.101:54321/api/create-price-offer', {
+            method: 'POST',
+            body: formData,
             headers: {
                 'Authorization': 'Bearer ' + token
             }
         })
             .then(resp => resp.json())
             .then(respJ => {
-                empListRef.current = respJ;
-                setEmpList(respJ);
+                if (respJ[0].operation_result === 'success') {
+                    setUpdate(prev => !prev)
+                    setPotentialVendors([{ ...vendorDataInit, key: Date.now() }])
+                }
             })
-            .catch(err => console.log(err));
-    }, [token]);
-    const addNewVendor = () => {
-        const newVendor = { ...vendorDataInit, className: 'new-row', key: Date.now() }
-        setPotentialVendors(prev => [...prev, newVendor])
-    }
-    const handleSearchChange = (e) => {
-        const str = e.target.value.toLowerCase();
-        const searchResult = empListRef.current.filter(emp => emp.full_name.toLowerCase().includes(str));
-        setSearchQuery(str);
-        setEmpList(searchResult);
-    }
-
-    const handleSelectChange = (employee) => {
-        const res = receivers.find(emp => emp.id === employee.id);
-        const newReceivers = !res ? [...receivers, employee] : receivers.filter(emp => emp.id !== employee.id);
-        setReceivers(newReceivers);
-        setSearchQuery('');
-    }
-    const handleSendClick = () => {
-
+            .catch(ex => console.log(ex))
     }
     return (
         <div style={{ paddingTop: '50px', clear: 'both', width: 'auto' }} className="wrapper">
@@ -64,18 +78,19 @@ const PotentialVendor = (props) => {
                 <Suspense fallback="">
                     <OfferPictures
                         setModalState={setModalState}
-                        vendor={modalState.vendor}
+                        vendor={potentialVendors[modalState.vendorIndex]}
                         setPotentialVendors={setPotentialVendors}
                     />
                 </Suspense>
             }
-            <ul className="new-order-table">
+            <ul className="modified">
                 <li>
                     <div>#</div>
                     <div>Name</div>
                     <div>VOEN</div>
                     <div>Sphere</div>
                     <div>Comment</div>
+                    <div>Sifariş №</div>
                     <div>Attachment</div>
                     <div></div>
                 </li>
@@ -83,7 +98,9 @@ const PotentialVendor = (props) => {
                     potentialVendors.map((vendor, index) =>
                         <PontentialVendorRow
                             vendor={vendor}
+                            pendingOrders={pendingOrders}
                             key={vendor.key}
+                            token={token}
                             index={index + 1}
                             setModalState={setModalState}
                             setPotentialVendors={setPotentialVendors}
@@ -102,36 +119,10 @@ const PotentialVendor = (props) => {
                     </div>
                 </li>
             </ul>
-            <div style={{ marginTop: '20px' }} id="procurement-edit-section">
-                <textarea ref={textareaRef} >
-                </textarea>
-                <div style={{ minHeight: '231px' }}>
-                    <div>
-                        <input type="text" className="search-with-query" placeholder="İşçinin adını daxil edin.." value={searchQuery} onChange={handleSearchChange}></input>
-                    </div>
-                    <ul className="employees-list">
-                        {
-                            empList.map(employee =>
-                                <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
-                                    {employee.full_name}
-                                </li>
-                            )
-                        }
-                    </ul>
-                </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div className="send-order" onClick={handleSendClick}>
-                    Göndər
-                    </div>
-            </div>
-            <div style={{ padding: '0px 20px' }}>
-                <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray' }}>
-                    {
-                        receivers.map(emp => <VisaForwardPerson key={Math.random()} emp={emp} handleSelectChange={handleSelectChange} />)
-                    }
-                </div>
-            </div>
+            <ForwardDocLayout
+                handleSendClick={handleSendClick}
+                token={token}
+            />
         </div>
     )
 }

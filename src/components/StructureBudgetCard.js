@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { TokenContext } from '../App'
 import { FaEdit } from 'react-icons/fa';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-const CardContent = ({ budget, category, period }) => {
+const CardContent = ({ budget, category, period, filialid }) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0];
     const [subGlBudgets, setSubGlBudgets] = useState([]);
@@ -13,6 +13,7 @@ const CardContent = ({ budget, category, period }) => {
         const data = {
             from: 0,
             next: 20,
+            filialid: filialid,
             period: period,
             structureid: budget.structure_id,
             glCategoryid: category
@@ -29,7 +30,7 @@ const CardContent = ({ budget, category, period }) => {
             .then(resp => resp.json())
             .then(respJ => setSubGlBudgets(respJ))
             .catch(ex => console.log(ex))
-    }, [token, category, budget, period]);
+    }, [token, category, budget, period, filialid]);
     return (
         <div style={{ padding: '20px 0px' }}>
             <ul className="sub-gl-category-budget">
@@ -73,6 +74,7 @@ const StructureBudgetCard = (props) => {
                     <CardContent
                         budget={budget}
                         period={period}
+                        filialid={budget.filial_id}
                         category={budget.gl_category_id}
                     />
                 }

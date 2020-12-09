@@ -22,7 +22,7 @@ const VisaVersion = (props) => {
     }
     const handleClick = (action) => {
         const data = {
-            action: action,
+            action: JSON.stringify(action),
             comment: '',
         }
         fetch(`http://172.16.3.101:54321/api/accept-decline/${tranid}`,
@@ -30,10 +30,10 @@ const VisaVersion = (props) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Content-Length': JSON.stringify(data).length,
+                    'Content-Length': data.length,
                     'Authorization': 'Bearer ' + token
                 },
-                body: JSON.stringify(data)
+                body: data
             })
             .then(resp => resp.json())
             .then(respJ => {
@@ -56,18 +56,18 @@ const VisaVersion = (props) => {
 
     const acceptEditedVersion = () => {
         if (visaContent[0].override) {
-            const data = {
+            const data = JSON.stringify({
                 ordNumb: ord_numb,
                 empVersion: emp_id
-            }
+            })
             fetch('http://172.16.3.101:54321/api/accept-edited-version', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
                     'Content-Type': 'application/json',
-                    'Content-Length': JSON.stringify(data).length
+                    'Content-Length': data.length
                 },
-                body: JSON.stringify(data)
+                body: data
             })
                 .then(resp => resp.json())
                 .then(respJ => {

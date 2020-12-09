@@ -9,8 +9,8 @@ import {
     FaPlus
 } from 'react-icons/fa'
 import { TokenContext } from '../../App';
-const TableRow = ({ index, material, subCategoriesRef, categories, departments, token }) => {
-    const [materialData, setMaterialData] = useState(material);
+const TableRow = ({ index, material, subCategoriesRef, categories, departments, token, units }) => {
+    const [materialData, setMaterialData] = useState({ ...material, type: material.type ? "1" : "0" });
     const [disabled, setDisabled] = useState(true);
     const subCategories = subCategoriesRef.current.filter(subCat => subCat.parent_id.toString() === materialData.grand_parent_id.toString());
     const handleChange = (e) => {
@@ -37,9 +37,14 @@ const TableRow = ({ index, material, subCategoriesRef, categories, departments, 
             body: data
         })
             .then(resp => resp.json())
-            .then(respJ => setDisabled(true))
+            .then(_ => setDisabled(true))
             .catch(ex => console.log(ex))
     }
+    const handlePriceChange = (e) => {
+        const value = e.target.value;
+        setMaterialData(prev => ({ ...prev, approx_price: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approx_price }))
+    }
+    // console.log(materialData)
     return (
         <tr key={materialData.id}>
             <th>{index}</th>
@@ -74,13 +79,32 @@ const TableRow = ({ index, material, subCategoriesRef, categories, departments, 
                 </select>
             </td>
             <td>
-                <select disabled={disabled} name="type" onChange={handleChange} value={materialData.type ? "1" : "0"}>
+                <select disabled={disabled} onChange={handleChange} name="techizatci_id" value={materialData.techizatci_id}>
+                    {
+                        departments.map(department =>
+                            <option key={department.id} value={department.id}>{department.name}</option>
+                        )
+                    }
+                </select>
+            </td>
+            <td>
+                <select disabled={disabled} name="type" onChange={handleChange} value={materialData.type}>
                     <option value="0">Mal-Material</option>
                     <option value="1">Xidmət</option>
                 </select>
             </td>
-            <td><input value={materialData.approx_price || ''} name="approx_price" disabled={disabled} onChange={handleChange} /></td>
-            <td><input value={materialData.barcode || ''} name="barcode" disabled={disabled} onChange={handleChange} /></td>
+            <td>
+                <input value={materialData.approx_price} name="approx_price" disabled={disabled} onChange={handlePriceChange} />
+            </td>
+            <td>
+                <select name="cluster" disabled={disabled} onChange={handleChange} value={materialData.cluster}>
+                    {
+                        units.map(unit =>
+                            <option value={unit.id} key={unit.id}>{unit.title}</option>
+                        )
+                    }
+                </select>
+            </td>
             <td>
                 {
                     disabled
@@ -99,12 +123,17 @@ const OrderMaterials = () => {
     const token = tokenContext[0];
     const [categories, setCategories] = useState([]);
     const [departments, setDepartments] = useState([]);
+    const [units, setUnits] = useState([]);
+    const unitsRef = useRef(null);
+    const curatoridRef = useRef(null);
+    const procurementidRef = useRef(null)
     const [newCatState, setNewCatState] = useState({
         title: '',
         department: 1,
         grand_parent_id: '',
-        barcode: '',
+        procurement: '',
         approxPrice: '',
+        cluster: '',
         type: 0
     });
     const categoryNameRef = useRef(null);
@@ -115,7 +144,13 @@ const OrderMaterials = () => {
     const subCategories = subCategoriesRef.current.filter(subCat => subCat.parent_id.toString() === newCatState.grand_parent_id) || [];
     const handleAddNewCategory = () => {
         const parent_id = parentSelectReft.current.value;
-        const data = { ...newCatState, parent_id, product_id: new Date().getTime() };
+        const data = {
+            ...newCatState,
+            department: curatoridRef.current.value,
+            parent_id,
+            cluster: unitsRef.current.value,
+            procurement: procurementidRef.current.value
+        };
         fetch('http://172.16.3.101:54321/api/add-new-cat', {
             method: 'POST',
             headers: {
@@ -136,6 +171,16 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
+        fetch('http://172.16.3.101:54321/api/cluster-names', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(resp => resp.json())
+            .then(respJ => setUnits(respJ))
+            .catch(ex => console.log(ex))
+    }, [token])
+    useEffect(() => {
         fetch('http://172.16.3.101:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -144,6 +189,23 @@ const OrderMaterials = () => {
             .then(resp => resp.json())
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
+    }, [token]);
+    useEffect(() => {
+        const data = { categoryid: 34 }
+        fetch('http://172.16.3.101:54321/api/get-models', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Content-Length': JSON.stringify(data).length
+            },
+            body: JSON.stringify(data)
+        })
+            .then(resp => resp.json())
+            .then(respJ => setTableData(respJ))
+            .catch(ex => console.log(ex))
+    }, [token])
+    useEffect(() => {
         fetch('http://172.16.3.101:54321/api/material-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -162,21 +224,11 @@ const OrderMaterials = () => {
                 setCategories(parent)
             })
             .catch(ex => console.log(ex));
-        const data = { categoryid: 34 }
-        fetch('http://172.16.3.101:54321/api/get-models', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
-            .then(respJ => setTableData(respJ))
-            .catch(ex => console.log(ex))
-    }, [token]);
-
+    }, [token])
+    const handlePriceChange = (e) => {
+        const value = e.target.value;
+        setNewCatState(prev => ({ ...prev, approxPrice: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approxPrice }))
+    }
     const handleChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
@@ -197,7 +249,6 @@ const OrderMaterials = () => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                console.log(respJ)
                 if (respJ[0].result === 'success') {
                     const id = respJ[0].row_id;
                     if (parent_id === '34')
@@ -224,7 +275,7 @@ const OrderMaterials = () => {
                         }
                     </select>
                     <div style={{ marginRight: '20px', cursor: 'pointer' }} onClick={addNewCategory}>
-                        <MdAdd size="20"/>
+                        <MdAdd size="20" />
                     </div>
                 </div>
                 <table style={{ marginTop: '30px' }}>
@@ -234,10 +285,11 @@ const OrderMaterials = () => {
                             <th>Ad</th>
                             <th>Kateqoriya</th>
                             <th>Alt Kateqoriya</th>
-                            <th>Yöndərilən struktur</th>
+                            <th>Kurasiya</th>
+                            <th>Təchizat bölməsi</th>
                             <th>Növ</th>
                             <th>Qiymət</th>
-                            <th>Kod</th>
+                            <th>Ölçü vahidi</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -247,6 +299,7 @@ const OrderMaterials = () => {
                             <td><input type="text" name="title" value={newCatState.title} onChange={handleChange} /></td>
                             <td>
                                 <select onChange={handleChange} name="grand_parent_id" value={newCatState.grand_parent_id}>
+                                    <option value="-1">-</option>
                                     {
                                         categories.map(category =>
                                             <option key={category.id} value={category.id}>{category.product_title}</option>
@@ -264,7 +317,18 @@ const OrderMaterials = () => {
                                 </select>
                             </td>
                             <td>
-                                <select onChange={handleChange} name="department" value={newCatState.department}>
+                                <select onChange={handleChange} name="department" ref={curatoridRef}>
+                                    <option value="-1">-</option>
+                                    {
+                                        departments.map(department =>
+                                            <option key={department.id} value={department.id}>{department.name}</option>
+                                        )
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select name="procurement" ref={procurementidRef}>
+                                    <option value="-1">-</option>
                                     {
                                         departments.map(department =>
                                             <option key={department.id} value={department.id}>{department.name}</option>
@@ -278,8 +342,16 @@ const OrderMaterials = () => {
                                     <option value="1">Xidmət</option>
                                 </select>
                             </td>
-                            <td><input name="approxPrice" value={newCatState.approxPrice} onChange={handleChange} /></td>
-                            <td><input name="barcode" value={newCatState.barcode} onChange={handleChange} /></td>
+                            <td><input name="approxPrice" value={newCatState.approxPrice} onChange={handlePriceChange} /></td>
+                            <td>
+                                <select ref={unitsRef}>
+                                    {
+                                        units.map(unit =>
+                                            <option value={unit.id} key={unit.id}>{unit.title}</option>
+                                        )
+                                    }
+                                </select>
+                            </td>
                             <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
                         </tr>
                         {
@@ -292,6 +364,7 @@ const OrderMaterials = () => {
                                     categories={categories}
                                     departments={departments}
                                     key={material.id}
+                                    units={units}
                                 />
                             )
                         }

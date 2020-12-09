@@ -1,14 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react'
-import PotentialVendor from '../pages/Tender/PotentialVendor'
-// import {
-//     FaAngleDown
-// } from 'react-icons/fa'
-import Modal from '../components/Modal'
+import React, { useState, useEffect, useRef, Suspense } from 'react'
+import {
+    IoMdRefreshCircle
+} from 'react-icons/io'
+import PotentialVendorsState from '../components/modal content/PotentialVendorsState'
+const Modal = React.lazy(() => import('../components/Modal'));
+const Downloading = () => (
+    <div className="loading">
+        <IoMdRefreshCircle size="50" color="#a4a4a4" />
+    </div>
+)
 const ProcurementOrderContent = (props) => {
     const { order, token } = props;
-    // const [orderState, setOrderState] = useState(order);
-    const [action, setAction] = useState(0);
+    const [orderState, setOrderState] = useState(order);
+    const [modalState, setModalState] = useState({ visible: false, content: null });
+    const contractNumbersRef = useRef(order.reduce((sum, current) => ({ ...sum, [current.id]: "" }), {}));
     const [expressVendors, setExpressVendors] = useState([]);
+    useEffect(() => {
+        setOrderState(order);
+        contractNumbersRef.current = order.reduce((sum, current) => ({ ...sum, [current.id]: "" }), {});
+    }, [order])
     useEffect(() => {
         fetch('http://172.16.3.101:54321/api/get-express-vendors', {
             headers: {
@@ -19,31 +29,55 @@ const ProcurementOrderContent = (props) => {
             .then(respJ => setExpressVendors(respJ))
             .catch(ex => console.log(ex))
     }, [token]);
-    const handlePotentialVendorClick = () => {
-        setAction(2)
+
+    const closeModal = () => {
+        setModalState({ visible: false, content: null })
     }
-    // console.log(order);
-    const participantsRef = useRef(null);
-    const [potentialVendorsVisibility, setPotentialVendorsVisibility] = useState(false);
-    const handleParticipantsTransition = () => {
-        if (participantsRef.current) {
-            participantsRef.current.classList.toggle('visa-content-participants-hide');
-            participantsRef.current.addEventListener('animationend', () => setPotentialVendorsVisibility(prev => !prev))
+    const handleSendForPayment = () => {
+        let canProceed = true;
+        const contracts = orderState.filter(material =>
+            material.contract_id !== -1
+        );
+        for (let i = 0; i < contracts.length; i++)
+            if (contracts[i].contract_numb !== contractNumbersRef.current[contracts[i].id]) {
+                canProceed = false;
+                break;
+            }
+        const result = contracts.length === orderState.length ? 11 : 0;
+        const data = {
+            ordNumb: order[0].ord_numb,
+            result: result,
+            conts: contracts.map(contract => [contract.id, contract.vendor_id, contract.contract_id])
         }
-        else
-            setPotentialVendorsVisibility(prev => !prev);
+        console.log(data, canProceed);
+        // if (canProceed && contracts.length !== 0)
+        //     fetch('http://172.16.3.101:54321/api/forward-to-payment', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Authorization': 'Bearer ' + token,
+        //             'Content-Type': 'application/json',
+        //             'Content-Length': JSON.stringify(data).length
+        //         },
+        //         body: JSON.stringify(data)
+        //     })
+        //         .then(resp => resp.json())
+        //         .then(respJ => {
+        //             if (respJ[0].operation_result === 'success')
+        //                 console.log('great');
+        //             else
+        //                 console.log('not great');
+        //         })
     }
     return (
         <div className="visa-content-container">
             <div>
-                <div className="toggle-participants" style={{ width: 'auto' }} onClick={handleParticipantsTransition}>
-                    potensial vendorları göstər
-                </div>
                 {
-                    potentialVendorsVisibility &&
-                    <Modal>
-
-                    </Modal>
+                    modalState.visible &&
+                    <Suspense fallback={<Downloading />}>
+                        <Modal changeModalState={closeModal}>
+                            {modalState.content}
+                        </Modal>
+                    </Suspense>
                 }
                 <ul style={{ clear: 'both' }} className="new-order-table order-table-protex">
                     <li>
@@ -57,40 +91,81 @@ const ProcurementOrderContent = (props) => {
                         <div style={{ width: '150px' }}>Müqavilə nömrəsi</div>
                     </li>
                     {
-                        order.map((material, index) =>
+                        orderState.map((material, index) =>
                             <ProcurementOrderListItem
                                 index={index}
+                                contractNumbersRef={contractNumbersRef}
+                                setOrderState={setOrderState}
                                 expressVendors={expressVendors}
-                                key={index}
+                                key={material.id}
+                                token={token}
                                 material={material}
                             />
                         )
                     }
                 </ul>
                 {
-                    order[0].result === 0 &&
-                    <div style={{ marginBottom: '20px' }}>
-                        {
-                            action === 0 &&
-                            <div style={{ margin: '20px' }} className="save-button" onClick={handlePotentialVendorClick}>
-                                Potensial Vendor Əlavə et
-                            </div>
-                        }
-                        {
-                            action === 2 &&
-                            <PotentialVendor token={token} />
-                        }
+                    orderState[0].result !== 11 &&
+                    <div style={{ margin: '20px', backgroundColor: '#ffae00' }} className="save-button" onClick={handleSendForPayment}>
+                        Ödəniş üçün yönəlt
                     </div>
+                }
+                {
+                    orderState[0].result === 10 &&
+                    <PotentialVendorsState
+                        ordNumb={order[0].ord_numb}
+                        token={token}
+                    />
                 }
             </div>
         </div>
     )
 }
 const ProcurementOrderListItem = (props) => {
-    const { index, material, expressVendors } = props;
-    const { amount, material_name, title, material_comment, curTotal } = material;
-    const handleChange = () => {
-
+    const { index, material, expressVendors, token, setOrderState, contractNumbersRef } = props;
+    const { amount, material_name, title, material_comment, vendor_id, id } = material;
+    const contractsListRef = useRef(null);
+    const [contracts, setContracts] = useState([]);
+    const allContracts = useRef([]);
+    const inputContractNumRef = useRef(null)
+    useEffect(() => {
+        if (vendor_id.toString() !== -1) {
+            fetch(`http://172.16.3.101:54321/api/get-vendor-contracts/${vendor_id}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    allContracts.current = respJ;
+                    setContracts(respJ);
+                })
+        }
+    }, [token, vendor_id])
+    const handleChange = (e) => {
+        const value = e.target.value;
+        contractNumbersRef.current[id] = value;
+        const searchResult = allContracts.current.filter(contract => contract.number.toLowerCase().includes(value))
+        setContracts(searchResult);
+    }
+    const handleVendorChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setOrderState(prev => prev.map(material => material.id === id ? ({ ...material, [name]: value }) : material))
+    }
+    const handleFocus = () => {
+        contractsListRef.current.style.display = 'block'
+    }
+    const handleBlur = (e) => {
+        const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
+        if (relatedTargetid === null || relatedTargetid !== `contractsListRef ${index}`)
+            contractsListRef.current.style.display = 'none'
+    }
+    const setContract = (contract) => {
+        setOrderState(prev => prev.map(material => material.id === id ? ({ ...material, contract_id: contract.id, contract_numb: contract.number }) : material))
+        contractNumbersRef.current[id] = contract.number;
+        inputContractNumRef.current.value = contract.number;
+        contractsListRef.current.style.display = 'none'
     }
     return (
         <li>
@@ -111,7 +186,7 @@ const ProcurementOrderListItem = (props) => {
                 </span>
             </div>
             <div style={{ maxWidth: '200px' }}>
-                <select>
+                <select value={vendor_id} name="vendor_id" onChange={handleVendorChange}>
                     <option value="-1">-</option>
                     {
                         expressVendors.map(expressVendor =>
@@ -119,10 +194,24 @@ const ProcurementOrderListItem = (props) => {
                     }
                 </select>
             </div>
-            <div >
-                <input value={curTotal} onChange={handleChange} />
+            <div style={{ position: 'relative' }}>
+                <input
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    onFocus={handleFocus}
+                    type="text"
+                    ref={inputContractNumRef}
+                    autoComplete="off"
+                    placeholder="Nömrə"
+                />
+                <ul id={`contractsListRef ${index}`} tabIndex="0" ref={contractsListRef} className="material-model-list">
+                    {
+                        contracts.map(contract =>
+                            <li key={contract.id} onClick={() => setContract(contract)}>{contract.number}</li>
+                        )
+                    }
+                </ul>
             </div>
-
         </li>
     )
 }

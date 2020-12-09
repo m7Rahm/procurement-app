@@ -13,6 +13,7 @@ export const newOrderInitial = {
             count: 1
         }
     ],
+    structure: '',
     comment: '',
     review: '',
     ordNumb: '',
@@ -93,84 +94,8 @@ export const availableOperations = [
         'Büccə daxil etmək',
         'Yeni məhsul əlavə etmək'
     ];
-export const suppliers = [
-    {
-        name: 'Shanghai Electric International',
-        id: '1'
-    },
-    {
-        name: 'ARAZNET',
-        id: '2'
-    },
-    {
-        name: 'Estet',
-        id: '3'
-    },
-    {
-        name: 'Caspien Supplies',
-        id: '4'
-    },
-]
-export const importance = [
-    {
-        title: 'orta',
-        val: 1
-    },
-    {
-        title: 'vacib',
-        val: 2
-    },
-    {
-        title: 'çox vacib',
-        val: 3
-    },
-]
-export const incoTerms = [
-    {
-        name: 'EXW',
-        id: '1'
-    },
-    {
-        name: 'FCA',
-        id: '2'
-    },
-    {
-        name: 'FAS',
-        id: '3'
-    },
-    {
-        name: 'FOB',
-        id: '4'
-    },
-    {
-        name: 'CFR',
-        id: '5'
-    },
-    {
-        name: 'CIF',
-        id: '6'
-    },
-    {
-        name: 'CPT',
-        id: '7'
-    },
-    {
-        name: 'CIP',
-        id: '8'
-    },
-    {
-        name: 'DAP',
-        id: '9'
-    },
-    {
-        name: 'DPU',
-        id: '10'
-    },
-    {
-        name: 'DDP',
-        id: '11'
-    },
-];
+
+
 export const modules = [
     {
         text: 'Admin',
@@ -193,3 +118,69 @@ export const modules = [
         link: '/tender'
     }
 ]
+export const expressVendorInit = {
+    name: '',
+    voen: '',
+    sphere: '1',
+    type: '1',
+    residency: '1',
+    tax_type: '1',
+    tax_percentage: '0',
+    legal_address: '',
+    actual_address: '',
+    saa: '',
+    phone_numbers: [],
+    emails: [],
+    risk_zone: '1',
+    reg_date: '',
+    vendor_type: '1',
+    files: []
+}
+export const vendorTypes = [
+    {
+        val: 1,
+        text: 'Fiziki şəxs' 
+    },
+    {
+        val: 2,
+        text: 'Hüquqi şəxs' 
+    }
+];
+export const workSectors = [
+    {
+        val: 1,
+        text: 'Satış' 
+    },
+    {
+        val: 2,
+        text: 'Ximət' 
+    }
+];
+export const taxTypes = [
+    {
+        val: 1,
+        text: 'ƏDV' 
+    },
+    {
+        val: 2,
+        text: 'Sadələşdirilmiş' 
+    },
+    {
+        val: 3,
+        text: 'Ticarət və ictimai iaşə' 
+    }
+];
+export const riskZones = [
+    {
+        val: 1,
+        text: 'Orta' 
+    },
+    {
+        val: 2,
+        text: 'Yüksək' 
+    },
+    {
+        val: 3,
+        text: 'Qara siyahı' 
+    }
+];

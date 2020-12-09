@@ -45,7 +45,10 @@ const Users = () => {
 			})
 			.catch(ex => console.log(ex))
 	}, [token]);
-	const closeModal = () => setModal({ visible: false, content: undefined })
+	const closeModal = () => {
+		console.log('fired')
+		setModal({ visible: false, content: undefined })
+	}
 	const editUserData = (id) => {
 		const editUser = (props) => <EditUser closeModal={closeModal} id={id} {...props}/>
 		setModal({ visible: true, content: editUser})
@@ -55,8 +58,6 @@ const Users = () => {
 			'Authorization': 'Bearer ' + token
 		}
 	})
-		.then(resp => resp.json())
-		.then(respJ => console.log(respJ))
 		.catch(ex => console.log(ex))
 	return (
 		<div style={{ paddingTop: '56px' }}>
@@ -69,6 +70,7 @@ const Users = () => {
 							<th>Ad</th>
 							<th>FIN</th>
 							<th>ID</th>
+							<th>Filial</th>
 							<th>Departament</th>
 							<th>Status</th>
 							<th></th>
@@ -82,8 +84,9 @@ const Users = () => {
 									<td>{index + 1}</td>
 									<td>{user.username}</td>
 									<td>{user.full_name}</td>
-									<td>124921</td>
+									<td>{user.fin}</td>
 									<td>{user.passport_data}</td>
+									<td>{user.branch_name}</td>
 									<td>{user.shobe}</td>
 									<td>{user.status}</td>
 									<td>

@@ -8,7 +8,7 @@ import { TokenContext } from '../App';
 const NewOrderTableRow = (props) => {
   const tokenContext = useContext(TokenContext);
   const rowRef = useRef(null);
-  const orderType = props.orderType;
+  const { orderType, structure, material } = props;
   const token = tokenContext[0];
   const emptyRow = {
     category: '',
@@ -26,7 +26,6 @@ const NewOrderTableRow = (props) => {
   const [rowData, setRowData] = useState(emptyRow);
   const modelListRef = useRef(null);
   const modelsRef = useRef([]);
-  const material = props.material;
   const mainCategories = props.categories.filter(category => category.parent_id === 34);
   const subCategories = props.categories.filter(category => category.parent_id.toString() === rowData.category.toString());
   const materialid = material.id;
@@ -73,7 +72,27 @@ const NewOrderTableRow = (props) => {
       additionalInfo: ''
     }
     setRowData(emptyRow)
-  }, [orderType])
+  }, [orderType]);
+
+  useEffect(() => {
+    // subCategory
+    const data = JSON.stringify({ categoryid: subCategory, structureid: structure, orderType: orderType });
+    fetch('http://172.16.3.101:54321/api/strucutre-budget-info', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        'Content-Length': data.length
+      },
+      body: data
+    })
+      .then(resp => resp.json())
+      .then(respJ => {
+        modelsRef.current = respJ;
+        const budget = respJ.length !== 0 ? respJ[0].budget : 0;
+        setRowData(prev => ({ ...prev, budget: budget }));
+      })
+  }, [structure, orderType, subCategory, token])
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -108,8 +127,7 @@ const NewOrderTableRow = (props) => {
   }
   const handleRowDelete = () => {
     rowRef.current.classList.add('delete-row');
-    rowRef.current.addEventListener('animationend', () => updateMaterialsList('deleteRow', { rowid: material.id })
-    )
+    rowRef.current.addEventListener('animationend', () => updateMaterialsList('deleteRow', { rowid: material.id }))
   }
   const setModel = (model) => {
     setRowData(prev => ({
@@ -143,8 +161,16 @@ const NewOrderTableRow = (props) => {
     })
       .then(resp => resp.json())
       .then(respJ => {
-        if (respJ.length !== 0) {
-          const material = respJ[0];
+          const material = respJ.length !== 0 ? respJ[0] : {
+            grand_parent_id: '',
+            parent_id: '',
+            title: '',
+            product_id: '',
+            approx_price: '0',
+            department_name: '',
+            budget: '0',
+            models: []
+          };
           setRowData(prev => ({
             ...prev,
             category: material.grand_parent_id,
@@ -156,13 +182,12 @@ const NewOrderTableRow = (props) => {
             budget: material.budget,
             models: modelsRef.current.filter(model => model.id === material.id)
           }))
-        }
       })
   }
   const handleSubCategoryChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    const data = { categoryid: value, orderType: orderType };
+    const data = { categoryid: value, structureid: structure, orderType: orderType };
     fetch('http://172.16.3.101:54321/api/strucutre-budget-info', {
       method: 'POST',
       headers: {
@@ -216,6 +241,7 @@ const NewOrderTableRow = (props) => {
           placeholder="Məhsul"
           value={rowData.model}
           name="model"
+          autoComplete="off"
           onChange={handleInputSearch}
         />
         <ul id="modelListRef" tabIndex="0" ref={modelListRef} className="material-model-list">

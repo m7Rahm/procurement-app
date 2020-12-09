@@ -12,8 +12,7 @@ import {
 import SearchBox from './SearchBox';
 const IconsPanel = (props) => {
     const searchBoxRef = useRef(null);
-    // const countRef = useRef(0)
-    const token = localStorage.getItem('token');
+    const { updateList, token } = props;
     const [searchBoxState, setSearchBoxState] = useState(false);
     const handleBulkDelete = () => {
         console.log(props.checkedAmountRef.current);
@@ -31,7 +30,12 @@ const IconsPanel = (props) => {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                if(resp.status === 200)
+                    resp.json()
+                else
+                    throw new Error('Internal Server Error');
+            })
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 props.setVisas({ count: totalCount, visas: respJ });
@@ -53,7 +57,12 @@ const IconsPanel = (props) => {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                if(resp.status === 200)
+                    resp.json()
+                else
+                    throw new Error('Internal Server Error');
+            })
             .catch(error => console.log(error));
     }
     const handleBulkPin = () => {
@@ -71,7 +80,12 @@ const IconsPanel = (props) => {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                if(resp.status === 200)
+                    resp.json()
+                else
+                    throw new Error('Internal Server Error');
+            })
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 props.setVisas({ count: totalCount, visas: respJ });
@@ -88,7 +102,6 @@ const IconsPanel = (props) => {
         else {
             searchBoxRef.current.classList.add('advanced-search-bar-hide')
         }
-        // if (countRef.current)
     }
     return (
         <>
@@ -106,6 +119,8 @@ const IconsPanel = (props) => {
                             <SearchBox
                                 searchParamsRef={props.searchParamsRef}
                                 setVisas={props.setVisas}
+                                updateList={updateList}
+                                token={token}
                                 activePageRef={props.activePageRef}
                                 ref={searchBoxRef}
                             />

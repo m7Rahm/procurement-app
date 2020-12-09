@@ -7,68 +7,38 @@ import {
     MdDone,
     MdClose
 } from 'react-icons/md'
-const TableRow = ({ budget, index }) => {
-    const [budgetData, setBudgetData] = useState(budget);
-    const [disabled, setDisabled] = useState(true);
-    const handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setBudgetData(prev => ({ ...prev, [name]: value }))
-    }
-    const handleEdit = () => {
-        setDisabled(false)
-    }
-    const handleUpdate = () => {
-        console.log(budgetData)
-    }
-    const handleCancel = () => {
-        setBudgetData(budget);
-        setDisabled(true);
-    }
-    return (
-        <tr>
-            <td>{index}</td>
-            <td>{budget.gl_category_name}</td>
-            <td>{budget.gl_sub_category_name}</td>
-            <td>{budget.category_name}</td>
-            <td>{budget.sub_category_name}</td>
-            <td>
-                <input disabled={disabled} onChange={handleChange} name="budget" value={budget.budget} />
-            </td>
-            <td>
-                {
-                    disabled
-                        ? <FaEdit onClick={handleEdit} />
-                        : <>
-                            <MdDone color="green" onClick={handleUpdate} />
-                            <MdClose color="red" onClick={handleCancel} />
-                        </>
-                }
-            </td>
-        </tr>
-    )
-}
 const StructureBudgetDetailed = (props) => {
     const tokenConext = useContext(TokenContext);
     const token = tokenConext[0];
     const location = useLocation();
     const state = location.state;
     const activePageRef = useRef(0);
+    const searchStateRef = useRef(
+        (() => {
+            if (state) {
+                const structureid = state.structure.id;
+                const glCategoryId = state.glCategoryId;
+                const filialid = state.filialid;
+                const period = state.searchState.year + state.searchState.month
+                return ({ period, glCategoryId, from: 0, next: 20, filialid, structureid })
+            }
+            else
+                return undefined
+        })()
+    )
     const [budgets, setBudgets] = useState({ count: 0, content: [] })
     useEffect(() => {
-        if (state) {
-            const structureid = state.structure.id;
-            const glCategoryId = state.glCategoryId;
-            const period = state.searchState.year + state.searchState.month
-            const data = { period, glCategoryId, from: 0, next: 20 }
+        if (searchStateRef.current) {
+            const structureid = searchStateRef.current.structureid;
+            const data = JSON.stringify(searchStateRef.current)
             fetch(`http://172.16.3.101:54321/api/structure-budget/${structureid}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
-                    'Content-Length': JSON.stringify(data).length,
+                    'Content-Length': data.length,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: data
             })
                 .then(resp => resp.json())
                 .then(respJ => {
@@ -77,8 +47,24 @@ const StructureBudgetDetailed = (props) => {
                 })
         }
     }, [state, token])
-    const updateList = () => {
 
+    const updateList = (from) => {
+        const structureid = searchStateRef.current.structureid;
+        const data = JSON.stringify({ ...searchStateRef.current, from })
+        fetch(`http://172.16.3.101:54321/api/structure-budget/${structureid}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Length': data.length,
+                'Content-Type': 'application/json'
+            },
+            body: data
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                setBudgets({ count: totalCount, content: respJ });
+            })
     }
     return (
         <div className="structure-budget-detailed">
@@ -97,7 +83,12 @@ const StructureBudgetDetailed = (props) => {
                 <tbody>
                     {
                         budgets.content.map((budget, index) =>
-                            <TableRow index={index + 1} key={budget.id} budget={budget} />
+                            <TableRow
+                                index={index + 1}
+                                key={budget.id}
+                                budget={budget}
+                                token={token}
+                            />
                         )
                     }
                 </tbody>
@@ -112,3 +103,66 @@ const StructureBudgetDetailed = (props) => {
 }
 
 export default StructureBudgetDetailed
+
+const TableRow = ({ budget, index, token }) => {
+    const [budgetData, setBudgetData] = useState(budget);
+    const [disabled, setDisabled] = useState(true);
+    const handleChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setBudgetData(prev => ({ ...prev, [name]: value }));
+    }
+    const handleEdit = () => {
+        setDisabled(false)
+    }
+    const handleUpdate = (id) => {
+        const data = JSON.stringify({
+            budget: budgetData.budget,
+            filialid: budgetData.filial_id,
+            active: 1,
+            structureid: budgetData.structure_id,
+            categoryid: budgetData.category_id,
+            quarter: budgetData.quarter
+        })
+        fetch(`http://172.16.3.101:54321/api/update-budget/${id}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            },
+            body: data
+        })
+        .then(resp => resp.json())
+        .then(respJ => {
+            if(respJ[0].operation_result === 'success')
+                setDisabled(true)
+        })
+    }
+    const handleCancel = () => {
+        setBudgetData(budget);
+        setDisabled(true);
+    }
+    return (
+        <tr>
+            <td>{index}</td>
+            <td>{budget.gl_category_name}</td>
+            <td>{budget.sub_gl_category_name}</td>
+            <td>{budget.category_name}</td>
+            <td>{budget.sub_category_name}</td>
+            <td>
+                <input disabled={disabled} onChange={handleChange} name="budget" value={budgetData.budget} />
+            </td>
+            <td>
+                {
+                    disabled
+                        ? <FaEdit onClick={handleEdit} />
+                        : <>
+                            <MdDone color="green" onClick={() => handleUpdate(budget.id)} />
+                            <MdClose color="red" onClick={handleCancel} />
+                        </>
+                }
+            </td>
+        </tr>
+    )
+}

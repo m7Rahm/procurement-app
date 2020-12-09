@@ -4,41 +4,43 @@ import {
     IoIosClose
 } from 'react-icons/io'
 const PictureItem = (props) => {
+    const { index, picture, setModalState, setPotentialVendors, id } = props;
     const imgRef = useRef(null);
-    const src = URL.createObjectURL(props.picture);
+    const src = URL.createObjectURL(picture);
     const showBiggerPicter = function () {
-        props.setModalState({ show: true, src: src });
+        setModalState({ show: true, src: src });
     }
     const handleDelete = () => {
-        props.setPictures(prev => {
-            const newFiles = prev.filter((_, index) => index !== props.index);
-            props.setPotentialVendors(prev =>
-                prev.map(row =>
-                    row.key === props.id
-                        ? { ...row, files: newFiles }
-                        : row
-                )
-            );
-            return newFiles
-        })
+        setPotentialVendors(prev =>
+            prev.map(row =>
+                row.key === id
+                    ? { ...row, files: row.files.filter(prev => prev.name !== picture.name) }
+                    : row
+            )
+        );
     }
     return (
         <tr>
-            <td>{props.index + 1}</td>
+            <td>{index + 1}</td>
             <td>
-                {new Date(props.picture.lastModifiedDate).toDateString()}
+                {new Date(picture.lastModifiedDate).toDateString()}
             </td>
             <td>
-                {props.picture.name}
+                {picture.name}
             </td>
             <td>
-                <img
-                    onClick={showBiggerPicter}
-                    // onLoad={() => {URL.revokeObjectURL(imgRef.current.src)}}
-                    ref={imgRef}
-                    src={src}
-                    alt="preview"
-                />
+                {
+                    picture.name.split('.').pop() === 'pdf'
+                        ? <div onClick={() => window.open(src)} style={{ backgroundColor: 'red', color: 'white' }}>{picture.name}</div>
+                        : <img
+                            onClick={showBiggerPicter}
+                            onLoad={() => {URL.revokeObjectURL(imgRef.current.src)}}
+                            ref={imgRef}
+                            src={src}
+                            alt="preview"
+                        />
+                }
+
             </td>
             <td>
                 <IoIosClose color="red" onClick={handleDelete} />
@@ -47,12 +49,12 @@ const PictureItem = (props) => {
     )
 }
 const OfferPictures = (props) => {
-    const closeModal = () => props.setModalState({ display: false, vendor: null });
+    const closeModal = () => props.setModalState({ display: false, vendorIndex: null });
     const setPotentialVendors = props.setPotentialVendors;
     const { files, key, name } = props.vendor;
     const [modalState, setModalState] = useState(false);
-    const [pictures, setPictures] = useState(files);
     const bigPicRef = useRef(null);
+    console.log(files)
     const closeThumbsModal = (e) => {
         if (e.target.closest('div').id === 'offer-pictures')
             closeModal()
@@ -101,14 +103,13 @@ const OfferPictures = (props) => {
                         </thead>
                         <tbody>
                             {
-                                pictures.map((picture, index) =>
+                                files.map((picture, index) =>
                                     <PictureItem
                                         key={picture.name}
                                         index={index}
                                         id={key}
                                         picture={picture}
                                         setModalState={setModalState}
-                                        setPictures={setPictures}
                                         setPotentialVendors={setPotentialVendors}
                                     />
                                 )

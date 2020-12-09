@@ -53,7 +53,30 @@ const handleCardClick = (_, props, stateRef) => {
             .catch(error => console.log(error));
     }
 }
-
+const updateList = (data, token, setVisas, notifIcon) => {
+    fetch('http://172.16.3.101:54321/api/get-ready-orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': JSON.stringify(data).length,
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify(data)
+    })
+      .then(resp => resp.json())
+      .then(respJ => {
+        const totalCount = respJ[0] ? respJ[0].total_count : 0;
+        setVisas({ count: totalCount, visas: respJ });
+        if (notifIcon !== undefined) {
+          notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
+          notifIcon.current.addEventListener('animationend', function () {
+            this.style.display = 'none';
+            this.style.animation = 'animation: show-up 0.2s ease-in both';
+          })
+      }
+      })
+      .catch(ex => console.log(ex))
+  }
 const Inbox = (props) => {
     const [active, setActive] = useState(null);
     const tokenContext = useContext(TokenContext);
@@ -64,6 +87,7 @@ const Inbox = (props) => {
                 handleCardClick={handleCardClick}
                 mountFunc={onMountFunction}
                 setActive={setActive}
+                updateList={updateList}
             />
             {
                 active

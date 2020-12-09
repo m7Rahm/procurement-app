@@ -12,15 +12,15 @@ const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNu
 	const rowRef = useRef(null);
 	const modelListRef = useRef(null);
 	useEffect(() => {
-		const data = { categoryid: subCategoryid, ordNumb, empVersion: version }
+		const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
 		fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,
 				'Content-Type': 'application/json',
-				'Content-Length': JSON.stringify(data).length
+				'Content-Length': data.length
 			},
-			body: JSON.stringify(data)
+			body: data
 		})
 			.then(resp => resp.json())
 			.then(respJ => {
@@ -46,23 +46,27 @@ const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNu
 	}
 	const handleSubCategoryChange = (e) => {
 		const value = e.target.value;
-		const data = { categoryid: value, ordNumb, empVersion: version }
+		const data = JSON.stringify({ categoryid: value, ordNumb, empVersion: version })
 		fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,
 				'Content-Type': 'application/json',
-				'Content-Length': JSON.stringify(data).length
+				'Content-Length': data.length
 			},
-			body: JSON.stringify(data)
+			body: data
 		})
 			.then(resp => resp.json())
 			.then(respJ => {
-				console.log(respJ)
 				modelsRef.current = respJ;
+				console.log(respJ)
 				const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-				// console.log(budget)
-				setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, parent_id: value, models: respJ, budget: budget, title: '', material_id: 'nan' })))
+				setOrderState(prev =>
+					prev.map(row => row.id !== rowid
+						? row
+						: ({ ...row, parent_id: value, models: respJ, budget: budget, title: '', material_id: 'nan' })
+					)
+				)
 			})
 			.catch(ex => console.log(ex))
 	}

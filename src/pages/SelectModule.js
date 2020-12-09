@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, Suspense, lazy } from 'react';
 import {
 	Link, Switch, Route
 } from 'react-router-dom';
 import { TokenContext } from '../App';
-import { modules } from '../data/data';
-import Admin from './AdminPage';
 import {
-	IoMdMenu
+	IoMdMenu,
+	IoMdRefreshCircle
 } from 'react-icons/io';
-import Budget from './Budget'
-import Orders from './Orders'
+import { modules } from '../data/data';
 import '../App.css';
-import LeftSidePane from '../components/LeftSidePane'
-import Tender from './Tender'
 import logo from '../logo.svg';
+import LeftSidePane from '../components/LeftSidePane'
+const Budget = lazy(() => import('./Budget'))
+const Orders = lazy(() => import('./Orders'))
+const Tender = lazy(() => import('./Tender'))
+const Admin = lazy(() => import('./AdminPage'))
 const availableModules = [
 	{
 		text: 'Budget',
@@ -45,6 +46,7 @@ export const UserDataContext = React.createContext();
 const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0];
+	const moduleNavigationRef = useRef(null);
 	const [userData, setUserData] = useState({ modules: [], previliges: [], userInfo: {} })
 	const webSocketRef = useRef(null);
 	const [menuData, setMenuData] = useState({ url: '', routes: [] })
@@ -108,79 +110,107 @@ const SelectModule = () => {
 		tokenContext[1]('')
 		localStorage.removeItem('token');
 	}
+	const handleIconClick = () => {
+		moduleNavigationRef.current.style.display = moduleNavigationRef.current.style.display === 'block'
+			? 'none'
+			: 'block'
+	}
 	return (
-		<Switch>
-			<Route exact path="/">
-				<div className="splash-screen">
-					<div className="module-select">
-						{
-							routes.map(module =>
-								<Link key={module.link} to={module.link}>
-									<div className="module-card">
-										{module.text}
-									</div>
-								</Link>
-							)
-						}
-					</div>
-				</div>
-			</Route>
-			{
-				wSockConnected &&
-				<>
-					<UserDataContext.Provider value={[userData, setUserData]}>
-						{
-							routes.map(route =>
-								<Route key={route.link} path={route.link}>
-									<>
-										<nav>
-											<ul>
-												<li>
-													<div>
-														<div className="left-side-toggle">
-															<IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
-														</div>
-														<div>
-															<img style={{ height: '32px', cursor: 'pointer' }} onClick={handleLogOut} src={logo} alt='user pic'></img>
-														</div>
-													</div>
-												</li>
-											</ul>
-										</nav>
-										<div
-											onClick={handleNavClick}
-											ref={backgroundRef}
-											style={{
-												position: 'fixed',
-												height: '100%',
-												width: '100%',
-												top: 0,
-												left: 0,
-												display: 'none',
-												background: 'rgba(0, 0, 0, 0.6)',
-												zIndex: 2
-											}}>
+		<Suspense fallback={
+			<div className="loading">
+				<IoMdRefreshCircle size="50" color="#a4a4a4" />
+			</div>
+		}>
+			<Switch>
+				<Route exact path="/">
+					<div className="splash-screen">
+						<div className="module-select">
+							{
+								routes.map(module =>
+									<Link key={module.link} to={module.link}>
+										<div className="module-card">
+											{module.text}
 										</div>
-									</>
-									<LeftSidePane
-										url={menuData.url}
-										links={menuData.routes}
-										ref={leftPaneRef}
-										handleNavClick={handleNavClick}
-									/>
-									<route.component
-										webSocketRef={webSocketRef}
-										handleNavClick={handleNavClick}
-										menuData={menuData}
-										setMenuData={setMenuData}
-									/>
-								</Route>
-							)
-						}
-					</UserDataContext.Provider>
-				</>
-			}
-		</Switch>
+									</Link>
+								)
+							}
+						</div>
+					</div>
+				</Route>
+				{
+					wSockConnected &&
+					<>
+						<UserDataContext.Provider value={[userData, setUserData]}>
+							{
+								routes.map(route =>
+									<Route key={route.link} path={route.link}>
+										<>
+											<nav>
+												<ul>
+													<li>
+														<div>
+															<div className="left-side-toggle">
+																<IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
+															</div>
+															<div style={{ position: 'relative' }}>
+																<img style={{ height: '32px', cursor: 'pointer' }} onClick={handleIconClick} src={logo} alt='user pic'>
+																</img>
+																<ul ref={moduleNavigationRef} className="profile-icon">
+																	{
+																		routes.map(module =>
+																			<li key={module.link}>
+																				<Link to={module.link}>
+																					<div >
+																						{module.text}
+																					</div>
+																				</Link>
+																			</li>
+																		)
+																	}
+																	<li onClick={handleLogOut}>
+																		<div style={{ minWidth: '60px' }}>Log out</div>
+																	</li>
+																</ul>
+															</div>
+														</div>
+													</li>
+												</ul>
+											</nav>
+											<div
+												onClick={handleNavClick}
+												ref={backgroundRef}
+												style={{
+													position: 'fixed',
+													height: '100%',
+													width: '100%',
+													top: 0,
+													left: 0,
+													display: 'none',
+													background: 'rgba(0, 0, 0, 0.6)',
+													zIndex: 2
+												}}>
+											</div>
+										</>
+										<LeftSidePane
+											url={menuData.url}
+											links={menuData.routes}
+											ref={leftPaneRef}
+											handleNavClick={handleNavClick}
+										/>
+										<route.component
+											webSocketRef={webSocketRef}
+											handleNavClick={handleNavClick}
+											menuData={menuData}
+											setMenuData={setMenuData}
+										/>
+									</Route>
+								)
+							}
+						</UserDataContext.Provider>
+					</>
+				}
+			</Switch>
+		</Suspense>
 	)
 }
 export default SelectModule

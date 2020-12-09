@@ -7,12 +7,13 @@ const NewUser = (props) => {
         full_name: '',
         passport_data: '',
         vesiqe_fin_kod: '',
-        structure_dependency_id: 1,
+        structure_dependency_id: '-1',
         role_id: 1,
         email: '',
         username: '',
         password: '',
-        position_id: '0'
+        position_id: '0',
+        filial_id: '-1'
     });
     const [departments, setDepartments] = useState([]);
     const [roles, setRoles] = useState([]);
@@ -22,18 +23,30 @@ const NewUser = (props) => {
                 'Authorization': 'Bearer ' + token
             }
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status === 200)
+                   return resp.json()
+                else
+                    throw new Error('Internal Server Error');
+            })
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
+    }, [token]);
+    useEffect(() => {
         fetch('http://172.16.3.101:54321/api/roles', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status === 200)
+                    return resp.json()
+                else
+                    throw new Error('Internal Server Error');
+            })
             .then(respJ => setRoles(respJ))
             .catch(ex => console.log(ex));
-    }, [token]);
+    }, [token])
     const handleChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
@@ -51,7 +64,12 @@ const NewUser = (props) => {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.json())
+            .then(resp => {
+                if (resp.status === 200)
+                   return resp.json()
+                else
+                    throw new Error('Internal Server Error');
+            })
             .then(respJ => {
                 console.log(respJ);
                 if (respJ[0].result === 'success') {
@@ -78,7 +96,6 @@ const NewUser = (props) => {
                                 value={userData.full_name}
                                 name="full_name"
                                 onChange={handleChange}
-                                style={{ width: '250px' }}
                             />
                         </div>
                         <div>
@@ -107,14 +124,32 @@ const NewUser = (props) => {
                             </select>
                         </div>
                         <div>
+                            <label>Filial</label>
+                            <select
+                                value={userData.filial_id || ''}
+                                name="filial_id"
+                                onChange={handleChange}
+                            >
+                                <option value="-1">-</option>
+                                {
+                                    departments.filter(department => department.type === 0).map(department =>
+                                        <option value={department.id} key={department.id}>{department.name}</option>
+                                    )
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div className="section-row">
+                        <div>
                             <label>Struktur</label>
                             <select
                                 value={userData.structure_dependency_id || ''}
                                 name="structure_dependency_id"
                                 onChange={handleChange}
                             >
+                                <option value="-1">-</option>
                                 {
-                                    departments.map(department =>
+                                    departments.filter(department => department.type === 1).map(department =>
                                         <option value={department.id} key={department.id}>{department.name}</option>
                                     )
                                 }

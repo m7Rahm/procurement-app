@@ -16,7 +16,12 @@ const InputWithSearch = (props) => {
 					'Authorization': 'Bearer ' + token
 				}
 			})
-				.then(resp => resp.json())
+				.then(resp => {
+					if(resp.status === 200)
+						resp.json()
+					else
+						throw new Error('Internal Server Error');
+				})
 				.then(respJ => {
 					console.log(respJ)
 					setReceivers(respJ);

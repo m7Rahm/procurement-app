@@ -1,85 +1,88 @@
-import React, { useContext } from 'react'
-// import { TokenContext } from '../App'
+import React, { useContext, useState } from 'react'
+import { TokenContext } from '../App'
 import { UserDataContext } from '../pages/SelectModule'
+import ForwardDocLayout from './ForwardDocLayout';
+import OperationResult from '../components/Misc/OperationResult'
 const AcceptDecline = React.lazy(() => import('./modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {
-    // console.log(props)
-    const current = props.current;
-    // const tokenContext = useContext(TokenContext);
+    const { handleEditClick, current, canProceed, updateContent, orderContent } = props;
     const userDataContext = useContext(UserDataContext);
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0];
     const canApprove = userDataContext[0].previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
     const canDecline = userDataContext[0].previliges.find(prev => prev === 'Sifarişə etiraz etmək');
     const canReturn = userDataContext[0].previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
-    // console.log(userDataContext[0]);
-    // const token = tokenContext[0];
-    // console.log(props.current)
-    // const [comment, setComment] = useState('');
+    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
+
     const setIsModalOpen = (recs, order) => {
-        console.log(order);
-        props.updateContent(recs, {
+        updateContent(recs, {
             id: order.id,
             act_date_time: order.act_date_time,
             result: order.result,
             comment: order.comment
         })
     }
-    // const version = current.version;
-    // const handleTextChange = (e) => {
-    //     const text = e.target.value;
-    //     setComment(text)
-    // }
-    // const handleClick = () => {
-    //     const data = {
-    //         receivers: [],
-    //         action: null,
-    //         empVersion: version,
-    //         comment,
-    //         forwardedVersion: version
-    //     }
-    //     fetch(`http://172.16.3.101:54321/api/accept-decline/${props.current}`,
-    //         {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Content-Length': JSON.stringify(data).length,
-    //                 'Authorization': 'Bearer ' + token
-    //             },
-    //             body: JSON.stringify(data)
-    //         })
-    //         .then(resp => resp.json())
-    //         .then(respJ => {
-    //             if (respJ[0].result === 'success') {
-    //                 console.log(respJ)
-    //                 setComment('');
-    //                 props.updateContent([], {
-    //                     id: respJ[1].id,
-    //                     actDateTime: respJ[1].act_date_time,
-    //                     result: respJ[1].result,
-    //                     comment: respJ[1].comment
-    //                 })
-    //             }
-    //         })
-    //         .catch(err => console.log(err))
-    // }
+    const handleForwardOrder = (receivers, comment) => {
+        const data = JSON.stringify({
+            receivers: receivers.map(receiver => [receiver.id]),
+            comment: comment
+        })
+        fetch(`http://172.16.3.101:54321/api/forward-order/${current.id}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length,
+                    'Authorization': 'Bearer ' + token
+                },
+                body: data
+            })
+            .then(resp => resp.json())
+            .then(respJ => {
+                if (respJ[0].operation_result === 'success')
+                    setIsModalOpen([respJ[0].head_id], respJ[0])
+                else if (respJ[0].error === 'Logical Error')
+                    setOperationResult({ visible: true, desc: 'Operation not finished' })
+            })
+            .catch(ex => console.log(ex))
+    }
+    const hoc = (Component, compoProps) => () => {
+        if (!Object.values(canProceed.current).includes(false))
+            handleEditClick((props) =>
+                <Component
+                    {...compoProps}
+                    {...props}
+                />)
+        else
+            setOperationResult({ visible: true, desc: 'Operation not finished' })
+    }
     return (
-        // props.intention === 1
-        //     ? 
-        props.orderContent.result === 0
+        orderContent.result === 0 && orderContent.order_result === 0
             ? <>
+                {
+                    operationResult.visible &&
+                    <OperationResult
+                        setOperationResult={setOperationResult}
+                        operationDesc={operationResult.desc}
+                    />
+                }
                 <div className="accept-decline-container">
                     {
                         canDecline &&
                         <div
-                            onClick={() => props.handleEditClick((props) =>
-                                <AcceptDecline
-                                    handleModalClose={setIsModalOpen}
-                                    // version={version}
-                                    tranid={current.id}
-                                    action={-1}
-                                    backgroundColor='#D93404'
-                                    {...props}
-                                />)
+                            onClick={
+                                hoc(
+                                    AcceptDecline,
+                                    {
+                                        handleModalClose: setIsModalOpen,
+                                        tranid: current.id,
+                                        action: -1,
+                                        setOperationResult: setOperationResult,
+                                        token: token,
+                                        backgroundColor: '#D93404'
+                                    }
+                                )
                             }
                             style={{ background: '#D93404' }}
                         >
@@ -89,15 +92,18 @@ const VisaContentFooter = (props) => {
                     {
                         canApprove &&
                         <div
-                            onClick={() => props.handleEditClick((props) =>
-                                <AcceptDecline
-                                    handleModalClose={setIsModalOpen}
-                                    // version={version}
-                                    tranid={current.id}
-                                    action={1}
-                                    backgroundColor='rgb(15, 157, 88)'
-                                    {...props}
-                                />)
+                            onClick={
+                                hoc(
+                                    AcceptDecline,
+                                    {
+                                        handleModalClose: setIsModalOpen,
+                                        tranid: current.id,
+                                        setOperationResult: setOperationResult,
+                                        action: 1,
+                                        token: token,
+                                        backgroundColor: 'rgb(15, 157, 88)'
+                                    }
+                                )
                             }
                             style={{ background: 'rgb(15, 157, 88)' }}
                         >
@@ -107,15 +113,18 @@ const VisaContentFooter = (props) => {
                     {
                         canReturn && current.forward_type !== 4 &&
                         <div
-                            onClick={() => props.handleEditClick((props) =>
-                                <AcceptDecline
-                                    handleModalClose={setIsModalOpen}
-                                    tranid={current.id}
-                                    // version={version}
-                                    action={2}
-                                    backgroundColor='#F4B400'
-                                    {...props}
-                                />)
+                            onClick={
+                                hoc(
+                                    AcceptDecline,
+                                    {
+                                        handleModalClose: setIsModalOpen,
+                                        tranid: current.id,
+                                        setOperationResult: setOperationResult,
+                                        action: 2,
+                                        token: token,
+                                        backgroundColor: '#F4B400'
+                                    }
+                                )
                             }
                             style={{ background: '#F4B400' }}
                         >
@@ -125,15 +134,14 @@ const VisaContentFooter = (props) => {
                     {
                         current.forward_type === 3 &&
                         <div
-                            onClick={() => props.handleEditClick((props) =>
-                                <AcceptDecline
-                                    handleModalClose={setIsModalOpen}
-                                    tranid={current.id}
-                                    // version={version}
-                                    action={4}
-                                    backgroundColor='#00a3e4'
-                                    {...props}
-                                />)
+                            onClick={
+                                hoc(
+                                    ForwardDocLayout,
+                                    {
+                                        handleSendClick: handleForwardOrder,
+                                        token: token,
+                                    }
+                                )
                             }
                             style={{ background: '#00a3e4' }}
                         >
@@ -145,21 +153,6 @@ const VisaContentFooter = (props) => {
             :
             <>
             </>
-        // :
-        // <>
-        //     {
-        //         props.orderContent.comment === ''
-        //             ? <div className="review-container">
-        //                 <textarea placeholder="Rəy bildirin.." value={comment} onChange={handleTextChange}></textarea>
-        //                 <div onClick={handleClick}>Göndər</div>
-        //             </div>
-        //             : <div className="review-container reviewed-comment">
-        //                 <span >Sifarişə {props.orderContent.actDateTime} tarixində rəy verilmişdir:</span>
-        //                 <br />
-        //                 <span>{props.orderContent.comment}</span>
-        //             </div>
-        //     }
-        // </>
     )
 }
 export default VisaContentFooter

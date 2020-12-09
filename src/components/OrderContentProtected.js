@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, Suspense, useEffect, useRef } from 'react';
 import Modal from './Modal'
 import {
 	FaUndo
@@ -11,7 +11,7 @@ const OrderContentProtected = (props) => {
 	const current = props.current;
 	const Component = props.footerComponent;
 	const forwardType = current[0].forward_type;
-	// const senderid = props.current.senderid;
+	const canProceed = useRef(current.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {}));
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalContent, setModalContent] = useState(null);
 	const [currentState, setCurrentState] = useState(current[0])
@@ -19,7 +19,8 @@ const OrderContentProtected = (props) => {
 		setIsModalOpen(false)
 	}
 	useEffect(() => {
-		setCurrentState(current[0])
+		setCurrentState(current[0]);
+		canProceed.current = current.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
 	}, [current])
 	const handleEditClick = (content) => {
 		setModalContent(_ => content);
@@ -54,18 +55,19 @@ const OrderContentProtected = (props) => {
 					version={props.current[0].emp_version_id}
 					currentState={currentState}
 					handleEditClick={handleEditClick}
-					// assignment={current[0].assignment}
 					intention={current[0].intention}
 					orderNumb={current[0].ord_numb}
 				/>
 			</>
 			<VisaContentMaterials
 				orderContent={props.current}
+				canProceed={canProceed}
 				forwardType={forwardType}
 			/>
 			<Component
 				sendNotification={props.sendNotification}
 				current={props.current[0]}
+				canProceed={canProceed}
 				orderContent={currentState}
 				handleEditClick={handleEditClick}
 				setIsModalOpen={setIsModalOpen}

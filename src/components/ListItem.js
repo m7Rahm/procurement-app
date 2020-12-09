@@ -45,6 +45,7 @@ const ListItem = (props) => {
   }
   const onInfoClick = (number) => {
     const onSendClick = (data) => {
+      console.log(data)
       const reqData = JSON.stringify(data);
       fetch('http://172.16.3.101:54321/api/new-order', {
         method: 'POST',
@@ -55,8 +56,14 @@ const ListItem = (props) => {
         },
         body: reqData
       })
-        .then(resp => resp.json())
+        .then(resp => {
+          if(resp.status === 200)
+              resp.json()
+          else
+              throw new Error('Internal Server Error');
+      })
         .then(respJ => {
+          console.log(respJ)
           if (respJ[0].result === 'success') {
             setOrders(prev => {
               const newList = prev.orders.filter(order => order.ord_numb !== number);

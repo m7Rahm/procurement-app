@@ -131,7 +131,12 @@ const App = (props) => {
                         'Authorization': 'Bearer ' + token
                     }
                 })
-                    .then(resp => resp.json())
+                    .then(resp => {
+                        if(resp.status === 200)
+                            resp.json()
+                        else
+                            throw new Error('Internal Server Error');
+                    })
                     .then(respJ => {
                         const id = respJ.userData.response.id;
                         const availableMenus = respJ.userData.response.availableMenus.split(',');

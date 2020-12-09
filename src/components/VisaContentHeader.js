@@ -28,15 +28,16 @@ const VisaContentHeader = (props) => {
 		})
 	};
 	const editOrderAndApprove = (data) => {
+		const apiData = JSON.stringify(data)
 		const token = tokenContext[0];
 		fetch(`http://172.16.3.101:54321/api/edit-accept-order-req/${tranid}`, {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,
 				'Content-Type': 'application/json',
-				'Content-Length': JSON.stringify(data).length
+				'Content-Length': apiData.length
 			},
-			body: JSON.stringify(data)
+			body: apiData
 		})
 			.then(resp => resp.json())
 			.then(respJ => closeModal(respJ, data.recs))
@@ -55,6 +56,16 @@ const VisaContentHeader = (props) => {
 			/>
 		)
 	}
+	const showEditOrderContent = () => handleEditClick((props) =>
+	<EditOrderRequest
+		closeModal={closeModal}
+		version={version}
+		view='procurement'
+		content={current}
+		editOrderAndApprove={editOrderAndApprove}
+		{...props}
+	/>
+)
 	return (
 		<>
 			<div className="protex-order-header-container">
@@ -62,16 +73,7 @@ const VisaContentHeader = (props) => {
 					{`Sifariş № ${orderNumb}`}
 					{
 						canEditRequest && !currentState.result &&
-						<FaEdit onClick={() => handleEditClick((props) =>
-							<EditOrderRequest
-								closeModal={closeModal}
-								version={version}
-								view='procurement'
-								content={current}
-								editOrderAndApprove={editOrderAndApprove}
-								{...props}
-							/>
-						)}
+						<FaEdit onClick={showEditOrderContent}
 							title="düzəliş et"
 							size="20"
 						/>

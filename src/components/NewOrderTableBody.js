@@ -1,31 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
-  const [activeLinkIndex, setActiveLinkIndex] = useState(null);
   const modelsListRef = useRef(null);
   const categories = props.categories;
   const state = props.state;
-  const { orderType, materials } = state;
-  useEffect(() => {
-      const handleOnOuterClick = (e) => {
-        const target = e.target.closest('div');
-        if (target) {
-          const activeOptions = (!target.classList.contains('importance-div') || activeLinkIndex === target.id)
-            ? null
-            : target.id;
-          setActiveLinkIndex(activeOptions);
-        }
-      }
-      document.addEventListener('click', handleOnOuterClick, false);
-      return () => document.removeEventListener('click', handleOnOuterClick, false)
-    }, [activeLinkIndex]
-  )
+  const { orderType, materials, structure } = state;
   return (
     <>
       {
         materials.map((material, index) => {
-          const isActive = material.id === activeLinkIndex ? true : false;
           return (
             <NewOrderTableRow
               dispatch={props.dispatch}
@@ -33,7 +17,7 @@ const NewOrderTableBody = (props) => {
               orderType={orderType}
               material={material}
               key={material.id}
-              isActive={isActive}
+              structure={structure}
               categories={categories}
               modelsListRef={modelsListRef}
             />

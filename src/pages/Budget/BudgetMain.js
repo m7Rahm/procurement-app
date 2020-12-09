@@ -26,7 +26,7 @@ const Budget = () => {
         return ({
             year: location.state ? location.state.searchState.year : year,
             month: location.state ? location.state.searchState.month : month,
-            department: location.state ? location.state.searchState.department : 1,
+            department: location.state ? location.state.searchState.department : 0,
             glCategoryId: location.state ? location.state.searchState.glCategoryId: 0
         })
     });
@@ -90,9 +90,9 @@ const Budget = () => {
         const name = e.target.name;
         setBudgetData(prev => ({ ...prev, [name]: value }))
     }
-    const showExtStructureInfo = (structureid) => {
+    const showExtStructureInfo = (structureid, filialid) => {
         const structure = departments.find(department => department.id === structureid)
-        history.push(`${path}/${structureid}`, { searchState: budgetData, budgets: budgets.budgets, count: budgets.count, structure })
+        history.push(`${path}/${structureid}/${filialid}`, { searchState: budgetData, budgets: budgets.budgets, count: budgets.count, structure, filialid })
     }
     const addNewBudget = () => {
         const newBudget = (props) => <NewBudget categories={categories} departments={departments} token={token} {...props} />
@@ -116,6 +116,7 @@ const Budget = () => {
                     </div>
                     <div>
                         <select name="department" value={budgetData.department} onChange={handleSelectChange}>
+                            <option value="0">Hamısını göstər</option>
                             {
                                 departments.map(department =>
                                     <option key={department.id} value={department.id}>{department.name}</option>)
@@ -150,6 +151,7 @@ const Budget = () => {
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Filial</th>
                             <th>Struktur</th>
                             <th>Büccə</th>
                             <th>Period</th>
@@ -159,9 +161,10 @@ const Budget = () => {
                     <tbody>
                         {
                             budgets.budgets.map((budget, index) =>
-                                <tr onClick={() => showExtStructureInfo(budget.structure_id)} key={budget.structure_id}>
+                                <tr onClick={() => showExtStructureInfo(budget.structure_id, budget.filial_id)} key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{budget.name}</td>
+                                    <td>{budget.filial_name}</td>
+                                    <td>{budget.structure_name}</td>
                                     <td>{budget.budget}</td>
                                     <td>{budget.period}</td>
                                     <td></td>
@@ -171,6 +174,7 @@ const Budget = () => {
                     </tbody>
                     <tfoot>
                         <tr>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>

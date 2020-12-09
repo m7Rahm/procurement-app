@@ -12,6 +12,7 @@ import {
 } from 'react-icons/fa'
 import ExpressVendors from './Tender/ExpressVendors'
 import Inbox from './Tender/Inbox'
+import PotentialVendors from './Tender/PotentialVendors'
 const routes = [
     {
         text: 'Express Vendors',
@@ -24,6 +25,12 @@ const routes = [
         link: '/orders',
         icon: FaCartArrowDown,
         component: Inbox
+    },
+    {
+        text: 'Potential Vendors',
+        link: '/potential-vendors',
+        icon: FaCartArrowDown,
+        component: PotentialVendors
     }
 ]
 const Tender = (props) => {

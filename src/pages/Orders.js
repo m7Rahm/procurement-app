@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react'
-// import Archived from './Orders/Archived'
 import MyOrders from './Orders/MyOrders'
-// import Drafts from './Orders/Drafts'
 import Visas from './Orders/Visas'
+import PriceOffers from './Orders/PriceOffers'
 import Returned from './Orders/Returned'
 import {
     IoMdDocument,
-    // IoIosArchive,
     IoMdCheckmarkCircleOutline,
     IoMdCart
 } from 'react-icons/io'
@@ -16,12 +14,6 @@ import {
     useRouteMatch
 } from 'react-router-dom'
 const routes = [
-    // {
-    //     text: 'Archived',
-    //     link: '/archived',
-    //     icon: IoIosArchive,
-    //     component: Archived
-    // },
     {
         text: 'My Orders',
         link: '/my-orders',
@@ -39,6 +31,12 @@ const routes = [
         link: '/visas',
         icon: IoMdCheckmarkCircleOutline,
         component: Visas
+    },
+    {
+        text: 'Price Offers',
+        link: '/price-offers',
+        icon: IoMdCart,
+        component: PriceOffers
     }
 ]
 const Orders = (props) => {

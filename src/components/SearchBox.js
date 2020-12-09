@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer, useRef } from 'react';
 import Calendar from './Calendar';
-const token = localStorage.getItem('token');
 const advancedSearchReducser = (state, action) => {
     const type = action.type;
     switch (type) {
@@ -46,6 +45,7 @@ const advancedSearchReducser = (state, action) => {
 }
 const SearchBox = (props, ref) => {
     const date = new Date();
+    const { updateList, token, setVisas } = props;
     const activeCalendar = useRef(null)
     const [searchState, dispatch] = useReducer(advancedSearchReducser, {
         userName: '',
@@ -76,31 +76,13 @@ const SearchBox = (props, ref) => {
     const handleSearchClick = () => {
         const data = {
             userName: searchState.userName,
-            // deadline: searchState.deadline,
             startDate: searchState.startDate === '' ? null : searchState.startDate,
             endDate: searchState.endDate === '' ? null : searchState.endDate,
             docType: searchState.docType,
             from: 0,
             until: 20
         }
-        console.log(data);
-        fetch('http://172.16.3.101:54321/api/visas', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length,
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                ref.current.classList.add('advanced-search-bar-hide');
-                const totalCount = respJ[0] ? respJ[0].total_count : 0;
-                props.activePageRef.current = 0;
-                props.setVisas({ count: totalCount, visas: respJ });
-            })
-            .catch(err => console.log(err))
+        updateList(data, token, setVisas)
     }
     const resetState = () => {
         dispatch({ type: 'reset', ref: props.searchParamsRef })

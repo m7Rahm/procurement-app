@@ -15,7 +15,7 @@ const StructureBudget = (props) => {
     const [structureBudget, setStructureBudget] = useState({ budgets: [], count: 0 });
     const state = props.location.state;
     const searchState = state ? state.searchState : undefined;
-    const structureid = params.structureid;
+    const {structureid, filialid } = params;
     const { path } = useRouteMatch()
     const structureName = state ? state.structure.name : undefined
     const token = tokenContext[0];
@@ -30,6 +30,7 @@ const StructureBudget = (props) => {
                 period: searchState.year + searchState.month,
                 glCategoryId: 0,
                 structureid,
+                filialid,
                 glCategoryid: 0
             };
             fetch(`http://172.16.3.101:54321/api/structure-budget-per-gl-category`, {
@@ -48,7 +49,7 @@ const StructureBudget = (props) => {
                 })
                 .catch(ex => console.log(ex))
         }
-    }, [structureid, searchState, token]);
+    }, [structureid, searchState, token, filialid]);
     // console.log(structureBudget)
     return (
         <div className="budget strucutre-budget">

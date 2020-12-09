@@ -24,10 +24,6 @@ const Pagination = (props) => {
             setPages(arr)
         }
     }, [active, count])
-    // const updateList = useCallback(props.updateList, []);
-    // useEffect(() => {
-    //     updateList(active * 20)
-    // }, [updateList, active]);
 
     const handlePageCardClick = (page) => {
         props.activePageRef.current = page;

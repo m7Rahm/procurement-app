@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import Table from '../../components/Table'
-// import Search from '../../components/Search'
-// import NewOrderButton from '../../components/NewOrderButton';
 import Pagination from '../../components/Pagination';
+import {
+  IoMdSearch
+} from 'react-icons/io'
 import { TokenContext } from '../../App'
 const MyOrders = (props) => {
   const wrapperRef = useRef(null);
@@ -41,12 +42,20 @@ const MyOrders = (props) => {
   return (
     <>
       <div className="wrapper" ref={wrapperRef}>
-        <Table
-          referer="returned"
-          wrapperRef={wrapperRef}
-          orders={orders}
-          setOrders={setOrders}
-        />
+        {
+          orders.count !== 0 ?
+          <Table
+            referer="returned"
+            wrapperRef={wrapperRef}
+            orders={orders}
+            setOrders={setOrders}
+            />
+            :
+            <div style={{ marginTop: '100px' }}>
+              <span style={{ color: 'gray', fontSize: 30 }}>Sənəd tapılmadı</span>
+              <IoMdSearch size="40" color="rgb(24, 139, 192)"/>
+            </div>
+        }
       </div>
       <div className="my-orders-footer">
         <Pagination
