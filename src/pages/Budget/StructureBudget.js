@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from 'react'
 import {
     useParams, useHistory, Switch, Route, useRouteMatch
 } from 'react-router-dom'
-import StructureBudgetDetailed from '../../components/StructureBudgetDetailed'
+import StructureBudgetDetailed from '../../components/Budget/StructureBudgetDetailed'
 import {
     IoIosArrowBack
 } from 'react-icons/io'
-import StructureBudgetCard from '../../components/StructureBudgetCard'
+import StructureBudgetCard from '../../components/Budget/StructureBudgetCard'
 import { TokenContext } from '../../App'
 const StructureBudget = (props) => {
     const params = useParams();

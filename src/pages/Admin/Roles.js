@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
-import StatusButton from '../../components/StatusButton'
+import StatusButton from '../../components/Misc/StatusButton'
 import {
     MdEdit,
     MdAdd
 } from 'react-icons/md'
 
-import Modal from '../../components/Modal'
-import UpdateRole from '../../components/modal content/UpdateRole'
+import Modal from '../../components/Misc/Modal'
+import UpdateRole from '../../components/Admin/UpdateRole'
 import { TokenContext } from '../../App'
 const Roles = (props) => {
     const tokenContext = useContext(TokenContext)

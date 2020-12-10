@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { months } from '../../data/data'
-import Modal from '../../components/Modal'
+import Modal from '../../components/Misc/Modal'
 import {
     useRouteMatch,
     useHistory,
     useLocation
 } from 'react-router-dom'
-import Pagination from '../../components/Pagination'
+import Pagination from '../../components/Misc/Pagination'
 import {
     MdAdd
 } from 'react-icons/md'
 import { TokenContext } from '../../App'
-import NewBudget from '../../components/modal content/NewBudget'
+import NewBudget from '../../components/Budget/NewBudget'
 const Budget = () => {
     const tokenContext = useContext(TokenContext)
     const token = tokenContext[0];

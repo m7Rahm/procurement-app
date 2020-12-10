@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import Table from '../../components/Table'
-import Pagination from '../../components/Pagination';
+import Table from '../../components/Orders/MyOrders/Table'
+import Pagination from '../../components/Misc/Pagination';
 import {
   IoMdSearch
 } from 'react-icons/io'

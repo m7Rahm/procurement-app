@@ -5,7 +5,7 @@ import {
     IoIosLock,
     IoIosUnlock
 } from 'react-icons/io'
-import Attachments from '../Attachments'
+import Attachments from '../PriceOffers/Attachments'
 import { expressVendorInit } from '../../data/data'
 import { TokenContext } from '../../App'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'

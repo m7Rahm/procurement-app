@@ -8,8 +8,8 @@ import {
     IoMdDoneAll,
     IoMdAdd,
 } from 'react-icons/io'
-import Pagination from '../../components/Pagination'
-import StatusButton from '../../components/StatusButton'
+import Pagination from '../../components/Misc/Pagination'
+import StatusButton from '../../components/Misc/StatusButton'
 
 const Structure = () => {
     const tokenContext = useContext(TokenContext);

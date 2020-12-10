@@ -2208,10 +2208,8 @@ div.warehouse-container>div:first-of-type {
   display: none;
   border-radius: 3px;
   overflow: hidden;
-  /* border: thin gray solid; */
   box-shadow: 0px 0px 5px 3px rgba(0, 0, 0, 0.2);
   margin: 0px;
-  /* margin-top: 2px; */
   background-color: #f0f0f0;
   padding: 0px;
   list-style-type: none;
@@ -2224,7 +2222,7 @@ div.warehouse-container>div:first-of-type {
 }
 
 .loading>svg {
-  animation: loading 100ms ease-in-out both;
+  animation: loading 350ms ease-in-out both infinite;
 }
 
 @keyframes loading {

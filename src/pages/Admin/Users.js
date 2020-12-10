@@ -3,11 +3,11 @@ import {
 	MdAdd,
 	MdEdit
 } from 'react-icons/md'
-import Pagination from '../../components/Pagination'
-import Modal from '../../components/Modal'
-import EditUser from '../../components/admin/EditUser'
-import NewUser from '../../components/modal content/NewUser'
-import StatusButton from '../../components/StatusButton';
+import Pagination from '../../components/Misc/Pagination'
+import Modal from '../../components/Misc/Modal'
+import EditUser from '../../components/Admin/EditUser'
+import NewUser from '../../components/Admin/NewUser'
+import StatusButton from '../../components/Misc/StatusButton';
 import { TokenContext } from '../../App'
 const Users = () => {
 	const tokenContext = useContext(TokenContext);

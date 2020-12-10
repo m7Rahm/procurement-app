@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import {
-  IoMdRefreshCircle
-} from 'react-icons/io'
+import Loading from '../Misc/Loading'
 import { TokenContext } from '../../App'
 const Participants = (props) => {
   const tokenContext = useContext(TokenContext);
@@ -102,9 +100,7 @@ const Reviewers = ({ empVersion, number, token }) => {
           }
         </ul>
       </>
-      : <div className="loading">
-        <IoMdRefreshCircle size="50" color="#a4a4a4" />
-      </div>
+      : <Loading />
   )
 }
 export default Participants

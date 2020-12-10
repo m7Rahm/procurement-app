@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import ExpressVendorInfo from '../../components/modal content/ExpressVendorInfo'
-import Modal from '../../components/Modal'
+import Modal from '../../components/Misc/Modal'
 import { TokenContext } from '../../App'
 import {
     MdDetails
 } from 'react-icons/md'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
-import Pagination from '../../components/Pagination'
-import ExpressVendorsSearch from '../../components/ExpressVendorsSearch'
+import Pagination from '../../components/Misc/Pagination'
+import ExpressVendorsSearch from '../../components/Search/ExpressVendorsSearch'
 const ExpressVendors = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0];

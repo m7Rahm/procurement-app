@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
-import SideBar from '../../components/SideBar'
-import VisaContent from '../../components/VisaContent'
+import SideBar from '../../components/Common/SideBar'
+import VisaContent from '../../components/Orders/Visas/VisaContent'
 const handleCardClick = (isReadRef, props, stateRef, token) => {
   if (isReadRef.current.style.display === 'block') {
     const data = {

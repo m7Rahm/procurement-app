@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
-import SideBar from '../../components/SideBar'
-import ProcurementOrderContent from '../../components/ProcurementOrderContent'
+import SideBar from '../../components/Common/SideBar'
+import ProcurementOrderContent from '../../components/PriceOffers/ProcurementOrderContent'
 import { TokenContext } from '../../App'
 const onMountFunction = (setVisas, _, token) => {
     const data = {

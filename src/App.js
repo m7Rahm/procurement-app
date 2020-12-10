@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import Login from './pages/Login'
-import PrivateRoute from './components/PrivateRoute'
+import PrivateRoute from './components/Misc/PrivateRoute'
 import SelectModule from './pages/SelectModule'
 import './App.css'
 

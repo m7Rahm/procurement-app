@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import EditOrderTableRow from './EditOrderTableRow'
-import VisaForwardPerson from '../VisaForwardPerson'
+import VisaForwardPerson from '../Misc/VisaForwardPerson'
 import {
     IoIosAdd
 } from 'react-icons/io'

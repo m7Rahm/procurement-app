@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import SideBar from '../../components/SideBar'
+import SideBar from '../../components/Common/SideBar'
 import PriceOffer from '../../components/PriceOffers/PriceOffer'
 import { TokenContext } from '../../App';
 const handleCardClick = (_, props, stateRef, token) => {

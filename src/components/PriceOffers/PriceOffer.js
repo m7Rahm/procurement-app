@@ -3,10 +3,10 @@ import {
     AiOutlinePicture
 } from 'react-icons/ai'
 import { MdClose, MdDone } from 'react-icons/md'
-import Modal from '../Modal'
-import { OrderContent } from '../PotentialVendorRow'
+import Modal from '../Misc/Modal'
+import { OrderContent } from './PotentialVendorRow'
 import { VendorInfo } from '../modal content/PotentialVendorsState'
-import ForwardDocLayout from '../ForwardDocLayout'
+import ForwardDocLayout from '../Misc/ForwardDocLayout'
 import OperationResult from '../Misc/OperationResult'
 const PriceOffer = (props) => {
     const { current, token, tranid } = props;

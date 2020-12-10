@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect, useRef, useContext, useState } from 'react'
-import NewOrderTableBody from '../NewOrderTableBody'
-import NewOrderHeader from '../NewOrderHeader'
+import NewOrderTableBody from '../Orders/NewOrder/NewOrderTableBody'
+import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
 import { newOrderInitial } from '../../data/data.js'
 import { TokenContext } from '../../App'
 import OperationResult from '../../components/Misc/OperationResult'

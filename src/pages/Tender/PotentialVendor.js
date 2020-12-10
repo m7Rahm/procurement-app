@@ -2,8 +2,8 @@ import React, { useState, Suspense, useEffect } from 'react'
 import {
     IoIosAdd
 } from 'react-icons/io'
-import PontentialVendorRow from '../../components/PotentialVendorRow'
-import ForwardDocLayout from '../../components/ForwardDocLayout'
+import PontentialVendorRow from '../../components/PriceOffers/PotentialVendorRow'
+import ForwardDocLayout from '../../components/Misc/ForwardDocLayout'
 import OfferPictures from '../../components/modal content/OfferPictures'
 const vendorDataInit = {
     key: Date.now(),

@@ -4,13 +4,14 @@ import {
 } from 'react-router-dom';
 import { TokenContext } from '../App';
 import {
-	IoMdMenu,
-	IoMdRefreshCircle
+	IoMdMenu
 } from 'react-icons/io';
+
 import { modules } from '../data/data';
 import '../App.css';
 import logo from '../logo.svg';
-import LeftSidePane from '../components/LeftSidePane'
+import LeftSidePane from '../components/Common/LeftSidePane'
+import Loading from '../components/Misc/Loading'
 const Budget = lazy(() => import('./Budget'))
 const Orders = lazy(() => import('./Orders'))
 const Tender = lazy(() => import('./Tender'))
@@ -116,11 +117,7 @@ const SelectModule = () => {
 			: 'block'
 	}
 	return (
-		<Suspense fallback={
-			<div className="loading">
-				<IoMdRefreshCircle size="50" color="#a4a4a4" />
-			</div>
-		}>
+		<Suspense fallback={<Loading/>}>
 			<Switch>
 				<Route exact path="/">
 					<div className="splash-screen">

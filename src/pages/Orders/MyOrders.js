@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useContext } from 'react';
-import Table from '../../components/Table'
-import Search from '../../components/Search'
-import NewOrderButton from '../../components/NewOrderButton';
-import Pagination from '../../components/Pagination';
+import Table from '../../components/Orders/MyOrders/Table'
+import Search from '../../components/Search/Search'
+import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
+import Pagination from '../../components/Misc/Pagination';
 import { UserDataContext } from '../SelectModule'
 import { TokenContext } from '../../App'
 const MyOrders = (props) => {

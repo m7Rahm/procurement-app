@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Modal from '../Modal'
+import Modal from '../Misc/Modal'
 import { Link } from 'react-router-dom'
 import {
     IoMdInformationCircleOutline
