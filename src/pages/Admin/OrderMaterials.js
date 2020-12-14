@@ -27,7 +27,7 @@ const TableRow = ({ index, material, subCategoriesRef, categories, departments, 
     }
     const handleUpdate = () => {
         const data = JSON.stringify(materialData);
-        fetch('http://172.16.3.101:54321/api/update-material', {
+        fetch('http://172.16.3.101:8000/api/update-material', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -120,7 +120,7 @@ const TableRow = ({ index, material, subCategoriesRef, categories, departments, 
 }
 const OrderMaterials = () => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [categories, setCategories] = useState([]);
     const [departments, setDepartments] = useState([]);
     const [units, setUnits] = useState([]);
@@ -151,7 +151,7 @@ const OrderMaterials = () => {
             cluster: unitsRef.current.value,
             procurement: procurementidRef.current.value
         };
-        fetch('http://172.16.3.101:54321/api/add-new-cat', {
+        fetch('http://172.16.3.101:8000/api/add-new-cat', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -171,7 +171,7 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/cluster-names', {
+        fetch('http://172.16.3.101:8000/api/cluster-names', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -181,7 +181,7 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }, [token])
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://172.16.3.101:8000/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -192,7 +192,7 @@ const OrderMaterials = () => {
     }, [token]);
     useEffect(() => {
         const data = { categoryid: 34 }
-        fetch('http://172.16.3.101:54321/api/get-models', {
+        fetch('http://172.16.3.101:8000/api/get-models', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -206,7 +206,7 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }, [token])
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/material-categories', {
+        fetch('http://172.16.3.101:8000/api/material-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -238,7 +238,7 @@ const OrderMaterials = () => {
         const product_title = categoryNameRef.current.value;
         const parent_id = parentCategoryRef.current.value;
         const data = { title: product_title, parent_id: parent_id, product_id: null }
-        fetch('http://172.16.3.101:54321/api/add-new-cat', {
+        fetch('http://172.16.3.101:8000/api/add-new-cat', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

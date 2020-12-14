@@ -10,7 +10,7 @@ const onMountFunction = (setVisas, _, token) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/warehouse-offers', {
+    fetch('http://172.16.3.101:8000/api/warehouse-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const handleCardClick = (_, props, stateRef) => {
             ordNumb: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/warehouse-offer-content`, {
+        fetch(`http://172.16.3.101:8000/api/warehouse-offer-content`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -28,7 +28,7 @@ const Table = (props) => {
     : <FaSortUp onClick={() => setNumberFilter(_ => !_)} style={{ float: 'right', marginRight: '10px' }} />
   return (
     <ul className='table'>
-      <li key={-1}>
+      <li>
         <div style={{ width: '30px' }}> #</div>
         <div style={{ minWidth: '80px' }}> Status</div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left', paddingRight: '10px' }}> Tarix {createDateFilterIcon}</div>

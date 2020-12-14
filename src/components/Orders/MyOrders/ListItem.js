@@ -17,15 +17,13 @@ import ActionsContainer from './ActionsContainer'
 import EditOrderRequest from '../../modal content/EditOrderRequest'
 import { TokenContext } from '../../../App'
 import Loading from '../../Misc/Loading'
-import { UserDataContext } from '../../../pages/SelectModule'
 const ParticipantsModal = lazy(() => import('../../modal content/Participants'))
 const StatusModal = lazy(() => import('../../modal content/Status'))
 const Modal = lazy(() => import('../../Misc/Modal'))
 const ListItem = (props) => {
-  const userDataContext = useContext(UserDataContext);
-  const userData = userDataContext[0];
   const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0];
+  const token = tokenContext[0].token;
+  const userData = tokenContext[0].userData;
   const order = props.order;
   const { status, participants } = order
   const date = order.create_date_time;
@@ -46,9 +44,8 @@ const ListItem = (props) => {
   }
   const onInfoClick = (number) => {
     const onSendClick = (data) => {
-      console.log(data)
       const reqData = JSON.stringify(data);
-      fetch('http://172.16.3.101:54321/api/new-order', {
+      fetch('http://172.16.3.101:8000/api/new-order', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + token,
@@ -59,12 +56,11 @@ const ListItem = (props) => {
       })
         .then(resp => {
           if(resp.status === 200)
-              resp.json()
+            return resp.json()
           else
               throw new Error('Internal Server Error');
       })
         .then(respJ => {
-          console.log(respJ)
           if (respJ[0].result === 'success') {
             setOrders(prev => {
               const newList = prev.orders.filter(order => order.ord_numb !== number);

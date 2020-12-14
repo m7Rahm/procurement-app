@@ -27,7 +27,7 @@ const PotentialVendor = (props) => {
         setPotentialVendors(prev => [...prev, newVendor])
     }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/get-orders-for-potven', {
+        fetch('http://172.16.3.101:8000/api/get-orders-for-potven', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -55,7 +55,7 @@ const PotentialVendor = (props) => {
         formData.append('filesMetaData', JSON.stringify(filesMetaData));
         for (let i = 0; i < files.length; i++)
             formData.append('files', files[i]);
-        fetch('http://172.16.3.101:54321/api/create-price-offer', {
+        fetch('http://172.16.3.101:8000/api/create-price-offer', {
             method: 'POST',
             body: formData,
             headers: {

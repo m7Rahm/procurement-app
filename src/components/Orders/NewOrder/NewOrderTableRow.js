@@ -9,7 +9,7 @@ const NewOrderTableRow = (props) => {
   const tokenContext = useContext(TokenContext);
   const rowRef = useRef(null);
   const { orderType, structure, material } = props;
-  const token = tokenContext[0];
+  const token = tokenContext[0].token;
   const emptyRow = {
     category: '',
     subCategory: '',
@@ -77,7 +77,7 @@ const NewOrderTableRow = (props) => {
   useEffect(() => {
     // subCategory
     const data = JSON.stringify({ categoryid: subCategory, structureid: structure, orderType: orderType });
-    fetch('http://172.16.3.101:54321/api/strucutre-budget-info', {
+    fetch('http://172.16.3.101:8000/api/strucutre-budget-info', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -150,7 +150,7 @@ const NewOrderTableRow = (props) => {
   }
   const searchByCode = (e) => {
     const data = { product_id: e.target.value }
-    fetch('http://172.16.3.101:54321/api/get-by-product-code', {
+    fetch('http://172.16.3.101:8000/api/get-by-product-code', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -188,7 +188,7 @@ const NewOrderTableRow = (props) => {
     const name = e.target.name;
     const value = e.target.value;
     const data = { categoryid: value, structureid: structure, orderType: orderType };
-    fetch('http://172.16.3.101:54321/api/strucutre-budget-info', {
+    fetch('http://172.16.3.101:8000/api/strucutre-budget-info', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,

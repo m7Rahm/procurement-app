@@ -14,7 +14,7 @@ const ProcurementOrderContent = (props) => {
         contractNumbersRef.current = order.reduce((sum, current) => ({ ...sum, [current.id]: "" }), {});
     }, [order])
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/get-express-vendors', {
+        fetch('http://172.16.3.101:8000/api/get-express-vendors', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -107,7 +107,7 @@ const ProcurementOrderListItem = (props) => {
     const inputContractNumRef = useRef(null)
     useEffect(() => {
         if (vendor_id.toString() !== -1) {
-            fetch(`http://172.16.3.101:54321/api/get-vendor-contracts/${vendor_id}`, {
+            fetch(`http://172.16.3.101:8000/api/get-vendor-contracts/${vendor_id}`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }

@@ -18,7 +18,7 @@ const StructureBudget = (props) => {
     const {structureid, filialid } = params;
     const { path } = useRouteMatch()
     const structureName = state ? state.structure.name : undefined
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const handleBackNavigation = () => {
         history.goBack(state)
     }
@@ -33,7 +33,7 @@ const StructureBudget = (props) => {
                 filialid,
                 glCategoryid: 0
             };
-            fetch(`http://172.16.3.101:54321/api/structure-budget-per-gl-category`, {
+            fetch(`http://172.16.3.101:8000/api/structure-budget-per-gl-category`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,

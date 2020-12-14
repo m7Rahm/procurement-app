@@ -18,7 +18,7 @@ const PotentialVendorsState = (props) => {
         const data = { ordNumb: ordNumb };
         let isSubscribed = true;
         if (isSubscribed) {
-            fetch('http://172.16.3.101:54321/api/get-potential-vendors-gen', {
+            fetch('http://172.16.3.101:8000/api/get-potential-vendors-gen', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -87,7 +87,7 @@ const PotentialVendorVersion = (props) => {
                 ordNumb: ordNumb,
                 version: version
             })
-            fetch('http://172.16.3.101:54321/api/get-price-offer-content', {
+            fetch('http://172.16.3.101:8000/api/get-price-offer-content', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -179,7 +179,7 @@ export const VendorInfo = (props) => {
             version: version,
             vendorid: vendorid
         })
-        fetch('http://172.16.3.101:54321/api/get-potential-vendor-info', {
+        fetch('http://172.16.3.101:8000/api/get-potential-vendor-info', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -197,11 +197,11 @@ export const VendorInfo = (props) => {
                 {
                     vendorData.files.map(file =>
                         <div key={file.id}>
-                            <a rel="noopener noreferrer" target="_blank" href={`http://172.16.3.101:54321/original/${file.name}`}>
+                            <a rel="noopener noreferrer" target="_blank" href={`http://172.16.3.101:8000/original/${file.name}`}>
                                 {
                                     file.ext === 'pdf'
                                     ? <AiOutlineFilePdf size="40" title={file.name}/>
-                                    : <img src={`http://172.16.3.101:54321/thumbs/${file.name}`} alt={`${file.name}`} />
+                                    : <img src={`http://172.16.3.101:8000/thumbs/${file.name}`} alt={`${file.name}`} />
                                 }
                             </a>
                         </div>

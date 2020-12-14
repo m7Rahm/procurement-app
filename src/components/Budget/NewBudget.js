@@ -28,7 +28,7 @@ const NewBudget = (props) => {
     const token = props.token;
 
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/material-categories', {
+        fetch('http://172.16.3.101:8000/api/material-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -60,7 +60,7 @@ const NewBudget = (props) => {
             subGlCategoryid: subGlCategoryidRef.current.value,
             subCategoryid: subCategoryidRef.current.value
         }
-        fetch('http://172.16.3.101:54321/api/insert-new-budget', {
+        fetch('http://172.16.3.101:8000/api/insert-new-budget', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

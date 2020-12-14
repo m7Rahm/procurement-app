@@ -10,14 +10,14 @@ const ForwardDocLayout = (props) => {
     const empListRef = useRef(null);
     const textareaRef = useRef(null);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/emplist', {
+        fetch('http://172.16.3.101:8000/api/emplist', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
         })
             .then(resp => {
                 if(resp.status === 200)
-                    resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
@@ -28,14 +28,14 @@ const ForwardDocLayout = (props) => {
             .catch(err => console.log(err));
     }, [token]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://172.16.3.101:8000/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
         })
             .then(resp => {
                 if(resp.status === 200)
-                    resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })

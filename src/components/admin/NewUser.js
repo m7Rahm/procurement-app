@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { TokenContext } from '../../App'
 const NewUser = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [userData, setUserData] = useState({
         full_name: '',
         passport_data: '',
@@ -18,7 +18,7 @@ const NewUser = (props) => {
     const [departments, setDepartments] = useState([]);
     const [roles, setRoles] = useState([]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://172.16.3.101:8000/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -33,7 +33,7 @@ const NewUser = (props) => {
             .catch(ex => console.log(ex));
     }, [token]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/roles', {
+        fetch('http://172.16.3.101:8000/api/roles', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -54,15 +54,15 @@ const NewUser = (props) => {
     }
     const availableMenus = roles.length === 0 ? [] : roles.find(role => role.id.toString() === userData.role_id.toString()).modules.split(',');
     const addNewUser = () => {
-        const data = userData;
-        fetch('http://172.16.3.101:54321/api/add-new-user', {
+        const data = JSON.stringify({ ...userData, fin: userData.vesiqe_fin_kod });
+        fetch('http://172.16.3.101:8000/api/add-new-user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length,
+                'Content-Length': data.length,
                 'Authorization': 'Bearer ' + token
             },
-            body: JSON.stringify(data)
+            body: data
         })
             .then(resp => {
                 if (resp.status === 200)

@@ -4,7 +4,7 @@ import PriceOffer from '../../components/PriceOffers/PriceOffer'
 import { TokenContext } from '../../App';
 const handleCardClick = (_, props, stateRef, token) => {
     if (props.activeRef.current !== stateRef.current) {
-        fetch(`http://172.16.3.101:54321/api/express-get-price-offer-content/${props.id}`, {
+        fetch(`http://172.16.3.101:8000/api/express-get-price-offer-content/${props.id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -28,7 +28,7 @@ const onMount = (setVisas, _, token) => {
         from: 0,
         // until: 20
     });
-    fetch('http://172.16.3.101:54321/api/express-get-price-offers', {
+    fetch('http://172.16.3.101:8000/api/express-get-price-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const onMount = (setVisas, _, token) => {
 }
 const updateList = (data, token, setVisas, notifIcon) => {
     const reqData = JSON.stringify(data);
-    fetch('http://172.16.3.101:54321/api/express-get-price-offers', {
+    fetch('http://172.16.3.101:8000/api/express-get-price-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const updateList = (data, token, setVisas, notifIcon) => {
 const PriceOffers = (props) => {
     const [active, setActive] = useState({ content: [], tranid: null });
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0]
+    const token = tokenContext[0].token
     return (
         <div style={{ maxHeight: '100vh', display: 'flex', overflowY: 'hidden' }}>
             <SideBar

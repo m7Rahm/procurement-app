@@ -11,7 +11,7 @@ import { TokenContext } from '../../App'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
 const ExpressVendorInfo = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const attachmentsRef = useRef(null);
     const attachmentsRefInit = useRef(null);
     const { potentialVendor, vendorid, setExpressVendors } = props;
@@ -65,7 +65,7 @@ const ExpressVendorInfo = (props) => {
             for (let i = 0; i < newFiles.length; i++)
                 formData.append('files', newFiles[i])
         }
-        fetch(`http://172.16.3.101:54321/api${url}`, {
+        fetch(`http://172.16.3.101:8000/api${url}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -87,7 +87,7 @@ const ExpressVendorInfo = (props) => {
                         risk_zone: 0,
                         is_closed: 0
                     });
-                    fetch('http://172.16.3.101:54321/api/get-express-vendors', {
+                    fetch('http://172.16.3.101:8000/api/get-express-vendors', {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Bearer ' + token,
@@ -109,7 +109,7 @@ const ExpressVendorInfo = (props) => {
     }
     useEffect(() => {
         if (vendorid) {
-            fetch(`http://172.16.3.101:54321/api/get-express-vendor/${vendorid}`, {
+            fetch(`http://172.16.3.101:8000/api/get-express-vendor/${vendorid}`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }

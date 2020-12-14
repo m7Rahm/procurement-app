@@ -2,7 +2,7 @@
   text-align: center;
   position: relative;
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 }
 
 * {
@@ -151,10 +151,10 @@ nav>ul>li {
 }
 
 .side-bar {
+  top: -56px;
   padding-top: 56px;
   overflow: hidden;
-  width: 350px;
-  min-width: 350px;
+  width: 370px;
   height: 100vh;
   box-shadow: 0px 1px 10px 2px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -165,6 +165,7 @@ nav>ul>li {
 
 .side-bar>ul>li {
   height: 80px;
+  cursor: pointer;
   outline: white 1px solid;
 }
 
@@ -300,8 +301,6 @@ div.advanced-search-bar {
   right: 0px;
   left: 0px;
   top: 50px;
-  /* display: none; */
-  /* max-height: 0px; */
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 5px;
   font-family: sans-serif;
@@ -312,7 +311,6 @@ div.advanced-search-bar>div:nth-of-type(4) {
   float: right;
   margin: 20px 30px;
   height: 32px;
-  /* margin: 20px 0px; */
 }
 
 div.advanced-search-bar>div:nth-of-type(4)>select {
@@ -338,7 +336,10 @@ div.advanced-search-bar>div:nth-of-type(2) {
   height: 32px;
   margin: 20px 30px;
 }
-
+div.advanced-search-bar>div:nth-of-type(3) select {
+  display: block;
+  height: 32px;
+}
 div.advanced-search-bar>div>span {
   position: relative;
   display: block;
@@ -980,7 +981,6 @@ div.update-role>div:nth-of-type(2)>div {
 .modal-content {
   border: 1px solid #1f1f1f;
   border-top-width: 0px;
-  /* box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.2); */
   width: 60%;
   top: 0;
   left: 0;
@@ -991,7 +991,7 @@ div.update-role>div:nth-of-type(2)>div {
   position: absolute;
   background-color: #f5f5f5;
   padding: 0px;
-  z-index: 2;
+  z-index: 3;
   animation: modal-show 0.5s ease-in-out both;
 }
 
@@ -1000,20 +1000,18 @@ div.update-role>div:nth-of-type(2)>div {
     transform: none;
   }
   to {
-    transform: translate3d(0px, 50px, 0);
+    transform: translate3d(0px, 60px, 0);
   }
 }
 
 .modal-content-new-order {
-  /* max-height: 500px; */
   width: 100%;
   padding: 15px 0px;
   background-color: white;
   display: flex;
   flex-flow: wrap column;
 }
-.modal-content-new-order>div:first-of-type{
-  /* align-self: flex-end; */
+.modal-content-new-order>div:not(.operation-result){
   margin: 20px;
 }
 .modal-content-new-order>div:first-of-type>select{
@@ -1635,7 +1633,7 @@ div.login-container {
 }
 
 div.login {
-  box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 0px 10px 3px rgba(68, 42, 42, 0.05);
   border-radius: 5px;
   max-width: 400px;
   background-color: white;
@@ -2171,6 +2169,8 @@ div.warehouse-container>div:first-of-type {
   background: transparent;
   height: 100vh;
   padding-top: 56px;
+  position: relative;
+  top: -56px;
   text-align: center;
   min-width: 906px;
   overflow: auto;

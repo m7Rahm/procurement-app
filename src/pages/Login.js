@@ -5,6 +5,8 @@ import {
 import {
     IoIosCloseCircle
 } from 'react-icons/io'
+import jwt from 'jsonwebtoken'
+import { modules } from '../data/data'
 const Login = (props) => {
     const [userCreds, setUserCreds] = useState({ username: '', password: '' });
     const history = useHistory();
@@ -15,14 +17,14 @@ const Login = (props) => {
         if (operationResultDiv.current)
             operationResultDiv.current.addEventListener('animationend', () => {
                 count.current += 1;
-                if (count.current === 2){
+                if (count.current === 2) {
                     count.current = 0;
                     setIsPasswordCorrect(true)
                 }
             }, false)
     }, [isPasswordCorrect])
     const handleLoginCheck = () => {
-        fetch('http://172.16.3.101:54321/api/login', {
+        fetch('http://172.16.3.101:8000/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,8 +38,22 @@ const Login = (props) => {
                     setIsPasswordCorrect(false);
                 else {
                     localStorage.setItem('token', respJ.token);
-                    props.setToken(respJ.token);
-                    history.push('/');
+                    const decoded = jwt.decode(respJ.token);
+                    const id = decoded.data.id;
+                    const userModules = decoded.data.modules.split(',');
+                    const previliges = decoded.data.previliges.split(',');
+                    const userMods = modules.filter(module => userModules.find(userModule => userModule === module.text));
+                    const structureid = decoded.data.structureid;
+                    const fullName = decoded.data.fullName;
+                    const userData = {
+                        modules: userMods, previliges: previliges, userInfo: {
+                            id,
+                            structureid,
+                            fullName
+                        }
+                    }
+                    props.setToken({ token: respJ.token, userData: userData });
+                    history.replace('/');
                 }
             })
             .catch(ex => console.log(ex))

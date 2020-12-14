@@ -43,7 +43,7 @@ const Attachments = (props, attachmentsRef) => {
             <div>
                 {
                     files.map(file => {
-                        const src = typeof(file.val) === 'string' ? `http://172.16.3.101:54321/original/${file.val}` : URL.createObjectURL(file.val);
+                        const src = typeof(file.val) === 'string' ? `http://172.16.3.101:8000/original/${file.val}` : URL.createObjectURL(file.val);
                         return (
                             <div style={{ position: 'relative', display: 'inline-block' }} key={file.key} >
                                 <a

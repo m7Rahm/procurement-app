@@ -9,7 +9,7 @@ const handleCardClick = (isReadRef, props, stateRef) => {
       visaCards: [[props.id, 0, 1, props.isPinned, props.number, props.empVersion]],
       update: 0
     }
-    fetch(`http://172.16.3.101:54321/api/change-visa-state`, {
+    fetch(`http://172.16.3.101:8000/api/change-visa-state`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ const handleCardClick = (isReadRef, props, stateRef) => {
       .catch(error => console.log(error));
   }
   if (props.activeRef.current !== stateRef.current) {
-    fetch(`http://172.16.3.101:54321/api/tran-info?tranid=${props.id}`, {
+    fetch(`http://172.16.3.101:8000/api/tran-info?tranid=${props.id}`, {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -48,7 +48,7 @@ const Archived = (props) => {
       from: 0,
       until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-deleted', {
+    fetch('http://172.16.3.101:8000/api/get-deleted', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

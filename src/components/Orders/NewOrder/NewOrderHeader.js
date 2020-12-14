@@ -4,7 +4,7 @@ const NewOrderHeader = (props) => {
     const { state, dispatch, token } = props;
     const [structures, setStructures] = useState([]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://172.16.3.101:8000/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

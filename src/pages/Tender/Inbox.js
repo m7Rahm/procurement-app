@@ -11,7 +11,7 @@ const onMountFunction = (setVisas, _, token) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-ready-orders', {
+    fetch('http://172.16.3.101:8000/api/get-ready-orders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ const handleCardClick = (_, props, stateRef) => {
             orderid: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/ready-order-content`, {
+        fetch(`http://172.16.3.101:8000/api/ready-order-content`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const handleCardClick = (_, props, stateRef) => {
     }
 }
 const updateList = (data, token, setVisas, notifIcon) => {
-    fetch('http://172.16.3.101:54321/api/get-ready-orders', {
+    fetch('http://172.16.3.101:8000/api/get-ready-orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ const updateList = (data, token, setVisas, notifIcon) => {
 const Inbox = (props) => {
     const [active, setActive] = useState(null);
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
             <SideBar

@@ -10,7 +10,7 @@ const onMountFunction = (setVisas, _, props) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-drafts', {
+    fetch('http://172.16.3.101:8000/api/get-drafts', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ const handleCardClick = (_, props, stateRef) => {
             draftid: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/draft`, {
+        fetch(`http://172.16.3.101:8000/api/draft`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

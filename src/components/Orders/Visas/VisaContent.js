@@ -1,13 +1,39 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import OrderContentProtected from './OrderContentProtected'
 import Participants from '../../modal content/Participants'
 import VisaContentFooter from './VisaContentFooter'
-
+import { TokenContext } from '../../../App'
 import {
     FaAngleDown,
 } from 'react-icons/fa'
+import { useLocation } from 'react-router-dom'
 
 const VisaContent = (props) => {
+    const location = useLocation();
+    const { tranid } = props;
+    const tokenContext = useContext(TokenContext);
+    const { sendNotification } = props;
+    const [visa, setVisa] = useState(undefined);
+    const token = tokenContext[0].token;
+    const canProceed = useRef({});
+    useEffect(() => {
+        const stateTranId = location.state ? location.state.tranid : undefined;
+        const id = tranid ? tranid : stateTranId;
+        if (id)
+            fetch(`http://172.16.3.101:8000/api/tran-info?tranid=${id}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    if (respJ.length !== 0) {
+                        canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
+                        setVisa(() => respJ);
+                    }
+                })
+                .catch(error => console.log(error));
+    }, [tranid, token, location])
     const participantsRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
     const handleParticipantsTransition = () => {
@@ -20,42 +46,40 @@ const VisaContent = (props) => {
     }
     return (
         <div className="visa-content-container">
-            <div>
-                {
-                    props.current
-                        ? <>
-                            <OrderContentProtected
-                                sendNotification={props.sendNotification}
-                                footerComponent={VisaContentFooter}
-                                current={props.current}
-                            />
-                            <div className="toggle-participants" onClick={handleParticipantsTransition}>
-                                Tarixçəni göstər
-                            <FaAngleDown size="36" color="royalblue" />
+            {
+                visa ?
+                    <div>
+                        <OrderContentProtected
+                            sendNotification={sendNotification}
+                            footerComponent={VisaContentFooter}
+                            setVisa={setVisa}
+                            canProceed={canProceed}
+                            current={visa}
+                        />
+                        <div className="toggle-participants" onClick={handleParticipantsTransition}>
+                            Tarixçəni göstər
+                        <FaAngleDown size="36" color="royalblue" />
+                        </div>
+                        {
+                            participantsVisiblity &&
+                            <div ref={participantsRef} className="visa-content-participants-show">
+                                <Participants
+                                    empVersion={visa[0].emp_version_id}
+                                    number={visa[0].ord_numb}
+                                />
                             </div>
-                            {
-                                participantsVisiblity &&
-                                <div ref={participantsRef} className="visa-content-participants-show">
-                                    <Participants
-                                        empVersion={props.current[0].emp_version_id}
-                                        number={props.current[0].ord_numb}
-                                    />
-                                </div>
-                            }
-                        </>
-                        : <>
-                            <div style={{ marginTop: '100px' }}>
-                                <img
-                                    src={require('../../../Konvert.svg')}
-                                    alt="blah"
-                                    height="70"
-                                    style={{ marginBottom: '20px' }} />
-                                <br />
-                                <span style={{ color: 'gray', fontSize: 20 }}>Baxmaq üçün sənədi seçin</span>
-                            </div>
-                        </>
-                }
-            </div>
+                        }
+                    </div>
+                    : <div style={{ marginTop: '100px' }}>
+                        <img
+                            src={require('../../../Konvert.svg')}
+                            alt="blah"
+                            height="70"
+                            style={{ marginBottom: '20px' }} />
+                        <br />
+                        <span style={{ color: 'gray', fontSize: 20 }}>Baxmaq üçün sənədi seçin</span>
+                    </div>
+            }
         </div>
     )
 }

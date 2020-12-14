@@ -13,7 +13,7 @@ const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNu
 	const modelListRef = useRef(null);
 	useEffect(() => {
 		const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
-		fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
+		fetch('http://172.16.3.101:8000/api/get-budget-per-order', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,
@@ -47,7 +47,7 @@ const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNu
 	const handleSubCategoryChange = (e) => {
 		const value = e.target.value;
 		const data = JSON.stringify({ categoryid: value, ordNumb, empVersion: version })
-		fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
+		fetch('http://172.16.3.101:8000/api/get-budget-per-order', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,

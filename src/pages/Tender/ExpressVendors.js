@@ -11,7 +11,7 @@ import Pagination from '../../components/Misc/Pagination'
 import ExpressVendorsSearch from '../../components/Search/ExpressVendorsSearch'
 const ExpressVendors = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const location = useLocation();
     const activePageRef = useRef(0);
     const searchDataRef = useRef({
@@ -38,7 +38,7 @@ const ExpressVendors = (props) => {
             risk_zone: 0,
             is_closed: 0
         });
-        fetch('http://172.16.3.101:54321/api/get-express-vendors', {
+        fetch('http://172.16.3.101:8000/api/get-express-vendors', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -79,7 +79,7 @@ const ExpressVendors = (props) => {
             is_closed: searchDataRef.current.is_closed.value,
             from: from
         });
-        fetch('http://172.16.3.101:54321/api/get-express-vendors', {
+        fetch('http://172.16.3.101:8000/api/get-express-vendors', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

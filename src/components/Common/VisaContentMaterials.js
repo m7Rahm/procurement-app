@@ -1,5 +1,4 @@
 import React, { useContext, useState, useRef } from 'react'
-import { UserDataContext } from '../../pages/SelectModule'
 import { TokenContext } from '../../App'
 import {
 	FaEdit,
@@ -8,13 +7,13 @@ import {
 } from 'react-icons/fa'
 import OperationResult from '../Misc/OperationResult'
 const VisaContentMaterials = (props) => {
-	const { forwardType, canProceed } = props;
-	const userDataContext = useContext(UserDataContext);
-	const userData = userDataContext[0].userInfo;
+	const { forwardType, canProceed, orderContent } = props;
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0];
+	const token = tokenContext[0].token;
+	const userData = tokenContext[0].userData;
+
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-	const { emp_version_id, order_type } = props.orderContent[0];
+	const { emp_version_id, order_type } = orderContent[0];
 	return (
 		<>
 			{
@@ -37,7 +36,7 @@ const VisaContentMaterials = (props) => {
 					<div style={{ width: '50px', flex: 'none' }}></div>
 				</li>
 				{
-					props.orderContent.map((material, index) =>
+					orderContent.map((material, index) =>
 						<TableRow
 							index={index}
 							setOperationResult={setOperationResult}
@@ -59,9 +58,19 @@ const VisaContentMaterials = (props) => {
 export default React.memo(VisaContentMaterials)
 
 const TableRow = (props) => {
-	const { canProceed, token, setOperationResult, index, forwardType } = props;
-	const { amount, material_comment, order_material_id, material_name, total, department_id, order_type, title, result } = props.material;
-	const structureid = props.userData.structureid;
+	const { canProceed, token, setOperationResult, index, forwardType, userData } = props;
+	const {
+		amount,
+		material_comment,
+		order_material_id,
+		material_name,
+		total,
+		department_id,
+		order_type,
+		title,
+		result
+	} = props.material;
+	const structureid = userData.structureid;
 	const [disabled, setDisabled] = useState(true);
 	const servicePriceRef = useRef(null);
 	const handleEditClick = () => {
@@ -75,7 +84,7 @@ const TableRow = (props) => {
 			materialid: order_material_id,
 			price: servicePriceRef.current.value
 		})
-		fetch('http://172.16.3.101:54321/api/update-service-price', {
+		fetch('http://172.16.3.101:8000/api/update-service-price', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,

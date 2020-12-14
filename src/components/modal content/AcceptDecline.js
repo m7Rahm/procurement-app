@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 const AcceptDecline = (props) => {
-    const { tranid, backgroundColor, action, token, setOperationResult } = props;
+    const { tranid, backgroundColor, action, token, setOperationResult, handleModalClose } = props;
     const commentRef = useRef(null);
     const placeholder = action
         ? "Əlavə qeydlərinizi daxil edin.."
@@ -11,7 +11,7 @@ const AcceptDecline = (props) => {
                 action: action,
                 comment: commentRef.current.value,
             })
-            fetch(`http://172.16.3.101:54321/api/accept-decline/${tranid}`,
+            fetch(`http://172.16.3.101:8000/api/accept-decline/${tranid}`,
                 {
                     method: 'POST',
                     headers: {
@@ -25,7 +25,7 @@ const AcceptDecline = (props) => {
                 .then(respJ => {
                     console.log(respJ)
                     if (respJ[0].operation_result === 'success')
-                        props.handleModalClose([respJ[0].head_id], respJ[0])
+                        handleModalClose([respJ[0].head_id], respJ[0])
                     else if (respJ[0].error)
                         setOperationResult({ visible: true, desc: respJ[0].error })
                 })

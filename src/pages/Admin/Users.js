@@ -11,7 +11,7 @@ import StatusButton from '../../components/Misc/StatusButton';
 import { TokenContext } from '../../App'
 const Users = () => {
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0]
+	const token = tokenContext[0].token
 	const [users, setUsers] = useState({ count: 0, users: [] });
 	const activePageRef = useRef(0);
 	const [modal, setModal] = useState({ visible: false, content: undefined });
@@ -20,7 +20,7 @@ const Users = () => {
 		setModal({ visible: true, content: newUser})
 	}
 	const updateList = (from) => {
-		fetch(`http://172.16.3.101:54321/api/get-users?from=${from}&next=20`, {
+		fetch(`http://172.16.3.101:8000/api/get-users?from=${from}&next=20`, {
 			headers: {
 				'Authorization': 'Bearer ' + token
 			}
@@ -33,7 +33,7 @@ const Users = () => {
 			.catch(ex => console.log(ex))
 	}
 	useEffect(() => {
-		fetch(`http://172.16.3.101:54321/api/get-users?from=0&next=20`, {
+		fetch(`http://172.16.3.101:8000/api/get-users?from=0&next=20`, {
 			headers: {
 				'Authorization': 'Bearer ' + token
 			}
@@ -46,14 +46,13 @@ const Users = () => {
 			.catch(ex => console.log(ex))
 	}, [token]);
 	const closeModal = () => {
-		console.log('fired')
 		setModal({ visible: false, content: undefined })
 	}
 	const editUserData = (id) => {
 		const editUser = (props) => <EditUser closeModal={closeModal} id={id} {...props}/>
 		setModal({ visible: true, content: editUser})
 	}
-	const updateFunc = (id, state) => fetch(`http://172.16.3.101:54321/api/change-user-status?userid=${id}&status=${state}`, {
+	const updateFunc = (id, state) => fetch(`http://172.16.3.101:8000/api/change-user-status?userid=${id}&status=${state}`, {
 		headers: {
 			'Authorization': 'Bearer ' + token
 		}

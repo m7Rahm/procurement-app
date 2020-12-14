@@ -8,16 +8,16 @@ import {
 import IconsPanel from '../Search/IconsPanel';
 import Pagination from '../Misc/Pagination';
 import { TokenContext } from '../../App'
+
 const SideBar = (props) => {
-	const { updateList } = props
+	const { updateList, setActive, activeRef } = props;
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0];
+	const token = tokenContext[0].token;
 	const notifIcon = useRef(null);
 	const activePageRef = useRef(0)
 	const checkedAmountRef = useRef([]);
 	const iconsPanelRef = useRef(null);
 	const [visas, setVisas] = useState({ count: 0, visas: [] });
-	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
 	const searchParamsRef = useRef({ userName: '', startDate: null, endDate: null, deadline: '', docType: -3 })
 	const mountFunc = useCallback(props.mountFunc, []);
@@ -55,30 +55,16 @@ const SideBar = (props) => {
 			<ul>
 				{
 					visas.visas.map((visa) => {
-						// const isActive = active === visa.id ? true : false
 						return (
 							<VisaCard
 								key={visa.id}
-								id={visa.id}
 								token={token}
-								activeCardRef={props.activeCardRef}
+								setActive={setActive}
 								iconsPanelRef={iconsPanelRef}
 								checkedAmount={checkedAmountRef}
 								setIconsVisible={setIconsVisible}
-								setActiveVisa={props.setActive}
 								activeRef={activeRef}
-								number={visa.ord_numb}
-								isOpened={visa.is_read}
-								handleCardClick={props.handleCardClick}
-								from={visa.sender_full_name}
-								empVersion={visa.emp_version_id}
-								// senderid={visa.sender_id}
-								isPinned={visa.is_pinned}
-								category={visa.assignment}
-								deadline={visa.deadline}
-								remark={visa.comment}
-								date={visa.date_time}
-								priceOffProcessed={visa.processed}
+								visa={visa}
 							/>
 						)
 					})

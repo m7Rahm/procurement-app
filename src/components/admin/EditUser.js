@@ -22,7 +22,7 @@ const userDataInit = {
 const EditUser = (props) => {
     const [userData, setUserData] = useState(userDataInit);
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [isProtected, setIsProtected] = useState(true);
     const [resetPasswordVisibility, setResetPasswordVisibility] = useState(false);
     const [password, setPassword] = useState('');
@@ -40,7 +40,7 @@ const EditUser = (props) => {
             filialid: userData.filial_id,
             id: props.id
         });
-        fetch('http://172.16.3.101:54321/api/update-user-data', {
+        fetch('http://172.16.3.101:8000/api/update-user-data', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -56,7 +56,7 @@ const EditUser = (props) => {
             })
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/user/${props.id}`, {
+        fetch(`http://172.16.3.101:8000/api/user/${props.id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -88,7 +88,7 @@ const EditUser = (props) => {
                 password: password,
                 id: props.id
             })
-            fetch('http://172.16.3.101:54321/api/reset-password', {
+            fetch('http://172.16.3.101:8000/api/reset-password', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -215,7 +215,7 @@ const Roles = (props) => {
         setUserData(prev => ({ ...prev, role_id: value, modules: availableModules }))
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/roles`, {
+        fetch(`http://172.16.3.101:8000/api/roles`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -263,7 +263,7 @@ const StructureInfo = (props) => {
     // const brahnchesRef = useRef([]);
     // const departmentsRef = useRef([]);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/departments`, {
+        fetch(`http://172.16.3.101:8000/api/departments`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

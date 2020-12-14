@@ -4,7 +4,7 @@ import { FaEdit } from 'react-icons/fa';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 const CardContent = ({ budget, category, period, filialid }) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [subGlBudgets, setSubGlBudgets] = useState([]);
     const handleClick = () => {
 
@@ -18,7 +18,7 @@ const CardContent = ({ budget, category, period, filialid }) => {
             structureid: budget.structure_id,
             glCategoryid: category
         };
-        fetch('http://172.16.3.101:54321/api/structure-budget-per-gl-category', {
+        fetch('http://172.16.3.101:8000/api/structure-budget-per-gl-category', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

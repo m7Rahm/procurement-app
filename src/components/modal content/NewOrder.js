@@ -55,7 +55,7 @@ const initState = () => newOrderInitial
 
 const NewOrderContent = (props) => {
   const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0];
+  const token = tokenContext[0].token;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
   const stateRef = useRef({});
   const closeModal = props.handleModalClose;
@@ -69,7 +69,7 @@ const NewOrderContent = (props) => {
   const current = props.current;
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
   useEffect(() => {
-    fetch('http://172.16.3.101:54321/api/material-categories', {
+    fetch('http://172.16.3.101:8000/api/material-categories', {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -136,7 +136,7 @@ const NewOrderContent = (props) => {
           ordNumb: ''
         });
         //todo: create socket and connect
-        fetch('http://172.16.3.101:54321/api/orders', {
+        fetch('http://172.16.3.101:8000/api/orders', {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -151,7 +151,7 @@ const NewOrderContent = (props) => {
           })
           .catch(err => console.log(err))
       }
-      createApproveNewOrder('http://172.16.3.101:54321/api/new-order', onSuccess)
+      createApproveNewOrder('http://172.16.3.101:8000/api/new-order', onSuccess)
     }
   }
   // console.log('rerender')

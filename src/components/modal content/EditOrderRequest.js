@@ -7,9 +7,9 @@ import {
 import OperationResult from '../Misc/OperationResult'
 import { TokenContext } from '../../App'
 const EditOrderRequest = (props) => {
-    const { version, onSendClick, view } = props;
+    const { version, onSendClick, view, editOrderAndApprove } = props;
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const ordNumb = props.current || props.ordNumb;
     const textareaRef = useRef(null);
     const initialValuesRef = useRef(null);
@@ -21,7 +21,7 @@ const EditOrderRequest = (props) => {
     const [categories, setCategories] = useState({ all: [], main: [] });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/material-categories', {
+        fetch('http://172.16.3.101:8000/api/material-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -35,7 +35,7 @@ const EditOrderRequest = (props) => {
     }, [token]);
     useEffect(() => {
         if (view === 'procurement') {
-            fetch('http://172.16.3.101:54321/api/emplist', {
+            fetch('http://172.16.3.101:8000/api/emplist', {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -48,6 +48,20 @@ const EditOrderRequest = (props) => {
                 .catch(err => console.log(err));
         }
     }, [view, token]);
+    useEffect(() => {
+        fetch(`http://172.16.3.101:8000/api/get-order-req-data?numb=${ordNumb}&vers=${version}`, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                const orderRows = respJ.map(row => ({ ...row, id: Math.random().toString(), models: [], className: '' }));
+                initialValuesRef.current = respJ;
+                setOrderState(orderRows);
+            })
+            .catch(ex => console.log(ex))
+    }, [ordNumb, version, token]);
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         const searchResult = empListRef.current.filter(emp => emp.full_name.toLowerCase().includes(str));
@@ -61,20 +75,6 @@ const EditOrderRequest = (props) => {
         setReceivers(newReceivers);
         setSearchQuery('');
     }
-    useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/get-order-req-data?numb=${ordNumb}&vers=${version}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                const orderRows = respJ.map(row => ({ ...row, id: Math.random().toString(), models: [], className: '' }));
-                initialValuesRef.current = respJ;
-                setOrderState(orderRows);
-            })
-            .catch(ex => console.log(ex))
-    }, [ordNumb, version, token]);
     const handleConfirmClick = () => {
         const action = receivers.length === 0 ? 1 : 0
         const parsedMaterials = orderState.map(material =>
@@ -96,7 +96,7 @@ const EditOrderRequest = (props) => {
         }
         const { canProceed, errorDesc } = checkResult(orderState, initialValuesRef, parsedMaterials)
         if (canProceed)
-            props.editOrderAndApprove(data);
+            editOrderAndApprove(data);
         else
             setOperationResult({ visible: true, desc: errorDesc });
     }
@@ -228,12 +228,6 @@ const EditOrderRequest = (props) => {
                         Göndər
                     </div>
                 }
-                {/* {
-                    view === 'procurement' &&
-                    <div style={{ backgroundColor: '#0F9D58' }} className="send-order" onClick={() => handleConfirmClick(1)}>
-                        Təsdiq et
-                    </div>
-                } */}
             </div>
             
         </div>

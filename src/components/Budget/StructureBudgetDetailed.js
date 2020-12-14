@@ -31,7 +31,7 @@ const StructureBudgetDetailed = (props) => {
         if (searchStateRef.current) {
             const structureid = searchStateRef.current.structureid;
             const data = JSON.stringify(searchStateRef.current)
-            fetch(`http://172.16.3.101:54321/api/structure-budget/${structureid}`, {
+            fetch(`http://172.16.3.101:8000/api/structure-budget/${structureid}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -51,7 +51,7 @@ const StructureBudgetDetailed = (props) => {
     const updateList = (from) => {
         const structureid = searchStateRef.current.structureid;
         const data = JSON.stringify({ ...searchStateRef.current, from })
-        fetch(`http://172.16.3.101:54321/api/structure-budget/${structureid}`, {
+        fetch(`http://172.16.3.101:8000/api/structure-budget/${structureid}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -124,7 +124,7 @@ const TableRow = ({ budget, index, token }) => {
             categoryid: budgetData.category_id,
             quarter: budgetData.quarter
         })
-        fetch(`http://172.16.3.101:54321/api/update-budget/${id}`, {
+        fetch(`http://172.16.3.101:8000/api/update-budget/${id}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

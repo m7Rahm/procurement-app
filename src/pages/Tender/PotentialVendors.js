@@ -3,7 +3,7 @@ import { TokenContext } from '../../App'
 import PotentialVendor from './PotentialVendor'
 const PotentialVendors = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     return (
         <div style={{marginTop: '56px'}}>
             <PotentialVendor

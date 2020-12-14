@@ -29,7 +29,7 @@ const PriceOffer = (props) => {
             priceOfferActs: priceOfferState.map(vendor => [vendor.vendor_id, vendor.review, vendor.action === 1 ? 1 : -1]),
             recs: receivers.map(receiver => [receiver.id])
         });
-        fetch(`http://172.16.3.101:54321/api/accept-decline-potential-vendor/${tranid}`, {
+        fetch(`http://172.16.3.101:8000/api/accept-decline-potential-vendor/${tranid}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -201,7 +201,7 @@ const PotentialVendorOrdNumbers = (props) => {
             version: version,
             vendorid: vendor_id
         })
-        fetch('http://172.16.3.101:54321/api/express-get-ord-nums-per-vendor', {
+        fetch('http://172.16.3.101:8000/api/express-get-ord-nums-per-vendor', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

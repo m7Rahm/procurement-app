@@ -14,7 +14,7 @@ import { TokenContext } from '../../App'
 import NewBudget from '../../components/Budget/NewBudget'
 const Budget = () => {
     const tokenContext = useContext(TokenContext)
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const location = useLocation();
     const categories = useRef([]);
     const [modalState, setModalState] = useState({visibility: false, content: null });
@@ -36,7 +36,7 @@ const Budget = () => {
     const { path } = useRouteMatch();
     const history = useHistory()
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://172.16.3.101:8000/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -44,7 +44,7 @@ const Budget = () => {
             .then(resp => resp.json())
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
-        fetch('http://172.16.3.101:54321/api/gl-categories', {
+        fetch('http://172.16.3.101:8000/api/gl-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -67,7 +67,7 @@ const Budget = () => {
             next: 20
         };
         // console.log(data)
-        fetch('http://172.16.3.101:54321/api/get-budgets', {
+        fetch('http://172.16.3.101:8000/api/get-budgets', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
