@@ -17,10 +17,9 @@ const StructureBudgetDetailed = (props) => {
         (() => {
             if (state) {
                 const structureid = state.structure.id;
-                const glCategoryId = state.glCategoryId;
-                const filialid = state.filialid;
+                const glCategoryId = state.glCategoryid;
                 const period = state.searchState.year + state.searchState.month
-                return ({ period, glCategoryId, from: 0, next: 20, filialid, structureid })
+                return ({ period, glCategoryId, from: 0, next: 20, structureid })
             }
             else
                 return undefined
@@ -74,8 +73,8 @@ const StructureBudgetDetailed = (props) => {
                         <th>#</th>
                         <th>Gl category</th>
                         <th>Sub-Gl category</th>
-                        <th>Category</th>
-                        <th>Sub-Category</th>
+                        <th></th>
+                        <th></th>
                         <th>Budget</th>
                         <th></th>
                     </tr>
@@ -118,11 +117,7 @@ const TableRow = ({ budget, index, token }) => {
     const handleUpdate = (id) => {
         const data = JSON.stringify({
             budget: budgetData.budget,
-            filialid: budgetData.filial_id,
-            active: 1,
-            structureid: budgetData.structure_id,
-            categoryid: budgetData.category_id,
-            quarter: budgetData.quarter
+            active: 1
         })
         fetch(`http://172.16.3.101:54321/api/update-budget/${id}`, {
             method: 'POST',
@@ -148,8 +143,8 @@ const TableRow = ({ budget, index, token }) => {
             <td>{index}</td>
             <td>{budget.gl_category_name}</td>
             <td>{budget.sub_gl_category_name}</td>
-            <td>{budget.category_name}</td>
-            <td>{budget.sub_category_name}</td>
+            <td></td>
+            <td></td>
             <td>
                 <input disabled={disabled} onChange={handleChange} name="budget" value={budgetData.budget} />
             </td>

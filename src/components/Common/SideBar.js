@@ -55,7 +55,6 @@ const SideBar = (props) => {
 			<ul>
 				{
 					visas.visas.map((visa) => {
-						// const isActive = active === visa.id ? true : false
 						return (
 							<VisaCard
 								key={visa.id}
@@ -72,7 +71,6 @@ const SideBar = (props) => {
 								handleCardClick={props.handleCardClick}
 								from={visa.sender_full_name}
 								empVersion={visa.emp_version_id}
-								// senderid={visa.sender_id}
 								isPinned={visa.is_pinned}
 								category={visa.assignment}
 								deadline={visa.deadline}

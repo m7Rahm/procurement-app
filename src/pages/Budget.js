@@ -30,7 +30,7 @@ const Budget = (props) => {
                 <Route exact path={`${path}`}>
                     <BudgetMain />
                 </Route>
-                <Route path={`${path}/:structureid/:filialid`} render={(props) => <StructureBudget {...props} />}>
+                <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
                 </Route>
             </Switch>
         </div>

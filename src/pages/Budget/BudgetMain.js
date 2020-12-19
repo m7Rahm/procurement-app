@@ -17,8 +17,8 @@ const Budget = () => {
     const token = tokenContext[0];
     const location = useLocation();
     const categories = useRef([]);
-    const [modalState, setModalState] = useState({visibility: false, content: null });
-    const [budgets, setBudgets] = useState(location.state ? { count: location.state.count, budgets: location.state.budgets} : { count: 0, budgets: [] });
+    const [modalState, setModalState] = useState({ visibility: false, content: null });
+    const [budgets, setBudgets] = useState(location.state ? { count: location.state.count, budgets: location.state.budgets } : { count: 0, budgets: [] });
     const [budgetData, setBudgetData] = useState(() => {
         const date = new Date();
         const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
@@ -27,7 +27,7 @@ const Budget = () => {
             year: location.state ? location.state.searchState.year : year,
             month: location.state ? location.state.searchState.month : month,
             department: location.state ? location.state.searchState.department : 0,
-            glCategoryId: location.state ? location.state.searchState.glCategoryId: 0
+            glCategoryId: location.state ? location.state.searchState.glCategoryId : 0
         })
     });
     const activePageRef = useRef(0);
@@ -44,6 +44,8 @@ const Budget = () => {
             .then(resp => resp.json())
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
+    }, [token]);
+    useEffect(() => {
         fetch('http://172.16.3.101:54321/api/gl-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -56,8 +58,7 @@ const Budget = () => {
                 setGlCategories(glCategories);
             })
             .catch(ex => console.log(ex))
-    }, [token]);
-    // console.log(budgetData)
+    }, [token])
     const updateList = (page) => {
         const data = {
             period: budgetData.year + budgetData.month,
@@ -90,9 +91,14 @@ const Budget = () => {
         const name = e.target.name;
         setBudgetData(prev => ({ ...prev, [name]: value }))
     }
-    const showExtStructureInfo = (structureid, filialid) => {
+    const showExtStructureInfo = (structureid) => {
         const structure = departments.find(department => department.id === structureid)
-        history.push(`${path}/${structureid}/${filialid}`, { searchState: budgetData, budgets: budgets.budgets, count: budgets.count, structure, filialid })
+        history.push(`${path}/${structureid}`, {
+            searchState: budgetData,
+            budgets: budgets.budgets,
+            count: budgets.count,
+            structure
+        })
     }
     const addNewBudget = () => {
         const newBudget = (props) => <NewBudget categories={categories} departments={departments} token={token} {...props} />
@@ -108,7 +114,7 @@ const Budget = () => {
                     <div className="months">
                         {
                             months.map(month =>
-                                <div key={month.name} style={{backgroundColor: budgetData.month === month.value? '#0495ce' : ''}} onClick={() => handleMonthSelect(month.value)}>
+                                <div key={month.name} style={{ backgroundColor: budgetData.month === month.value ? '#0495ce' : '' }} onClick={() => handleMonthSelect(month.value)}>
                                     {month.name}
                                 </div>
                             )
@@ -151,22 +157,20 @@ const Budget = () => {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Filial</th>
                             <th>Struktur</th>
-                            <th>Büccə</th>
                             <th>Period</th>
+                            <th>Büccə</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             budgets.budgets.map((budget, index) =>
-                                <tr onClick={() => showExtStructureInfo(budget.structure_id, budget.filial_id)} key={index}>
-                                    <td>{index + 1}</td>
-                                    <td>{budget.filial_name}</td>
+                                <tr onClick={() => showExtStructureInfo(budget.structure_id)} key={index}>
+                                    <td style={{ width: '80px' }}>{index + 1}</td>
                                     <td>{budget.structure_name}</td>
-                                    <td>{budget.budget}</td>
                                     <td>{budget.period}</td>
+                                    <td>{budget.budget}</td>
                                     <td></td>
                                 </tr>
                             )
@@ -174,7 +178,6 @@ const Budget = () => {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>

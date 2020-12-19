@@ -1725,9 +1725,9 @@ div.budget-navigation-ribbon{
   margin: 20px 0px;
 }
 div.budget-navigation-ribbon>h1{
-  font-size: 22px;
+  font-size: 38px;
   padding: 3px 0px;
-  text-align: right;
+  text-align: center;
 }
 div.budget-navigation-ribbon>svg{
   vertical-align: middle;
@@ -1888,15 +1888,39 @@ div.budget table.users-table>tbody>tr>td:last-of-type{
 div.budget table.users-table>tbody>tr{
   cursor: pointer;
 }
+
 div.strucutre-budget ul:not(:first-child)>li{
   width: 40%;
   position: relative;
+  margin: 10px;
   border-radius: 5px;
-  min-height: 74px;
-  max-height: 400px;
-  overflow: auto;
-  transition: all 0.2s ease-in;
-  background-color: rgba(10, 165, 226, 0.6);
+  min-height: 150px;
+  /* max-height: 400px; */
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3));
+}
+@keyframes reduce{
+  from{
+    max-height: 400px;
+  }
+  to{
+    max-height: 150px;
+  }
+}
+@keyframes expand{
+  from{
+    max-height: 150px;
+  }
+  to{
+    max-height: 400px;
+  }
+}
+
+ul.sub-gl-category-budget{
+  opacity: 0;
+  animation: scale-up-budget 200ms ease-in-out both, show-up 400ms ease-in-out both;
+}
+ul.sub-gl-category-budget-close{
+  animation: visibility-hide 200ms ease-in-out both, scale-down 200ms 200ms ease-in-out both;
 }
 ul.sub-gl-category-budget>li:hover{
   background-color: #123456;
@@ -1906,7 +1930,22 @@ ul.sub-gl-category-budget>li{
   display: flex;
   border-radius: 5px 0px 0px 5px;
   justify-content: space-between;
-  transition: all 0.4s ease-in-out;
+}
+@keyframes scale-down{
+  from{
+    transform: scaleY(1);
+  }
+  to{
+    transform: scaleY(0);
+  }
+}
+@keyframes scale-up-budget{
+  from{
+    transform: scaleY(0);
+  }
+  to{
+    transform: scaleY(1);
+  }
 }
 ul.sub-gl-category-budget>li>div{
   color: white;
@@ -2065,7 +2104,9 @@ table.users-table>tbody>tr>td:first-of-type {
 table.users-table>tbody>tr>td {
   padding: 3px 1px;
 }
-
+.new-budget>tbody>tr>td{
+  width: 35%;
+}
 div.login label {
   font-size: 18px;
   font-weight: 600;
@@ -2922,12 +2963,13 @@ div.sys-param-modal {
   z-index: 2;
 }
 div.new-budget-modal table select{
-  width: 250px;
+  width: 90%;
 }
 div.sys-param-modal>div>table input,
 div.sys-param-modal>div>table select{
-  min-width: 180px;
+  width: 200px;
   border: none;
+  height: 22px;
 }
 div.sys-param-modal>div>table input:focus,
 div.sys-param-modal>div>table select:focus{
