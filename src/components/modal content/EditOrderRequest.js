@@ -6,6 +6,7 @@ import {
 } from 'react-icons/io'
 import OperationResult from '../Misc/OperationResult'
 import { TokenContext } from '../../App'
+import { IoIosCloseCircle } from 'react-icons/io'
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view } = props;
     const tokenContext = useContext(TokenContext);
@@ -146,6 +147,7 @@ const EditOrderRequest = (props) => {
                 <OperationResult
                     setOperationResult={setOperationResult}
                     operationDesc={operationResult.desc}
+                    icon={IoIosCloseCircle}
                 />
             }
             <ul className="new-order-table">

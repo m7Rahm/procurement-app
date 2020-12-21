@@ -3,8 +3,10 @@ import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
   const modelsListRef = useRef(null);
-  const categories = props.categories;
-  const state = props.state;
+  const glCategories = props.glCategories;
+  const parentGlCategories = glCategories.filter(glCategory => glCategory.dependent_id === null);
+  const subGlCategories = glCategories.filter(glCategory => glCategory.dependent_id !== null)
+  const { state, dispatch } = props;
   const { orderType, materials, structure } = state;
   return (
     <>
@@ -12,19 +14,20 @@ const NewOrderTableBody = (props) => {
         materials.map((material, index) => {
           return (
             <NewOrderTableRow
-              dispatch={props.dispatch}
+              dispatch={dispatch}
               index={index}
               orderType={orderType}
               material={material}
               key={material.id}
               structure={structure}
-              categories={categories}
+              parentGlCategories={parentGlCategories}
+              subGlCategories={subGlCategories}
               modelsListRef={modelsListRef}
             />
           )
         })
       }
-      <NewOrderTableRowAdd state={state} dispatch={props.dispatch} />
+      <NewOrderTableRowAdd dispatch={dispatch} />
     </>
   )
 }

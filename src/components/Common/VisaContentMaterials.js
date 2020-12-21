@@ -7,6 +7,8 @@ import {
 	FaTimes
 } from 'react-icons/fa'
 import OperationResult from '../Misc/OperationResult'
+import { IoIosCloseCircle } from 'react-icons/io'
+
 const VisaContentMaterials = (props) => {
 	const { forwardType, canProceed } = props;
 	const userDataContext = useContext(UserDataContext);
@@ -22,6 +24,7 @@ const VisaContentMaterials = (props) => {
 				<OperationResult
 					setOperationResult={setOperationResult}
 					operationDesc={operationResult.desc}
+					icon={IoIosCloseCircle}
 				/>
 			}
 			<ul className="new-order-table order-table-protex">

@@ -4,33 +4,22 @@ import {
     MdDone,
     MdClose,
 } from 'react-icons/md'
-import {
-    FaPlus
-} from 'react-icons/fa'
+import { FaPlus } from 'react-icons/fa'
+import { AiFillCheckCircle } from 'react-icons/ai'
 import { TokenContext } from '../../App';
+import OperationResult from '../../components/Misc/OperationResult'
 import Pagination from '../../components/Misc/Pagination'
 const OrderMaterials = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0];
     const [departments, setDepartments] = useState([]);
     const [units, setUnits] = useState([]);
-    const unitsRef = useRef(null);
     const glCategoriesRef = useRef([]);
     const [glCategories, setGlCategories] = useState([])
-    const curatoridRef = useRef(null);
-    const procurementidRef = useRef(null);
+
     const activePageRef = useRef(0);
-    const [newCatState, setNewCatState] = useState({
-        title: '',
-        department: 1,
-        procurement: '',
-        approxPrice: '',
-        cluster: '',
-        gl_category_id: '-1',
-        type: 0
-    });
+
     const [tableData, setTableData] = useState({ content: [], count: 0 });
-    const parentSelectReft = useRef(null);
     const refreshContent = (from) => {
         const data = JSON.stringify({
             categoryid: 34,
@@ -51,33 +40,6 @@ const OrderMaterials = () => {
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setTableData({ count: totalCount, content: respJ });
-            })
-            .catch(ex => console.log(ex))
-    }
-    const handleAddNewCategory = () => {
-        const parent_id = parentSelectReft.current.value;
-        const data = {
-            ...newCatState,
-            department: curatoridRef.current.value,
-            parent_id,
-            cluster: unitsRef.current.value,
-            procurement: procurementidRef.current.value
-        };
-        fetch('http://172.16.3.101:54321/api/add-new-cat', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                if (respJ[0].result === 'success') {
-                    const id = respJ[0].row_id;
-                    setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }))
-                }
             })
             .catch(ex => console.log(ex))
     }
@@ -138,15 +100,6 @@ const OrderMaterials = () => {
             })
             .catch(ex => console.log(ex))
     }, [token])
-    const handlePriceChange = (e) => {
-        const value = e.target.value;
-        setNewCatState(prev => ({ ...prev, approxPrice: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approxPrice }))
-    }
-    const handleChange = (e) => {
-        const value = e.target.value;
-        const name = e.target.name;
-        setNewCatState(prev => ({ ...prev, [name]: value }))
-    }
     return (
         <div className="sys-param-modal">
             <div >
@@ -166,69 +119,14 @@ const OrderMaterials = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <input type="text" name="title" value={newCatState.title} onChange={handleChange} />
-                            </td>
-                            <td>
-                                <select onChange={handleChange} name="gl_category_id" value={newCatState.gl_category_id}>
-                                    <option value="-1">-</option>
-                                    {
-                                        glCategories.map(category =>
-                                            <option key={category.id} value={category.id}>{category.name}</option>
-                                        )
-                                    }
-                                </select>
-                            </td>
-                            <td>
-                                <select onChange={handleChange} name="sub_gl_category_id" ref={parentSelectReft}>
-                                    {
-                                        glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(newCatState.gl_category_id))
-                                            .map(subGlCategory =>
-                                                <option key={subGlCategory.id} value={subGlCategory.id}>{subGlCategory.name}</option>
-                                            )
-                                    }
-                                </select>
-                            </td>
-                            <td>
-                                <select onChange={handleChange} name="department" ref={curatoridRef}>
-                                    <option value="-1">-</option>
-                                    {
-                                        departments.map(department =>
-                                            <option key={department.id} value={department.id}>{department.name}</option>
-                                        )
-                                    }
-                                </select>
-                            </td>
-                            <td>
-                                <select name="procurement" ref={procurementidRef}>
-                                    <option value="-1">-</option>
-                                    {
-                                        departments.map(department =>
-                                            <option key={department.id} value={department.id}>{department.name}</option>
-                                        )
-                                    }
-                                </select>
-                            </td>
-                            <td>
-                                <select onChange={handleChange} name="type" value={newCatState.type}>
-                                    <option value="0">Mal-Material</option>
-                                    <option value="1">Xidmət</option>
-                                </select>
-                            </td>
-                            <td><input name="approxPrice" value={newCatState.approxPrice} onChange={handlePriceChange} /></td>
-                            <td>
-                                <select ref={unitsRef}>
-                                    {
-                                        units.map(unit =>
-                                            <option value={unit.id} key={unit.id}>{unit.title}</option>
-                                        )
-                                    }
-                                </select>
-                            </td>
-                            <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
-                        </tr>
+                        <NewMaterial
+                            glCategoriesRef={glCategoriesRef}
+                            glCategories={glCategories}
+                            units={units}
+                            departments={departments}
+                            token={token}
+                            setTableData={setTableData}
+                        />
                         {
                             tableData.content.map((material, index) =>
                                 <TableRow
@@ -256,9 +154,10 @@ const OrderMaterials = () => {
 }
 export default OrderMaterials
 
-const TableRow = ({ index, material, departments, token, units, glCategories, glCategoriesRef }) => {
+const TableRow = React.memo(({ index, material, departments, token, units, glCategories, glCategoriesRef }) => {
     const [materialData, setMaterialData] = useState({ ...material, type: material.type ? "1" : "0" });
     const [disabled, setDisabled] = useState(true);
+    const subGlCategoryRef = useRef(null);
     const subCategories = glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(materialData.gl_category_id));
     const handleChange = (e) => {
         const name = e.target.name;
@@ -273,7 +172,7 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
         setDisabled(prev => !prev)
     }
     const handleUpdate = () => {
-        const data = JSON.stringify(materialData);
+        const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value });
         fetch('http://172.16.3.101:54321/api/update-material', {
             method: 'POST',
             headers: {
@@ -307,7 +206,7 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
                 </select>
             </td>
             <td>
-                <select disabled={disabled} name="sub_gl_category_id" onChange={handleChange} value={materialData.sub_gl_category_id}>
+                <select disabled={disabled} name="sub_gl_category_id" ref={subGlCategoryRef} defaultValue={materialData.sub_gl_category_id}>
                     {
                         subCategories.map(subCat =>
                             <option key={subCat.id} value={subCat.id}>{subCat.name}</option>
@@ -361,6 +260,137 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
                         </>
                 }
             </td>
+        </tr>
+    )
+})
+const NewMaterial = (props) => {
+    const { glCategoriesRef, glCategories, units, departments, token, setTableData } = props
+    const unitsRef = useRef(null);
+    const glCategoryRef = useRef(null);
+    const curatoridRef = useRef(null);
+    const procurementidRef = useRef(null);
+    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
+    const [newCatState, setNewCatState] = useState({
+        title: '',
+        department: 1,
+        procurement: '',
+        approxPrice: '',
+        cluster: '',
+        gl_category_id: '-1',
+        sub_gl_category_id: '-1',
+        type: 0
+    });
+    const handleAddNewCategory = () => {
+        const gl_category_id = glCategoryRef.current.value;
+        const data = {
+            ...newCatState,
+            department: curatoridRef.current.value,
+            gl_category_id,
+            cluster: unitsRef.current.value,
+            procurement: procurementidRef.current.value
+        };
+        fetch('http://172.16.3.101:54321/api/add-new-cat', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Content-Length': JSON.stringify(data).length
+            },
+            body: JSON.stringify(data)
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                if (respJ[0].result === 'success') {
+                    const id = respJ[0].row_id;
+                    setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
+                    setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }))
+                }
+            })
+            .catch(ex => console.log(ex))
+    }
+    const handlePriceChange = (e) => {
+        const value = e.target.value;
+        setNewCatState(prev => ({ ...prev, approxPrice: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approxPrice }))
+    }
+    const handleChange = (e) => {
+        const value = e.target.value;
+        const name = e.target.name;
+        setNewCatState(prev => ({ ...prev, [name]: value }))
+    }
+    return (
+        <tr>
+            <td>
+                {
+                    operationResult.visible &&
+                    <OperationResult
+                        setOperationResult={setOperationResult}
+                        operationDesc={operationResult.desc}
+                        backgroundColor={'white'}
+                        iconColor={'rgb(15, 157, 88)'}
+                        icon={AiFillCheckCircle}
+                    />
+                }
+            </td>
+            <td>
+                <input type="text" name="title" value={newCatState.title} onChange={handleChange} />
+            </td>
+            <td>
+                <select onChange={handleChange} name="gl_category_id" value={newCatState.gl_category_id} ref={glCategoryRef}>
+                    <option value="-1">-</option>
+                    {
+                        glCategories.map(category =>
+                            <option key={category.id} value={category.id}>{category.name}</option>
+                        )
+                    }
+                </select>
+            </td>
+            <td>
+                <select onChange={handleChange} name="sub_gl_category_id" value={newCatState.sub_gl_category_id}>
+                    {
+                        glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(newCatState.gl_category_id))
+                            .map(subGlCategory =>
+                                <option key={subGlCategory.id} value={subGlCategory.id}>{subGlCategory.name}</option>
+                            )
+                    }
+                </select>
+            </td>
+            <td>
+                <select onChange={handleChange} name="department" ref={curatoridRef}>
+                    <option value="-1">-</option>
+                    {
+                        departments.map(department =>
+                            <option key={department.id} value={department.id}>{department.name}</option>
+                        )
+                    }
+                </select>
+            </td>
+            <td>
+                <select name="procurement" ref={procurementidRef}>
+                    <option value="-1">-</option>
+                    {
+                        departments.map(department =>
+                            <option key={department.id} value={department.id}>{department.name}</option>
+                        )
+                    }
+                </select>
+            </td>
+            <td>
+                <select onChange={handleChange} name="type" value={newCatState.type}>
+                    <option value="0">Mal-Material</option>
+                    <option value="1">Xidmət</option>
+                </select>
+            </td>
+            <td><input name="approxPrice" value={newCatState.approxPrice} onChange={handlePriceChange} /></td>
+            <td>
+                <select ref={unitsRef}>
+                    {
+                        units.map(unit =>
+                            <option value={unit.id} key={unit.id}>{unit.title}</option>
+                        )
+                    }
+                </select>
+            </td>
+            <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
         </tr>
     )
 }

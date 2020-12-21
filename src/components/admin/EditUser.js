@@ -28,6 +28,7 @@ const EditUser = (props) => {
     const [password, setPassword] = useState('');
     const [showAlertModal, setShowAlertModal] = useState(false);
     const repeatPass = useRef(null);
+    const { id, closeModal } = props;
     const updateUserData = () => {
         const data = JSON.stringify({
             username: userData.username,
@@ -37,8 +38,7 @@ const EditUser = (props) => {
             fin: userData.fin,
             structureid: userData.structure_dependency_id,
             role: userData.role_id,
-            filialid: userData.filial_id,
-            id: props.id
+            id: id
         });
         fetch('http://172.16.3.101:54321/api/update-user-data', {
             method: 'POST',
@@ -52,11 +52,11 @@ const EditUser = (props) => {
             .then(resp => resp.json())
             .then(respJ => {
                 if (respJ[0].result === 'success')
-                    props.closeModal()
+                    closeModal()
             })
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/user/${props.id}`, {
+        fetch(`http://172.16.3.101:54321/api/user/${id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -64,7 +64,7 @@ const EditUser = (props) => {
             .then(resp => resp.json())
             .then(respJ => setUserData(respJ[0]))
             .catch(ex => console.log(ex))
-    }, [props.id, token]);
+    }, [id, token]);
 
     const handleChange = (e) => {
         const name = e.target.name;
@@ -86,7 +86,7 @@ const EditUser = (props) => {
         if (password === repeatPass.current.value) {
             const data = JSON.stringify({
                 password: password,
-                id: props.id
+                id: id
             })
             fetch('http://172.16.3.101:54321/api/reset-password', {
                 method: 'POST',
@@ -260,8 +260,6 @@ const Roles = (props) => {
 const StructureInfo = (props) => {
     const { token, isProtected, userData, handleChange } = props;
     const [departments, setStructures] = useState([]);
-    // const brahnchesRef = useRef([]);
-    // const departmentsRef = useRef([]);
     useEffect(() => {
         fetch(`http://172.16.3.101:54321/api/departments`, {
             headers: {
@@ -270,37 +268,12 @@ const StructureInfo = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                // const branches = [];
-                // const departments = [];
-                // respJ.forEach(structure => {
-                //    structure.parent_id === 1 || structure.parent_id === undefined
-                //    ? branches.push(structure)
-                //    : departments.push(structure)
-                // });
-                // brahnchesRef.current = branches;
-                // departmentsRef.current = departments;
                 setStructures(respJ)
             })
             .catch(ex => console.log(ex));
     }, [token]);
     return (
         <>
-            <div>
-                <label>Filial</label>
-                <select
-                    disabled={isProtected}
-                    value={userData.filial_id || ''}
-                    name="filial_id"
-                    onChange={handleChange}
-                >
-                    <option value={-1}>-</option>
-                    {
-                        departments.map(branch =>
-                            <option value={branch.id} key={branch.id}>{branch.name}</option>
-                        )
-                    }
-                </select>
-            </div>
             <div>
                 <label>Struktur</label>
                 <select

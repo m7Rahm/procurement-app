@@ -4,6 +4,7 @@ import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
 import { newOrderInitial } from '../../data/data.js'
 import { TokenContext } from '../../App'
 import OperationResult from '../../components/Misc/OperationResult'
+import { IoIosCloseCircle } from 'react-icons/io'
 const newOrderReducer = (state, action) => {
   const type = action.type;
   switch (type) {
@@ -60,7 +61,7 @@ const NewOrderContent = (props) => {
   const stateRef = useRef({});
   const closeModal = props.handleModalClose;
   const version = props.version;
-  const [categories, setCategories] = useState([]);
+  const [glCategories, setGlCategories] = useState([]);
   const init = (current) => {
     const state = initState(current, version, token);
     stateRef.current.init = state;
@@ -69,25 +70,25 @@ const NewOrderContent = (props) => {
   const current = props.current;
   const [state, dispatch] = useReducer(newOrderReducer, current, init);
   useEffect(() => {
-    fetch('http://172.16.3.101:54321/api/material-categories', {
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
+    fetch('http://172.16.3.101:54321/api/gl-categories', {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
     })
-      .then(resp => resp.json())
-      .then(respJ => {
-        setCategories(respJ);
-      })
-      .catch(err => console.log(err))
-  }, [token]);
+        .then(resp => resp.json())
+        .then(respJ => {
+            setGlCategories(respJ);
+        })
+        .catch(ex => console.log(ex))
+}, [token])
   const createApproveNewOrder = (url, onSuccess) => {
     const parsedMaterials = state.materials.map(material =>
       [
-        material.model,
+        material.materialId,
         material.count,
         material.approx_price * material.count,
         material.additionalInfo,
-        material.subCategory
+        material.subGlCategory
       ]
     )
     const data = {
@@ -154,7 +155,6 @@ const NewOrderContent = (props) => {
       createApproveNewOrder('http://172.16.3.101:54321/api/new-order', onSuccess)
     }
   }
-  // console.log('rerender')
   return (
     <div className="modal-content-new-order">
       {
@@ -162,6 +162,7 @@ const NewOrderContent = (props) => {
         <OperationResult
           setOperationResult={setOperationResult}
           operationDesc={operationResult.desc}
+          icon={IoIosCloseCircle}
         />
       }
       <NewOrderHeader
@@ -178,14 +179,14 @@ const NewOrderContent = (props) => {
           <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
           <div style={{ maxWidth: '140px' }}>Say</div>
           <div>Kurasiya</div>
-          <div>Büccə</div>
+          <div>Büdcə</div>
           <div>Əlavə məlumat</div>
           <div></div>
         </li>
         <NewOrderTableBody
           state={state}
           dispatch={dispatch}
-          categories={categories}
+          glCategories={glCategories}
         />
       </ul>
       <div className="send-order" onClick={handleSendClick}>

@@ -13,7 +13,6 @@ const NewUser = (props) => {
         username: '',
         password: '',
         position_id: '0',
-        filial_id: '-1'
     });
     const [departments, setDepartments] = useState([]);
     const [roles, setRoles] = useState([]);
@@ -52,7 +51,7 @@ const NewUser = (props) => {
         const name = e.target.name;
         setUserData(prev => ({ ...prev, [name]: value }))
     }
-    const availableMenus = roles.length === 0 ? [] : roles.find(role => role.id.toString() === userData.role_id.toString()).modules.split(',');
+    const availableMenus = roles.length === 0 ? [] : roles.find(role => role.id === Number(userData.role_id)).modules.split(',');
     const addNewUser = () => {
         const data = userData;
         fetch('http://172.16.3.101:54321/api/add-new-user', {
@@ -123,21 +122,6 @@ const NewUser = (props) => {
                                 <option value="1">Rəis</option>
                             </select>
                         </div>
-                        <div>
-                            <label>Filial</label>
-                            <select
-                                value={userData.filial_id || ''}
-                                name="filial_id"
-                                onChange={handleChange}
-                            >
-                                <option value="-1">-</option>
-                                {
-                                    departments.filter(department => department.type === 0).map(department =>
-                                        <option value={department.id} key={department.id}>{department.name}</option>
-                                    )
-                                }
-                            </select>
-                        </div>
                     </div>
                     <div className="section-row">
                         <div>
@@ -149,7 +133,7 @@ const NewUser = (props) => {
                             >
                                 <option value="-1">-</option>
                                 {
-                                    departments.filter(department => department.type === 1).map(department =>
+                                    departments.map(department =>
                                         <option value={department.id} key={department.id}>{department.name}</option>
                                     )
                                 }

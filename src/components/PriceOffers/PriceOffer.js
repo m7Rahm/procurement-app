@@ -8,6 +8,9 @@ import { OrderContent } from './PotentialVendorRow'
 import { VendorInfo } from '../modal content/PotentialVendorsState'
 import ForwardDocLayout from '../Misc/ForwardDocLayout'
 import OperationResult from '../Misc/OperationResult'
+import {
+    IoIosCloseCircle
+} from 'react-icons/io'
 const PriceOffer = (props) => {
     const { current, token, tranid } = props;
     const [priceOfferState, setPriceOfferState] = useState(current);
@@ -64,6 +67,7 @@ const PriceOffer = (props) => {
                 <OperationResult
                     setOperationResult={setOperationResult}
                     operationDesc={operationResult.desc}
+                    icon={IoIosCloseCircle}
                 />
             }
             <div className="visa-content-container">

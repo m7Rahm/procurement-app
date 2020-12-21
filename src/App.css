@@ -3050,10 +3050,11 @@ div.pagination>div:hover {
 
 .material-model-list {
   position: absolute;
-  top: 38px;
-  /* background-color: red; */
+  top: 40px;
+  max-height: 108px;
+  overflow: auto;
   display: none;
-  width: 100%;
+  width: 150%;
   padding: 0px;
   z-index: 2;
   list-style-type: none;
@@ -3065,6 +3066,8 @@ div.pagination>div:hover {
   border: 1px solid white;
   background-color: whitesmoke;
   padding: 5px 8px;
+  text-align: left;
+  height: 40px;
 }
 
 div.my-orders-footer {

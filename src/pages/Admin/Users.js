@@ -46,7 +46,6 @@ const Users = () => {
 			.catch(ex => console.log(ex))
 	}, [token]);
 	const closeModal = () => {
-		console.log('fired')
 		setModal({ visible: false, content: undefined })
 	}
 	const editUserData = (id) => {
@@ -70,7 +69,6 @@ const Users = () => {
 							<th>Ad</th>
 							<th>FIN</th>
 							<th>ID</th>
-							<th>Filial</th>
 							<th>Departament</th>
 							<th>Status</th>
 							<th></th>
@@ -86,7 +84,6 @@ const Users = () => {
 									<td>{user.full_name}</td>
 									<td>{user.fin}</td>
 									<td>{user.passport_data}</td>
-									<td>{user.branch_name}</td>
 									<td>{user.shobe}</td>
 									<td>{user.status}</td>
 									<td>
