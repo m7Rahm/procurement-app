@@ -4,17 +4,13 @@ import {
     IoMdAdd
 } from 'react-icons/io'
 import { modules, availableOperations } from '../../data/data'
-// import { UserDataContext } from '../../pages/SelectModule'
 const UpdateRole = (props) => {
     const [roleData, setRoleData] = useState(props.role);
-    // const userData = useContext(UserDataContext);
     const [userModules, setUserModules] = useState(props.role.modules === '' ? [] : props.role.modules.split(','));
     const [priviliges, setPreviliges] = useState(props.role.previliges === '' ? [] : props.role.previliges.split(','));
-    // console.log(menus, previliges)
     const selectPrevRef = useRef(null);
     const selectMenusRef = useRef(null);
     const saveChanges = () => {
-        // console.log(roleData)
         fetch('http://172.16.3.101:54321/api/update-role', {
             method: 'POST',
             headers: {

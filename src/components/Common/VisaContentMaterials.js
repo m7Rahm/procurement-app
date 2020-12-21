@@ -11,10 +11,9 @@ import { IoIosCloseCircle } from 'react-icons/io'
 
 const VisaContentMaterials = (props) => {
 	const { forwardType, canProceed } = props;
-	const userDataContext = useContext(UserDataContext);
-	const userData = userDataContext[0].userInfo;
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0];
+	const token = tokenContext[0].token;
+	const userData = tokenContext[0].userData;
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
 	const { emp_version_id, order_type } = props.orderContent[0];
 	return (

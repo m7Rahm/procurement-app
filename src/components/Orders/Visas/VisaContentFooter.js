@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react'
 import { TokenContext } from '../../../App'
-import { UserDataContext } from '../../../pages/SelectModule'
 import ForwardDocLayout from '../../Misc/ForwardDocLayout';
 import OperationResult from '../../Misc/OperationResult';
 import {
@@ -10,12 +9,12 @@ const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline
 
 const VisaContentFooter = (props) => {
     const { handleEditClick, current, canProceed, updateContent, orderContent } = props;
-    const userDataContext = useContext(UserDataContext);
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
-    const canApprove = userDataContext[0].previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
-    const canDecline = userDataContext[0].previliges.find(prev => prev === 'Sifarişə etiraz etmək');
-    const canReturn = userDataContext[0].previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
+    const token = tokenContext[0].token;
+    const userData = tokenContext[0].userData;
+    const canApprove = userData.previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
+    const canDecline = userData.previliges.find(prev => prev === 'Sifarişə etiraz etmək');
+    const canReturn = userData.previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
 
     const setIsModalOpen = (recs, order) => {

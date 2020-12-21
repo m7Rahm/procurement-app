@@ -7,7 +7,6 @@ import {
 import {
 	IoIosWarning
 } from 'react-icons/io'
-import { UserDataContext } from '../../../pages/SelectModule'
 import VisaVersionsContainer from './VisaVersionsContainer'
 import { TokenContext } from '../../../App'
 const EditOrderRequest = React.lazy(() => import('../../modal content/EditOrderRequest'));
@@ -15,9 +14,9 @@ const EditOrderRequest = React.lazy(() => import('../../modal content/EditOrderR
 const VisaContentHeader = (props) => {
 	const { version, current, orderNumb, currentState, handleEditClick, updateContent } = props;
 	const tranid = current[0].id;
-	const userDataContext = useContext(UserDataContext);
 	const tokenContext = useContext(TokenContext);
-	const userData = userDataContext[0];
+	const token = tokenContext[0].token;
+	const userData = tokenContext[0].userData;
 	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək')
 	const closeModal = (respJ, receivers) => {
 		updateContent(receivers, {
@@ -29,7 +28,6 @@ const VisaContentHeader = (props) => {
 	};
 	const editOrderAndApprove = (data) => {
 		const apiData = JSON.stringify(data)
-		const token = tokenContext[0];
 		fetch(`http://172.16.3.101:54321/api/edit-accept-order-req/${tranid}`, {
 			method: 'POST',
 			headers: {
@@ -50,7 +48,7 @@ const VisaContentHeader = (props) => {
 				tranid={tranid}
 				version={version}
 				content={current}
-				token={tokenContext[0]}
+				token={token}
 				orderNumb={orderNumb}
 				{...props}
 			/>

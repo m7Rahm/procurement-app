@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { UserDataContext } from '../../../pages/SelectModule'
+import { TokenContext } from '../../../App'
 const NewOrderHeader = (props) => {
-    const { state, dispatch, token } = props;
+    const { state, dispatch } = props;
     const [structures, setStructures] = useState([]);
-    const userDataContext = useContext(UserDataContext);
-    const userData = userDataContext[0];
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0].token;
+    const userData = tokenContext[0].userData;
     const structureid = userData.userInfo.structureid;
     const dependents = structures.filter(structure => structure.dependent_id === structureid);
     useEffect(() => {
