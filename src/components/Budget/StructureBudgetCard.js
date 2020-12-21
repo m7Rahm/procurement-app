@@ -4,7 +4,7 @@ import { FaEdit } from 'react-icons/fa';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 const CardContent = React.forwardRef(({ budget, category, period }, ref) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [subGlBudgets, setSubGlBudgets] = useState([]);
     const handleClick = () => {
 

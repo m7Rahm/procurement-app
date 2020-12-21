@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useContext } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import VisaCard from './VisaCard'
 
 import {
@@ -8,32 +8,60 @@ import {
 import IconsPanel from '../Search/IconsPanel';
 import Pagination from '../Misc/Pagination';
 import { TokenContext } from '../../App'
+
 const SideBar = (props) => {
-	const { updateList } = props
+	const { updateList, setActive, activeRef, initData, webSocketRef, checkData } = props;
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0];
+	const token = tokenContext[0].token;
 	const notifIcon = useRef(null);
 	const activePageRef = useRef(0)
 	const checkedAmountRef = useRef([]);
 	const iconsPanelRef = useRef(null);
 	const [visas, setVisas] = useState({ count: 0, visas: [] });
-	const activeRef = useRef({ style: { background: '' } });
 	const [iconsVisible, setIconsVisible] = useState(false);
 	const searchParamsRef = useRef({ userName: '', startDate: null, endDate: null, deadline: '', docType: -3 })
-	const mountFunc = useCallback(props.mountFunc, []);
+	const updateSideBarContent = (data) => {
+		updateList(data, token)
+		.then(resp => resp.json())
+		.then(respJ => {
+			const totalCount = respJ[0] ? respJ[0].total_count : 0;
+			setVisas({ count: totalCount, visas: respJ });
+			if (notifIcon !== undefined) {
+				notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
+				notifIcon.current.addEventListener('animationend', function () {
+					this.style.display = 'none';
+					this.style.animation = 'animation: show-up 0.2s ease-in both';
+				})
+			}
+		})
+		.catch(ex => console.log(ex))
+	}
 	const refreshVisas = (from) => {
 		const searchRefData = {
-		userName: searchParamsRef.current.userName,
-		startDate: searchParamsRef.current.startDate,
-		endDate: searchParamsRef.current.endDate,
-		docType: searchParamsRef.current.docType,
+			userName: searchParamsRef.current.userName,
+			startDate: searchParamsRef.current.startDate,
+			endDate: searchParamsRef.current.endDate,
+			docType: searchParamsRef.current.docType,
+		}
+		const data = JSON.stringify({ ...searchRefData, from, until: 20 })
+		updateSideBarContent(data, token)
 	}
-	const data = { ...searchRefData, from, until: 20 }
-		updateList(data, token, setVisas, notifIcon )
-	}
+	webSocketRef.current.onmessage = (event) => {
+		const data = JSON.parse(event.data);
+		if (checkData(data)) {
+		  notifIcon.current.style.display = 'block';
+		}
+	  }
 	useEffect(() => {
-		mountFunc(setVisas, notifIcon, token)
-	}, [mountFunc, token]);
+		const data = JSON.stringify(initData);
+		updateList(data, token)
+			.then(resp => resp.json())
+			.then(respJ => {
+				const totalCount = respJ[0] ? respJ[0].total_count : 0;
+				setVisas({ count: totalCount, visas: respJ })
+			})
+			.catch(err => console.log(err))
+	}, [updateList, initData, token]);
 	return (
 		<div className='side-bar'>
 			<div ref={iconsPanelRef}>
@@ -44,7 +72,7 @@ const SideBar = (props) => {
 					iconsVisible={iconsVisible}
 					checkedAmountRef={checkedAmountRef}
 					setVisas={setVisas}
-					updateList={updateList}
+					updateList={updateSideBarContent}
 					activePageRef={activePageRef}
 				/>
 			</div>
@@ -58,25 +86,13 @@ const SideBar = (props) => {
 						return (
 							<VisaCard
 								key={visa.id}
-								id={visa.id}
 								token={token}
-								activeCardRef={props.activeCardRef}
+								setActive={setActive}
 								iconsPanelRef={iconsPanelRef}
 								checkedAmount={checkedAmountRef}
 								setIconsVisible={setIconsVisible}
-								setActiveVisa={props.setActive}
 								activeRef={activeRef}
-								number={visa.ord_numb}
-								isOpened={visa.is_read}
-								handleCardClick={props.handleCardClick}
-								from={visa.sender_full_name}
-								empVersion={visa.emp_version_id}
-								isPinned={visa.is_pinned}
-								category={visa.assignment}
-								deadline={visa.deadline}
-								remark={visa.comment}
-								date={visa.date_time}
-								priceOffProcessed={visa.processed}
+								visa={visa}
 							/>
 						)
 					})
@@ -90,4 +106,4 @@ const SideBar = (props) => {
 		</div>
 	)
 }
-export default React.memo(SideBar, () => true)
+export default React.memo(SideBar)

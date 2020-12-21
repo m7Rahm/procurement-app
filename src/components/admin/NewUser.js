@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { TokenContext } from '../../App'
 const NewUser = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [userData, setUserData] = useState({
         full_name: '',
         passport_data: '',

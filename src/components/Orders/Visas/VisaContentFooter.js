@@ -1,14 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { TokenContext } from '../../../App'
 import ForwardDocLayout from '../../Misc/ForwardDocLayout';
-import OperationResult from '../../Misc/OperationResult';
-import {
-    IoIosCloseCircle
-} from 'react-icons/io'
+import OperationResult from '../../Misc/OperationResult'
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {
-    const { handleEditClick, current, canProceed, updateContent, orderContent } = props;
+    const { handleEditClick, current, canProceed, updateContent } = props;
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const userData = tokenContext[0].userData;
@@ -60,14 +57,13 @@ const VisaContentFooter = (props) => {
             setOperationResult({ visible: true, desc: 'Operation not finished' })
     }
     return (
-        orderContent.result === 0 && orderContent.order_result === 0
+        current.result === 0 && current.order_result === 0
             ? <>
                 {
                     operationResult.visible &&
                     <OperationResult
                         setOperationResult={setOperationResult}
                         operationDesc={operationResult.desc}
-                        icon={IoIosCloseCircle}
                     />
                 }
                 <div className="accept-decline-container">

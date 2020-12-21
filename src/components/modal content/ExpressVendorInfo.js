@@ -11,7 +11,7 @@ import { TokenContext } from '../../App'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
 const ExpressVendorInfo = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const attachmentsRef = useRef(null);
     const attachmentsRefInit = useRef(null);
     const { potentialVendor, vendorid, setExpressVendors } = props;

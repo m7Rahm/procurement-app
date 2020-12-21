@@ -12,12 +12,13 @@ import { TokenContext } from '../../../App'
 const EditOrderRequest = React.lazy(() => import('../../modal content/EditOrderRequest'));
 
 const VisaContentHeader = (props) => {
-	const { version, current, orderNumb, currentState, handleEditClick, updateContent } = props;
+	const { version, current, orderNumb, handleEditClick, updateContent } = props;
+	const visaGenInfo = current[0];
 	const tranid = current[0].id;
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
 	const userData = tokenContext[0].userData;
-	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək')
+	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək');
 	const closeModal = (respJ, receivers) => {
 		updateContent(receivers, {
 			id: respJ[1].id,
@@ -70,7 +71,7 @@ const VisaContentHeader = (props) => {
 				<h1>
 					{`Sifariş № ${orderNumb}`}
 					{
-						canEditRequest && !currentState.result &&
+						canEditRequest && !visaGenInfo.result &&
 						<FaEdit onClick={showEditOrderContent}
 							title="düzəliş et"
 							size="20"
@@ -78,36 +79,25 @@ const VisaContentHeader = (props) => {
 					}
 				</h1>
 				{
-					currentState.result === 1
+					visaGenInfo.result === 1
 						? <span>
-							{currentState.act_date_time}
+							{visaGenInfo.act_date_time}
 							<FaCheck size="30" title="Təsdiq" color="#34A853" />
 						</span>
-						: currentState.result === -1
+						: visaGenInfo.result === -1
 							? <span>
-								{currentState.act_date_time}
+								{visaGenInfo.act_date_time}
 								<FaTimes title="Etiraz" size="30" color="#EA4335" />
 							</span>
-							: currentState.result === 3
+							: visaGenInfo.result === 3
 								? <span>
-									{currentState.act_date_time}
+									{visaGenInfo.act_date_time}
 									<IoIosWarning onClick={showOrderVersions} title="Dəyişikliklərə bax" cursor="pointer" size="30" color="#EA4335" />
 								</span>
 								: ''
 
 				}
 			</div>
-			{/* <div className="new-order-header">
-				<div>
-					<label htmlFor="destination" color="#555555">Təyinatı</label>
-					<br />
-					<div style={{ clear: 'both', fontSize: '22px', fontWeight: '555', color: 'gray' }}>{props.assignment}</div>
-				</div>
-				<div>
-					<label htmlFor="deadline" color="#555555">Deadline</label>
-					<div style={{ clear: 'both', fontSize: '22px', fontWeight: '550', color: 'gray' }}>{props.deadline}</div>
-				</div>
-			</div> */}
 		</>
 	)
 }

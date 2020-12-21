@@ -10,7 +10,7 @@ import { IoIosCloseCircle } from 'react-icons/io'
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view } = props;
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const ordNumb = props.current || props.ordNumb;
     const textareaRef = useRef(null);
     const initialValuesRef = useRef(null);

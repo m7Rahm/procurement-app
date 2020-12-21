@@ -6,9 +6,8 @@ import PrivateRoute from './components/Misc/PrivateRoute'
 import SelectModule from './pages/SelectModule'
 import './App.css'
 import { modules } from './data/data'
-export const TokenContext = React.createContext();
 const getUserData = () => {
-  if (localStorage.getItem('token')){
+  if (localStorage.getItem('token')) {
     const decoded = jwt.decode(localStorage.getItem('token'));
     const id = decoded.data.id;
     const userModules = decoded.data.modules.split(',');
@@ -28,19 +27,19 @@ const getUserData = () => {
 }
 const App = () => {
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
-  // localStorage.removeItem('token');
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/login" render={() => !token.token ? <Login setToken={setToken} /> : <Redirect to="/" />}>
-        </Route>
-        <PrivateRoute path="/">
-          <TokenContext.Provider value={[token, setToken]}>
+      <TokenContext.Provider value={[token, setToken]}>
+        <Switch>
+          <Route path="/login" render={() => !token.token ? <Login setToken={setToken} /> : <Redirect to="/" />}>
+          </Route>
+          <PrivateRoute token={token.token} path="/">
             <SelectModule />
-          </TokenContext.Provider>
-        </PrivateRoute>
-      </Switch>
+          </PrivateRoute>
+        </Switch>
+      </TokenContext.Provider>
     </BrowserRouter>
   );
 }
 export default App
+export const TokenContext = React.createContext();

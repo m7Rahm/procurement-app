@@ -45,7 +45,7 @@ const advancedSearchReducser = (state, action) => {
 }
 const SearchBox = (props, ref) => {
     const date = new Date();
-    const { updateList, token, setVisas } = props;
+    const { updateList, token } = props;
     const activeCalendar = useRef(null)
     const [searchState, dispatch] = useReducer(advancedSearchReducser, {
         userName: '',
@@ -71,15 +71,15 @@ const SearchBox = (props, ref) => {
         return () => document.removeEventListener('click', handleClick, false);
     }, [ref]);
     const handleSearchClick = () => {
-        const data = {
+        const data = JSON.stringify({
             userName: searchState.userName,
             startDate: searchState.startDate === '' ? null : searchState.startDate,
             endDate: searchState.endDate === '' ? null : searchState.endDate,
             docType: searchState.docType,
             from: 0,
             until: 20
-        }
-        updateList(data, token, setVisas)
+        })
+        updateList(data, token)
     }
     const resetState = () => {
         dispatch({ type: 'reset', ref: props.searchParamsRef })

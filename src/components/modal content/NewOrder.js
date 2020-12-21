@@ -56,7 +56,7 @@ const initState = () => newOrderInitial
 
 const NewOrderContent = (props) => {
   const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0];
+  const token = tokenContext[0].token;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
   const stateRef = useRef({});
   const closeModal = props.handleModalClose;
@@ -173,8 +173,8 @@ const NewOrderContent = (props) => {
       <ul className="new-order-table">
         <li>
           <div>#</div>
-          <div>Kateqoriya</div>
-          <div>Alt-Kateqoriya</div>
+          <div>Gl Kateqoriya</div>
+          <div>Sub-Gl Kateqoriya</div>
           <div>Məhsul</div>
           <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
           <div style={{ maxWidth: '140px' }}>Say</div>

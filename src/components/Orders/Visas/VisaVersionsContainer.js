@@ -6,6 +6,45 @@ import {
     FaCheck,
     FaTimes
 } from 'react-icons/fa'
+
+const VisaVersionsContainer = (props) => {
+    const { orderNumb, token, closeModal, tranid } = props;
+    const [versions, setVersions] = useState([]);
+    console.log(orderNumb)
+    const actionsAvailableRef = useRef(true);
+    useEffect(() => {
+        fetch(`http://172.16.3.101:54321/api/get-order-versions/${orderNumb}`, {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                for (let i = 0; i < respJ.length; i++)
+                    if (respJ[i].is_confirmed || respJ[i].result !== 0) {
+                        actionsAvailableRef.current = false;
+                        break;
+                    }
+                setVersions(respJ)
+            })
+    }, [token, orderNumb]);
+    return (
+        <div>
+            {
+                versions.map(version =>
+                    <VisaVersion
+                        version={version}
+                        token={token}
+                        tranid={tranid}
+                        key={version.id}
+                        actionsAvailableRef={actionsAvailableRef}
+                        closeModal={closeModal}
+                    />
+                )
+            }
+        </div>
+    )
+}
 const VisaVersion = (props) => {
     const { version, token, closeModal, actionsAvailableRef, tranid } = props;
     const { emp_id, ord_numb, is_confirmed, conf_date, override } = version;
@@ -135,44 +174,6 @@ const VisaVersion = (props) => {
                         </div>
                     }
                 </>
-            }
-        </div>
-    )
-}
-const VisaVersionsContainer = (props) => {
-    const { orderNumb, token, closeModal, tranid } = props;
-    const [versions, setVersions] = useState([]);
-    const actionsAvailableRef = useRef(true);
-    useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/get-order-versions/${orderNumb}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                for (let i = 0; i < respJ.length; i++)
-                    if (respJ[i].is_confirmed || respJ[i].result !== 0) {
-                        actionsAvailableRef.current = false;
-                        break;
-                    }
-                setVersions(respJ)
-            })
-    }, [token, orderNumb]);
-    console.log(versions)
-    return (
-        <div>
-            {
-                versions.map(version =>
-                    <VisaVersion
-                        version={version}
-                        token={token}
-                        tranid={tranid}
-                        key={version.id}
-                        actionsAvailableRef={actionsAvailableRef}
-                        closeModal={closeModal}
-                    />
-                )
             }
         </div>
     )

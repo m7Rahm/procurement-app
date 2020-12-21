@@ -11,7 +11,7 @@ import Pagination from '../../components/Misc/Pagination'
 import ExpressVendorsSearch from '../../components/Search/ExpressVendorsSearch'
 const ExpressVendors = (props) => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const location = useLocation();
     const activePageRef = useRef(0);
     const searchDataRef = useRef({

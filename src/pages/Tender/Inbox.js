@@ -80,7 +80,7 @@ const updateList = (data, token, setVisas, notifIcon) => {
 const Inbox = (props) => {
     const [active, setActive] = useState(null);
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     return (
         <div style={{ textAlign: 'center', background: 'transparent', minHeight: '100vh', display: 'flex' }}>
             <SideBar

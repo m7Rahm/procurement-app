@@ -2,7 +2,6 @@
   text-align: center;
   position: relative;
   height: 100vh;
-  overflow: auto;
 }
 
 * {
@@ -1012,11 +1011,10 @@ div.update-role>div:nth-of-type(2)>div {
   display: flex;
   flex-flow: wrap column;
 }
-.modal-content-new-order>div:first-of-type{
-  /* align-self: flex-end; */
+.modal-content-new-order>div:not(.operation-result){
   margin: 20px;
 }
-.modal-content-new-order>div:first-of-type>select{
+.modal-content-new-order>div:not(.operation-result)>select{
   padding: 10px;
 }
 .new-order-table {

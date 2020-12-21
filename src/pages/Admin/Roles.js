@@ -10,7 +10,7 @@ import UpdateRole from '../../components/Admin/UpdateRole'
 import { TokenContext } from '../../App'
 const Roles = (props) => {
     const tokenContext = useContext(TokenContext)
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [modal, setModal] = useState({ content: null, state: false })
     const [roles, setRoles] = useState([]);
 

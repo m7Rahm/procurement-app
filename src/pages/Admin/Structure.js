@@ -13,7 +13,7 @@ import StatusButton from '../../components/Misc/StatusButton'
 
 const Structure = () => {
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [departments, setDepartments] = useState({ content: [], count: 0 });
     const activePageRef = useRef(0);
     const [activeDepartments, setActiveDepartments] = useState([]);

@@ -11,7 +11,7 @@ import StatusButton from '../../components/Misc/StatusButton';
 import { TokenContext } from '../../App'
 const Users = () => {
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0]
+	const token = tokenContext[0].token;
 	const [users, setUsers] = useState({ count: 0, users: [] });
 	const activePageRef = useRef(0);
 	const [modal, setModal] = useState({ visible: false, content: undefined });

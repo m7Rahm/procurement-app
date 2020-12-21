@@ -3,21 +3,20 @@ import Table from '../../components/Orders/MyOrders/Table'
 import Search from '../../components/Search/Search'
 import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
 import Pagination from '../../components/Misc/Pagination';
-import { UserDataContext } from '../SelectModule'
 import { TokenContext } from '../../App'
 const MyOrders = (props) => {
   const wrapperRef = useRef(null);
   const [orders, setOrders] = useState({ count: 0, orders: [] });
   const webSocketRef = useRef(props.webSocketRef.current);
   const activePageRef = useRef(0);
-  const token = useContext(TokenContext)[0];
-  const userDataContext = useContext(UserDataContext);
-  const userData = userDataContext[0];
+  const tokenContext = useContext(TokenContext);
+  const token = tokenContext[0].token
+  const userData = tokenContext[0].userData;
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
   const [searchData, setSearchData] = useState({
     dateFrom: '',
     dateTill: '',
-    status: 0,
+    status: -3,
     date: '',
     ordNumb: ''
   })
@@ -43,7 +42,7 @@ const MyOrders = (props) => {
     const data = JSON.stringify({
       from: 0,
       until: 20,
-      status: 0,
+      status: -3,
       dateFrom: '',
       dateTill: '',
       ordNumb: ''

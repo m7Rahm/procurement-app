@@ -18,7 +18,7 @@ const StructureBudget = (props) => {
     const { structureid } = params;
     const { path } = useRouteMatch()
     const structureName = state ? state.structure.name : undefined
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const handleBackNavigation = () => {
         history.goBack(state)
     }

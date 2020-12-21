@@ -1,5 +1,4 @@
 import React, { useContext, useState, useRef } from 'react'
-import { UserDataContext } from '../../pages/SelectModule'
 import { TokenContext } from '../../App'
 import {
 	FaEdit,

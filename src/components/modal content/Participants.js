@@ -1,9 +1,24 @@
 import React, { useEffect, useState, useContext } from 'react'
 import Loading from '../Misc/Loading'
 import { TokenContext } from '../../App'
+
+const getResultText = (result) => {
+  if (result === 0)
+    return 'Baxılır..'
+  else if (result === -1)
+    return 'Etiraz Edildi'
+  else if (result === 1)
+    return 'Təsdiq Edildi'
+  else if (result === 2)
+    return 'Redaytəyə Qaytarıldı'
+  else if (result === 3)
+    return 'Redaktə Edildi'
+}
+
 const Participants = (props) => {
   const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0];
+  const { number, empVersion } = props
+  const token = tokenContext[0].token;
   const [checked, setChecked] = useState(false);
   const [participants, setParticipants] = useState(null);
   const handleChange = () => {
@@ -11,7 +26,7 @@ const Participants = (props) => {
   }
 
   useEffect(() => {
-    fetch(`http://172.16.3.101:54321/api/participants/${props.number}?type=1&empVersion=${props.empVersion}`, {
+    fetch(`http://172.16.3.101:54321/api/participants/${number}?type=1&empVersion=${empVersion}`, {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -20,7 +35,7 @@ const Participants = (props) => {
       .then(respJ => setParticipants(respJ)
       )
       .catch(err => console.log(err))
-  }, [props.number, props.empVersion, token])
+  }, [number, empVersion, token])
   return (
     participants &&
     <>
@@ -43,7 +58,7 @@ const Participants = (props) => {
               <div>{participant.full_name}
                 <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{'Mütəxəssis'}</div>
               </div>
-              <div>{participant.result === 1 ? 'Təsdiq' : participant.result === -1 ? 'Etiraz' : 'Baxılır'}</div>
+              <div>{getResultText(participant.result)}</div>
               <div>{participant.act_date_time || participant.date_time}</div>
               <div style={{ textAlign: 'left' }}>{participant.comment}</div>
             </li>
@@ -53,8 +68,8 @@ const Participants = (props) => {
       {
         checked &&
         <Reviewers
-          empVersion={props.empVersion}
-          number={props.number}
+          empVersion={empVersion}
+          number={number}
           token={token}
         />
       }
@@ -81,10 +96,10 @@ const Reviewers = ({ empVersion, number, token }) => {
         <span className="reviewers-header">Rəyçilər</span>
         <ul className="participants reviewers">
           <li>
-          <div>Ad Soyad</div>
-          <div>Status</div>
-          <div>Tarix</div>
-          <div style={{ textAlign: 'left' }}>Rəy</div>
+            <div>Ad Soyad</div>
+            <div>Status</div>
+            <div>Tarix</div>
+            <div style={{ textAlign: 'left' }}>Rəy</div>
           </li>
           {
             reviewers.map((reviewer, index) =>
@@ -92,7 +107,7 @@ const Reviewers = ({ empVersion, number, token }) => {
                 <div>{reviewer.full_name}
                   <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>Mütəxəssis</div>
                 </div>
-                <div>{reviewer.result === 1 ? 'Təsdiq' : reviewer.result === -1 ? 'Etiraz' : 'Baxılır'}</div>
+                <div>{getResultText(reviewer.result)}</div>
                 <div>{reviewer.act_date_time || reviewer.date_time}</div>
                 <div style={{ textAlign: 'left' }}>{reviewer.comment}</div>
               </li>

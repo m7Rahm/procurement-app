@@ -22,7 +22,7 @@ const userDataInit = {
 const EditUser = (props) => {
     const [userData, setUserData] = useState(userDataInit);
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const [isProtected, setIsProtected] = useState(true);
     const [resetPasswordVisibility, setResetPasswordVisibility] = useState(false);
     const [password, setPassword] = useState('');

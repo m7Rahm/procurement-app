@@ -24,11 +24,8 @@ const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0].token;
   const userData = tokenContext[0].userData;
-  const order = props.order;
-  const { status, participants } = order
-  const date = order.create_date_time;
-  const { referer, setOrders } = props;
-  const number = order.ord_numb;
+  const { referer, setOrders, order } = props;
+  const { status, participants, create_date_time: date, ord_numb: number } = order
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState('');
   const handleClose = () => {
@@ -44,8 +41,9 @@ const ListItem = (props) => {
   }
   const onInfoClick = (number) => {
     const onSendClick = (data) => {
+      console.log(data)
       const reqData = JSON.stringify(data);
-      fetch('http://172.16.3.101:8000/api/new-order', {
+      fetch('http://172.16.3.101:54321/api/new-order', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + token,
@@ -56,11 +54,12 @@ const ListItem = (props) => {
       })
         .then(resp => {
           if(resp.status === 200)
-            return resp.json()
+              resp.json()
           else
               throw new Error('Internal Server Error');
       })
         .then(respJ => {
+          console.log(respJ)
           if (respJ[0].result === 'success') {
             setOrders(prev => {
               const newList = prev.orders.filter(order => order.ord_numb !== number);

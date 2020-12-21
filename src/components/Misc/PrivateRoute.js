@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
     Redirect,
     Route
 } from 'react-router-dom'
+import { TokenContext } from '../../App'
 const PrivateRoute = ({ children, ...rest }) => {
-    const token = localStorage.getItem('token');
-    // console.log(token)
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0].token;
     return (
         token
             ? <Route {...rest}>

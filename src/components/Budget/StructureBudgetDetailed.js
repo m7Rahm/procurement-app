@@ -9,7 +9,7 @@ import {
 } from 'react-icons/md'
 const StructureBudgetDetailed = (props) => {
     const tokenConext = useContext(TokenContext);
-    const token = tokenConext[0];
+    const token = tokenConext[0].token;
     const location = useLocation();
     const state = location.state;
     const activePageRef = useRef(0);

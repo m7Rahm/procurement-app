@@ -10,7 +10,7 @@ const NewOrderTableRow = (props) => {
   const tokenContext = useContext(TokenContext);
   const rowRef = useRef(null);
   const { orderType, structure, material, dispatch, parentGlCategories, subGlCategories } = props;
-  const token = tokenContext[0];
+  const token = tokenContext[0].token;
   const modelListRef = useRef(null);
   const [models, setModels] = useState([]);
   const modelsRef = useRef([]);

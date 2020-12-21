@@ -14,7 +14,7 @@ import { TokenContext } from '../../App'
 import NewBudget from '../../components/Budget/NewBudget'
 const Budget = () => {
     const tokenContext = useContext(TokenContext)
-    const token = tokenContext[0];
+    const token = tokenContext[0].token;
     const location = useLocation();
     const categories = useRef([]);
     const [modalState, setModalState] = useState({ visibility: false, content: null });
@@ -67,7 +67,6 @@ const Budget = () => {
             from: page,
             next: 20
         };
-        // console.log(data)
         fetch('http://172.16.3.101:54321/api/get-budgets', {
             method: 'POST',
             headers: {
@@ -159,7 +158,7 @@ const Budget = () => {
                             <th>#</th>
                             <th>Struktur</th>
                             <th>Period</th>
-                            <th>Büccə</th>
+                            <th>Büdcə</th>
                             <th></th>
                         </tr>
                     </thead>
