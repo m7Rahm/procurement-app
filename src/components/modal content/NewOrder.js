@@ -1,88 +1,42 @@
-import React, { useReducer, useEffect, useRef, useContext, useState } from 'react'
+import React, { useEffect, useContext, useState, useCallback } from 'react'
 import NewOrderTableBody from '../Orders/NewOrder/NewOrderTableBody'
 import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
-import { newOrderInitial } from '../../data/data.js'
 import { TokenContext } from '../../App'
 import OperationResult from '../../components/Misc/OperationResult'
 import { IoIosCloseCircle } from 'react-icons/io'
-const newOrderReducer = (state, action) => {
-  const type = action.type;
-  switch (type) {
-    case 'reset':
-      return initState(true, action.payload)
-    case 'deleteRow':
-      return { ...state, materials: state.materials.filter(material => material.id !== action.payload.rowid) }
-    case 'updateRow':
-      return {
-        ...state, materials: state.materials.map(
-          material => material.id === action.payload.rowid
-            ? { ...material, ...action.payload.data }
-            : material
-        )
-      }
-    case 'updateRowSync':
-      return {
-        ...state, materials: state.materials.map(material =>
-          material.id === action.payload.rowid && parseInt(material.count) > 0
-            ? {
-              ...material,
-              count: action.payload.operation === 'dec'
-                ? parseInt(material.count) - 1
-                : parseInt(material.count) + 1
-            }
-            : material
-        )
-      }
-    case 'addRow':
-      return { ...state, materials: [...state.materials, action.payload.rowData] }
-    case 'setStructure':
-      return { ...state, structure: action.payload.value }
-    case 'setOrderType':
-      return { ...state, orderType: action.payload.value }
-    case 'setComment':
-      return { ...state, comment: action.payload.value }
-    case 'setReview':
-      return { ...state, review: action.payload.value }
-    case 'setOrderid':
-      return { ...state, orderid: action.payload.value }
-    case 'init':
-      return action.payload
-    default:
-      return state
-  }
-}
 
-const initState = () => newOrderInitial
 
 const NewOrderContent = (props) => {
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0].token;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
-  const stateRef = useRef({});
-  const closeModal = props.handleModalClose;
-  const version = props.version;
-  const [glCategories, setGlCategories] = useState([]);
-  const init = (current) => {
-    const state = initState(current, version, token);
-    stateRef.current.init = state;
-    return state
-  }
-  const current = props.current;
-  const [state, dispatch] = useReducer(newOrderReducer, current, init);
+  const { handleModalClose: closeModal, current, isDraft } = props;
+  const [glCategories, setGlCategories] = useState({ all: [], parent: [], sub: [] });
+
+  const [orderInfo, setOrderInfo] = useState({
+    glCategory: '-1',
+    structure: '-1',
+    ordNumb: '',
+    orderType: 0
+  })
   useEffect(() => {
     fetch('http://172.16.3.101:54321/api/gl-categories', {
-        headers: {
-            'Authorization': 'Bearer ' + token
-        }
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
     })
-        .then(resp => resp.json())
-        .then(respJ => {
-            setGlCategories(respJ);
-        })
-        .catch(ex => console.log(ex))
-}, [token])
-  const createApproveNewOrder = (url, onSuccess) => {
-    const parsedMaterials = state.materials.map(material =>
+      .then(resp => resp.json())
+      .then(respJ => {
+        const parent = respJ.filter(glCategory => glCategory.dependent_id === null);
+        const sub = respJ.filter(glCategory => glCategory.dependent_id !== null);
+        setGlCategories({ all: respJ, parent: parent, sub: sub });
+      })
+      .catch(ex => console.log(ex))
+  }, [token]);
+
+  const createApproveNewOrder = (materials, url, onSuccess) => {
+    let canProceed = true;
+    const parsedMaterials = materials.map(material =>
       [
         material.materialId,
         material.count,
@@ -90,48 +44,53 @@ const NewOrderContent = (props) => {
         material.additionalInfo,
         material.subGlCategory
       ]
-    )
-    const data = {
-      mats: parsedMaterials,
-      receivers: [], // receiversRef.current.map(emp => emp.id),
-      structureid: state.structure,
-      ordNumb: current ? current : '',
-      orderType: state.orderType
+    );
+    for (let i = 0; i < parsedMaterials.length; i++) {
+      if (parsedMaterials[i][0] === '') {
+        canProceed = false;
+        break;
+      }
     }
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': JSON.stringify(data).length,
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(data)
-    })
-      .then(resp => resp.json())
-      .then(respJ => {
-        console.log(respJ)
-        if (respJ[0].result === 'success') {
-          onSuccess(data, respJ)
-        }
-        else if (respJ[0].error)
-          setOperationResult({ visible: true, desc: respJ[0].error })
+    if (canProceed) {
+      const data = {
+        mats: parsedMaterials,
+        receivers: [], // receiversRef.current.map(emp => emp.id),
+        structureid: orderInfo.structure,
+        ordNumb: current ? current : '',
+        orderType: orderInfo.orderType
+      }
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': JSON.stringify(data).length,
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(data)
       })
-      .catch(err => console.log(err))
+        .then(resp => resp.json())
+        .then(respJ => {
+          console.log(respJ)
+          if (respJ[0].result === 'success') {
+            onSuccess(data, respJ)
+          }
+          else if (respJ[0].error)
+            setOperationResult({ visible: true, desc: respJ[0].error })
+        })
+        .catch(err => console.log(err))
+    }
+    else
+      setOperationResult({ visible: true, desc: 'Error Parsing Materials' })
   }
-  useEffect(() => {
-    dispatch({
-      type: 'init',
-      payload: { ...newOrderInitial, orderType: state.orderType }
-    })
-  }, [state.orderType, dispatch])
-  const handleSendClick = () => {
-    if (!current && !props.isDraft) {
+  const createApproveNewOrderCallback = useCallback(createApproveNewOrder, [orderInfo]);
+  const handleSendClick = (materials) => {
+    if (!current && !isDraft) {
       const onSuccess = (data, respJ) => {
         const recs = [...data.receivers, respJ[0].head_id];
         const apiData = JSON.stringify({
           from: 0,
           until: 20,
-          status: 0,
+          status: -3,
           dateFrom: '',
           dateTill: '',
           ordNumb: ''
@@ -152,7 +111,7 @@ const NewOrderContent = (props) => {
           })
           .catch(err => console.log(err))
       }
-      createApproveNewOrder('http://172.16.3.101:54321/api/new-order', onSuccess)
+      createApproveNewOrderCallback(materials, 'http://172.16.3.101:54321/api/new-order', onSuccess)
     }
   }
   return (
@@ -166,32 +125,16 @@ const NewOrderContent = (props) => {
         />
       }
       <NewOrderHeader
-        state={state}
-        dispatch={dispatch}
+        orderInfo={orderInfo}
+        setOrderInfo={setOrderInfo}
         token={token}
+        parentGlCategories={glCategories.parent}
       />
-      <ul className="new-order-table">
-        <li>
-          <div>#</div>
-          <div>Gl Kateqoriya</div>
-          <div>Sub-Gl Kateqoriya</div>
-          <div>Məhsul</div>
-          <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
-          <div style={{ maxWidth: '140px' }}>Say</div>
-          <div>Kurasiya</div>
-          <div>Büdcə</div>
-          <div>Əlavə məlumat</div>
-          <div></div>
-        </li>
         <NewOrderTableBody
-          state={state}
-          dispatch={dispatch}
+          orderInfo={orderInfo}
           glCategories={glCategories}
+          handleSendClick={handleSendClick}
         />
-      </ul>
-      <div className="send-order" onClick={handleSendClick}>
-        Göndər
-      </div>
     </div>
   )
 }

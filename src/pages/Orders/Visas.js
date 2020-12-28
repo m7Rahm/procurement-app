@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import SideBar from '../../components/Common/SideBar'
 import VisaContent from '../../components/Orders/Visas/VisaContent'
 
@@ -19,7 +19,6 @@ const checkData = (data) => {
 const Visas = (props) => {
   const { webSocketRef } = props
   const [active, setActive] = useState(undefined);
-  const activeRef = useRef({ style: { background: '' } });
   const updateList = useCallback((data, token) => fetch('http://172.16.3.101:54321/api/visas', {
     method: 'POST',
     headers: {
@@ -39,7 +38,6 @@ const Visas = (props) => {
         updateList={updateList}
         setActive={setActive}
         initData={initData}
-        activeRef={activeRef}
         webSocketRef={webSocketRef}
         checkData={checkData}
       />

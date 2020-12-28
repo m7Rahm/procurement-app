@@ -128,9 +128,9 @@ const Calendar = (props) => {
 								<tr key={index}>
 									{
 										week.map((day, index) =>
-										<td onClick={() => handleClick(day.val)} className={props.value === day.val ? 'active' : day.className} key={index}>
-											{day.date}
-										</td>
+											<td onClick={() => handleClick(day.val)} className={props.value === day.val ? 'active' : day.className} key={index}>
+												{day.date}
+											</td>
 										)
 									}
 								</tr>

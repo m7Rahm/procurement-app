@@ -10,11 +10,12 @@ import Pagination from '../Misc/Pagination';
 import { TokenContext } from '../../App'
 
 const SideBar = (props) => {
-	const { updateList, setActive, activeRef, initData, webSocketRef, checkData } = props;
+	const { updateList, setActive, initData, webSocketRef, checkData } = props;
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
 	const notifIcon = useRef(null);
-	const activePageRef = useRef(0)
+	const activePageRef = useRef(0);
+	const activeRef = useRef({ style: { background: '' } });
 	const checkedAmountRef = useRef([]);
 	const iconsPanelRef = useRef(null);
 	const [visas, setVisas] = useState({ count: 0, visas: [] });
@@ -67,7 +68,6 @@ const SideBar = (props) => {
 			<div ref={iconsPanelRef}>
 				<IconsPanel
 					searchParamsRef={searchParamsRef}
-					isDraft={props.isDraft}
 					token={token}
 					iconsVisible={iconsVisible}
 					checkedAmountRef={checkedAmountRef}

@@ -17,7 +17,7 @@ const ForwardDocLayout = (props) => {
         })
             .then(resp => {
                 if(resp.status === 200)
-                    resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
@@ -35,7 +35,7 @@ const ForwardDocLayout = (props) => {
         })
             .then(resp => {
                 if(resp.status === 200)
-                    resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
@@ -96,8 +96,8 @@ const ForwardDocLayout = (props) => {
                     Göndər
                 </div>
             </div>
-            <div style={{ padding: '0px 20px' }}>
-                <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray' }}>
+            <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
+                <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
                     {
                         receivers.map(emp => <VisaForwardPerson key={Math.random()} emp={emp} handleSelectChange={handleSelectChange} />)
                     }

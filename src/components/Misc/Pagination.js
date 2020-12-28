@@ -40,7 +40,7 @@ const Pagination = (props) => {
         updateList(active * 20)
     }
     return (
-        <div className="pagination">
+        <div id="pagination" className="pagination">
             <MdChevronLeft style={{ visibility: active === 0 ? 'hidden' : 'visible' }} onClick={handleNavigationToLeft} size="25" />
             {
                 pages.map((page, index) =>

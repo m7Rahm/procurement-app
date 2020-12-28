@@ -9,37 +9,30 @@ import { TokenContext } from '../../../App';
 const NewOrderTableRow = (props) => {
   const tokenContext = useContext(TokenContext);
   const rowRef = useRef(null);
-  const { orderType, structure, material, dispatch, parentGlCategories, subGlCategories } = props;
+  const { orderType, structure, material, subGlCategories, setMaterials } = props;
   const token = tokenContext[0].token;
   const modelListRef = useRef(null);
   const [models, setModels] = useState([]);
   const modelsRef = useRef([]);
   const modelInputRef = useRef(null);
   const materialid = material.id;
-  const updateMaterialsList = (type, payload) => dispatch({ type: type, payload: payload });
-  const updateRow = (data) => dispatch({
-    type: 'updateRow',
-    payload: {
-      data: data,
-      rowid: materialid
-    }
-  })
+  const [budget, setBudget] = useState(0);
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
     if (value === '' || Number(value) > 0) {
-      updateRow({ [name]: value })
+      setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
     }
   }
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
     if (value === '')
-      updateRow({ [name]: 1 })
+      setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
   }
   const handleAmountChangeButtons = (action) => {
-    // setRowData(prev => ({ ...prev, count: action === 'inc' ? Number(prev.count) + 1 : Number(prev.count) - 1 }))
+    // dispatch({ type: 'updateRow', payload: {data: { count: action === 'inc' ? material.count + 1 : material.count -1 }, rowid: materialid}})
   }
   const handleFocus = () => {
     if (props.modelsListRef.current)
@@ -50,7 +43,7 @@ const NewOrderTableRow = (props) => {
   const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
-    updateRow({ [name]: value })
+    setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
   }
   const handleBlur = (e) => {
     const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
@@ -59,15 +52,19 @@ const NewOrderTableRow = (props) => {
   }
   const handleRowDelete = () => {
     rowRef.current.classList.add('delete-row');
-    rowRef.current.addEventListener('animationend', () => updateMaterialsList('deleteRow', { rowid: material.id }))
+    rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
   }
   const setModel = (model) => {
-    updateRow({
-      materialId: model.id,
-      approx_price: model.approx_price,
-      code: model.product_id,
-      department: model.department_name
-    });
+    setMaterials(prev => prev.map(material => material.id === materialid
+      ? {
+        ...material, materialId: model.id,
+        approx_price: model.approx_price,
+        code: model.product_id,
+        department: model.department_name
+      }
+      : material
+    )
+    )
     modelInputRef.current.value = model.title;
     modelListRef.current.style.display = 'none';
   }
@@ -77,7 +74,7 @@ const NewOrderTableRow = (props) => {
     setModels(searchResult)
   }
   const searchByCode = (e) => {
-    const data = JSON.stringify({ product_id: e.target.value, orderType: orderType, structure: structure })
+    const data = JSON.stringify({ product_id: e.target.value, orderType: orderType, structure: structure });
     fetch('http://172.16.3.101:54321/api/get-by-product-code', {
       method: 'POST',
       headers: {
@@ -89,17 +86,22 @@ const NewOrderTableRow = (props) => {
     })
       .then(resp => resp.json())
       .then(respJ => {
-        const material = respJ.length !== 0 ? respJ[0] : {}
-        updateRow ({
-          glCategory: material.glCategory,
-          subGlCategory: material.subGlCategory,
-          model: material.title,
-          code: material.product_id,
-          approx_price: material.approx_price,
-          department: material.department_name,
-          budget: material.budget,
-          models: modelsRef.current.filter(model => model.id === material.id)
-        })
+        const material = respJ.length !== 0 ? respJ[0] : {};
+        modelInputRef.current.value = material.title;
+        setBudget(material.budget)
+        setMaterials(prev => prev.map(prevMaterial => prevMaterial.id === materialid
+          ? {
+            ...prevMaterial,
+            subGlCategory: material.subGlCategory,
+            code: material.product_id,
+            approx_price: material.approx_price,
+            department: material.department_name,
+            materialId: material.id,
+            models: modelsRef.current.filter(model => model.id === material.subGlCategory)
+          }
+          : prevMaterial
+        )
+        )
       })
   }
   const handleSubCategoryChange = (e) => {
@@ -120,32 +122,19 @@ const NewOrderTableRow = (props) => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;
         setModels(respJ);
-        updateRow({ budget: budget, [name]: value, materialId: '' })
+        setBudget(budget)
+        setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value, materialId: '' } : material))
       })
-  }
-  const handleRowChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    updateRow({ [name]: value })
+      .catch(ex => console.log(ex))
   }
   return (
     <li ref={rowRef} className={material.class}>
       <div>{props.index + 1}</div>
       <div>
-        <select onChange={handleRowChange} name="glCategory" value={material.glCategory}>
-          <option value="-1">-</option>
-          {
-            parentGlCategories.map(category =>
-              <option key={category.id} value={category.id}>{category.name}</option>
-            )
-          }
-        </select>
-      </div>
-      <div>
         <select onChange={handleSubCategoryChange} name="subGlCategory" value={material.subGlCategory}>
           <option value="-1">-</option>
           {
-            subGlCategories.filter(category => category.dependent_id === Number(material.glCategory)).map(category =>
+            subGlCategories.map(category =>
               <option key={category.id} value={category.id}>{category.name}</option>
             )
           }
@@ -199,7 +188,7 @@ const NewOrderTableRow = (props) => {
         <div>{material.department}</div>
       </div>
       <div>
-        <div style={{ height: '100%' }}>{material.budget}</div>
+        <div style={{ height: '100%' }}>{budget}</div>
       </div>
       <div>
         <input

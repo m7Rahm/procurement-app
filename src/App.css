@@ -251,8 +251,52 @@ div.operation-result>div>svg {
     transform: translateY(0px);
   }
 }
-
-.side-bar>div:first-of-type {
+.calendar-container{
+  flex: 1;
+}
+.calendar-head{
+  position: relative;
+  height: 36px;
+}
+.calendar-head input{
+  padding: 6px 16px;
+  background-color: transparent;
+  width: 100%;
+  border: none;
+}
+.calendar-head input:focus{
+  outline-color: steelblue;
+}
+.calendar-head>span{
+  border-radius: 5px;
+  border: solid #a1a1a1 0.5px;
+  display: block;
+  width: 96%;
+}
+div.adv-search-box{
+  position: relative;
+  top: 50px;
+  background-color: rgba(255,255,255, 0.9);
+  z-index: 0;
+  animation: show-up 0.5s both ease-in-out;
+  padding-bottom: 20px;
+}
+.calendar-head input:focus+label,
+.calendar-head input:not([value=""])+label{
+  font-size: 12px;
+  background-color: white;
+  top: -10px;
+  z-index: 1;
+}
+.calendar-head label{
+  position: absolute;
+  z-index: -1;
+  left: 8px;
+  color: #515155;
+  top: 8px;
+  transition: all 0.5s;
+}
+.side-bar>div:first-of-type:not(#pagination) {
   height: 50px;
   position: absolute;
   margin: auto;
@@ -389,7 +433,6 @@ div.advanced-search-bar>div>span>span {
   position: absolute;
   left: 10px;
   z-index: -1;
-  /* bottom: 5px; */
   top: 6px;
   background-color: white;
   transition: all 0.2s;
@@ -403,7 +446,8 @@ div.advanced-search-bar>div>span>input:focus {
   border-color: transparent;
 }
 
-div.advanced-search-bar>div>span>input:focus+span, div.advanced-search-bar>div>span>input:not([value=""])+span {
+div.advanced-search-bar>div>span>input:focus+span,
+div.advanced-search-bar>div>span>input:not([value=""])+span {
   top: -5px;
   font-size: 12px;
   color: #1a73e8;
@@ -1312,11 +1356,14 @@ div.forwarded-person>div>div {
 
 input.search-with-query {
   color: #545454;
-  /* margin-right: 40px; */
   max-width: 100%;
+  margin: 5px 0px;
   border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 3px 1px rgb(255, 174, 0);
   outline: none;
-  height: 39px;
+  height: 38px;
+  width: 100%;
 }
 
 ul.employees-list::-webkit-scrollbar {

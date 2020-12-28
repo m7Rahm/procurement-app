@@ -2,7 +2,7 @@
 export const newOrderInitial = {
     materials: [
         {
-            id: Date.now().toString(),
+            id: Date.now(),
             materialId: '',
             model: '',
             code: '',
@@ -11,10 +11,10 @@ export const newOrderInitial = {
             additionalInfo: '',
             class: '',
             subGlCategory: '',
-            glCategory: '',
             count: 1
         }
     ],
+    glCategory: '-1',
     structure: '-1',
     comment: '',
     review: '',

@@ -5,11 +5,7 @@ import {
 import {newOrderInitial} from '../../../data/data'
 const NewOrderTableRowAdd = (props) => {
   const handleClick = () => {
-    props.dispatch({
-      type: 'addRow', payload: {
-        rowData: {...newOrderInitial.materials[0], id: Date.now().toString(), class: 'new-row'}
-      }
-    })
+    props.setMaterials(prev => [...prev, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}])
   }
   return (
     <li style={{ height: '20px', backgroundColor: 'transparent' }}>

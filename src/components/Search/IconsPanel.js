@@ -39,7 +39,7 @@ const IconsPanel = (props) => {
             body: data
         })
             .then(resp => {
-                if(resp.status === 200)
+                if (resp.status === 200)
                     return resp.json()
                 else
                     throw new Error('Internal Server Error');
@@ -68,7 +68,7 @@ const IconsPanel = (props) => {
                     <>
                         <FaTimes onClick={() => setBulkPriority(0)} title="" size="25" />
                         <FcLowPriority onClick={() => setBulkPriority(1)} title="Aşağı prioritet" size="25" />
-                        <FcMediumPriority onClick={() => setBulkPriority(2)}  title="Orta prioritet" size="25" />
+                        <FcMediumPriority onClick={() => setBulkPriority(2)} title="Orta prioritet" size="25" />
                         <FcHighPriority onClick={() => setBulkPriority(3)} title="Yüksək prioritet" size="25" />
                     </>
                     : <div>

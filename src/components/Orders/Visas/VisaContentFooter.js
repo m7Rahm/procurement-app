@@ -39,6 +39,7 @@ const VisaContentFooter = (props) => {
             })
             .then(resp => resp.json())
             .then(respJ => {
+                console.log(respJ)
                 if (respJ[0].operation_result === 'success')
                     setIsModalOpen([respJ[0].head_id], respJ[0])
                 else if (respJ[0].error === 'Logical Error')

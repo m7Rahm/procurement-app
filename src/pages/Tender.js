@@ -11,8 +11,8 @@ import {
     FaCartArrowDown
 } from 'react-icons/fa'
 import ExpressVendors from './Tender/ExpressVendors'
-import Inbox from './Tender/Inbox'
 import PotentialVendors from './Tender/PotentialVendors'
+import Agreements from './Tender/Agreements';
 const routes = [
     {
         text: 'Express Vendors',
@@ -21,10 +21,10 @@ const routes = [
         component: ExpressVendors
     },
     {
-        text: 'Orders',
-        link: '/orders',
+        text: 'Agreements',
+        link: '/agreements',
         icon: FaCartArrowDown,
-        component: Inbox
+        component: Agreements
     },
     {
         text: 'Potential Vendors',

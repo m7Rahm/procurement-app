@@ -40,7 +40,7 @@ const ListItem = (props) => {
     setIsModalOpen(prev => !prev)
   }
   const onInfoClick = (number) => {
-    const onSendClick = (data) => {
+    const onSendClick = (data, setOperationResult) => {
       console.log(data)
       const reqData = JSON.stringify(data);
       fetch('http://172.16.3.101:54321/api/new-order', {
@@ -53,13 +53,12 @@ const ListItem = (props) => {
         body: reqData
       })
         .then(resp => {
-          if(resp.status === 200)
-              resp.json()
+          if (resp.status === 200)
+            return resp.json()
           else
-              throw new Error('Internal Server Error');
-      })
+            throw new Error('Internal Server Error');
+        })
         .then(respJ => {
-          console.log(respJ)
           if (respJ[0].result === 'success') {
             setOrders(prev => {
               const newList = prev.orders.filter(order => order.ord_numb !== number);
@@ -67,6 +66,10 @@ const ListItem = (props) => {
               return ({ orders: newList, count: newList.count })
             });
           }
+          else if (respJ[0].error)
+            setOperationResult({ visible: true, desc: respJ[0].error })
+          else
+            throw new Error('Error Performing operation')
         })
     }
     setModalContent(_ => (props) =>

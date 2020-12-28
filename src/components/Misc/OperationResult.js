@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef } from 'react'
+import { IoIosCloseCircle } from 'react-icons/io'
 const OperationResult = (props) => {
-    const { operationDesc, show, setOperationResult, icon: Icon, backgroundColor, iconColor } = props;
+    const { operationDesc, show, setOperationResult, icon: Icon = IoIosCloseCircle, backgroundColor = '#D93404', iconColor } = props;
     const count = useRef(0);
     const setOperationResultCallback = useCallback(setOperationResult, [])
     const operationResultRef = useRef(null);
-    const color = backgroundColor ? backgroundColor : '#D93404';
     useEffect(() => {
         if (operationResultRef.current)
             operationResultRef.current.addEventListener('animationend', () => {
@@ -16,7 +16,7 @@ const OperationResult = (props) => {
             }, false)
     }, [show, setOperationResultCallback])
     return (
-        <div ref={operationResultRef} style={{ backgroundColor: color }} className="operation-result">
+        <div ref={operationResultRef} style={{ backgroundColor: backgroundColor }} className="operation-result">
             <div>
                 <Icon color={iconColor} size="88" />
             </div>

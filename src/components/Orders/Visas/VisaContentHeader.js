@@ -27,7 +27,7 @@ const VisaContentHeader = (props) => {
 			comment: respJ[1].comment
 		})
 	};
-	const editOrderAndApprove = (data) => {
+	const editOrderAndApprove = (data, setOperationResult) => {
 		const apiData = JSON.stringify(data)
 		fetch(`http://172.16.3.101:54321/api/edit-accept-order-req/${tranid}`, {
 			method: 'POST',
@@ -39,7 +39,14 @@ const VisaContentHeader = (props) => {
 			body: apiData
 		})
 			.then(resp => resp.json())
-			.then(respJ => closeModal(respJ, data.recs))
+			.then(respJ => {
+				if(respJ[0].result === 'success')
+					closeModal(respJ, data.recs)
+				else if(respJ[0].error)
+					setOperationResult({ visible: true, desc: respJ[0].error })
+				else
+					throw new Error('Error Performing operation')
+			})
 			.catch(ex => console.log(ex))
 	}
 	const showOrderVersions = () => {
@@ -71,7 +78,7 @@ const VisaContentHeader = (props) => {
 				<h1>
 					{`Sifariş № ${orderNumb}`}
 					{
-						canEditRequest && !visaGenInfo.result &&
+						canEditRequest && !visaGenInfo.result && visaGenInfo.order_result === 0 &&
 						<FaEdit onClick={showEditOrderContent}
 							title="düzəliş et"
 							size="20"

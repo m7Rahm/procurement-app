@@ -6,15 +6,21 @@ import {
 	FaTimes
 } from 'react-icons/fa'
 import OperationResult from '../Misc/OperationResult'
-import { IoIosCloseCircle } from 'react-icons/io'
 
 const VisaContentMaterials = (props) => {
-	const { forwardType, canProceed } = props;
+	const { forwardType, canProceed, orderContent } = props;
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
 	const userData = tokenContext[0].userData;
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-	const { emp_version_id, order_type } = props.orderContent[0];
+	const { emp_version_id, order_type, department_content } = props.orderContent[0];
+	let orders = [];
+	if (forwardType === 3)
+		orders = orderContent.filter(material => material.techizatci_id === userData.userInfo.structureid)
+	else if (forwardType === 4)
+		orders = orderContent.filter(material => material.techizatci_id === department_content)
+	else
+		orders = orderContent
 	return (
 		<>
 			{
@@ -22,7 +28,6 @@ const VisaContentMaterials = (props) => {
 				<OperationResult
 					setOperationResult={setOperationResult}
 					operationDesc={operationResult.desc}
-					icon={IoIosCloseCircle}
 				/>
 			}
 			<ul className="new-order-table order-table-protex">
@@ -38,7 +43,7 @@ const VisaContentMaterials = (props) => {
 					<div style={{ width: '50px', flex: 'none' }}></div>
 				</li>
 				{
-					props.orderContent.map((material, index) =>
+					orders.map((material, index) =>
 						<TableRow
 							index={index}
 							setOperationResult={setOperationResult}
@@ -60,9 +65,9 @@ const VisaContentMaterials = (props) => {
 export default React.memo(VisaContentMaterials)
 
 const TableRow = (props) => {
-	const { canProceed, token, setOperationResult, index, forwardType } = props;
+	const { canProceed, token, setOperationResult, index, forwardType, userData } = props;
 	const { amount, material_comment, order_material_id, material_name, total, department_id, order_type, title, result } = props.material;
-	const structureid = props.userData.structureid;
+	const structureid = userData.userInfo.structureid;
 	const [disabled, setDisabled] = useState(true);
 	const servicePriceRef = useRef(null);
 	const handleEditClick = () => {
@@ -116,7 +121,7 @@ const TableRow = (props) => {
 				</div>
 			</div>
 			{
-				(forwardType === 2 && order_type === 1) &&
+				((forwardType === 3 || forwardType === 5) && order_type === 1) &&
 				<div style={{ maxWidth: '140px' }}>
 					<input disabled={disabled} defaultValue={total} ref={servicePriceRef} />
 				</div>
@@ -128,7 +133,7 @@ const TableRow = (props) => {
 			</div>
 			<div style={{ minWidth: '50px', flex: 'none' }}>
 				{
-					forwardType === 2 && order_type === 1 && structureid === department_id && result === 0 &&
+					(forwardType === 5 || forwardType === 3) && order_type === 1 && structureid === department_id && result === 0 &&
 					<>
 						{
 							disabled && result === 0

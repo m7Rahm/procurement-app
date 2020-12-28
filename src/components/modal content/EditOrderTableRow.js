@@ -4,32 +4,34 @@ import {
 	FaTrashAlt,
 	FaMinus
 } from 'react-icons/fa'
-const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNumb, version, view }) => {
-	const subCategoryid = row.parent_id;
+const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ordNumb, version, view }) => {
+	const { sub_gl_category_id: subCategoryid } = row;
 	const rowid = row.id;
 	const modelsRef = useRef([]);
 	const codeRef = useRef(null);
 	const rowRef = useRef(null);
 	const modelListRef = useRef(null);
 	useEffect(() => {
-		const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
-		fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
-			method: 'POST',
-			headers: {
-				'Authorization': 'Bearer ' + token,
-				'Content-Type': 'application/json',
-				'Content-Length': data.length
-			},
-			body: data
-		})
-			.then(resp => resp.json())
-			.then(respJ => {
-				modelsRef.current = respJ;
-				const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-				setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, budget: budget, models: respJ })))
+		if (view === 'returned' || view === 'procurement' ) {
+			const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
+			fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
+				method: 'POST',
+				headers: {
+					'Authorization': 'Bearer ' + token,
+					'Content-Type': 'application/json',
+					'Content-Length': data.length
+				},
+				body: data
 			})
-	}, [subCategoryid, token, ordNumb, version, rowid, setOrderState])
-	const subCategories = categories.all.filter(category => category.parent_id.toString() === row.grand_parent_id.toString());
+				.then(resp => resp.json())
+				.then(respJ => {
+					modelsRef.current = respJ;
+					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
+					setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, budget: budget, models: respJ })))
+				})
+		}
+	}, [subCategoryid, token, ordNumb, version, rowid, setOrderState, view])
+	const subCategories = glCategories.all.filter(category => category.dependent_id === Number(row.gl_category_id));
 
 	const handleBlur = (e) => {
 		const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
@@ -123,21 +125,21 @@ const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNu
 		<li ref={rowRef} className={row.className}>
 			<div>{index + 1}</div>
 			<div>
-				<select disabled={view !== 'returned'} onChange={handleRowChange} name="grand_parent_id" value={row.grand_parent_id}>
+				<select disabled={view !== 'returned'} onChange={handleRowChange} name="gl_category_id" value={row.gl_category_id}>
 					<option value="-1">-</option>
 					{
-						categories.main.map(category =>
-							<option key={category.id} value={category.id}>{category.product_title}</option>
+						glCategories.main.map(category =>
+							<option key={category.id} value={category.id}>{category.name}</option>
 						)
 					}
 				</select>
 			</div>
 			<div>
-				<select disabled={view !== 'returned'} onChange={handleSubCategoryChange} name="parent_id" value={row.parent_id}>
+				<select disabled={view !== 'returned'} onChange={handleSubCategoryChange} name="sub_gl_category_id" value={row.sub_gl_category_id}>
 					<option value="-1">-</option>
 					{
 						subCategories.map(category =>
-							<option key={category.id} value={category.id}>{category.product_title}</option>
+							<option key={category.id} value={category.id}>{category.name}</option>
 						)
 					}
 				</select>
@@ -150,6 +152,7 @@ const EditOrderTableRow = ({ categories, index, row, setOrderState, token, ordNu
 					placeholder="Məhsul"
 					value={row.title}
 					name="title"
+					autoComplete="off"
 					disabled={view === 'protected'}
 					onChange={handleInputSearch}
 				/>

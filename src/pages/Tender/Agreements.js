@@ -2,12 +2,11 @@ import React, { useContext, useState } from 'react'
 import ReadyOfferCard from '../../components/VisaCards/ReadyOfferCard'
 import CardsList from '../../components/HOC/CardsList'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
-import TenderSearch from '../../components/Search/TenderSearch'
 import { TokenContext } from '../../App'
 import SideBarWithSearch from '../../components/HOC/SideBarWithSearch'
 const SideBarContent = CardsList(ReadyOfferCard);
-const SearchBox = SideBarWithSearch(TenderSearch);
-const SideBar = React.memo(SideBarContainer(SearchBox, SideBarContent));
+const WithSearch = SideBarWithSearch(SideBarContent);
+const SideBar = React.memo(SideBarContainer(WithSearch));
 const updateListContent = (data, token) => fetch('http://172.16.3.101:54321/api/get-ready-orders', {
     method: 'POST',
     headers: {
@@ -25,7 +24,7 @@ const initData = {
     from: 0,
     until: 20
 }
-const Inbox = (props) => {
+const Agreements = () => {
     const [active, setActive] = useState(null);
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -37,7 +36,8 @@ const Inbox = (props) => {
                 updateListContent={updateListContent}
                 token={token}
             />
+            {/* <AgreementContent/> */}
         </div>
     )
 }
-export default Inbox
+export default Agreements

@@ -346,6 +346,8 @@ const NewMaterial = (props) => {
             </td>
             <td>
                 <select onChange={handleChange} name="sub_gl_category_id" value={newCatState.sub_gl_category_id}>
+                    <option value="-1">-</option>
+
                     {
                         glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(newCatState.gl_category_id))
                             .map(subGlCategory =>

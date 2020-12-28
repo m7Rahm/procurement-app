@@ -60,10 +60,10 @@ const VisaVersion = (props) => {
             setParticipantsVisiblity(prev => !prev);
     }
     const handleClick = (action) => {
-        const data = {
-            action: JSON.stringify(action),
+        const data = JSON.stringify({
+            action: action,
             comment: '',
-        }
+        })
         fetch(`http://172.16.3.101:54321/api/accept-decline/${tranid}`,
             {
                 method: 'POST',
@@ -76,8 +76,7 @@ const VisaVersion = (props) => {
             })
             .then(resp => resp.json())
             .then(respJ => {
-                console.log(respJ);
-                if (respJ[0].result === 'success')
+                if (respJ[0].operation_result === 'success')
                     closeModal()
             })
             .catch(err => console.log(err))

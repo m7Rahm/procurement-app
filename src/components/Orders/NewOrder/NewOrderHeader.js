@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { TokenContext } from '../../../App'
 const NewOrderHeader = (props) => {
-    const { state, dispatch } = props;
+    const { orderInfo, setOrderInfo, parentGlCategories } = props;
     const [structures, setStructures] = useState([]);
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -19,9 +19,9 @@ const NewOrderHeader = (props) => {
             .catch(ex => console.log(ex))
     }, [token])
     const handleChange = (e) => {
-        const type = e.target.name;
+        const name = e.target.name;
         const value = (e.target.value)
-        dispatch({ type: type, payload: { value: value } })
+        setOrderInfo(prev => ({ ...prev, [name]: value }))
     }
     return (
         <div>
@@ -31,7 +31,7 @@ const NewOrderHeader = (props) => {
                     <div>
                         <label htmlFor="category">Təyinat</label>
                         <br />
-                        <select value={state.structure} onChange={handleChange} name="setStructure">
+                        <select value={orderInfo.structure} onChange={handleChange} name="setStructure">
                             <option value="-1">-</option>
                             {
                                 dependents.map(structure =>
@@ -42,11 +42,23 @@ const NewOrderHeader = (props) => {
                     </div>
                 }
                 <div style={{ float: 'right' }}>
-                    <label htmlFor="setOrderType">Sifariş növü</label>
+                    <label htmlFor="orderType">Sifariş növü</label>
                     <br />
-                    <select name="setOrderType" value={state.orderType} onChange={handleChange}>
+                    <select name="orderType" value={orderInfo.orderType} onChange={handleChange}>
                         <option value={0}>Mal-Material</option>
                         <option value={1}>Xidmət</option>
+                    </select>
+                </div>
+                <div style={{ float: 'left' }}>
+                    <label htmlFor="glCategory">Gl kateqoriya</label>
+                    <br />
+                    <select onChange={handleChange} name="glCategory" value={orderInfo.glCategory}>
+                        <option value="-1">-</option>
+                        {
+                            parentGlCategories.map(category =>
+                                <option key={category.id} value={category.id}>{category.name}</option>
+                            )
+                        }
                     </select>
                 </div>
             </div>
