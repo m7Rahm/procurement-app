@@ -77,7 +77,7 @@ const SideBar = (props) => {
 				/>
 			</div>
 			<div onClick={() => refreshVisas(0)} ref={notifIcon} className="new-visa-notification">
-				<BsArrowUpShort size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
+				<BsArrowUpShort color="#00acee" size="20" style={{ verticalAlign: 'sub', marginRight: '8px' }} />
 				Yeni bildiriş
 			</div>
 			<ul>

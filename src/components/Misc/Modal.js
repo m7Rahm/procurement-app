@@ -12,8 +12,6 @@ const Modal = (props) => {
   const canBeClosed = props.canBeClosed;
   const number = props.number;
   const title = props.title
-  //todo: send ref to child and update every time needed
-  //todo: onClose check if initial state changed
   const modalWrapperRef = useRef(null)
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});

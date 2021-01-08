@@ -1,8 +1,7 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import Modal from '../../Misc/Modal'
 import VisaContentMaterials from '../../Common/VisaContentMaterials'
 import VisaContentHeader from './VisaContentHeader'
-import Loading from '../../Misc/Loading'
 
 const OrderContentProtected = (props) => {
 	const { current, canProceed, setVisa, footerComponent: Component, sendNotification } = props;
@@ -27,11 +26,9 @@ const OrderContentProtected = (props) => {
 			<>
 				{
 					isModalOpen &&
-					<Suspense fallback={<Loading />}>
-						<Modal canBeClosed={true} number={current[0].ord_numb} changeModalState={handleModalClose}>
-							{modalContent}
-						</Modal>
-					</Suspense>
+					<Modal canBeClosed={true} number={current[0].ord_numb} changeModalState={handleModalClose}>
+						{modalContent}
+					</Modal>
 				}
 				<VisaContentHeader
 					deadline={current[0].deadline}

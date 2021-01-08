@@ -8,11 +8,13 @@ import {
     MdLocalOffer
 } from 'react-icons/md'
 import {
-    FaCartArrowDown
+    FaCartArrowDown,
+    FaTasks
 } from 'react-icons/fa'
 import ExpressVendors from './Tender/ExpressVendors'
 import PotentialVendors from './Tender/PotentialVendors'
-import Agreements from './Tender/Agreements';
+import Orders from './Tender/Orders';
+import NewAgreement from './Tender/NewAgreement';
 const routes = [
     {
         text: 'Express Vendors',
@@ -21,16 +23,22 @@ const routes = [
         component: ExpressVendors
     },
     {
-        text: 'Agreements',
-        link: '/agreements',
+        text: 'Orders',
+        link: '/orders',
         icon: FaCartArrowDown,
-        component: Agreements
+        component: Orders
     },
     {
         text: 'Potential Vendors',
         link: '/potential-vendors',
         icon: FaCartArrowDown,
         component: PotentialVendors
+    },
+    {
+        text: 'New Agreement',
+        link: '/new-agreement',
+        icon: FaTasks,
+        component: NewAgreement
     }
 ]
 const Tender = (props) => {

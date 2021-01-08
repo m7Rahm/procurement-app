@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
-import Login from './pages/Login'
 import jwt from 'jsonwebtoken'
 import PrivateRoute from './components/Misc/PrivateRoute'
 import SelectModule from './pages/SelectModule'
 import './App.css'
 import { modules } from './data/data'
+import Loading from './components/Misc/Loading'
+const Login = React.lazy(() => import('./pages/Login'));
+
 const getUserData = () => {
   if (localStorage.getItem('token')) {
     const decoded = jwt.decode(localStorage.getItem('token'));
@@ -30,13 +32,17 @@ const App = () => {
   return (
     <BrowserRouter>
       <TokenContext.Provider value={[token, setToken]}>
-        <Switch>
-          <Route path="/login" render={() => !token.token ? <Login setToken={setToken} /> : <Redirect to="/" />}>
-          </Route>
-          <PrivateRoute token={token.token} path="/">
-            <SelectModule />
-          </PrivateRoute>
-        </Switch>
+        <Suspense fallback={<Loading />}>
+          <Switch>
+            <Route path="/login" render={() => !token.token ?
+              <Login setToken={setToken} />
+              : <Redirect to="/" />}>
+            </Route>
+            <PrivateRoute token={token.token} path="/">
+              <SelectModule />
+            </PrivateRoute>
+          </Switch>
+        </Suspense>
       </TokenContext.Provider>
     </BrowserRouter>
   );

@@ -1,4 +1,4 @@
-import React, { useState, Suspense, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     IoIosAdd
 } from 'react-icons/io'
@@ -75,13 +75,11 @@ const PotentialVendor = (props) => {
         <div style={{ paddingTop: '50px', clear: 'both', width: 'auto' }} className="wrapper">
             {
                 modalState.display &&
-                <Suspense fallback="">
                     <OfferPictures
                         setModalState={setModalState}
                         vendor={potentialVendors[modalState.vendorIndex]}
                         setPotentialVendors={setPotentialVendors}
                     />
-                </Suspense>
             }
             <ul className="modified">
                 <li>

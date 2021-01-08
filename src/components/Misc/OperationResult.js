@@ -1,9 +1,14 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { IoIosCloseCircle } from 'react-icons/io'
 const OperationResult = (props) => {
-    const { operationDesc, show, setOperationResult, icon: Icon = IoIosCloseCircle, backgroundColor = '#D93404', iconColor } = props;
+    const {
+        operationDesc,
+        setOperationResult,
+        icon: Icon = IoIosCloseCircle,
+        iconColor = "#D93404"
+    } = props;
     const count = useRef(0);
-    const setOperationResultCallback = useCallback(setOperationResult, [])
+    const setOperationResultCallback = useCallback(setOperationResult, []);
     const operationResultRef = useRef(null);
     useEffect(() => {
         if (operationResultRef.current)
@@ -11,16 +16,16 @@ const OperationResult = (props) => {
                 count.current += 1;
                 if (count.current === 2) {
                     count.current = 0;
-                    setOperationResultCallback({ visible: false, desc: '' })
+                    setOperationResultCallback(prev => ({ ...prev, visible: false, desc: '' }))
                 }
             }, false)
-    }, [show, setOperationResultCallback])
+    }, [setOperationResultCallback])
     return (
-        <div ref={operationResultRef} style={{ backgroundColor: backgroundColor }} className="operation-result">
+        <div ref={operationResultRef} className="operation-result">
             <div>
                 <Icon color={iconColor} size="88" />
             </div>
-            {operationDesc}
+            <h1 style={{ color: '#343a40', fontSize: '24px' }}>{operationDesc}</h1>
         </div>
     )
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import {
   IoIosAdd
 } from 'react-icons/io'
-import {newOrderInitial} from '../../../data/data'
+import { newOrderInitial } from '../../../data/data'
 const NewOrderTableRowAdd = (props) => {
   const handleClick = () => {
     props.setMaterials(prev => [...prev, {...newOrderInitial.materials[0], id: Date.now(), class: 'new-row'}])

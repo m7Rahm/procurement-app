@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 const SideBarContainer = (Search) => function SideBar(props) {
     const { updateListContent, initData, setActive, token } = props;
     const [cards, setCards] = useState({ content: [], count: 0 });
-    const updateList = (data) => {
-        updateListContent(data, token)
+    const updateList = useCallback((data) => {
+        const apiDate = JSON.stringify(data);
+        updateListContent(apiDate, token)
             .then(resp => resp.json())
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setCards({ count: totalCount, content: respJ });
             })
             .catch(ex => console.log(ex))
-    }
+    }, [token, updateListContent])
     useEffect(() => {
         const data = JSON.stringify(initData);
         updateListContent(data, token)
@@ -27,8 +28,8 @@ const SideBarContainer = (Search) => function SideBar(props) {
             <Search
                 cards={cards}
                 initData={initData}
-                updateListContent={updateList}
                 setActive={setActive}
+                updateList={updateList}
             />
         </div>
     )

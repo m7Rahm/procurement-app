@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PotentialVendorsState from '../modal content/PotentialVendorsState'
-import Loading from '../Misc/Loading'
 const Modal = React.lazy(() => import('../Misc/Modal'));
 
 const ProcurementOrderContent = (props) => {
@@ -50,11 +49,9 @@ const ProcurementOrderContent = (props) => {
             <div>
                 {
                     modalState.visible &&
-                    <Suspense fallback={<Loading />}>
                         <Modal changeModalState={closeModal}>
                             {modalState.content}
                         </Modal>
-                    </Suspense>
                 }
                 <ul style={{ clear: 'both' }} className="new-order-table order-table-protex">
                     <li>

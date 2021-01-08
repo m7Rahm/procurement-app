@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect, useContext } from 'react'
 import OrderContentProtected from './OrderContentProtected'
 import Participants from '../../modal content/Participants'
 import VisaContentFooter from './VisaContentFooter'
+import EmptyContent from '../../Misc/EmptyContent'
 import { TokenContext } from '../../../App'
 import {
     FaAngleDown,
@@ -73,15 +74,7 @@ const VisaContent = (props) => {
                             </div>
                         }
                     </div>
-                    : <div style={{ marginTop: '100px' }}>
-                        <img
-                            src={require('../../../Konvert.svg')}
-                            alt="blah"
-                            height="70"
-                            style={{ marginBottom: '20px' }} />
-                        <br />
-                        <span style={{ color: 'gray', fontSize: 20 }}>Baxmaq üçün sənədi seçin</span>
-                    </div>
+                    : <EmptyContent/>
             }
         </div>
     )

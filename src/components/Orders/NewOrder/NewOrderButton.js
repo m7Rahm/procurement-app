@@ -1,9 +1,8 @@
-import React, { useState, Suspense } from 'react'
+import React, { useState } from 'react'
 import {
   MdAdd
 } from 'react-icons/md'
 import Modal from '../../Misc/Modal'
-import Loading from '../../Misc/Loading'
 const NewOrderContent = React.lazy(() => import('../../modal content/NewOrder'))
 const NewOrder = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -26,9 +25,7 @@ const NewOrder = (props) => {
         isModalVisible &&
         <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
           {
-            (props) => <Suspense fallback={<Loading/>}>
-              <NewOrderContent handleModalClose={handleClose} {...props} />
-            </Suspense>
+            (props) => <NewOrderContent handleModalClose={handleClose} {...props} />
           }
         </Modal>
       }

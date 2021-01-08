@@ -1,4 +1,4 @@
-import React, { lazy, useState, Suspense, useContext } from 'react'
+import React, { lazy, useState, useContext } from 'react'
 import {
   FaBoxOpen
 } from 'react-icons/fa'
@@ -9,14 +9,12 @@ import {
   IoMdDoneAll,
   IoMdPeople,
   IoIosOptions,
-  IoMdRefreshCircle,
   IoMdInformationCircle
 } from 'react-icons/io'
 import CommentContainer from './CommentContainer'
 import ActionsContainer from './ActionsContainer'
 import EditOrderRequest from '../../modal content/EditOrderRequest'
 import { TokenContext } from '../../../App'
-import Loading from '../../Misc/Loading'
 const ParticipantsModal = lazy(() => import('../../modal content/Participants'))
 const StatusModal = lazy(() => import('../../modal content/Status'))
 const Modal = lazy(() => import('../../Misc/Modal'))
@@ -103,16 +101,9 @@ const ListItem = (props) => {
           {icon}
           {
             isModalOpen &&
-            <Suspense fallback={
-              <div className={<Loading />}>
-                <IoMdRefreshCircle size="50" color="#a4a4a4" />
-              </div>
-            }
-            >
               <Modal changeModalState={handleClose} >
                 {modalContent}
               </Modal>
-            </Suspense>
           }
         </div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{date}</div>

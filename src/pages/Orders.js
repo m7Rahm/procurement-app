@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import MyOrders from './Orders/MyOrders'
 import Visas from './Orders/Visas'
-import PriceOffers from './Orders/PriceOffers'
 import Returned from './Orders/Returned'
+import Agreements from './Orders/Agreements'
 import {
     IoMdDocument,
     IoMdCheckmarkCircleOutline,
@@ -33,10 +33,10 @@ const routes = [
         component: Visas
     },
     {
-        text: 'Price Offers',
-        link: '/price-offers',
+        text: 'Agreements',
+        link: '/agreements',
         icon: IoMdCart,
-        component: PriceOffers
+        component: Agreements
     }
 ]
 const Orders = (props) => {

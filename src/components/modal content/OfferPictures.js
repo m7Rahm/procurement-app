@@ -1,17 +1,13 @@
-import React, { useRef, useState } from 'react'
+import React from 'react'
 import {
     IoMdClose,
     IoIosClose
 } from 'react-icons/io'
 const PictureItem = (props) => {
-    const { index, picture, setModalState, setPotentialVendors, id } = props;
-    const imgRef = useRef(null);
+    const { index, picture, setAgreementVendors, id } = props;
     const src = URL.createObjectURL(picture);
-    const showBiggerPicter = function () {
-        setModalState({ show: true, src: src });
-    }
     const handleDelete = () => {
-        setPotentialVendors(prev =>
+        setAgreementVendors(prev =>
             prev.map(row =>
                 row.key === id
                     ? { ...row, files: row.files.filter(prev => prev.name !== picture.name) }
@@ -29,18 +25,7 @@ const PictureItem = (props) => {
                 {picture.name}
             </td>
             <td>
-                {
-                    picture.name.split('.').pop() === 'pdf'
-                        ? <div onClick={() => window.open(src)} style={{ backgroundColor: 'red', color: 'white' }}>{picture.name}</div>
-                        : <img
-                            onClick={showBiggerPicter}
-                            onLoad={() => {URL.revokeObjectURL(imgRef.current.src)}}
-                            ref={imgRef}
-                            src={src}
-                            alt="preview"
-                        />
-                }
-
+                <div onClick={() => window.open(src)} style={{ backgroundColor: 'red', color: 'white' }}>{picture.name}</div>
             </td>
             <td>
                 <IoIosClose color="red" onClick={handleDelete} />
@@ -49,19 +34,13 @@ const PictureItem = (props) => {
     )
 }
 const OfferPictures = (props) => {
-    const closeModal = () => props.setModalState({ display: false, vendorIndex: null });
-    const setPotentialVendors = props.setPotentialVendors;
-    const { files, key, name } = props.vendor;
-    const [modalState, setModalState] = useState(false);
-    const bigPicRef = useRef(null);
-    console.log(files)
+    const closeModal = () => props.setModalState({ display: false, vendor: null });
+    const { vendors, id: vendorKey } = props;
+    const vendor = vendors.find(vendor => vendor.key === vendorKey)
+    const { files, key, name } = vendor;
     const closeThumbsModal = (e) => {
         if (e.target.closest('div').id === 'offer-pictures')
             closeModal()
-    }
-    const closeBigPicModal = (e) => {
-        if (e.target.tagName.toLowerCase() !== 'img')
-            setModalState({ show: false })
     }
     return (
         <div id="offer-pictures" onClick={closeThumbsModal} className="offer-pictures">
@@ -74,22 +53,6 @@ const OfferPictures = (props) => {
                         size='18'
                     />
                 </div>
-                {
-                    modalState.show &&
-                    <div onClick={closeBigPicModal} className="big-picture-ref">
-                        <div>
-                            <span>
-                                <IoIosClose onClick={() => setModalState({ show: false })} size="40" />
-                            </span>
-                            <img
-                                ref={bigPicRef}
-                                src={modalState.src}
-                                alt="big preview"
-                                onLoad={() => URL.revokeObjectURL(bigPicRef.current.src)}
-                            />
-                        </div>
-                    </div>
-                }
                 <div>
                     <table>
                         <thead>
@@ -109,8 +72,7 @@ const OfferPictures = (props) => {
                                         index={index}
                                         id={key}
                                         picture={picture}
-                                        setModalState={setModalState}
-                                        setPotentialVendors={setPotentialVendors}
+                                        setAgreementVendors={props.setAgreementVendors}
                                     />
                                 )
                             }
