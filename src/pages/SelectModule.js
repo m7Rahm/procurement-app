@@ -7,9 +7,9 @@ import {
 	IoMdMenu
 } from 'react-icons/io';
 
-import '../App.css';
 import logo from '../logo.svg';
 import LeftSidePane from '../components/Common/LeftSidePane'
+const Contracts = lazy(() => import('./Contracts'));
 const Budget = lazy(() => import('./Budget'))
 const Orders = lazy(() => import('./Orders'))
 const Tender = lazy(() => import('./Tender'))
@@ -33,7 +33,7 @@ const availableModules = [
 	{
 		text: 'Contracts',
 		link: '/contracts',
-		component: Budget
+		component: Contracts
 	},
 	{
 		text: 'Tender',
@@ -52,7 +52,6 @@ const SelectModule = () => {
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);
 	useEffect(() => {
-		// console.log(token);
 		if (token) {
 			const webSocket = new WebSocket('ws://172.16.3.101:12345');
 			webSocket.onopen = () => {
@@ -120,7 +119,7 @@ const SelectModule = () => {
 														<IoMdMenu size="24" cursor="pointer" color="#606060" onClick={handleNavClick} />
 													</div>
 													<div style={{ position: 'relative' }}>
-														<img style={{ height: '32px', cursor: 'pointer' }} onClick={handleIconClick} src={logo} alt='user pic'>
+														<img style={{ height: '32px', cursor: 'pointer', width: '45px' }} onClick={handleIconClick} src={logo} alt='user pic'>
 														</img>
 														<ul ref={moduleNavigationRef} className="profile-icon">
 															{

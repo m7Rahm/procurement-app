@@ -41,11 +41,6 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 	const handleFocus = () => {
 		modelListRef.current.style.display = 'block'
 	}
-	const handleRowChange = (e) => {
-		const name = e.target.name;
-		const value = e.target.value;
-		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, [name]: value, parent_id: 'nan' })))
-	}
 	const handleSubCategoryChange = (e) => {
 		const value = e.target.value;
 		const data = JSON.stringify({ categoryid: value, ordNumb, empVersion: version })
@@ -125,16 +120,6 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 		<li ref={rowRef} className={row.className}>
 			<div>{index + 1}</div>
 			<div>
-				<select disabled={view !== 'returned'} onChange={handleRowChange} name="gl_category_id" value={row.gl_category_id}>
-					<option value="-1">-</option>
-					{
-						glCategories.main.map(category =>
-							<option key={category.id} value={category.id}>{category.name}</option>
-						)
-					}
-				</select>
-			</div>
-			<div>
 				<select disabled={view !== 'returned'} onChange={handleSubCategoryChange} name="sub_gl_category_id" value={row.sub_gl_category_id}>
 					<option value="-1">-</option>
 					{
@@ -194,7 +179,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 				<div>{row.department_name}</div>
 			</div>
 			<div>
-				<div style={{ height: '100%' }}>{row.budget}</div>
+				{row.budget}
 			</div>
 			<div>
 				<input
@@ -202,7 +187,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 					placeholder="Link və ya əlavə məlumat"
 					name="material_comment"
 					disabled={view !== 'returned'}
-					value={row.material_comment}
+					value={row.material_comment || ''}
 					type="text"
 					onChange={handleChange}
 				/>

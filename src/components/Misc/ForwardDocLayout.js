@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect } from 'react'
 import VisaForwardPerson from './VisaForwardPerson'
 const ForwardDocLayout = (props) => {
-    const { handleSendClick, token } = props;
+    const { handleSendClick, token, textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
     const [receivers, setReceivers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -9,43 +9,45 @@ const ForwardDocLayout = (props) => {
     const selectRef = useRef(null);
     const empListRef = useRef(null);
     const textareaRef = useRef(null);
-    useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/emplist', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => {
-                if(resp.status === 200)
-                    return resp.json()
-                else
-                    throw new Error('Internal Server Error');
+    useLayoutEffect(() => {
+        let mounted = true;
+        if (mounted)
+            fetch('http://172.16.3.101:54321/api/emplist', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
             })
-            .then(respJ => {
-                empListRef.current = respJ;
-                setEmpList(respJ);
-            })
-            .catch(err => console.log(err));
+                .then(resp => resp.status === 200 ? resp.json() : new Error('Internal Server Error'))
+                .then(respJ => {
+                    if (mounted) {
+                        empListRef.current = respJ;
+                        setEmpList(respJ);
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => mounted = false
     }, [token]);
-    useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => {
-                if(resp.status === 200)
-                    return resp.json()
-                else
-                    throw new Error('Internal Server Error');
+    useLayoutEffect(() => {
+        let mounted = true;
+        if(mounted)
+            fetch('http://172.16.3.101:54321/api/departments', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
             })
-            .then(respJ => setDepartments(respJ))
-            .catch(err => console.log(err));
+                .then(resp => resp.status === 200 ? resp.json() : new Error('Internal Server Error'))
+                .then(respJ => {
+                    if(mounted){
+                        setDepartments(respJ)
+                    }
+                })
+                .catch(err => console.log(err));
+        return () => mounted = false
     }, [token]);
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         const searchResult = empListRef.current.filter(emp => {
-            if(selectRef.current.value !== "-1")
+            if (selectRef.current.value !== "-1")
                 return emp.full_name.toLowerCase().includes(str) && emp.structure_dependency_id === Number(selectRef.current.value);
             else
                 return emp.full_name.toLowerCase().includes(str)
@@ -65,9 +67,11 @@ const ForwardDocLayout = (props) => {
     }
     return (
         <div style={{ padding: '10px 20px' }}>
-            <div style={{ marginTop: '20px'}} id="procurement-edit-section">
-                <textarea ref={textareaRef} >
-                </textarea>
+            <div style={{ marginTop: '20px' }} id="procurement-edit-section">
+                {
+                    textareaVisible &&
+                    <textarea ref={textareaRef} />
+                }
                 <div style={{ minHeight: '231px' }}>
                     <select ref={selectRef} style={{ height: '30px' }} onChange={handleStructureChange}>
                         <option value="-1">-</option>

@@ -8,6 +8,7 @@ const CardsList = (Card) => function SideBarContent(props) {
             {
                 cards.map(card =>
                     <Card
+                        params={props.params}
                         key={card.id}
                         card={card}
                         setActive={setActive}

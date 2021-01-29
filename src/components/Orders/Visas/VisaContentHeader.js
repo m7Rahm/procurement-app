@@ -40,9 +40,9 @@ const VisaContentHeader = (props) => {
 		})
 			.then(resp => resp.json())
 			.then(respJ => {
-				if(respJ[0].result === 'success')
+				if (respJ[0].result === 'success')
 					closeModal(respJ, data.recs)
-				else if(respJ[0].error)
+				else if (respJ[0].error)
 					setOperationResult({ visible: true, desc: respJ[0].error })
 				else
 					throw new Error('Error Performing operation')
@@ -63,15 +63,15 @@ const VisaContentHeader = (props) => {
 		)
 	}
 	const showEditOrderContent = () => handleEditClick((props) =>
-	<EditOrderRequest
-		closeModal={closeModal}
-		version={version}
-		view='procurement'
-		content={current}
-		editOrderAndApprove={editOrderAndApprove}
-		{...props}
-	/>
-)
+		<EditOrderRequest
+			closeModal={closeModal}
+			version={version}
+			view='procurement'
+			content={current}
+			editOrderAndApprove={editOrderAndApprove}
+			{...props}
+		/>
+	)
 	return (
 		<>
 			<div className="protex-order-header-container">

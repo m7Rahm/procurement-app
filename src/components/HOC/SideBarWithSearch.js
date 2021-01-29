@@ -12,13 +12,13 @@ const SideBarWithSearch = (Content) => function SearchBar(props) {
     const iconRef = useRef(null);
     const notifIcon = useRef(null);
     const [searchBarState, setSearchBarState] = useState(false);
-    const [searchState, setSearchState] = useState({
+    const searchStateRef = useRef({
         startDate: '',
         endDate: '',
         fullName: ''
-    });
+    })
     const handleInputChange = useCallback((name, value) => {
-        setSearchState(prev => ({ ...prev, [name]: value }))
+        searchStateRef.current[name] = value
     }, [])
     const showSearchBar = () => {
         if (advSearchRef.current) {
@@ -33,13 +33,11 @@ const SideBarWithSearch = (Content) => function SearchBar(props) {
             setSearchBarState(true);
         }
     }
-    const refreshList = () => {
-        const data = Object.keys(searchState).filter(key => searchState[key] !== '').reduce((prev, current) => ({ ...prev, [current]: searchState[current] }), {});
-        props.updateList({ ...props.initData, ...data })
+    const refreshList = (from) => {
+        props.updateList({ ...searchStateRef.current, from })
     }
     const handleSearchClick = () => {
-        const data = Object.keys(searchState).filter(key => searchState[key] !== '').reduce((prev, current) => ({ ...prev, [current]: searchState[current] }), {});
-        props.updateList({ ...props.initData, ...data })
+        props.updateList(searchStateRef.current)
     }
     const resetState = () => {
     }
@@ -60,13 +58,11 @@ const SideBarWithSearch = (Content) => function SearchBar(props) {
                                     placeholder="Tarixdən"
                                     name="startDate"
                                     handleInputChange={handleInputChange}
-                                    value={searchState.startDate}
                                 />
                                 <CalendarUniversal
                                     year={year}
                                     month={month}
                                     placeholder="Tarixədək"
-                                    value={searchState.endDate}
                                     name="endDate"
                                     handleInputChange={handleInputChange}
                                 />
@@ -86,6 +82,7 @@ const SideBarWithSearch = (Content) => function SearchBar(props) {
                 </span>
             </div>
             <Content
+                params={props.params}
                 cards={props.cards.content}
                 setActive={props.setActive}
             />

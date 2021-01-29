@@ -37,6 +37,7 @@ const Table = (props) => {
         <div style={{ minWidth: '5%' }}> Qeyd</div>
         <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div>
         <div></div>
+        <div></div>
       </li>
       <TableContent
         referer={referer}

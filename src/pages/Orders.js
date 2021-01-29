@@ -8,35 +8,44 @@ import {
     IoMdCheckmarkCircleOutline,
     IoMdCart
 } from 'react-icons/io'
+import { FaHandshake } from 'react-icons/fa'
 import {
     Route,
     Switch,
     useRouteMatch
 } from 'react-router-dom'
+import '../styles/Orders.css'
+import Contracts from './Orders/Contracts'
 const routes = [
     {
-        text: 'My Orders',
+        text: 'Sifarişlərim',
         link: '/my-orders',
         icon: IoMdCart,
         component: MyOrders
     },
     {
-        text: 'Retruned',
+        text: 'Redaktəyə qaytarılmış',
         link: '/returned',
         icon: IoMdDocument,
         component: Returned
     },
     {
-        text: 'Visas',
+        text: 'Vizalar',
         link: '/visas',
         icon: IoMdCheckmarkCircleOutline,
         component: Visas
     },
     {
-        text: 'Agreements',
+        text: 'Q/T razılaşmaları',
         link: '/agreements',
         icon: IoMdCart,
         component: Agreements
+    },
+    {
+        text: 'Müqavilə razılaşmaları',
+        link: '/contracts',
+        icon: FaHandshake,
+        component: Contracts
     }
 ]
 const Orders = (props) => {

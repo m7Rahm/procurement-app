@@ -55,7 +55,7 @@ const Roles = (props) => {
                         {modal.content}
                     </Modal>
                 }
-                <table className="users-table roles-table">
+                <table className="users-table">
                     <thead>
                         <tr>
                             <th>#</th>

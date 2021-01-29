@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import ListItem from './ListItem'
-// import useMemoizeItems from './MemoizeItems'
 const TableContent = (props) => {
   const [activeLinkIndex, setActiveLinkIndex] = useState(null);
   const orders = props.orders.orders;
@@ -31,7 +30,7 @@ return (
         setModalContent={props.setModalContent}
         setModalVisibility={props.setModalVisibility}
         index={index}
-        key={order.ord_numb}
+        key={order.id}
         order={order}
         activeLinkIndex={active}
         setActiveLink={setActiveLinkIndex}

@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react'
 import Roles from './Admin/Roles'
 import Users from './Admin/Users'
-import {
-	IoMdSettings
-} from 'react-icons/io'
+import { IoMdSettings } from 'react-icons/io'
 import {
 	FaUsers,
 	FaBoxes
 } from 'react-icons/fa'
-import {
-	ImTree
-} from 'react-icons/im'
+import { ImTree } from 'react-icons/im'
 import {
 	useRouteMatch,
 	Route,
@@ -18,6 +14,7 @@ import {
 } from 'react-router-dom'
 import Structure from './Admin/Structure'
 import Materials from './Admin/OrderMaterials'
+import '../styles/Admin.css'
 const routes = [
 	{
 		text: 'Roles',

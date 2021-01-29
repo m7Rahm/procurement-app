@@ -10,6 +10,7 @@ import StructureBudget from './Budget/StructureBudget'
 import {
     GiReceiveMoney
 } from 'react-icons/gi'
+import '../styles/Budget.css'
 const routes = [
     {
         text: 'Budget',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useRef, useLayoutEffect } from 'react'
 import {
     MdModeEdit,
     MdDone,
@@ -77,7 +77,7 @@ const OrderMaterials = () => {
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
     }, [token]);
-    useEffect(() => {
+    useLayoutEffect(() => {
         const data = JSON.stringify({
             categoryid: 34,
             subGlCategoryId: 0,

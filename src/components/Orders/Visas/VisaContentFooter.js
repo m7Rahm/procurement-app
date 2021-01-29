@@ -57,6 +57,7 @@ const VisaContentFooter = (props) => {
         else
             setOperationResult({ visible: true, desc: 'Operation not finished' })
     }
+    console.log(current.result, current.order_result)
     return (
         current.result === 0 && current.order_result === 0
             ? <>
@@ -72,8 +73,7 @@ const VisaContentFooter = (props) => {
                         canDecline &&
                         <div
                             onClick={
-                                hoc(
-                                    AcceptDecline,
+                                hoc(AcceptDecline,
                                     {
                                         handleModalClose: setIsModalOpen,
                                         tranid: current.id,
@@ -93,8 +93,7 @@ const VisaContentFooter = (props) => {
                         canApprove &&
                         <div
                             onClick={
-                                hoc(
-                                    AcceptDecline,
+                                hoc(AcceptDecline,
                                     {
                                         handleModalClose: setIsModalOpen,
                                         tranid: current.id,
@@ -114,8 +113,7 @@ const VisaContentFooter = (props) => {
                         canReturn && current.forward_type !== 4 &&
                         <div
                             onClick={
-                                hoc(
-                                    AcceptDecline,
+                                hoc(AcceptDecline,
                                     {
                                         handleModalClose: setIsModalOpen,
                                         tranid: current.id,
@@ -135,8 +133,7 @@ const VisaContentFooter = (props) => {
                         current.forward_type === 3 &&
                         <div
                             onClick={
-                                hoc(
-                                    ForwardDocLayout,
+                                hoc(ForwardDocLayout,
                                     {
                                         handleSendClick: handleForwardOrder,
                                         token: token,

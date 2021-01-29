@@ -4,17 +4,15 @@ import {
     Route,
     useRouteMatch
 } from 'react-router-dom';
-import {
-    MdLocalOffer
-} from 'react-icons/md'
-import {
-    FaCartArrowDown,
-    FaTasks
-} from 'react-icons/fa'
+import { MdLocalOffer } from 'react-icons/md'
+import { FaCartArrowDown, FaTasks } from 'react-icons/fa'
+import { IoIosDocument, IoIosBulb } from 'react-icons/io'
 import ExpressVendors from './Tender/ExpressVendors'
 import PotentialVendors from './Tender/PotentialVendors'
 import Orders from './Tender/Orders';
+import '../styles/Tender.css'
 import NewAgreement from './Tender/NewAgreement';
+import Agreements from './Tender/Agreements';
 const routes = [
     {
         text: 'Express Vendors',
@@ -31,13 +29,19 @@ const routes = [
     {
         text: 'Potential Vendors',
         link: '/potential-vendors',
-        icon: FaCartArrowDown,
+        icon: IoIosBulb,
         component: PotentialVendors
+    },
+    {
+        text: 'Agreements',
+        link: '/agreements',
+        icon: FaTasks,
+        component: Agreements
     },
     {
         text: 'New Agreement',
         link: '/new-agreement',
-        icon: FaTasks,
+        icon: IoIosDocument,
         component: NewAgreement
     }
 ]

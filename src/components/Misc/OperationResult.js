@@ -5,7 +5,8 @@ const OperationResult = (props) => {
         operationDesc,
         setOperationResult,
         icon: Icon = IoIosCloseCircle,
-        iconColor = "#D93404"
+        iconColor = "#D93404",
+        backgroundColor = 'transparent'
     } = props;
     const count = useRef(0);
     const setOperationResultCallback = useCallback(setOperationResult, []);
@@ -21,7 +22,7 @@ const OperationResult = (props) => {
             }, false)
     }, [setOperationResultCallback])
     return (
-        <div ref={operationResultRef} className="operation-result">
+        <div ref={operationResultRef} style={{ backgroundColor: backgroundColor }} className="operation-result">
             <div>
                 <Icon color={iconColor} size="88" />
             </div>

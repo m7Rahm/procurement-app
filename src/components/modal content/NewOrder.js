@@ -45,6 +45,7 @@ const NewOrderContent = (props) => {
         material.subGlCategory
       ]
     );
+
     for (let i = 0; i < parsedMaterials.length; i++) {
       if (parsedMaterials[i][0] === '') {
         canProceed = false;

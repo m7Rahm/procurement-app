@@ -1,0 +1,304 @@
+.table {
+    list-style-type: none;
+    padding: 0px;
+    margin: 40px 0px;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.2);
+}
+
+.table>li {
+    display: flex;
+}
+
+.table>li:nth-of-type(2n) {
+    background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);
+}
+
+.table>li:not(:first-child)>div:last-of-type {
+    padding: 2px 0px;
+    height: 24px;
+    position: relative;
+}
+
+.table>li:not(:first-of-type)>div:nth-of-type(8):hover div {
+    display: block;
+}
+
+.table>li:first-child {
+    font-weight: 600;
+    padding: 15px 0px;
+    height: auto;
+    background-color: rgb(24, 139, 192);
+    color: #faf0f0;
+}
+
+.table>li:not(:first-child) {
+    font-weight: 450;
+    padding: 2px 0px;
+    color: #505050;
+}
+
+.action-container {
+    width: 100px;
+    background-color: white;
+    border: 0.49px solid #a1a1a1;
+    z-index: 1;
+    display: block;
+    position: absolute;
+    transition: all 0.1s;
+    border-radius: 3px;
+    -webkit-transition: all 0.1s;
+    -moz-transition: all 0.1s;
+    -ms-transition: all 0.1s;
+    -o-transition: all 0.1s;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    box-shadow: 0px 0px 10px 1px #c1c1c1;
+}
+
+.action-container>ul {
+    overflow: hidden;
+    list-style-type: none;
+    padding-left: 0px;
+    padding: 2px 0px;
+}
+
+.action-container>ul>li {
+    padding: 1px 15px;
+    text-align: left;
+}
+
+.action-container>ul>li:hover {
+    background-color: dodgerblue;
+    color: white;
+}
+
+.status-container {
+    padding: 20px;
+    background-color: #eeeeee;
+    border: 1.5px #d1d1d1 solid;
+    margin: 20px 20px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center
+}
+
+.icon-container {
+    background-color: #0F9D58;
+    display: flex;
+    height: 60px;
+    justify-content: center;
+    flex-direction: column;
+    width: 60px;
+    border-radius: 50%;
+    align-items: center;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+}
+
+.status-container>div:not(.icon-container) {
+    height: 15px;
+    border-radius: 3px;
+    flex-grow: 1;
+    margin: 0px 2px;
+    background-color: #0F9D58;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+
+div.header-container {
+    display: flex;
+    flex: 1;
+    min-width: 600px;
+    flex-flow: column wrap;
+}
+
+div.header-container>div:not(:first-of-type):not(:last-of-type) {
+    border-width: 0px 0px 1px 0px;
+    border-style: solid;
+    border-color: gray;
+}
+
+div.header-container>div:not(:first-of-type):not(:last-of-type) {
+    height: 30px;
+}
+
+div.header-container>div:not(:first-of-type):not(:last-of-type)>div {
+    padding: 3px 10px;
+}
+
+div.header-container>div:not(:last-of-type) {
+    display: flex;
+    border-collapse: collapse;
+    flex-flow: row wrap;
+}
+
+div.header-container>div:first-of-type {
+    height: 150px;
+    align-items: center;
+    border-width: 0px 0px 1px 0px;
+    border-style: solid;
+    border-color: gray;
+}
+
+div.header-container>div:first-of-type>div {
+    height: 100%;
+    font-weight: 600;
+    line-height: 150px;
+}
+
+div.header-container>div:not(:last-of-type)>div:first-of-type {
+    padding: 5px 10px;
+    width: 50px;
+    border-color: gray;
+    border-style: solid;
+    border-width: 0px 1px 0px 0px;
+}
+
+div.header-container>div:not(:last-of-type)>div:not(:first-of-type) {
+    border-color: gray;
+    border-style: solid;
+    border-width: 0px 1px 0px 0px;
+    flex: 1;
+    font-size: 14px;
+}
+
+div.header-container>div:not(:last-of-type)>div:nth-last-of-type(2), div.header-container>div:not(:last-of-type)>div:last-of-type {
+    max-width: 100px;
+}
+
+div.header-container>div:last-of-type {
+    flex: 1;
+    display: flex;
+    flex-flow: column wrap;
+}
+
+div.header-container>div:last-of-type>div:first-of-type {
+    height: 20px;
+    overflow: hidden;
+    padding: 1px;
+}
+
+div.header-container>div:last-of-type>div:not(:first-of-type) {
+    border-width: 1px 1px 0px 0px;
+    overflow: hidden;
+    height: 20px;
+    border-color: gray;
+    border-style: solid;
+}
+
+.protex-order-header-container {
+    overflow: hidden;
+    margin: 35px 50px;
+}
+
+.protex-order-header-container>h1 {
+    font-size: 26px;
+    text-align: left;
+    color: #606066;
+    margin: 0px;
+    float: left;
+}
+
+.protex-order-header-container>span>svg {
+    margin-left: 20px;
+}
+
+.protex-order-header-container>span {
+    font-size: 24px;
+    font-weight: 600;
+    color: gray;
+    float: right;
+}
+
+.protex-order-header-container>svg {
+    vertical-align: middle;
+}
+
+.protex-order-header-container>h1>svg {
+    margin-left: 7px;
+    color: #f8942a;
+    cursor: pointer;
+}
+
+.protex-order-header-container>h1>svg:hover {
+    color: #ffb362;
+}
+
+.order-table-protex+div.review-container {
+    margin: 20px 0px;
+    padding: 20px
+}
+
+.order-table-protex+div.review-container>textarea {
+    display: block;
+    border-color: gray;
+    width: 100%;
+    clear: both;
+    border-radius: 3px;
+    min-height: 50px;
+}
+
+.order-table-protex+div.review-container>div {
+    margin-top: 50px;
+    color: white;
+    cursor: pointer;
+    float: right;
+    border-radius: 2px;
+    background-color: teal;
+    padding: 10px 20px;
+    min-width: 170px;
+}
+
+.order-table-protex {
+    margin-top: 20px;
+}
+
+.order-table-protex>li>div {
+    display: flex;
+    align-items: center;
+}
+
+.order-table-protex>li>div>span {
+    text-align: left;
+}
+
+.order-table-protex>li:first-of-type {
+    border-bottom-left-radius: 0px;
+    background-image: linear-gradient(to bottom, #ac9e9e, gray);
+}
+
+.order-table-protex>li>div:not(:first-of-type) {
+    flex: 1;
+}
+
+.material-model-list {
+    position: absolute;
+    top: 40px;
+    max-height: 108px;
+    overflow: auto;
+    display: none;
+    width: 150%;
+    padding: 0px;
+    z-index: 2;
+    list-style-type: none;
+}
+
+.material-model-list>li {
+    color: gray;
+    cursor: pointer;
+    border: 1px solid white;
+    background-color: whitesmoke;
+    padding: 5px 8px;
+    text-align: left;
+}
+
+.material-model-list>li:hover {
+    background-color: #1a73e8;
+    color: white;
+}

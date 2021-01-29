@@ -4,8 +4,7 @@ const SideBarContainer = (Search) => function SideBar(props) {
     const { updateListContent, initData, setActive, token } = props;
     const [cards, setCards] = useState({ content: [], count: 0 });
     const updateList = useCallback((data) => {
-        const apiDate = JSON.stringify(data);
-        updateListContent(apiDate, token)
+        updateListContent(data, token)
             .then(resp => resp.json())
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
@@ -14,8 +13,7 @@ const SideBarContainer = (Search) => function SideBar(props) {
             .catch(ex => console.log(ex))
     }, [token, updateListContent])
     useEffect(() => {
-        const data = JSON.stringify(initData);
-        updateListContent(data, token)
+        updateListContent(initData, token)
             .then(resp => resp.json())
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
@@ -30,6 +28,8 @@ const SideBarContainer = (Search) => function SideBar(props) {
                 initData={initData}
                 setActive={setActive}
                 updateList={updateList}
+                updateCards={props.updateCards}
+                params={props.params}
             />
         </div>
     )

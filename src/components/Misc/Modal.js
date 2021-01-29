@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useMemo } from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import {
   IoMdClose,
 } from 'react-icons/io'
@@ -7,29 +7,24 @@ const modalContent = (Content) => ({ ...props }) =>
   <Content {...props} />
 
 const Modal = (props) => {
-  const closeModalCallback = useCallback(props.changeModalState, []);
-  const width = props.width;
-  const canBeClosed = props.canBeClosed;
-  const number = props.number;
-  const title = props.title
+  const { width, canBeClosed = true, number, title, changeModalState } = props;
   const modalWrapperRef = useRef(null)
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
   const closeModal = () => {
     if (!stateRef.current.changed || canBeClosed)
-      closeModalCallback()
+    changeModalState()
   }
-  useEffect(
-    () => {
+  useEffect(() => {
       const onEscPress = (e) => {
         if (e.keyCode === 27) {
           if (!stateRef.current.changed || canBeClosed)
-            closeModalCallback()
+          changeModalState()
         }
       }
       document.addEventListener('keyup', onEscPress, false);
       return () => document.removeEventListener('keyup', onEscPress, false)
-    }, [closeModalCallback, canBeClosed])
+    }, [changeModalState, canBeClosed]);
   return (
     <>
       <div className="modal" onClick={closeModal}>
@@ -39,7 +34,13 @@ const Modal = (props) => {
           {title || ' Sifariş №'} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
-        <ModalContent closeModal={closeModalCallback} modalWrapperRef={modalWrapperRef} current={number} stateRef={stateRef} />
+        <ModalContent
+          closeModal={changeModalState}
+          modalWrapperRef={modalWrapperRef}
+          current={number}
+          stateRef={stateRef}
+          {...props.childProps}
+        />
       </div>
     </>
   )

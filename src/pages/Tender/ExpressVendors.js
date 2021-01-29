@@ -152,10 +152,10 @@ const ExpressVendors = (props) => {
                                         {workSectors.find(workSector => workSector.val === vendor.sphere).text}
                                     </td>
                                     <td>
-                                        {taxTypes.find(taxType => taxType.val === vendor.tax_type).text}
+                                        {taxTypes.find(taxType => taxType.val === vendor.tax_type) ? taxTypes.find(taxType => taxType.val === vendor.tax_type).text : ''}
                                     </td>
                                     <td>
-                                        {riskZones.find(riskZone => riskZone.val === vendor.risk_zone).text}
+                                        {riskZones.find(riskZone => riskZone.val === vendor.risk_zone) ? riskZones.find(riskZone => riskZone.val === vendor.risk_zone).text : ''}
                                     </td>
                                     <td>
                                         {vendor.reg_date}

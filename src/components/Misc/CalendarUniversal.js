@@ -5,6 +5,7 @@ const CalendarUniversal = (props) => {
         date: new Date(),
         days: getDays(props.year, props.month + 1)
     });
+    const ref = useRef(null);
     const handleDateInc = () => {
         setDate(prev => {
             const month = prev.date.getMonth() + 2 > 12 ? 1 : prev.date.getMonth() + 2;
@@ -36,14 +37,18 @@ const CalendarUniversal = (props) => {
     }
     const handleDatePickerChange = e => {
         const value = e.target.value;
+        ref.current.value = value;
         props.handleInputChange(props.name, value)
     }
     const handleClick = (value) => {
         calendarRef.current.style.display = 'none';
+        ref.current.value = value;
         props.handleInputChange(props.name, value)
     }
     const clearDate = () => {
         calendarRef.current.style.display = 'none'
+        ref.current.value = '';
+        props.handleInputChange(props.name, '')
     }
     return (
         <div className="calendar-container">
@@ -53,8 +58,8 @@ const CalendarUniversal = (props) => {
                         name={props.name}
                         type="text"
                         autoComplete="off"
+                        ref={ref}
                         onChange={handleDatePickerChange}
-                        value={props.value}
                         onBlur={handleFocusLose}
                         className={"date-picker " + props.name}
                         onFocus={handleInputFocus}
@@ -70,11 +75,11 @@ const CalendarUniversal = (props) => {
                                 {`${months[date.date.getMonth()]} ${date.date.getFullYear()}`}
                             </td>
                             <td>
-                                <button id="left" className="arrows" onClick={handleDateDec}>
+                                <button id="left" className={`arrows ${props.name}`} onClick={handleDateDec}>
                                 </button>
                             </td>
                             <td>
-                                <button id="right" className="arrows" onClick={handleDateInc}>
+                                <button id="right" className={`arrows ${props.name}`} onClick={handleDateInc}>
                                 </button>
                             </td>
                         </tr>
@@ -114,7 +119,7 @@ const CalendarUniversal = (props) => {
         </div>
     )
 }
-export default CalendarUniversal;
+export default React.memo(CalendarUniversal);
 
 const getDays = (year, month) => {
     const dayOfWeek = new Date(year, month - 1, 1).getDay();

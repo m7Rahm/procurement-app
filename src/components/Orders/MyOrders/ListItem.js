@@ -9,12 +9,14 @@ import {
   IoMdDoneAll,
   IoMdPeople,
   IoIosOptions,
-  IoMdInformationCircle
+  IoMdInformationCircle,
+  IoMdMore
 } from 'react-icons/io'
 import CommentContainer from './CommentContainer'
 import ActionsContainer from './ActionsContainer'
 import EditOrderRequest from '../../modal content/EditOrderRequest'
 import { TokenContext } from '../../../App'
+const FinishOrder = lazy(() => import('../../modal content/FinishOrder'))
 const ParticipantsModal = lazy(() => import('../../modal content/Participants'))
 const StatusModal = lazy(() => import('../../modal content/Status'))
 const Modal = lazy(() => import('../../Misc/Modal'))
@@ -24,22 +26,34 @@ const ListItem = (props) => {
   const userData = tokenContext[0].userData;
   const { referer, setOrders, order } = props;
   const { status, participants, create_date_time: date, ord_numb: number } = order
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState('');
+  const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {} });
+
   const handleClose = () => {
-    setIsModalOpen(_ => false);
+    setModalState(prev => ({ ...prev, visible: false }));
   }
   const onParticipantsClick = (number) => {
-    setModalContent(_ => (props) => <ParticipantsModal empVersion={userData.userInfo.id} number={number} {...props} />)
-    setIsModalOpen(prevState => !prevState)
+    const childProps = {
+      empVersion: userData.userInfo.id,
+      number: number
+    }
+    setModalState({ visible: true, content: ParticipantsModal, childProps: childProps })
   }
   const onStatusClick = (number) => {
-    setModalContent(_ => (props) => <StatusModal number={number} {...props} />)
-    setIsModalOpen(prev => !prev)
+    const childProps = {
+      number: number
+    }
+    setModalState({ visible: true, content: StatusModal, childProps: childProps })
+  }
+  const handleFinishClick = () => {
+    const childProps = {
+      version: props.order.emp_id,
+      ordNumb: number,
+      token: token
+    }
+    setModalState({ visible: true, content: FinishOrder, childProps: childProps })
   }
   const onInfoClick = (number) => {
     const onSendClick = (data, setOperationResult) => {
-      console.log(data)
       const reqData = JSON.stringify(data);
       fetch('http://172.16.3.101:54321/api/new-order', {
         method: 'POST',
@@ -60,7 +74,7 @@ const ListItem = (props) => {
           if (respJ[0].result === 'success') {
             setOrders(prev => {
               const newList = prev.orders.filter(order => order.ord_numb !== number);
-              setIsModalOpen(prev => !prev)
+              setModalState(prev => ({ ...prev, visible: false }))
               return ({ orders: newList, count: newList.count })
             });
           }
@@ -70,15 +84,13 @@ const ListItem = (props) => {
             throw new Error('Error Performing operation')
         })
     }
-    setModalContent(_ => (props) =>
-      <EditOrderRequest
-        version={-1}
-        ordNumb={number}
-        view={referer}
-        onSendClick={onSendClick}
-        {...props}
-      />)
-    setIsModalOpen(prevState => !prevState)
+    const childProps = {
+      version: -1,
+      ordNumb: number,
+      view: referer,
+      onSendClick
+    }
+    setModalState({ visible: true, content: EditOrderRequest, childProps })
   }
   const icon = status === 0
     ? <IoMdCheckmark onClick={() => onStatusClick(number)} color='#F4B400' title="Baxılır" size='20' style={{ margin: 'auto', }} />
@@ -100,10 +112,10 @@ const ListItem = (props) => {
         <div style={{ width: '80px', textAlign: 'center' }}>
           {icon}
           {
-            isModalOpen &&
-              <Modal changeModalState={handleClose} >
-                {modalContent}
-              </Modal>
+            modalState.visible &&
+            <Modal childProps={modalState.childProps} changeModalState={handleClose} >
+              {modalState.content}
+            </Modal>
           }
         </div>
         <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}>{date}</div>
@@ -128,6 +140,7 @@ const ListItem = (props) => {
         <div style={{ padding: '0px 10px' }}>
           <IoMdInformationCircle cursor="pointer" size='20' color='#606060' onClick={() => onInfoClick(number)} />
         </div>
+        <div><IoMdMore pointer="cursor" onClick={handleFinishClick} /></div>
       </li>
     </>
   )

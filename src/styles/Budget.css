@@ -1,0 +1,221 @@
+div.budget-navigation-ribbon {
+    margin: 20px 0px;
+}
+
+div.budget-navigation-ribbon>h1 {
+    font-size: 38px;
+    padding: 3px 0px;
+    text-align: center;
+}
+
+div.budget-navigation-ribbon>svg {
+    vertical-align: middle;
+    color: gray;
+    cursor: pointer;
+    float: left;
+}
+
+div.budget-ribbon {
+    overflow: hidden;
+    margin: 50px 0px;
+}
+
+ul.structure-budget-general>li>div:last-of-type {
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+    color: white;
+    font-weight: 600;
+}
+
+ul.sub-gl-category-budget {
+    margin: 0px;
+    animation: slide-down 0.5s ease-in-out 0s both;
+}
+
+ul.sub-gl-category-budget {
+    opacity: 0;
+    animation: scale-up-budget 200ms ease-in-out both, show-up 400ms ease-in-out both;
+}
+
+ul.sub-gl-category-budget-close {
+    animation: visibility-hide 200ms ease-in-out both, scale-down 200ms 200ms ease-in-out both;
+}
+
+ul.sub-gl-category-budget>li:hover {
+    background-color: #123456;
+}
+
+ul.sub-gl-category-budget>li {
+    padding: 4px 10px;
+    display: flex;
+    border-radius: 5px 0px 0px 5px;
+    justify-content: space-between;
+}
+
+ul.sub-gl-category-budget>li>div {
+    color: white;
+}
+
+div.strucutre-budget ul:not(:first-child) {
+    list-style-type: none;
+    display: flex;
+    flex: 1;
+    justify-content: space-around;
+    flex-flow: row wrap;
+    align-items: flex-start;
+}
+
+div.strucutre-budget ul:not(:first-child)>li:hover {
+    background-color: rgb(238, 163, 1);
+    cursor: pointer;
+}
+
+div.strucutre-budget table input:focus, div.strucutre-budget table select:focus {
+    outline-color: #00a3e4;
+}
+
+div.strucutre-budget table input {
+    max-width: 80px;
+}
+
+div.strucutre-budget table select:not(:disabled) {
+    border-color: #00a3e4;
+}
+
+div.strucutre-budget table>tbody>tr>td>select {
+    max-width: 250px;
+}
+
+div.budget-ribbon>div>select {
+    margin: 20px 10px 0px 0px;
+    border-radius: 3px;
+    border-color: #0495ce;
+    padding: 6px 8px;
+}
+
+div.budget-ribbon>div:not(.months) {
+    display: flex;
+    flex-flow: wrap row;
+    justify-content: flex-end;
+}
+
+ul.structure-budget-general>li>div:not(:last-of-type) {
+    position: relative;
+    display: flex;
+    flex-flow: column wrap;
+}
+
+div.new-budget-modal {
+    padding: 20px 10px;
+}
+
+div.new-budget-modal>div:first-of-type {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+div.new-budget-modal>div:first-of-type select {
+    padding: 4px 6px;
+    border-radius: 3px;
+}
+
+div.new-budget-modal>div:last-of-type {
+    margin: 20px 0px;
+    float: right;
+    color: white;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 10px 15px;
+    background-color: #00a3e4;
+}
+
+ul.structure-budget-general>li>div:first-of-type {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+}
+
+div.structure-budget-detailed table tr:hover {
+    cursor: default !important;
+}
+
+ul.structure-budget-general>li>div:first-of-type>span {
+    margin: 10px;
+    color: white;
+}
+
+ul.structure-budget-general>li>div>h1 {
+    font-size: 20px;
+    color: white;
+    padding-left: 20px;
+}
+
+div.strucutre-budget ul:not(:first-child)>li {
+    width: 40%;
+    position: relative;
+    margin: 10px;
+    border-radius: 5px;
+    min-height: 150px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3));
+}
+
+div.new-budget-modal table select {
+    width: 90%;
+}
+
+.new-budget>tbody>tr>td {
+    width: 35%;
+}
+
+@keyframes scale-up-budget {
+    from {
+        transform: scaleY(0);
+    }
+    to {
+        transform: scaleY(1);
+    }
+}
+
+div.new-budget-modal table.users-table tr:hover {
+    cursor: default;
+}
+
+div.new-budget-modal table.users-table td>select {
+    padding: 4px 2px;
+}
+
+div.budget table.users-table>tbody>tr:nth-of-type(2n+1):hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+div.budget table.users-table>tbody>tr>td:last-of-type {
+    position: relative;
+}
+
+div.budget table.users-table>tbody>tr {
+    cursor: pointer;
+}
+
+div.strucutre-budget table.users-table>tbody>tr>td:last-of-type {
+    text-align: center;
+}
+
+div.strucutre-budget table.users-table>tbody>tr>td {
+    padding: 3px 5px;
+}
+
+div.budget table.users-table>thead>tr>th:last-of-type {
+    width: 60px;
+}
+
+div.budget {
+    padding-top: 56px;
+}
+
+div.budget>div:first-of-type {
+    max-width: 1256px;
+    margin: auto;
+    margin-top: 50px;
+}

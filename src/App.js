@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import jwt from 'jsonwebtoken'
 import PrivateRoute from './components/Misc/PrivateRoute'
 import SelectModule from './pages/SelectModule'
-import './App.css'
+import './styles/App.css'
 import { modules } from './data/data'
 import Loading from './components/Misc/Loading'
 const Login = React.lazy(() => import('./pages/Login'));

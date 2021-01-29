@@ -37,9 +37,9 @@ const LeftSidePane = (props, ref) => {
                                         setActiveLink(index);
                                         handleNavClick();
                                     }}
-                                    style={{color: active ? '#222222' : '', fontWeight: active ? 600 : '', display: 'flex', width: '100%', alignItems: 'flex-end'}}
+                                    style={{ color: active ? '#222222' : '', fontWeight: active ? 600 : '', display: 'flex', width: '100%', alignItems: 'flex-end' }}
                                     to={`${props.url}${link.link}`}>
-                                    <Icon size="24" style={{marginRight: '5px'}} />
+                                    <Icon size="24" style={{ marginRight: '5px' }} />
                                     {link.text}
                                 </Link>
                             </div>

@@ -1,15 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react'
-import {
-    FaTrashAlt,
-}
-    from 'react-icons/fa'
-import {
-    IoIosAttach,
-} from 'react-icons/io'
-import {
-    AiOutlinePicture
-} from 'react-icons/ai'
+import { FaTrashAlt } from 'react-icons/fa'
+import { IoIosAttach, } from 'react-icons/io'
+import { AiOutlinePicture } from 'react-icons/ai'
 import Modal from '../Misc/Modal'
+import { workSectors } from '../../data/data'
 const AgreementVendorRow = (props) => {
     const {
         index,
@@ -56,6 +50,7 @@ const AgreementVendorRow = (props) => {
     const closeModal = () => {
         setModal({ visible: false, content: null })
     }
+    const workSector = workSectors.find(sector => sector.val === vendor.sphere) ? workSectors.find(sector => sector.val === vendor.sphere).text: '';
     return (
         <>
             <li ref={rowRef} className={vendor.className}>
@@ -67,7 +62,7 @@ const AgreementVendorRow = (props) => {
                     {vendor.voen}
                 </div>
                 <div>
-                    {vendor.sphere}
+                    {workSector}
                 </div>
                 <div>
                     <input type="text" name="comment" placeholder="Comment" value={vendor.comment} onChange={handleChange} />

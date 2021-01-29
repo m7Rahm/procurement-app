@@ -1,0 +1,65 @@
+ul.potential-vendors {
+    width: 100%;
+    margin: 20px auto;
+    max-width: 1024px;
+    list-style-type: none;
+    padding: 0px;
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+}
+
+ul.potential-vendors select, ul.potential-vendors input {
+    width: 100%;
+    display: inline-block;
+    height: 100%;
+}
+
+ul.potential-vendors>li:first-of-type {
+    background-color: #D93404;
+    color: white;
+    text-align: left;
+}
+
+ul.potential-vendors>li {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap
+}
+
+ul.potential-vendors>li>div {
+    padding: 6px 3px;
+}
+
+ul.potential-vendors>li>div:not(:first-of-type):not(:last-of-type):not(:nth-last-of-type(2)) {
+    flex: 1;
+}
+
+ul.potential-vendors>li>div:first-of-type, ul.potential-vendors>li>div:nth-last-of-type(2) {
+    width: 40px;
+}
+
+ul.potential-vendors>li>div:last-of-type {
+    width: 70px;
+}
+div.potential-vendors-serch{
+    background-color: rgb(24, 139, 192);
+    padding: 20px;
+}
+div.potential-vendors-serch>div:first-of-type{
+    max-width: 1024px;
+    margin: auto;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+div.potential-vendors-serch>div:first-of-type label{
+    color: white;
+    font-weight: 550;
+    font-size: 14px;
+}
+div.potential-vendors-serch>div:first-of-type input,
+div.potential-vendors-serch>div:first-of-type select{
+    display: inline-block;
+    height: 26px;
+    min-width: 100px;
+}

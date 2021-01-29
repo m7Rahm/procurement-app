@@ -1,9 +1,10 @@
-import React, { useState, useContext, useEffect, useRef } from 'react'
-import EditOrderTableRow from './EditOrderTableRow'
-import ForwardDocLayout from '../../components/Misc/ForwardDocLayout';
-import { IoIosAdd } from 'react-icons/io'
-import OperationResult from '../Misc/OperationResult'
-import { TokenContext } from '../../App'
+import React, { useState, useContext, useEffect, useRef } from 'react';
+import EditOrderTableRow from './EditOrderTableRow';
+import { IoIosAdd } from 'react-icons/io';
+import OperationResult from '../Misc/OperationResult';
+import { TokenContext } from '../../App';
+const ForwardDocLayout = React.lazy(() => import('../../components/Misc/ForwardDocLayout'));
+
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view, editOrderAndApprove } = props;
     const tokenContext = useContext(TokenContext);
@@ -14,6 +15,7 @@ const EditOrderRequest = (props) => {
     const [orderState, setOrderState] = useState([]);
     const [glCategories, setGlCategories] = useState({ all: [], main: [] });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
+    const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
     useEffect(() => {
         fetch('http://172.16.3.101:54321/api/gl-categories', {
             headers: {
@@ -22,13 +24,13 @@ const EditOrderRequest = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                const main = respJ.filter(category => category.dependent_id === null)
+                const main = respJ.filter(glCategory => glCategory.dependent_id === null)
                 setGlCategories({ all: respJ, main: main });
             })
             .catch(err => console.log(err))
-    }, [token]);
+    }, [token, view]);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/get-order-req-data?numb=${ordNumb}&vers=${version}`, {
+        fetch(`http://172.16.3.101:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -97,6 +99,10 @@ const EditOrderRequest = (props) => {
             material_comment: ''
         }])
     }
+    const handleGlCategoryChange = (e) => {
+        const value = e.target.value;
+        setOrderState(prev => prev.map(material => ({ ...material, gl_category_id: Number(value) })))
+    }
     return (
         <div className="modal-content-new-order">
             {
@@ -106,13 +112,24 @@ const EditOrderRequest = (props) => {
                     operationDesc={operationResult.desc}
                 />
             }
+            <select
+                disabled={view !== 'returned'}
+                defaultValue={glCatid}
+                style={{ margin: '20px', maxWidth: '250px', padding: '8px 4px' }}
+                onChange={handleGlCategoryChange}
+            >
+                {
+                    glCategories.main.map(glCategory =>
+                        <option key={glCategory.id} value={glCategory.id}>{glCategory.name}</option>
+                    )
+                }
+            </select>
             <ul className="new-order-table">
                 <li>
                     <div>#</div>
-                    <div>Kateqoriya</div>
-                    <div>Alt-Kateqoriya</div>
+                    <div>Sub-Gl Kateqoriya</div>
                     <div>Məhsul</div>
-                    <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
+                    <div style={{ width: '170px', maxWidth: '200px', textAlign: 'left' }}>Kod</div>
                     <div style={{ maxWidth: '140px' }}>Say</div>
                     <div>Kurasiya</div>
                     <div>Büdcə</div>

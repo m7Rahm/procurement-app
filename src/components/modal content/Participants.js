@@ -17,14 +17,13 @@ const getResultText = (result) => {
 
 const Participants = (props) => {
   const tokenContext = useContext(TokenContext);
-  const { number, empVersion } = props
+  const { number, empVersion } = props;
   const token = tokenContext[0].token;
   const [checked, setChecked] = useState(false);
   const [participants, setParticipants] = useState(null);
   const handleChange = () => {
     setChecked(prev => !prev);
   }
-
   useEffect(() => {
     fetch(`http://172.16.3.101:54321/api/participants/${number}?type=1&empVersion=${empVersion}`, {
       headers: {

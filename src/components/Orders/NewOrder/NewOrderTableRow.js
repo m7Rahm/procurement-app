@@ -32,7 +32,7 @@ const NewOrderTableRow = (props) => {
       setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
   }
   const handleAmountChangeButtons = (action) => {
-    // dispatch({ type: 'updateRow', payload: {data: { count: action === 'inc' ? material.count + 1 : material.count -1 }, rowid: materialid}})
+    setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? material.count + 1 : material.count - 1 } : material))
   }
   const handleFocus = () => {
     if (props.modelsListRef.current)
@@ -122,7 +122,8 @@ const NewOrderTableRow = (props) => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;
         setModels(respJ);
-        setBudget(budget)
+        setBudget(budget);
+        modelInputRef.current.value = "";
         setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value, materialId: '' } : material))
       })
       .catch(ex => console.log(ex))

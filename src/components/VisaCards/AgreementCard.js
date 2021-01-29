@@ -1,10 +1,12 @@
 import React, { useRef } from 'react'
 const isReadDivDisplay = (value) => !value ? 'block' : 'none'
-const ReadyOfferCard = (props) => {
+const AgreementCard = (props) => {
     const stateRef = useRef(null);
     const display = isReadDivDisplay(props.card.is_read);
     const handleClick = () => {
-        props.setActive(props.card.message_id)
+        const params = props.params;
+        const active = Object.keys(params).reduce((prev, current) => prev = { ...prev, [current]: props.card[params[current]] }, {});
+        props.setActive(active)
     }
     return (
         <li onClick={handleClick} ref={stateRef} >
@@ -13,10 +15,10 @@ const ReadyOfferCard = (props) => {
                 <div style={{ padding: '5px', height: '100%' }}>
                     <div style={{ height: '29px', paddingTop: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '17px', fontWeight: 200 }}>
-                            {props.card.full_name}
+                            {props.card.number}
                         </span>
                         <span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline' }}>
-                            {props.card.date_time}
+                            {props.card.date_time_string}
                         </span>
                     </div>
                     <div style={{ height: '15px', position: 'relative' }}>
@@ -31,4 +33,4 @@ const ReadyOfferCard = (props) => {
         </li>
     )
 }
-export default React.memo(ReadyOfferCard)
+export default React.memo(AgreementCard)
