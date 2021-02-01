@@ -50,7 +50,7 @@ const ContractFiles = ({ files = [], addFiles, removeFile }) => {
                 )
             }
             <div style={{ lineHeight: '36px' }}>
-                <label htmlFor="add" style={{ cursor: 'pointer' }}>
+                <label htmlFor="add" style={{ cursor: 'pointer' }} title="Fayl əlavə et">
                     <span style={{ verticalAlign: 'middle' }}>
                         <FaPlus />
                     </span>

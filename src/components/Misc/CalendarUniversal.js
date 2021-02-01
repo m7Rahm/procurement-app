@@ -131,7 +131,7 @@ const getDays = (year, month) => {
     const prevMonth = month - 1 === 0 ? 12 : month - 1;
     const prevMonthFormat = prevMonth < 10 ? '0' + prevMonth : prevMonth
     const nextMonth = month !== 12 ? month + 1 : 1;
-    const nextMonthFormat = nextMonth < 10 ? '0' + nextMonth : nextMonth
+    const nextMonthFormat = nextMonth < 10 ? '0' + nextMonth : nextMonth;
     const nCurrentYear = month === 12 ?
         year + 1 :
         month === 1 ?
@@ -149,7 +149,7 @@ const getDays = (year, month) => {
     let nxt = 0;
     for (let i = currentDate.getDate() + offset; i < 42; i++) {
         nxt++;
-        days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${nCurrentYear}-${nextMonthFormat}-${nxt < 10 ? '0' + nxt : nxt}` };
+        days[Math.trunc(i / 7)][i % 7] = { date: nxt, className: 'not-current-month-days', val: `${month === 1 ? nCurrentYear + 1 : nCurrentYear}-${nextMonthFormat}-${nxt < 10 ? '0' + nxt : nxt}` };
     }
     return days;
 }

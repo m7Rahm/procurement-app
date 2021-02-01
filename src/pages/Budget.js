@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import {
     Switch,
@@ -7,31 +7,31 @@ import {
 } from 'react-router-dom'
 import BudgetMain from './Budget/BudgetMain'
 import StructureBudget from './Budget/StructureBudget'
-import {
-    GiReceiveMoney
-} from 'react-icons/gi'
+// import {
+//     GiReceiveMoney
+// } from 'react-icons/gi'
 import '../styles/Budget.css'
-const routes = [
-    {
-        text: 'Budget',
-        link: '',
-        icon: GiReceiveMoney,
-        component: BudgetMain
-    },
-]
+// const routes = [
+//     {
+//         text: 'Budget',
+//         link: '',
+//         icon: GiReceiveMoney,
+//         component: BudgetMain
+//     },
+// ]
 const Budget = (props) => {
-    const setMenuData = props.setMenuData
-    const { path, url } = useRouteMatch()
-    useEffect(() => {
-        setMenuData({ url: url, routes: routes })
-    }, [url, setMenuData])
+    // const setMenuData = props.setMenuData
+    const { path } = useRouteMatch()
+    // useEffect(() => {
+    //     setMenuData({ url: url, routes: routes })
+    // }, [url, setMenuData])
     return (
         <div className="dashboard">
             <Switch>
-                <Route exact path={`${path}`}>
-                    <BudgetMain />
-                </Route>
                 <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
+                </Route>
+                <Route path={`${path}`}>
+                    <BudgetMain />
                 </Route>
             </Switch>
         </div>

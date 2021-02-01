@@ -25,6 +25,10 @@ ul.potential-vendors>li {
     flex-flow: row wrap
 }
 
+ul.potential-vendors>li:not(:first-of-type):nth-of-type(2n) {
+    background-color: whitesmoke;
+}
+
 ul.potential-vendors>li>div {
     padding: 6px 3px;
 }
@@ -63,3 +67,53 @@ div.potential-vendors-serch>div:first-of-type select{
     height: 26px;
     min-width: 100px;
 }
+div.contract-container{
+    padding: 10px;
+}
+div.contract-container textarea {
+    margin: 10px 0px;
+    width: 100%;
+}
+div.contract-header-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+div.contract-header-container label{
+    font-weight: 550;
+    font-size: 16px;
+    color: slategray;
+}
+div.contract-header-container input{
+    display: inline-block;
+    width: 100%;
+    padding: 6px;
+}
+div.express-vendors-search-ribbon{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding: 10px;
+    max-width: 1256px;
+    margin: auto;
+}
+div.express-vendors-search-ribbon>div{
+    height: 50px;
+}
+div.express-vendors-search-ribbon>div:last-of-type {
+    height: 40px;
+    padding: 12px 30px;
+    color: white;
+    font-weight: 600;
+    border-radius: 3px;
+    background-color: #ffae00
+}
+div.express-vendors-search-ribbon input {
+    height: 30px !important;
+}
+div.express-vendors-search-ribbon label {
+    color: white;
+    font-size: 18px;
+    font-weight: 550;
+}
+

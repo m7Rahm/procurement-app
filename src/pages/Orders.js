@@ -3,6 +3,7 @@ import MyOrders from './Orders/MyOrders'
 import Visas from './Orders/Visas'
 import Returned from './Orders/Returned'
 import Agreements from './Orders/Agreements'
+import Payments from './Orders/Payments'
 import {
     IoMdDocument,
     IoMdCheckmarkCircleOutline,
@@ -14,6 +15,7 @@ import {
     Switch,
     useRouteMatch
 } from 'react-router-dom'
+import { MdPayment } from 'react-icons/md'
 import '../styles/Orders.css'
 import Contracts from './Orders/Contracts'
 const routes = [
@@ -46,6 +48,12 @@ const routes = [
         link: '/contracts',
         icon: FaHandshake,
         component: Contracts
+    },
+    {
+        text: 'Ödəniş razılaşmaları',
+        link: '/payments',
+        icon: MdPayment,
+        component: Payments
     }
 ]
 const Orders = (props) => {

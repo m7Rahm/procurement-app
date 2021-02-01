@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import AgreementMaterials from '../../Tender/AgreementMaterials'
 import { FaCheck, FaTimes } from 'react-icons/fa'
+import { MdKeyboardArrowRight } from 'react-icons/md'
+import { useHistory } from 'react-router-dom'
 const getStatusIcon = (status) => {
     const props = { size: '16' }
     if (status === 1) {
@@ -10,6 +12,10 @@ const getStatusIcon = (status) => {
         return { icon: FaTimes, props: { ...props, color: '#D93404', title: 'Etiraz' } }
 }
 const AgreementGeneralInfo = (props) => {
+    const history = useHistory();
+    const gotoDoc = () => {
+        history.push('/tender/agreements', { agreement: { ...props } })
+    }
     const fetchMaterials = useCallback(() =>
         fetch(`http://172.16.3.101:54321/api/agreement-materials/${props.id}`, {
             headers: {
@@ -18,7 +24,14 @@ const AgreementGeneralInfo = (props) => {
         })
         , [props.token, props.id])
     return (
-        <div>
+        <div style={{ paddingTop: '76px' }}>
+            {
+                props.referer === 'procurement' &&
+                <div onClick={gotoDoc} style={{ position: 'absolute', top: '10px', right: '10px', fontSize: '20px', fontWeight: '550', cursor: 'pointer' }}>
+                    Sənədə keç
+                    <MdKeyboardArrowRight size="20" style={{ float: 'right' }} />
+                </div>
+            }
             <AgreementMaterials
                 editable={false}
                 fetchFunction={fetchMaterials}

@@ -5,24 +5,34 @@ import {
     Route,
     useRouteMatch
 } from 'react-router-dom'
-import ContPay from './Contracts/Contracts'
+import Contracts from './Contracts/Contracts'
+import ExpressContracts from './Contracts/ExpressContracts'
 import { FaFileContract, FaHandshake } from 'react-icons/fa'
+import { MdPayment } from 'react-icons/md'
+import Payments from './Contracts/Payments'
+import '../styles/Tender.css'
 
 const routes = [
     {
         text: 'Müqavilə razılaşmaları',
-        link: '',
+        link: '/contracts',
         icon: FaHandshake,
-        component: ContPay
+        component: Contracts
     },
     {
         text: 'Müqavilələr',
-        link: '',
+        link: '/express-contracts',
         icon: FaFileContract,
-        component: ContPay
+        component: ExpressContracts
     },
+    {
+        text: 'Ödəniş razılaşmaları',
+        link: '/payments',
+        icon: MdPayment,
+        component: Payments
+    }
 ]
-const Contracts = (props) => {
+const ContractsModule = (props) => {
     const setMenuData = props.setMenuData
     const { path, url } = useRouteMatch()
     useEffect(() => {
@@ -43,4 +53,4 @@ const Contracts = (props) => {
     )
 }
 
-export default Contracts
+export default ContractsModule

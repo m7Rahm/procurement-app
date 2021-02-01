@@ -16,27 +16,32 @@ const Tender = lazy(() => import('./Tender'))
 const Admin = lazy(() => import('./AdminPage'))
 const availableModules = [
 	{
-		text: 'Budget',
+		text: 'Büdcə',
+		label: "Budget",
 		link: '/budget',
 		component: Budget
 	},
 	{
-		text: 'Orders',
+		text: 'Sifarişlər',
+		label: "Orders",
 		link: '/orders',
 		component: Orders
 	},
 	{
 		text: 'Admin',
+		label: "Admin",
 		link: '/admin',
 		component: Admin
 	},
 	{
-		text: 'Contracts',
+		text: 'Müqavilələr',
+		label: "Contracts",
 		link: '/contracts',
 		component: Contracts
 	},
 	{
 		text: 'Tender',
+		label: "Tender",
 		link: '/tender',
 		component: Tender
 	},
@@ -72,7 +77,7 @@ const SelectModule = () => {
 			}
 		}
 	}, [token, userData]);
-	const routes = availableModules.filter(availableModule => userData.modules.find(module => module.text === availableModule.text));
+	const routes = availableModules.filter(availableModule => userData.modules.find(module => module.text === availableModule.label));
 	const handleNavClick = () => {
 		leftPaneRef.current.classList.toggle('left-side-pane-open');
 		const backgroundDisplay = backgroundRef.current.style.display === 'none' ? 'block' : 'none'

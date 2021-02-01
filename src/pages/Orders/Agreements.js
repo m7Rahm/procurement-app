@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react'
-import SideBarWithSearch from '../../components/HOC/SideBarWithSearch'
 import AgreementCard from '../../components/VisaCards/AgreementCard'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
+import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
 import CardsList from '../../components/HOC/CardsList'
 import { TokenContext } from '../../App'
 import AgreementContent from '../../components/Orders/Agreements/AgreementContent'
+import { optionsAgreements } from '../../data/data'
 const SideBarContent = CardsList(AgreementCard);
-const Search = SideBarWithSearch(SideBarContent);
+const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     const apiData = JSON.stringify(data);
@@ -39,8 +40,8 @@ const Agreements = (props) => {
     const token = tokenContext[0].token;
     const [active, setActive] = useState({
         active: null,
-        userResult: null,
-        agreementResult: null,
+        userResult: undefined,
+        agreementResult: undefined,
         tranid: null,
         number: ''
     });

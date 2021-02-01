@@ -4,18 +4,18 @@ import AgreementCard from '../../components/VisaCards/AgreementCard'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
 import CardsList from '../../components/HOC/CardsList'
 import { TokenContext } from '../../App'
-import ContractContent from '../../components/Orders/Contracts/ContractContent'
+import PaymentContent from '../../components/Orders/Contracts/PaymentContent'
 import { FaPlus } from 'react-icons/fa'
 import { optionsAgreements } from '../../data/data'
 const Modal = lazy(() => import('../../components/Misc/Modal'))
-const NewContract = lazy(() => import('../../components/Contracts/NewContract'))
+const NewPayment = lazy(() => import('../../components/Contracts/NewPayment'))
 const SideBarContent = CardsList(AgreementCard);
 const Search = SideBarWithSearch(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
     query = query.substring(0, query.length - 1);
-    return fetch('http://172.16.3.101:54321/api/tender-docs?doctype=2&' + query, {
+    return fetch('http://172.16.3.101:54321/api/tender-docs?doctype=3&' + query, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
@@ -30,7 +30,7 @@ const params = {
     active: 'id',
     agreementResult: 'result'
 }
-const Contracts = (props) => {
+const Payments = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [modalState, setModalState] = useState({ visible: false, content: null });
@@ -41,12 +41,12 @@ const Contracts = (props) => {
         agreementResult: null,
         tranid: null
     });
-    const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?doctype=2&docid=${active.active}` : ''
+    const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
     const closeModal = () => {
         setModalState({ visible: false, content: null })
     }
     const handleNewContractClick = () => {
-        setModalState( { visible: true, content: NewContract, updateCards: setInitData })
+        setModalState({ visible: true, content: NewPayment, updateCards: setInitData })
     }
     return (
         <div className="agreements-container" style={{ overflow: 'auto' }}>
@@ -57,7 +57,7 @@ const Contracts = (props) => {
                 token={token}
                 params={params}
             />
-            <ContractContent
+            <PaymentContent
                 token={token}
                 current={active}
                 referer="procurement"
@@ -68,12 +68,12 @@ const Contracts = (props) => {
                 <FaPlus size="28" color="#FFAE00" cursor="pointer" />
             </div>
             {
-                    modalState.visible &&
-                    <Modal childProps={modalState} changeModalState={closeModal}>
-                        {modalState.content}
-                    </Modal>
-                }
+                modalState.visible &&
+                <Modal childProps={modalState} changeModalState={closeModal}>
+                    {modalState.content}
+                </Modal>
+            }
         </div>
     )
 }
-export default Contracts
+export default Payments

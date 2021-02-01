@@ -30,7 +30,7 @@ const Chat = (props) => {
             })
     }
     useEffect(() => {
-        if(props.documentid)
+        if (props.documentid)
             loadMessages()
                 .then(resp => resp.json())
                 .then(respJ => {
@@ -64,9 +64,11 @@ const Chat = (props) => {
                     <div>Load more..</div>
                 }
             </div>
-            <div style={{ position: 'relative', paddingRight: '60px' }}>
-                <textarea ref={messageBoxRef} style={{ width: '100%', resize: 'none' }} />
-                <IoMdSend size="30" cursor="pointer" style={{ position: 'absolute', right: '10px' }} onClick={() => sendMessage(0)} />
+            <div className="chat-footer" >
+                <textarea ref={messageBoxRef} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
+                <span style={{ width: '60px' }}>
+                    <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
+                </span>
             </div>
         </>
     )

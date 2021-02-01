@@ -13,22 +13,21 @@ const Modal = (props) => {
   const stateRef = useRef({});
   const closeModal = () => {
     if (!stateRef.current.changed || canBeClosed)
-    changeModalState()
+      changeModalState()
   }
   useEffect(() => {
-      const onEscPress = (e) => {
-        if (e.keyCode === 27) {
-          if (!stateRef.current.changed || canBeClosed)
+    const onEscPress = (e) => {
+      if (e.keyCode === 27) {
+        if (!stateRef.current.changed || canBeClosed)
           changeModalState()
-        }
       }
-      document.addEventListener('keyup', onEscPress, false);
-      return () => document.removeEventListener('keyup', onEscPress, false)
-    }, [changeModalState, canBeClosed]);
+    }
+    document.addEventListener('keyup', onEscPress, false);
+    return () => document.removeEventListener('keyup', onEscPress, false)
+  }, [changeModalState, canBeClosed]);
   return (
     <>
-      <div className="modal" onClick={closeModal}>
-      </div>
+      <div className="modal" onClick={closeModal}></div>
       <div ref={modalWrapperRef} style={{ width: width }} className='modal-content wrapper'>
         <div style={{ marginBottom: '20px' }}>
           {title || ' Sifariş №'} {number}

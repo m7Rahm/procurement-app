@@ -148,6 +148,24 @@ export const vendorTypes = [
         text: 'Hüquqi şəxs' 
     }
 ];
+export const optionsAgreements = [
+    {
+        val: "-3",
+        text: "Hamısı"
+    },
+    {
+        val: "0",
+        text: "Gözləyən"
+    },
+    {
+        val: "1",
+        text: "Təsdiq edilmiş"
+    },
+    {
+        val: "-1",
+        text: "Etiraz edilmiş"
+    }
+]
 export const workSectors = [
     {
         val: 1,

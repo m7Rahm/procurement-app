@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react'
-import SideBarWithSearch from '../../components/HOC/SideBarWithSearch'
+import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
 import AgreementCard from '../../components/VisaCards/AgreementCard'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
 import CardsList from '../../components/HOC/CardsList'
 import { TokenContext } from '../../App'
 import ContractContent from '../../components/Orders/Contracts/ContractContent'
+import { optionsAgreements } from '../../data/data'
 const SideBarContent = CardsList(AgreementCard);
-const Search = SideBarWithSearch(SideBarContent);
+const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     const apiData = JSON.stringify(data);
@@ -21,7 +22,7 @@ const updateListContent = (data, token) => {
     })
 }
 const initData = {
-    fullName: '',
+    number: '',
     result: -3,
     from: 0,
     next: 20
@@ -38,8 +39,8 @@ const Contracts = (props) => {
     const token = tokenContext[0].token;
     const [active, setActive] = useState({
         active: null,
-        userResult: null,
-        agreementResult: null,
+        userResult: undefined,
+        agreementResult: undefined,
         tranid: null
     });
     const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?doctype=2&docid=${active.active}` : ''

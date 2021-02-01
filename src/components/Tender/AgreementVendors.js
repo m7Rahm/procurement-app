@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ForwardDocLayout from '../Misc/ForwardDocLayout';
 import AgreementVendorRow from './AgreementVendorRow'
 import OfferPictures from '../modal content/OfferPictures'
@@ -118,6 +118,8 @@ export default AgreementVendors
 
 export const VendorsList = (props) => {
     const [vendors, setVendors] = useState({ all: [], available: [], visible: [], offset: 2 });
+    const { headerVisible = true } = props
+    const vendorsListRef = useRef(null);
     useEffect(() => {
         const controller = new AbortController();
         fetch('http://172.16.3.101:54321/api/get-vendors', {
@@ -148,25 +150,54 @@ export const VendorsList = (props) => {
             return ({ ...prev, visible: prev.available.slice(start, end), offset: offset > 2 ? offset : 2 })
         })
     }
+    const handleInputFocus = () => {
+        vendorsListRef.current.style.display = "block"
+    }
+    const handleFocusLose = (e) => {
+        const relatedTarget = e.relatedTarget;
+        if (relatedTarget === null || relatedTarget.id !== "windowed-vendors-list")
+            vendorsListRef.current.style.display = "none"
+    }
+    const handleVendorClick = (vendor) => {
+        props.addVendor(vendor);
+        // vendorsListRef.current.style.display = "none"
+    }
+    const handleItemBlur = (e) => {
+        const relatedTarget = e.relatedTarget;
+        if (relatedTarget === null || relatedTarget.id !== "windowed-vendors-input")
+            vendorsListRef.current.style.display = "none"
+    }
     return (
         <>
-            <h1 style={{ textAlign: 'center', fontSize: '22px' }}>Vendorlar</h1>
-            <div>
-                <input style={{ display: 'block', width: "100%", padding: '3px' }} type="text" onChange={handleVendorSearch} />
-                <div style={{ height: '200px', position: 'relative', overflow: 'auto' }} onScroll={handleScroll}>
-                    <ul style={{ height: 36 * vendors.available.length }} className="vendors-list">
-                        {
-                            vendors.visible.map((vendor, index) =>
-                                <li
-                                    key={vendor.id}
-                                    onClick={() => props.addVendor(vendor)}
-                                    style={{ top: (vendors.offset + index - 2) * 36 + 'px' }}
-                                >
-                                    {vendor.name}
-                                </li>
-                            )
-                        }
-                    </ul>
+            {headerVisible && <h1 style={{ textAlign: 'center', fontSize: '22px' }}>Vendorlar</h1>}
+            <div style={{ position: 'relative' }}>
+                <input
+                    style={{ display: 'block', width: "100%", padding: '3px' }}
+                    type="text" onChange={handleVendorSearch}
+                    onFocus={handleInputFocus}
+                    onBlur={handleFocusLose}
+                    id="windowed-vendors-input"
+                />
+                <div tabIndex="1" ref={vendorsListRef}
+                    onBlur={handleItemBlur}
+                    id="windowed-vendors-list"
+                    style={{ position: 'absolute', zIndex: 1, display: 'none', top: "30px", left: 0, right: 0 }}
+                >
+                    <div style={{ maxHeight: '200px', position: 'relative', overflow: 'auto', backdropFilter: "blur(3px)", backgroundColor: 'slategray' }} onScroll={handleScroll}>
+                        <ul style={{ height: 36 * vendors.available.length, width: "100%" }} className="vendors-list">
+                            {
+                                vendors.visible.map((vendor, index) =>
+                                    <li
+                                        key={vendor.id}
+                                        onClick={() => handleVendorClick(vendor)}
+                                        style={{ top: (vendors.offset + index - 2) * 36 + 'px' }}
+                                    >
+                                        {vendor.name}
+                                    </li>
+                                )
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef, lazy } from 'react'
-import { FaFilePdf, FaFileExcel, FaFileWord, FaCheck, FaTimes } from 'react-icons/fa';
-import { AiFillFileUnknown } from 'react-icons/ai'
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import Chat from '../../Misc/Chat'
 import EmptyContent from '../../Misc/EmptyContent'
 import { MdDetails } from 'react-icons/md'
+import { ContractFiles } from './ContractContent'
 import RightInfoBar from '../../Misc/RightInfoBar';
 import AgreementGeneralInfo from './AgreementGeneralInfo'
 const Modal = lazy(() => import('../../Misc/Modal'));
 const Participants = lazy(() => import('../../Common/ParticipantsUniversal'));
-const ContractContent = (props) => {
+const PaymentContent = (props) => {
     const [contractDetails, setContractDetails] = useState([]);
     const [rightPanel, setRightPanel] = useState({ visible: false, id: null });
     const [modalState, setModalState] = useState({ visible: false })
@@ -17,11 +17,11 @@ const ContractContent = (props) => {
     const active = agreementResult === 0 && props.current.userResult === 0;
     const docid = props.current.active
     const actionDate = props.current.action_date_time;
-    const fetchParticipants = () => fetch(`http://172.16.3.101:54321/api/doc-participants?id=${docid}&doctype=2`, {
+    const fetchParticipants = () => fetch(`http://172.16.3.101:54321/api/doc-participants?id=${docid}&doctype=3`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
-    });
+    })
     useEffect(() => {
         if (props.apiString)
             fetch(props.apiString, {
@@ -33,7 +33,7 @@ const ContractContent = (props) => {
                 .then(respJ => setContractDetails(respJ))
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
-        const apiData = JSON.stringify({ ...data, docType: 2 });
+        const apiData = JSON.stringify({ ...data, docType: 3 });
         return fetch(`http://172.16.3.101:54321/api/send-message`, {
             method: 'POST',
             headers: {
@@ -58,7 +58,7 @@ const ContractContent = (props) => {
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
             tranid: props.current.tranid,
-            messageType: 2,
+            messageType: 3,
             messageid: docid,
             action: action,
             comment: textareaRef.current.value
@@ -86,11 +86,11 @@ const ContractContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetch(`http://172.16.3.101:54321/api/contract-files/${docid}?type=2`, {
+    const fetchFiles = useCallback(() => fetch(`http://172.16.3.101:54321/api/contract-files/${docid}?type=3`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
-    }), [docid, props.token]);
+    }), [docid, props.token])
     return (
         <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px', paddingTop: '76px' }}>
             {
@@ -128,11 +128,6 @@ const ContractContent = (props) => {
                         <ContractFiles
                             fetchFiles={fetchFiles}
                         />
-                        <h1 style={{ fontSize: '24px', float: 'right' }}>
-                            {contractDetails[0].vendor_name}
-                            <br/>
-                            <span style={{ fontWeight: '700', color: 'slategray', fontSize: '18px' }}>{contractDetails[0].voen}</span>
-                        </h1>
                         <RelatedDocs
                             docs={contractDetails}
                             setRightPanel={setRightPanel}
@@ -187,70 +182,16 @@ const ContractContent = (props) => {
                     </>
                     :
                     <EmptyContent />
+
             }
         </div>
     )
 }
 
-export default React.memo(ContractContent, (prev, next) => {
+export default React.memo(PaymentContent, (prev, next) => {
     return prev.apiString === next.apiString;
 })
 
-export const ContractFiles = React.memo((props) => {
-    const [files, setFiles] = useState([]);
-    const fetchFiles = props.fetchFiles;
-    useEffect(() => {
-        fetchFiles()
-            .then(resp => resp.json())
-            .then(respJ => setFiles(respJ))
-            .catch(ex => console.log(ex))
-    }, [fetchFiles])
-    return (
-        <div className="uploaded-files">
-            {
-                files.map(file => {
-                    const ext = file.ext;
-                    const src = `http://172.16.3.101:54321/original/${file.name}`
-                    switch (true) {
-                        case /pdf/.test(ext):
-                            return (
-                                <div key={file.name}>
-                                    <a href={src} rel="noopener noreferrer" target="_blank">
-                                        <FaFilePdf title={file.name} color="#F40F02" size="36" />
-                                    </a>
-                                </div>
-                            )
-                        case /doc./.test(ext):
-                            return (
-                                <div key={file.name}>
-                                    <a href={src} rel="noopener noreferrer" target="_blank" download>
-                                        <FaFileWord title={file.name} color="#0078d7" size="36" />
-                                    </a>
-                                </div>
-                            )
-                        case /xls./.test(ext):
-                            return (
-                                <div key={file.name}>
-                                    <a href={src} rel="noopener noreferrer" target="_blank">
-                                        <FaFileExcel title={file.name} color="#1D6F42" size="36" />
-                                    </a>
-                                </div>
-                            )
-                        default:
-                            return (
-                                <div key={file.name}>
-                                    <a href={src} rel="noopener noreferrer" target="_blank" download>
-                                        <AiFillFileUnknown title={file.name} size="36" />
-                                    </a>
-                                </div>
-                            )
-                    }
-                }
-                )
-            }
-        </div>
-    )
-});
 const RelatedDocs = (props) => {
     const handleInfoClick = (doc) => {
         props.setRightPanel(prev => {
@@ -280,7 +221,6 @@ const RelatedDocs = (props) => {
                         </div>
                     )
                 }
-
             </div>
         </>
     )

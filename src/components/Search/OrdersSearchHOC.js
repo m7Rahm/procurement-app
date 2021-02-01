@@ -6,7 +6,7 @@ import { BsArrowUpShort } from 'react-icons/bs'
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
-const OrdersSearchHOC = (Content) => function SearchBar(props) {
+const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
     const activePageRef = useRef(0);
     const advSearchRef = useRef(null);
     const iconRef = useRef(null);
@@ -14,10 +14,11 @@ const OrdersSearchHOC = (Content) => function SearchBar(props) {
     const { updateCards, updateList, setUpdateCards } = props;
     const [searchBarState, setSearchBarState] = useState(false);
     const selectRef = useRef(null);
+    const inputNumberRef = useRef(null);
     const searchStateRef = useRef({
         startDate: '',
         endDate: '',
-        fullName: ''
+        number: ''
     })
     const handleInputChange = (name, value) => {
         searchStateRef.current[name] = value;
@@ -36,10 +37,10 @@ const OrdersSearchHOC = (Content) => function SearchBar(props) {
         }
     }
     const refreshList = (from) => {
-        props.updateList({ ...searchStateRef.current, from })
+        props.updateList({ ...searchStateRef.current, from, result: selectRef.current.value, number: inputNumberRef.current.value })
     }
     const handleSearchClick = () => {
-        props.updateList({ ...searchStateRef.current, result: selectRef.current.value })
+        props.updateList({ ...searchStateRef.current, result: selectRef.current.value, number: inputNumberRef.current.value, from: 0 })
     }
     const resetState = () => {
     }
@@ -59,7 +60,10 @@ const OrdersSearchHOC = (Content) => function SearchBar(props) {
                     {
                         searchBarState &&
                         <div ref={advSearchRef} className="adv-search-box" style={{ padding: '20px 10px' }}>
-                            <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}>
+                            <div style={{ marginBottom: '10px' }} className="doc-number-container">
+                                <input ref={inputNumberRef} placeholder="Sənədin nömrəsini daxil edin.." />
+                            </div>
+                            <div style={{ display: 'flex', flex: 1, justifyContent: 'space-between', position: 'relative' }}>
                                 <CalendarUniversal
                                     year={year}
                                     month={month}
@@ -75,10 +79,12 @@ const OrdersSearchHOC = (Content) => function SearchBar(props) {
                                     handleInputChange={handleInputChange}
                                 />
                             </div>
-                            <select ref={selectRef}>
-                                <option value="-3">Hamısı</option>
-                                <option value="30">Razılaşmada</option>
-                                <option value="0">Gözləyən</option>
+                            <select style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
+                                {
+                                    options.map(option =>
+                                        <option key={option.val} value={option.val}>{option.text}</option>   
+                                    )
+                                }
                             </select>
                             <div className="search-ribbon">
                                 <div onClick={handleSearchClick}>Axtar</div>
