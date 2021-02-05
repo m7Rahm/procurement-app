@@ -23,27 +23,23 @@ const updateListContent = (data, token) => {
 }
 const initData = {
     number: '',
-    result: -3,
+    result: 0,
     from: 0,
     next: 20
 }
 const params = {
     active: 'message_id',
-    userResult: 'user_result',
-    agreementResult: 'agreement_result',
     tranid: 'id',
-    actionDate: 'action_date_time'
+    number: 'number'
 }
-const Contracts = (props) => {
+const Contracts = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [active, setActive] = useState({
         active: null,
-        userResult: undefined,
-        agreementResult: undefined,
-        tranid: null
+        tranid: undefined
     });
-    const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?doctype=2&docid=${active.active}` : ''
+    const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?${active.tranid ? `tranid=${active.tranid}&` : ''}doctype=2&docid=${active.active}` : ''
     return (
         <div className="agreements-container" style={{ top: '-56px' }}>
             <SideBar
@@ -55,9 +51,10 @@ const Contracts = (props) => {
             />
             <ContractContent
                 token={token}
-                current={active}
+                docid={active.active}
+                number={active.number}
+                tranid={active.tranid}
                 apiString={apiString}
-                setActive={setActive}
             />
         </div>
     )

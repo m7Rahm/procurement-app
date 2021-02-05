@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 const SideBarContainer = (Search) => function SideBar(props) {
     const { updateListContent, initData, setActive, token } = props;
-    const [cards, setCards] = useState({ content: [], count: 0 });
+    const [cards, setCards] = useState(props.cards ? props.cards : { content: [], count: 0 });
     const updateList = useCallback((data) => {
         updateListContent(data, token)
             .then(resp => resp.json())
@@ -20,7 +20,8 @@ const SideBarContainer = (Search) => function SideBar(props) {
                 setCards({ count: totalCount, content: respJ });
             })
             .catch(err => console.log(err))
-    }, [updateListContent, initData, token]);
+    }, [updateListContent, initData, token, props.updateCards]);
+
     return (
         <div className='side-bar'>
             <Search
@@ -28,7 +29,7 @@ const SideBarContainer = (Search) => function SideBar(props) {
                 initData={initData}
                 setActive={setActive}
                 updateList={updateList}
-                updateCards={props.updateCards}
+                searchStateRef={props.searchStateRef}
                 params={props.params}
             />
         </div>

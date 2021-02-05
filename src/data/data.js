@@ -165,6 +165,24 @@ export const optionsAgreements = [
         val: "-1",
         text: "Etiraz edilmiş"
     }
+];
+export const optionsReadyOrders = [
+    {
+        val: "-3",
+        text: "Hamısı"
+    },
+    {
+        val: "0",
+        text: "Gözləyən"
+    },
+    {
+        val: "31",
+        text: "Razılaşdırılmış"
+    },
+    {
+        val: "30",
+        text: "Razılaşmada"
+    }
 ]
 export const workSectors = [
     {

@@ -105,6 +105,7 @@ div.express-vendors-search-ribbon>div:last-of-type {
     padding: 12px 30px;
     color: white;
     font-weight: 600;
+    cursor: pointer;
     border-radius: 3px;
     background-color: #ffae00
 }

@@ -680,6 +680,7 @@ div.create-agreement-button {
   color: white;
   border-radius: 5px;
   margin: 20px;
+  cursor: pointer;
 }
 
 .calendar>table>thead button:focus {
@@ -2108,6 +2109,7 @@ div.big-picture-ref>div>span>svg {
 
 ul.chat {
   list-style-type: none;
+  position: relative;
 }
 
 ul.chat>li {
@@ -2159,10 +2161,15 @@ div.message>h1 {
 }
 
 div.chat-container {
-  max-height: 350px;
+  max-height: 360px;
   border-radius: 3px;
   padding: 10px;
-  margin-bottom: 20px !important;
+  background-color: white;
+  padding-bottom: 45px;
+}
+div.chat-container>div:first-of-type{
+  max-height: 300px;
+  overflow: auto;
 }
 div.doc-number-container>input{
   border: none;
@@ -2177,10 +2184,14 @@ div.doc-number-container>input:focus{
   outline-color: tomato;
 }
 div.chat-footer{
-  position: relative;
+  position: fixed;
   display: flex;
+  bottom: 0;
+  z-index: 1;
+  padding-bottom: 10px;
   padding-right: 60px;
-  height: 40px;
+  margin-right: 60px;
+  height: 50px;
   align-items: center
 }
 div.chat-footer textarea{
@@ -2190,7 +2201,7 @@ div.chat-footer textarea{
 div.chat-footer textarea:focus{
   outline: none;
 }
-div.chat-container::-webkit-scrollbar {
+div.chat-container>div:first-of-type::-webkit-scrollbar {
   width: 8px;
 }
 
@@ -2220,7 +2231,7 @@ div.message:hover>svg {
   display: inline;
 }
 
-div.chat-container::-webkit-scrollbar-thumb {
+div.chat-container>div:first-of-type::-webkit-scrollbar-thumb {
   background: #b1b1b1;
 }
 

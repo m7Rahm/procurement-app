@@ -5,6 +5,10 @@ const AgreementCard = (props) => {
     const display = isReadDivDisplay(props.card.is_read);
     const handleClick = () => {
         const params = props.params;
+        if(props.activeRef.current)
+            props.activeRef.current.style.backgroundColor = "transparent";
+        stateRef.current.style.backgroundColor = "skyblue";
+        props.activeRef.current = stateRef.current;
         const active = Object.keys(params).reduce((prev, current) => prev = { ...prev, [current]: props.card[params[current]] }, {});
         props.setActive(active)
     }
@@ -33,4 +37,4 @@ const AgreementCard = (props) => {
         </li>
     )
 }
-export default React.memo(AgreementCard)
+export default AgreementCard

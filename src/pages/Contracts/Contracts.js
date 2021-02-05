@@ -28,18 +28,15 @@ const inData = {
 }
 const params = {
     active: 'id',
-    agreementResult: 'result'
 }
-const Contracts = (props) => {
+const Contracts = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [modalState, setModalState] = useState({ visible: false, content: null });
     const [initData, setInitData] = useState(inData)
     const [active, setActive] = useState({
-        active: null,
-        userResult: null,
-        agreementResult: null,
-        tranid: null
+        active: undefined,
+        tranid: undefined
     });
     const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?doctype=2&docid=${active.active}` : ''
     const closeModal = () => {
@@ -59,10 +56,10 @@ const Contracts = (props) => {
             />
             <ContractContent
                 token={token}
-                current={active}
+                docid={active.active}
+                tranid={active.tranid}
                 referer="procurement"
                 apiString={apiString}
-                setActive={setActive}
             />
             <div onClick={handleNewContractClick} style={{ position: 'fixed', bottom: '50px', right: '50px' }}>
                 <FaPlus size="28" color="#FFAE00" cursor="pointer" />

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, lazy } from 'react'
+import React, { useEffect, useContext, useState, lazy, useRef } from 'react'
 import { TokenContext } from '../../App'
 import { workSectors } from '../../data/data'
 import { IoIosMore, IoIosAddCircle } from 'react-icons/io'
@@ -11,7 +11,9 @@ const ExpressContracts = (props) => {
     const [contracts, setContracts] = useState({ count: 0, content: [] });
     const token = tokenContext[0].token;
     const [modalState, setModalState] = useState({ visible: false, content: ExpressContractBody })
-
+    const numberRef = useRef(null);
+    const vendorsListRef = useRef([]);
+    const activePageRef = useRef(0);
     useEffect(() => {
         fetch('http://172.16.3.101:54321/api/get-express-contracts', {
             method: 'POST',
@@ -28,8 +30,38 @@ const ExpressContracts = (props) => {
             })
             .catch(ex => console.log(ex))
     }, [token]);
+    const updateContent = () => {
+        const data = JSON.stringify({
+            vendors: vendorsListRef.current.length !== 0 ? vendorsListRef.current.map(vendor => [vendor.id]) : null,
+            from: activePageRef.current,
+            number: numberRef.current.value
+        });
+        fetch('http://172.16.3.101:54321/api/get-express-contracts', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            },
+            body: data
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                setContracts({ count: totalCount, content: respJ });
+            })
+            .catch(ex => console.log(ex))
+
+    }
     const handleMoreClick = (id) => {
-        setModalState({ visible: true, content: ExpressContractBody, id, token })
+        setModalState({
+            visible: true,
+            content: ExpressContractBody,
+            id,
+            token,
+            updateContent,
+            setContracts
+        })
     }
     const closeModal = () => {
         setModalState({ visible: false, content: null })
@@ -45,11 +77,14 @@ const ExpressContracts = (props) => {
                 }
                 <SearchExpressContracts
                     token={token}
+                    activePageRef={activePageRef}
+                    vendorsListRef={vendorsListRef}
+                    numberRef={numberRef}
                     count={contracts.count}
                     setContracts={setContracts}
                 />
                 <div style={{ position: "fixed", right: '50px', bottom: "86px", }}>
-                    <IoIosAddCircle size="50" cursor="pointer" color="#D93404" onClick={() => handleMoreClick(0) } />
+                    <IoIosAddCircle size="50" cursor="pointer" color="#D93404" onClick={() => handleMoreClick(0)} />
                 </div>
                 <ul className="potential-vendors">
                     <li>

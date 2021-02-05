@@ -35,8 +35,10 @@ const ExpressContractBody = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ.length === 0)
-                    props.closeModal()
+                if (respJ.length === 0) {
+                    props.closeModal();
+                    props.updateContent();
+                }
             })
             .catch(ex => console.log(ex))
     }
@@ -62,8 +64,25 @@ const ExpressContractBody = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ.length === 0)
+                if (respJ.length === 0) {
+                    props.setContracts(prev => {
+                        return ({
+                            ...prev,
+                            content: prev.content.map(row =>
+                                row.id === props.id
+                                    ? ({
+                                        ...row,
+                                        number: numberRef.current.value,
+                                        vendor_name: contractState[0].vendor_name,
+                                        sphere: contractState[0].sphere,
+                                        contract_date: dateRef.current.value
+                                    })
+                                    : row
+                            )
+                        })
+                    });
                     props.closeModal()
+                }
             })
             .catch(ex => console.log(ex))
     }
@@ -86,9 +105,9 @@ const ExpressContractBody = (props) => {
         setContractState(prev => {
             stateRef.current.vendorid = vendor.id;
             if (prev.length !== 0)
-                return prev.map(row => ({ ...row, vendor_name: vendor.name, voen: vendor.voen }))
+                return prev.map(row => ({ ...row, vendor_name: vendor.name, voen: vendor.voen, sphere: vendor.sphere }))
             else
-                return ([...prev, { vendor_id: vendor.id, vendor_name: vendor.name, voen: vendor.voen }])
+                return ([...prev, { vendor_id: vendor.id, vendor_name: vendor.name, voen: vendor.voen, sphere: vendor.sphere }])
         })
     }
     return (

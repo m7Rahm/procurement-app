@@ -7,7 +7,7 @@ const AgreementVendorRow = (props) => {
         vendor,
         setAgreementVendors,
     } = props;
-    const active = props.agreementResult === 0  && (props.userResult === 0 || props.userResult === 3)
+    const active = props.agreementResult === 0 && (props.userResult === 0 || props.userResult === 3)
     const rowRef = useRef(null);
     const handleChange = (e) => {
         const name = e.target.name;
@@ -38,16 +38,19 @@ const AgreementVendorRow = (props) => {
                 <div>
                     {vendor.comment}
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                        type="text"
-                        name="review"
-                        placeholder="Review.."
-                        value={vendor.review}
-                        disabled={!active}
-                        onChange={handleChange}
-                    />
-                </div>
+                {
+                    props.referer !== 'procurement' &&
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <input
+                            type="text"
+                            name="review"
+                            placeholder="Review.."
+                            value={vendor.review}
+                            disabled={!active}
+                            onChange={handleChange}
+                        />
+                    </div>
+                }
                 <div>
                     <FaRegLightbulb
                         cursor="pointer"
@@ -56,22 +59,26 @@ const AgreementVendorRow = (props) => {
                         onClick={onBulbClick}
                     />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                    {
-                        active &&
-                        <div
-                            className="approve-vendor"
-                            onClick={approveVendor}
-                            style={{ backgroundColor: vendor.result === 1 ? '#D93404': '' }}
-                        >
-                            {vendor.result === 1 ? 'Ləğv et' : 'Təsdiq et' }
-                        </div>
-                    }
-                    {
-                        vendor.result === 1 &&
-                        <FaCheck cursor="pointer" color="#0F9D58" size="20"/>
-                    }
-                </div>
+                {
+                    props.referer !== 'procurement' &&
+                    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                        {
+                            active &&
+                            <div
+                                className="approve-vendor"
+                                onClick={approveVendor}
+                                style={{ backgroundColor: vendor.result === 1 ? '#D93404' : '' }}
+                            >
+                                {vendor.result === 1 ? 'Ləğv et' : 'Təsdiq et'}
+                            </div>
+                        }
+                        {
+                            (vendor.result === 1) &&
+                            <FaCheck cursor="pointer" color="#0F9D58" size="20" />
+                        }
+                    </div>
+                }
+
             </li>
         </>
     )

@@ -9,28 +9,33 @@ import AgreementGeneralInfo from './AgreementGeneralInfo'
 const Modal = lazy(() => import('../../Misc/Modal'));
 const Participants = lazy(() => import('../../Common/ParticipantsUniversal'));
 const ContractContent = (props) => {
-    const [contractDetails, setContractDetails] = useState([]);
+    const [contractDetails, setContractDetails] = useState({ content: [], active: false });
     const [rightPanel, setRightPanel] = useState({ visible: false, id: null });
-    const [modalState, setModalState] = useState({ visible: false })
+    const [modalState, setModalState] = useState({ visible: false });
     const textareaRef = useRef(null);
-    const agreementResult = props.current.agreementResult;
-    const active = agreementResult === 0 && props.current.userResult === 0;
-    const docid = props.current.active
-    const actionDate = props.current.action_date_time;
+    const docid = props.docid;
     const fetchParticipants = () => fetch(`http://172.16.3.101:54321/api/doc-participants?id=${docid}&doctype=2`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
     });
     useEffect(() => {
-        if (props.apiString)
+        let mounted = true;
+        if (props.apiString && mounted)
             fetch(props.apiString, {
                 headers: {
                     'Authorization': 'Bearer ' + props.token
                 }
             })
                 .then(resp => resp.json())
-                .then(respJ => setContractDetails(respJ))
+                .then(respJ => {
+                    if (mounted)
+                        setContractDetails({
+                            content: respJ,
+                            active: respJ[0].doc_result === 0 && (respJ[0].user_result === 0 || respJ[0].user_result === undefined)
+                        })
+                })
+        return () => mounted = false
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
         const apiData = JSON.stringify({ ...data, docType: 2 });
@@ -57,7 +62,7 @@ const ContractContent = (props) => {
     }
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
-            tranid: props.current.tranid,
+            tranid: props.tranid,
             messageType: 2,
             messageid: docid,
             action: action,
@@ -75,7 +80,7 @@ const ContractContent = (props) => {
             .then(resp => resp.json())
             .then(respJ => {
                 if (respJ.length === 0) {
-                    props.setActive(prev => ({ ...prev, userResult: action }))
+                    setContractDetails(prev => ({active: false, content: prev.content.map(row => ({ ...row, user_result: action }))}))
                 }
             })
             .catch(ex => console.log(ex))
@@ -100,28 +105,32 @@ const ContractContent = (props) => {
                 </Modal>
             }
             {
-                contractDetails.length !== 0
+                contractDetails.content.length !== 0
                     ? <>
                         <div>
                             <h1 style={{ fontSize: '24px', color: 'gray' }}>
                                 <span style={{ float: 'left' }}>
                                     {
-                                        props.current.userResult === undefined && agreementResult !== 0
-                                            ? agreementResult === 1
+                                        contractDetails.content[0].user_result === undefined && contractDetails.content[0].doc_result !== 0
+                                            ? contractDetails.content[0].doc_result === 1
                                                 ? <FaCheck size="30" color="#0F9D58" />
                                                 : <FaTimes size="30" color="#D93404" />
-                                            : props.current.userResult !== undefined && props.current.userResult !== 0
-                                                ? props.current.userResult === 1
+                                            : contractDetails.content[0].user_result !== undefined && contractDetails.content[0].user_result !== 0
+                                                ? contractDetails.content[0].user_result === 1
                                                     ? <FaCheck size="30" color="#0F9D58" />
                                                     : <FaTimes size="30" color="#D93404" />
-                                                : ''
+                                                : contractDetails.content[0].doc_result !== 0 && contractDetails.content[0].user_result !== undefined
+                                                    ? contractDetails.content[0].doc_result === 1
+                                                        ? <FaCheck size="30" color="#0F9D58" />
+                                                        : <FaTimes size="30" color="#D93404" />
+                                                    : ''
                                     }
                                 </span>
-                                {contractDetails[0].number}
+                                {props.number}
                                 <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)" }}>
                                     <MdDetails size="30" onClick={showHistory} />
                                 </span>
-                                <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)", fontSize: '20px' }}>{actionDate}</span>
+                                <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)", fontSize: '20px' }}>{contractDetails.content[0].action_date_time}</span>
                             </h1>
 
                         </div>
@@ -129,25 +138,25 @@ const ContractContent = (props) => {
                             fetchFiles={fetchFiles}
                         />
                         <h1 style={{ fontSize: '24px', float: 'right' }}>
-                            {contractDetails[0].vendor_name}
-                            <br/>
-                            <span style={{ fontWeight: '700', color: 'slategray', fontSize: '18px' }}>{contractDetails[0].voen}</span>
+                            {contractDetails.content[0].vendor_name}
+                            <br />
+                            <span style={{ fontWeight: '700', color: 'slategray', fontSize: '18px' }}>{contractDetails.content[0].voen}</span>
                         </h1>
                         <RelatedDocs
-                            docs={contractDetails}
+                            docs={contractDetails.content}
                             setRightPanel={setRightPanel}
                         />
-                        <p>{contractDetails[0].comment}</p>
+                        <p>{contractDetails.content[0].comment}</p>
                         <div style={{ margin: '6px 0px' }}>
                             {
-                                props.referer === 'procurement' && active ?
+                                props.referer === 'procurement' && contractDetails.active ?
                                     <div
                                         style={{ background: '#D93404', color: 'white', padding: '6px', cursor: 'pointer', borderRadius: '3px' }}
                                         onClick={cancel}
                                     >
                                         Razılaşmanı ləğv et
                                     </div>
-                                    : active &&
+                                    : contractDetails.active &&
                                     <>
                                         <textarea ref={textareaRef} placeholder="Qeydlərinizi daxil edin.." style={{ width: '82%', minHeight: '100px' }} />
                                         <div className="accept-decline-container">
@@ -192,9 +201,7 @@ const ContractContent = (props) => {
     )
 }
 
-export default React.memo(ContractContent, (prev, next) => {
-    return prev.apiString === next.apiString;
-})
+export default React.memo(ContractContent)
 
 export const ContractFiles = React.memo((props) => {
     const [files, setFiles] = useState([]);

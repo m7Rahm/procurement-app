@@ -23,26 +23,21 @@ const updateListContent = (data, token) => {
 }
 const initData = {
     fullName: '',
-    result: -3,
+    result: 0,
     from: 0,
     next: 20
 }
 const params = {
     active: 'message_id',
-    userResult: 'user_result',
-    agreementResult: 'agreement_result',
     tranid: 'id',
-    actionDate: 'action_date_time',
     number: 'number'
 }
-const Agreements = (props) => {
+const Agreements = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [active, setActive] = useState({
-        active: null,
-        userResult: undefined,
-        agreementResult: undefined,
-        tranid: null,
+        active: undefined,
+        tranid: undefined,
         number: ''
     });
     return (
@@ -54,10 +49,12 @@ const Agreements = (props) => {
                 token={token}
                 params={params}
             />
-            <AgreementContent   
+            <AgreementContent
                 token={token}
-                current={active}
+                docid={active.active}
+                tranid={active.tranid}
                 setActive={setActive}
+                number={active.number}
             />
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import Pagination from '../Misc/Pagination'
 import CalendarUniversal from '../Misc/CalendarUniversal'
 import { GoChevronDown } from 'react-icons/go'
@@ -11,7 +11,6 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
     const advSearchRef = useRef(null);
     const iconRef = useRef(null);
     const notifIcon = useRef(null);
-    const { updateCards, updateList, setUpdateCards } = props;
     const [searchBarState, setSearchBarState] = useState(false);
     const selectRef = useRef(null);
     const inputNumberRef = useRef(null);
@@ -44,12 +43,6 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
     }
     const resetState = () => {
     }
-    useEffect(() => {
-        if (selectRef.current && selectRef.current.value === "30" && updateCards){
-            updateList({ ...searchStateRef.current, result: selectRef.current.value })
-            setUpdateCards(false)
-        }
-    }, [updateCards, updateList, setUpdateCards])
     return (
         <>
             <div>
@@ -79,10 +72,10 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
                                     handleInputChange={handleInputChange}
                                 />
                             </div>
-                            <select style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
+                            <select defaultValue="0" style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
                                 {
                                     options.map(option =>
-                                        <option key={option.val} value={option.val}>{option.text}</option>   
+                                        <option key={option.val} value={option.val}>{option.text}</option>
                                     )
                                 }
                             </select>

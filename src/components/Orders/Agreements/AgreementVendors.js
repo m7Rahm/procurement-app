@@ -9,7 +9,7 @@ const AgreementVendors = (props) => {
     const [modalState, setModalState] = useState({ visible: false, content: null });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '', icon: null })
     const textAreaRef = useRef(null);
-    const active = props.agreementResult === 0 && props.userResult === 0
+    const active = props.agreementResult === 0 && props.userResult === 0;
     useEffect(() => {
         if (props.active) {
             fetch(`http://172.16.3.101:54321/api/agreement-vendors/${props.active}`, {
@@ -47,7 +47,9 @@ const AgreementVendors = (props) => {
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();
-                        props.setActive(prev => ({ ...prev, userResult: -1, actionDate: 'Just now' }))
+                        props.setDocState(prev => ({ ...prev, userResult: -1, actionDate: 'Just now' }));
+                        if (props.searchStateRef.current.result === 0)
+                            props.setUpdateCards(prev => !prev)
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -75,8 +77,11 @@ const AgreementVendors = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (respJ.length === 0)
-                        props.setActive(prev => ({ ...prev, userResult: 1, actionDate: 'Just now' }))
+                    if (respJ.length === 0) {
+                        props.setDocState(prev => ({ ...prev, userResult: 1, actionDate: 'Just now' }))
+                        if (props.searchStateRef.current.result === 0)
+                            props.setUpdateCards(prev => !prev)
+                    }
                 })
                 .catch(ex => console.log(ex))
         }
@@ -101,9 +106,9 @@ const AgreementVendors = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (respJ.length === 0){
+                    if (respJ.length === 0) {
                         closeModal();
-                        props.setActive(prev => ({ ...prev, agreementResult: -1, actionDate: 'Just now' }))
+                        props.setDocState(prev => ({ ...prev, agreementResult: -1, actionDate: 'Just now' }))
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -128,9 +133,15 @@ const AgreementVendors = (props) => {
                         <div>VÖEN</div>
                         <div>Xid. sahəsi</div>
                         <div>Qeyd</div>
-                        <div>Rəy</div>
+                        {
+                            props.referer !== 'procurement' &&
+                            <div>Rəy</div>
+                        }
                         <div></div>
-                        <div></div>
+                        {
+                            props.referer !== 'procurement' &&
+                            <div></div>
+                        }
                     </li>
                     {
                         agreementVendors.map((vendor, index) =>
@@ -140,6 +151,7 @@ const AgreementVendors = (props) => {
                                 userResult={props.userResult}
                                 agreementResult={props.agreementResult}
                                 vendor={vendor}
+                                referer={props.referer}
                                 agreementid={props.active}
                                 handleDetailsClick={handleDetailsClick}
                                 setModalState={props.setModalState}
@@ -160,14 +172,14 @@ const AgreementVendors = (props) => {
                 <textarea
                     style={{ margin: '30px', width: '61%', height: '50px' }}
                     placeholder="Əlavə qeydlər..."
-                    defaultValue={agreementVendors.length !== 0 ? agreementVendors[0].comment : ''}
+                    defaultValue={props.comment || ''}
                     disabled={true}
                     ref={textAreaRef}
                 />
                 {
                     props.referer === 'procurement' && active ?
                         <div
-                            style={{ background: '#D93404', color: 'white', padding: '6px', cursor: 'pointer' }}
+                            style={{ background: '#D93404', color: 'white', padding: '6px', cursor: 'pointer', maxWidth: '200px', borderRadius: '3px' }}
                             onClick={cancelAgreement}
                         >
                             Razılaşmanı ləğv et
@@ -197,7 +209,7 @@ export default AgreementVendors
 const DeclineReason = (props) => {
     const reasonRef = useRef(null);
     const handleSend = () => {
-        props.handleSend(reasonRef.current.value)
+        props.handleSend(reasonRef.current.value);
     }
     return (
         <div style={{ overflow: 'hidden' }}>

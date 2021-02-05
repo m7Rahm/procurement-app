@@ -1,13 +1,16 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
 import Pagination from '../Misc/Pagination'
 import { VendorsList } from '../Tender/AgreementVendors'
 const SearchExpressContracts = (props) => {
     const [vendorsList, setVendorsList] = useState([]);
-    const numberRef = useRef(null);
-    const activePageRef = useRef(0);
+
     const onVendorSelect = (vendor) => {
-        setVendorsList(prev => prev.find(ven => ven.id === vendor.id) ? prev : [...prev, vendor])
+        setVendorsList(prev => {
+            const newState = prev.find(ven => ven.id === vendor.id) ? prev : [...prev, vendor]
+            props.vendorsListRef.current = newState;
+            return newState
+        })
     }
     const removeFromVendorsList = (vendor) => {
         setVendorsList(prev => prev.filter(ven => ven.id !== vendor.id))
@@ -17,9 +20,9 @@ const SearchExpressContracts = (props) => {
     }
     const updateList = (from) => {
         const data = JSON.stringify({
-            vendors: VendorsList.length !== 0 ? vendorsList.map(vendor => [vendor.id]) : null,
+            vendors: vendorsList.length !== 0 ? vendorsList.map(vendor => [vendor.id]) : null,
             from: from,
-            number: numberRef.current.value
+            number: props.numberRef.current.value
         });
         fetch('http://172.16.3.101:54321/api/get-express-contracts', {
             method: "POST",
@@ -44,7 +47,7 @@ const SearchExpressContracts = (props) => {
                     <div>
                         <label>Müqavilə nömrəsi</label>
                         <br />
-                        <input ref={numberRef} placeholder="Nömrə" />
+                        <input ref={props.numberRef} placeholder="Nömrə" />
                     </div>
                     <div>
                         <label>Vendorlar</label>
@@ -74,7 +77,7 @@ const SearchExpressContracts = (props) => {
             <div className="my-orders-footer">
                 <Pagination
                     count={props.count}
-                    activePageRef={activePageRef}
+                    activePageRef={props.activePageRef}
                     updateList={updateList}
                 />
             </div>

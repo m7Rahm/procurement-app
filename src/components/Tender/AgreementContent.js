@@ -45,6 +45,9 @@ const AgreementContent = (props) => {
             {
                 active ?
                     <>
+                        <h1>{props.ordNumb}</h1>
+                        <h1>{props.basedOn}</h1>
+                        <h1>{props.departmentName}</h1>
                         <ul className="new-order-table order-table-protex">
                             <li>
                                 <div>#</div>
@@ -61,6 +64,7 @@ const AgreementContent = (props) => {
                                         index={index}
                                         material={material}
                                         token={props.token}
+                                        searchStateRef={props.searchStateRef}
                                         setRightBarState={setRightBarState}
                                         setUpdateCards={props.setUpdateCards}
                                         setOperationResult={setOperationResult}
@@ -85,7 +89,7 @@ const AgreementContent = (props) => {
         </div>
     )
 }
-export default AgreementContent
+export default React.memo(AgreementContent)
 
 const getMaterialState = (result) => {
     if (result === 30)
@@ -101,7 +105,6 @@ const AgreementMaterial = (props) => {
     const handleInfoClick = () => {
         props.setRightBarState({ visible: true, id: materialState.id })
     }
-
     const sendToAgreement = () => {
         const data = JSON.stringify({
             id: materialState.id
@@ -117,12 +120,11 @@ const AgreementMaterial = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-
                 if (respJ.length === 0 || !respJ[0].error) {
                     setMaterialState(prev => ({ ...prev, result: 30 }))
                     props.setOperationResult(prev => ({ ...prev, ...{ visible: true, desc: 'Əməliyyat uğurla tamamlandı' } }));
-                    if (respJ.length !== 0 && respJ[0].order_status)
-                        props.setUpdateCards(true)
+                    if (respJ.length !== 0 && respJ[0].order_status && props.searchStateRef.current.result === 0)
+                        props.setUpdateCards(prev => !prev)
                 }
                 if (respJ.length > 2 || respJ[0].error)
                     props.setOperationResult({ visible: true, desc: respJ[0].error })

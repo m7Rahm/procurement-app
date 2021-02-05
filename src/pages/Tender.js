@@ -15,31 +15,31 @@ import NewAgreement from './Tender/NewAgreement';
 import Agreements from './Tender/Agreements';
 const routes = [
     {
-        text: 'Express Vendors',
+        text: 'Express Vendorlar',
         link: '/express-vendors',
         icon: MdLocalOffer,
         component: ExpressVendors
     },
     {
-        text: 'Orders',
+        text: 'Sifarişlər',
         link: '/orders',
         icon: FaCartArrowDown,
         component: Orders
     },
     {
-        text: 'Potential Vendors',
+        text: 'Potensial Vendorlar',
         link: '/potential-vendors',
         icon: IoIosBulb,
         component: PotentialVendors
     },
     {
-        text: 'Agreements',
+        text: 'Razılaşmalar',
         link: '/agreements',
         icon: FaTasks,
         component: Agreements
     },
     {
-        text: 'New Agreement',
+        text: 'Yeni Razılaşma',
         link: '/new-agreement',
         icon: IoIosDocument,
         component: NewAgreement
