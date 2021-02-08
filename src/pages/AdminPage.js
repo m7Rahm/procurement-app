@@ -48,7 +48,7 @@ const AdminPage = (props) => {
 		setMenuData({ url: url, routes: routes })
 	}, [url, setMenuData])
 	return (
-		<div className="dashboard">
+		<div className="dashboard" style={{ paddingTop: '76px' }}>
 			<Switch>
 				{
 					routes.map(route =>

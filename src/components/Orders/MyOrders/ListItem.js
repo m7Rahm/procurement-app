@@ -140,7 +140,7 @@ const ListItem = (props) => {
         <div style={{ padding: '0px 10px' }}>
           <IoMdInformationCircle cursor="pointer" size='20' color='#606060' onClick={() => onInfoClick(number)} />
         </div>
-        <div><IoMdMore pointer="cursor" onClick={handleFinishClick} /></div>
+        <div>{referer === 'protected' && <IoMdMore pointer="cursor" onClick={handleFinishClick} />}</div>
       </li>
     </>
   )

@@ -44,46 +44,55 @@ const EditOrderRequest = (props) => {
             .catch(ex => console.log(ex))
     }, [ordNumb, version, token]);
     const handleConfirmClick = (receivers, text) => {
-        const action = receivers.length === 0 ? 1 : 0
-        const parsedMaterials = orderState.map(material =>
-            [
-                material.id,
-                material.material_id,
-                material.amount,
-                material.approx_price * material.amount,
-                material.material_comment,
-                material.sub_gl_category_id
-            ]
-        );
-        const data = {
-            mats: parsedMaterials,
-            recs: receivers.map(receiver => [receiver.id]),
-            ordNumb: ordNumb,
-            empVersion: version,
-            comment: text,
-            action: action
+        const error = orderState.find(material => isNaN(material.material_id * material.amount * material.approx_price * material.sub_gl_category_id))
+        if (!error) {
+            const action = receivers.length === 0 ? 1 : 0
+            const parsedMaterials = orderState.map(material =>
+                [
+                    material.id,
+                    material.material_id,
+                    material.amount,
+                    material.approx_price * material.amount,
+                    material.material_comment,
+                    material.sub_gl_category_id
+                ]
+            );
+            const data = {
+                mats: parsedMaterials,
+                recs: receivers.map(receiver => [receiver.id]),
+                ordNumb: ordNumb,
+                empVersion: version,
+                comment: text,
+                action: action
+            }
+            editOrderAndApprove(data, setOperationResult);
         }
-        editOrderAndApprove(data, setOperationResult);
+        else
+            setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
     }
     const handleSendClick = () => {
-        const parsedMaterials = orderState.map(material =>
-            [
-                material.material_id,
-                material.amount,
-                material.approx_price * material.amount,
-                material.material_comment,
-                material.sub_gl_category_id
-            ]
-        )
-        const data = {
-            orderType: initialValuesRef.current[0].order_type,
-            mats: parsedMaterials,
-            receivers: [],
-            ordNumb: ordNumb,
-            structureid: orderState[0].structure_id,
-            returned: view === 'returned' ? 1 : 0
+        const error = orderState.find(material => isNaN(material.material_id * material.amount * material.approx_price * material.sub_gl_category_id))
+        if (!error) {
+            const parsedMaterials = orderState.map(material =>
+                [
+                    material.material_id,
+                    material.amount,
+                    material.approx_price * material.amount,
+                    material.material_comment,
+                    material.sub_gl_category_id
+                ]);
+            const data = {
+                orderType: initialValuesRef.current[0].order_type,
+                mats: parsedMaterials,
+                receivers: [],
+                ordNumb: ordNumb,
+                structureid: orderState[0].structure_id,
+                returned: view === 'returned' ? 1 : 0
+            }
+            onSendClick(data, setOperationResult)
         }
-        onSendClick(data, setOperationResult)
+        else
+            setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
     }
     const addNewRow = () => {
         setOrderState(prev => [...prev, {
@@ -146,6 +155,7 @@ const EditOrderRequest = (props) => {
                             setOrderState={setOrderState}
                             glCategories={glCategories}
                             token={token}
+                            glCatid={glCatid}
                             ordNumb={ordNumb}
                             version={version}
                         />

@@ -30,7 +30,7 @@ const VisaContent = (props) => {
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
-                        setVisa(() => respJ);
+                        setVisa(respJ);
                     }
                 })
                 .catch(error => console.log(error));

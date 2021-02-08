@@ -38,7 +38,7 @@ const NewContract = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ.length === 0){
+                if (respJ.length === 0) {
                     props.closeModal();
                     props.updateCards({
                         result: -3,
@@ -107,7 +107,7 @@ const NewContract = (props) => {
                 vendor !== null &&
                 <div style={{ overflow: 'hidden', maxWidth: '50%', margin: '10px', float: 'right', clear: 'right', lineHeight: '28px' }}>
                     <div className="forwarded-person-card">
-                    <span style={{ verticalAlign: 'baseline', margin: '0px 10px' }}>
+                        <span style={{ verticalAlign: 'baseline', margin: '0px 10px' }}>
                             {vendor.name}
                         </span>
                     </div>
@@ -153,7 +153,7 @@ const AgreementsList = (props) => {
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         setAgreements(prev => {
-            const available = prev.all.filter(agreement => agreement.full_name.toLowerCase().includes(value))
+            const available = prev.all.filter(agreement => agreement.number.toLowerCase().includes(value))
             return ({ ...prev, available: available, visible: available.slice(0, Math.round(200 / 36)), offset: 2 })
         })
     }

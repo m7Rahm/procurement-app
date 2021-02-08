@@ -155,7 +155,7 @@ const AgreementsList = React.memo((props) => {
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         setDocuments(prev => {
-            const available = prev.all.filter(document => document.full_name.toLowerCase().includes(value))
+            const available = prev.all.filter(document => document.number.toLowerCase().includes(value))
             return ({ ...prev, available: available, visible: available.slice(0, Math.round(200 / 36)), offset: 2 })
         })
     }

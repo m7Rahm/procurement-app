@@ -4,7 +4,7 @@ import {
 	FaTrashAlt,
 	FaMinus
 } from 'react-icons/fa'
-const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ordNumb, version, view }) => {
+const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ordNumb, version, view, glCatid }) => {
 	const { sub_gl_category_id: subCategoryid } = row;
 	const rowid = row.id;
 	const modelsRef = useRef([]);
@@ -12,7 +12,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 	const rowRef = useRef(null);
 	const modelListRef = useRef(null);
 	useEffect(() => {
-		if (view === 'returned' || view === 'procurement' ) {
+		if (view === 'returned' || view === 'procurement') {
 			const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
 			fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
 				method: 'POST',
@@ -31,7 +31,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 				})
 		}
 	}, [subCategoryid, token, ordNumb, version, rowid, setOrderState, view])
-	const subCategories = glCategories.all.filter(category => category.dependent_id === Number(row.gl_category_id));
+	const subCategories = glCategories.all.filter(category => category.dependent_id === Number(glCatid));
 
 	const handleBlur = (e) => {
 		const relatedTargetid = e.relatedTarget ? e.relatedTarget.id : null
@@ -56,12 +56,11 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 			.then(resp => resp.json())
 			.then(respJ => {
 				modelsRef.current = respJ;
-				console.log(respJ)
 				const budget = respJ.length !== 0 ? respJ[0].budget : 0;
 				setOrderState(prev =>
 					prev.map(row => row.id !== rowid
 						? row
-						: ({ ...row, parent_id: value, models: respJ, budget: budget, title: '', material_id: 'nan' })
+						: ({ ...row, sub_gl_category_id: value, models: respJ, budget: budget, title: '', material_id: 'NaN' })
 					)
 				)
 			})

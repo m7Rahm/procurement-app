@@ -111,10 +111,11 @@ const OrderMaterials = () => {
                             <th>GL Kateqoriya</th>
                             <th>Sub-Gl Kateqoriya</th>
                             <th>Kurasiya</th>
-                            <th>Təchizat bölməsi</th>
+                            {/* <th>Təchizat bölməsi</th> */}
                             <th>Növ</th>
-                            <th>Qiymət</th>
+                            <th style={{ maxWidth: '100px' }}>Qiymət</th>
                             <th>Ölçü vahidi</th>
+                            <th>Inventardır</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -158,6 +159,7 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
     const [materialData, setMaterialData] = useState({ ...material, type: material.type ? "1" : "0" });
     const [disabled, setDisabled] = useState(true);
     const subGlCategoryRef = useRef(null);
+    const inventoryRef = useRef(null);
     const subCategories = glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(materialData.gl_category_id));
     const handleChange = (e) => {
         const name = e.target.name;
@@ -172,7 +174,7 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
         setDisabled(prev => !prev)
     }
     const handleUpdate = () => {
-        const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value });
+        const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value, isInv: inventoryRef.current.value });
         fetch('http://172.16.3.101:54321/api/update-material', {
             method: 'POST',
             headers: {
@@ -191,7 +193,7 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
         setMaterialData(prev => ({ ...prev, approx_price: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approx_price }))
     }
     return (
-        <tr key={materialData.id}>
+        <tr>
             <th>{index}</th>
             <td>
                 <input value={materialData.title} name="title" disabled={disabled} onChange={handleChange} />
@@ -223,7 +225,7 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
                     }
                 </select>
             </td>
-            <td>
+            {/* <td>
                 <select disabled={disabled} onChange={handleChange} name="techizatci_id" value={materialData.techizatci_id}>
                     {
                         departments.map(department =>
@@ -231,14 +233,14 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
                         )
                     }
                 </select>
-            </td>
+            </td> */}
             <td>
                 <select disabled={disabled} name="type" onChange={handleChange} value={materialData.type}>
                     <option value="0">Mal-Material</option>
                     <option value="1">Xidmət</option>
                 </select>
             </td>
-            <td>
+            <td style={{ maxWidth: '100px' }}>
                 <input value={materialData.approx_price} name="approx_price" disabled={disabled} onChange={handlePriceChange} />
             </td>
             <td>
@@ -249,6 +251,9 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
                         )
                     }
                 </select>
+            </td>
+            <td>
+                <input disabled={disabled} type="checkbox" ref={inventoryRef} defaultChecked={materialData.is_inventory} />
             </td>
             <td>
                 {
@@ -268,7 +273,8 @@ const NewMaterial = (props) => {
     const unitsRef = useRef(null);
     const glCategoryRef = useRef(null);
     const curatoridRef = useRef(null);
-    const procurementidRef = useRef(null);
+    // const procurementidRef = useRef(null);
+    const inventoryRef = useRef(null);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newCatState, setNewCatState] = useState({
         title: '',
@@ -287,7 +293,8 @@ const NewMaterial = (props) => {
             department: curatoridRef.current.value,
             gl_category_id,
             cluster: unitsRef.current.value,
-            procurement: procurementidRef.current.value
+            // procurement: procurementidRef.current.value
+            isInv: inventoryRef.current.value
         };
         fetch('http://172.16.3.101:54321/api/add-new-cat', {
             method: 'POST',
@@ -303,7 +310,10 @@ const NewMaterial = (props) => {
                 if (respJ[0].result === 'success') {
                     const id = respJ[0].row_id;
                     setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
-                    setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }))
+                    setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }));
+                    inventoryRef.current.value = 0;
+                    setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1" });
+                    curatoridRef.current.value = "-1"
                 }
             })
             .catch(ex => console.log(ex))
@@ -366,7 +376,7 @@ const NewMaterial = (props) => {
                     }
                 </select>
             </td>
-            <td>
+            {/* <td>
                 <select name="procurement" ref={procurementidRef}>
                     <option value="-1">-</option>
                     {
@@ -375,14 +385,16 @@ const NewMaterial = (props) => {
                         )
                     }
                 </select>
-            </td>
+            </td> */}
             <td>
                 <select onChange={handleChange} name="type" value={newCatState.type}>
                     <option value="0">Mal-Material</option>
                     <option value="1">Xidmət</option>
                 </select>
             </td>
-            <td><input name="approxPrice" value={newCatState.approxPrice} onChange={handlePriceChange} /></td>
+            <td style={{ maxWidth: '100px' }}>
+                <input name="approxPrice" value={newCatState.approxPrice} onChange={handlePriceChange} />
+            </td>
             <td>
                 <select ref={unitsRef}>
                     {
@@ -391,6 +403,9 @@ const NewMaterial = (props) => {
                         )
                     }
                 </select>
+            </td>
+            <td>
+                <input type="checkbox" ref={inventoryRef} defaultChecked={false} />
             </td>
             <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
         </tr>

@@ -163,7 +163,8 @@ div.sys-param-modal {
 }
 
 div.sys-param-modal>div>table input, div.sys-param-modal>div>table select {
-    width: 200px;
+    max-width: 200px;
+    width: 100%;
     border: none;
     height: 22px;
 }

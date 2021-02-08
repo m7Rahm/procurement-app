@@ -33,7 +33,7 @@ const Visas = (props) => {
     webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }));
   }
   return (
-    <div style={{ display: 'flex', overflowY: 'hidden', position: 'relative', top: '-56px' }}>
+    <div style={{ display: 'flex', position: 'relative', top: '-56px' }}>
       <SideBar
         updateList={updateList}
         setActive={setActive}

@@ -10,7 +10,6 @@ import {
 const VisaVersionsContainer = (props) => {
     const { orderNumb, token, closeModal, tranid } = props;
     const [versions, setVersions] = useState([]);
-    console.log(orderNumb)
     const actionsAvailableRef = useRef(true);
     useEffect(() => {
         fetch(`http://172.16.3.101:54321/api/get-order-versions/${orderNumb}`, {
@@ -82,7 +81,7 @@ const VisaVersion = (props) => {
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/get-order-req-data?numb=${ord_numb}&vers=${emp_id}`, {
+        fetch(`http://172.16.3.101:54321/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

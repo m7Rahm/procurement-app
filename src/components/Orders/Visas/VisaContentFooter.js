@@ -57,7 +57,6 @@ const VisaContentFooter = (props) => {
         else
             setOperationResult({ visible: true, desc: 'Operation not finished' })
     }
-    console.log(current.result, current.order_result)
     return (
         current.result === 0 && current.order_result === 0
             ? <>
