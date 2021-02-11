@@ -36,7 +36,7 @@ const App = () => {
     if (/from=(.*)/.test(location.search)) {
       if (location.search.match(/from=(.*)&/)[1] === 'warehouse' && location.search.match(/action=(.*)/)[1] === 'login') {
         if (token.token)
-          window.location.replace("http://172.16.3.57:62447/login?token=" + token.token)
+          window.location.replace("http://192.168.0.182:62447/login?token=" + token.token)
         else
           history.replace('/login')
       }
