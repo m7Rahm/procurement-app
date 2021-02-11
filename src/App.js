@@ -3,9 +3,9 @@ import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-d
 import jwt from 'jsonwebtoken'
 import PrivateRoute from './components/Misc/PrivateRoute'
 import SelectModule from './pages/SelectModule'
-import './styles/App.css'
-import { modules } from './data/data'
-import Loading from './components/Misc/Loading'
+import './styles/App.css';
+import { modules } from './data/data';
+import Loading from './components/Misc/Loading';
 const Login = React.lazy(() => import('./pages/Login'));
 
 const getUserData = () => {
