@@ -1,5 +1,5 @@
-import React, { useState, Suspense } from 'react';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
+import React, { useState, Suspense, useEffect } from 'react';
+import { Route, Switch, Redirect, useHistory, useLocation } from 'react-router-dom'
 import jwt from 'jsonwebtoken'
 import PrivateRoute from './components/Misc/PrivateRoute'
 import SelectModule from './pages/SelectModule'
@@ -25,26 +25,42 @@ const getUserData = () => {
       }
     }
   }
-  else return {}
+  else
+    return {}
 }
 const App = () => {
+  const location = useLocation();
+  const history = useHistory();
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
+  useEffect(() => {
+    if (/from=(.*)/.test(location.search)) {
+      if (location.search.match(/from=(.*)&/)[1] === 'warehouse' && location.search.match(/action=(.*)/)[1] === 'login') {
+        if (token.token)
+          window.location.replace("http://172.16.3.57:62447/login?token=" + token.token)
+        else
+          history.replace('/login')
+      }
+      else if (location.search.match(/from=(.*)&/)[1] === 'warehouse' && location.search.match(/action=(.*)/)[1] === 'logout') {
+        localStorage.removeItem('token');
+        setToken({})
+        history.replace('/login')
+      }
+    }
+  }, [location, history, token.token])
   return (
-    <BrowserRouter>
-      <TokenContext.Provider value={[token, setToken]}>
-        <Suspense fallback={<Loading />}>
-          <Switch>
-            <Route path="/login" render={() => !token.token ?
-              <Login setToken={setToken} />
-              : <Redirect to="/" />}>
-            </Route>
-            <PrivateRoute token={token.token} path="/">
-              <SelectModule />
-            </PrivateRoute>
-          </Switch>
-        </Suspense>
-      </TokenContext.Provider>
-    </BrowserRouter>
+    <TokenContext.Provider value={[token, setToken]}>
+      <Suspense fallback={<Loading />}>
+        <Switch>
+          <Route path="/login" render={() => !token.token ?
+            <Login setToken={setToken} />
+            : <Redirect to="/" />}>
+          </Route>
+          <PrivateRoute token={token.token} path="/">
+            <SelectModule />
+          </PrivateRoute>
+        </Switch>
+      </Suspense>
+    </TokenContext.Provider>
   );
 }
 export default App

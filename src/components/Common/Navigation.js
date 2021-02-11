@@ -16,6 +16,7 @@ const Navigation = (props) => {
     const handleLogOut = () => {
         props.tokenContext[1]({ token: '', userData: {} })
         localStorage.removeItem('token');
+        window.location.replace('http://172.16.3.57:62447/?from=procurement&action=logout')
     }
     const handleIconClick = () => {
         moduleNavigationRef.current.style.display = moduleNavigationRef.current.style.display === 'block' ? 'none' : 'block'
