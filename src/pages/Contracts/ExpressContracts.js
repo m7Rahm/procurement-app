@@ -15,7 +15,7 @@ const ExpressContracts = (props) => {
     const vendorsListRef = useRef([]);
     const activePageRef = useRef(0);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/get-express-contracts', {
+        fetch('http://192.168.0.182:54321/api/get-express-contracts', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -36,7 +36,7 @@ const ExpressContracts = (props) => {
             from: activePageRef.current,
             number: numberRef.current.value
         });
-        fetch('http://172.16.3.101:54321/api/get-express-contracts', {
+        fetch('http://192.168.0.182:54321/api/get-express-contracts', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

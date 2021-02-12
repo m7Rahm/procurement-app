@@ -17,7 +17,7 @@ const EditOrderRequest = (props) => {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/gl-categories', {
+        fetch('http://192.168.0.182:54321/api/gl-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -30,7 +30,7 @@ const EditOrderRequest = (props) => {
             .catch(err => console.log(err))
     }, [token, view]);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`, {
+        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

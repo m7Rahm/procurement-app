@@ -54,7 +54,7 @@ const ExpressContractFiles = (props) => {
     useEffect(() => {
         let mounted = true;
         if (props.id !== 0)
-            fetch(`http://172.16.3.101:54321/api/express_contract_files/${props.id}`, {
+            fetch(`http://192.168.0.182:54321/api/express_contract_files/${props.id}`, {
                 headers: {
                     "Authorization": "Bearer " + props.token
                 }
@@ -93,7 +93,7 @@ const FetchedFiles = React.memo(({ files = [], removeFile }) => {
             {
                 files.map(file => {
                     const ext = file.ext;
-                    const url = "http://172.16.3.101:54321/original/" + file.name
+                    const url = "http://192.168.0.182:54321/original/" + file.name
                     switch (true) {
                         case /pdf/.test(ext):
                             return (

@@ -24,7 +24,7 @@ const SearchExpressContracts = (props) => {
             from: from,
             number: props.numberRef.current.value
         });
-        fetch('http://172.16.3.101:54321/api/get-express-contracts', {
+        fetch('http://192.168.0.182:54321/api/get-express-contracts', {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + props.token,

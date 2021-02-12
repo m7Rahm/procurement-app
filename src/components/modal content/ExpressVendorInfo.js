@@ -12,11 +12,24 @@ import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
 const ExpressVendorInfo = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
-    const attachmentsRef = useRef(null);
-    const attachmentsRefInit = useRef(null);
-    const { potentialVendor, vendorid, setExpressVendors } = props;
+    const attachmentsRef = useRef({});
+    const { vendorid, onFinish } = props;
     const [disabled, setDisabled] = useState(props.disabled);
-    const [vendorData, setVendorData] = useState({ ...expressVendorInit, ...potentialVendor });
+    const namRef = useRef(null);
+    const voenRef = useRef(null);
+    const taxTypeRef = useRef(null);
+    const residencyRef = useRef(null);
+    const workSectorRef = useRef(null);
+    const closeDateRef = useRef(null);
+    const taxPercentageRef = useRef(null);
+    const riskZoneRef = useRef(null);
+    const regDateRef = useRef(null);
+    const vendorTypeRef = useRef(null);
+    const actualAddressRef = useRef(null);
+    const legalAddressRef = useRef(null);
+    const saaRef = useRef(null);
+    const closeReasonRef = useRef(null)
+    const [vendorData, setVendorData] = useState(expressVendorInit);
     const handleClick = () => {
         const url = vendorid ? '/update-express-vendor' : '/new-express-vendor'
         sendData(url)
@@ -25,47 +38,30 @@ const ExpressVendorInfo = (props) => {
         const formData = new FormData();
         const phoneNumbs = vendorData.phone_numbers.reduce((sum, current) => sum += `${current.val},`, '');
         const emails = vendorData.emails.reduce((sum, current) => sum += `${current.val},`, '')
-        formData.append('name', vendorData.name);
-        formData.append('voen', vendorData.voen);
-        formData.append('saa', vendorData.saa);
-        formData.append('residency', vendorData.residency);
-        formData.append('tax_type', vendorData.tax_type);
-        formData.append('legal_address', vendorData.legal_address);
-        formData.append('actual_address', vendorData.actual_address);
-        formData.append('risk_zone', vendorData.risk_zone);
-        formData.append('reg_date', vendorData.reg_date);
+        formData.append('name', namRef.current.value);
+        formData.append('voen', voenRef.current.value);
+        formData.append('saa', saaRef.current.value);
+        formData.append('residency', residencyRef.current.value);
+        formData.append('tax_type', taxTypeRef.current.value);
+        formData.append('legal_address', legalAddressRef.current.value);
+        formData.append('actual_address', actualAddressRef.current.value);
+        formData.append('risk_zone', riskZoneRef.current.value);
+        formData.append('reg_date', regDateRef.current.value);
         formData.append('phone_numbers', phoneNumbs.substring(0, phoneNumbs.length - 1));
-        formData.append('sphere', vendorData.sphere);
+        formData.append('sphere', workSectorRef.current.value);
         formData.append('emails', emails.substring(0, emails.length - 1));
-        formData.append('tax_percentage', vendorData.tax_percentage);
-        formData.append('vendor_type', vendorData.vendor_type);
+        formData.append('tax_percentage', taxPercentageRef.current.value);
+        formData.append('vendor_type', vendorTypeRef.current.value);
         formData.append('is_closed', vendorData.is_closed);
-        formData.append('close_date', vendorData.close_date);
-        formData.append('close_reason', vendorData.close_reason);
+        formData.append('close_date', closeDateRef.current ? closeDateRef.current.value : vendorData.close_date);
+        formData.append('close_reason', closeReasonRef.current ? closeReasonRef.current.value : vendorData.close_reason);
         formData.append('id', vendorData.id);
-        if (!vendorid)
-            for (let i = 0; i < attachmentsRef.current.length; i++)
-                formData.append('files', attachmentsRef.current[i])
-        else {
-            const newFiles = [];
-            let oldFiles = '';
-            let contains = false;
-            for (let i = 0; i < attachmentsRef.current.length; i++) {
-                contains = false;
-                for (let j = 0; j < attachmentsRefInit.current.length; j++)
-                    if (attachmentsRef.current[i].val.name === attachmentsRefInit.current[j].val.name) {
-                        contains = true;
-                        oldFiles += `${attachmentsRef.current[i].val.name},`
-                        break;
-                    }
-                if (!contains)
-                    newFiles.push(attachmentsRef.current[i].val)
-            }
-            formData.append('filesMetaData', oldFiles.substring(0, oldFiles.length - 1))
-            for (let i = 0; i < newFiles.length; i++)
-                formData.append('files', newFiles[i])
-        }
-        fetch(`http://172.16.3.101:54321/api${url}`, {
+        const newFiles = attachmentsRef.current.new;
+        const oldFiles = attachmentsRef.current.fetched.reduce((sum, current) => sum += `${current.val},`, '');
+        formData.append('filesMetaData', oldFiles.substring(0, oldFiles.length - 1))
+        for (let i = 0; i < newFiles.length; i++)
+            formData.append('files', newFiles[i].val);
+        fetch(`http://192.168.0.182:54321/api${url}`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -74,42 +70,15 @@ const ExpressVendorInfo = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ[0].peration_result === 'success') {
-                    const data = JSON.stringify({
-                        from: 0,
-                        reg_date: '',
-                        vendor_type: '',
-                        voen: '',
-                        sphere: 0,
-                        residency: 0,
-                        tax_type: 0,
-                        name: '',
-                        risk_zone: 0,
-                        is_closed: 0
-                    });
-                    fetch('http://172.16.3.101:54321/api/get-express-vendors', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': 'Bearer ' + token,
-                            'Content-Type': 'application/json',
-                            'Content-Length': data.length
-                        },
-                        body: data
-                    })
-                        .then(resp => resp.json())
-                        .then(respJ => {
-                            console.log(respJ)
-                            const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                            setExpressVendors({ count: totalCount, vendors: respJ });
-                        })
-                        .catch(ex => console.log(ex))
+                if (respJ[0].operation_result === 'success') {
+                    onFinish();
                 }
             })
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
         if (vendorid) {
-            fetch(`http://172.16.3.101:54321/api/get-express-vendor/${vendorid}`, {
+            fetch(`http://192.168.0.182:54321/api/get-express-vendor/${vendorid}`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -118,18 +87,27 @@ const ExpressVendorInfo = (props) => {
                 .then(respJ => {
                     const emails = respJ[0].emails.split(',').map(email => ({ key: Math.random(), val: email }));
                     const phone_numbers = respJ[0].phone_numbers.split(',').map(phoneNumb => ({ key: Math.random(), val: phoneNumb }));
-                    const files = respJ[0].files.length !== 0 ? respJ[0].files.split(',').map(file => ({ key: Math.random(), val: file })): [];
-                    attachmentsRef.current = files;
-                    attachmentsRefInit.current = files;
-                    setVendorData(({ ...respJ[0], emails, phone_numbers, files }))
+                    const files = respJ[0].files ? respJ[0].files : ''
+                    const filesArray = files.length !== 0
+                        ? respJ[0].files.split(',').map(file => ({ key: file, val: file }))
+                        : [];
+                    attachmentsRef.current.fetched = filesArray;
+                    attachmentsRef.current.new = [];
+                    taxTypeRef.current.value = respJ[0].tax_type;
+                    const { tax_percentage, tax_type, residency, sphere, vendor_type, risk_zone } = respJ[0];
+                    residencyRef.current.value = residency;
+                    taxPercentageRef.current.value = tax_percentage;
+                    taxTypeRef.current.value = tax_type;
+                    workSectorRef.current.value = sphere;
+                    vendorTypeRef.current.value = vendor_type;
+                    riskZoneRef.current.value = risk_zone;
+                    setVendorData(({ ...respJ[0], emails, phone_numbers, files: filesArray }))
                 })
                 .catch(ex => console.log(ex))
         }
-    }, [token, vendorid])
-    const handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        setVendorData(prev => ({ ...prev, [name]: value }))
+    }, [token, vendorid]);
+    const handleCardChange = (key, value, type) => {
+        setVendorData(prev => ({ ...prev, [type]: prev[type].map(preVal => preVal.key === key ? ({ ...preVal, val: value }) : preVal) }))
     }
     const addNewPhoneNumber = () => {
         if (!disabled)
@@ -172,11 +150,11 @@ const ExpressVendorInfo = (props) => {
                 <div style={{ width: '100%', paddingLeft: '20px', display: 'flex', justifyContent: 'space-between' }}>
                     <div className="form-card">
                         <label>Kontragentin adı</label>
-                        <input placeholder="Name" disabled={disabled} name="name" onChange={handleChange} defaultValue={vendorData.name} />
+                        <input placeholder="Name" disabled={disabled} ref={namRef} name="name" defaultValue={vendorData.name} />
                     </div>
                     <div className="form-card">
                         <label>Xidmət Sahəsi</label>
-                        <select disabled={disabled} name="sphere" onChange={handleChange} defaultValue={vendorData.sphere} >
+                        <select ref={workSectorRef} disabled={disabled} name="sphere" >
                             {
                                 workSectors.map(workSector =>
                                     <option key={workSector.val} value={workSector.val}>{workSector.text}</option>
@@ -186,7 +164,7 @@ const ExpressVendorInfo = (props) => {
                     </div>
                     <div className="form-card">
                         <label>Kontragentin tipi</label>
-                        <select disabled={disabled} name="vendor_type" onChange={handleChange} value={vendorData.vendor_type} >
+                        <select ref={vendorTypeRef} disabled={disabled} name="vendor_type" >
                             {
                                 vendorTypes.map(vendorType =>
                                     <option key={vendorType.val} value={vendorType.val}>{vendorType.text}</option>
@@ -196,21 +174,25 @@ const ExpressVendorInfo = (props) => {
                     </div>
                     <div className="form-card">
                         <label>Rezident</label>
-                        <select disabled={disabled} name="residency" onChange={handleChange} value={vendorData.residency} >
+                        <select disabled={disabled} name="residency" ref={residencyRef} >
                             <option value="11">Fiziki şəxs</option>
                             <option value="2">Hüquqi şəxs</option>
                         </select>
                     </div>
                     <div className="form-card">
                         <label>VÖEN</label>
-                        <input placeholder="VOEN" disabled={disabled} name="voen" onChange={handleChange} defaultValue={vendorData.voen} />
+                        <input placeholder="VOEN" disabled={disabled} name="voen" ref={voenRef} defaultValue={vendorData.voen} />
                     </div>
                 </div>
             </div>
             <div style={{ justifyContent: 'flex-start', paddingLeft: '20px' }}>
                 <div className="form-card" style={{ marginRight: '20px' }}>
                     <label>Vergi növü</label>
-                    <select disabled={disabled} name="tax_type" onChange={handleChange} value={vendorData.tax_type} >
+                    <select
+                        disabled={disabled}
+                        name="tax_type"
+                        ref={taxTypeRef}
+                    >
                         {
                             taxTypes.map(taxType =>
                                 <option value={taxType.val} key={taxType.val}>{taxType.text}</option>
@@ -224,8 +206,7 @@ const ExpressVendorInfo = (props) => {
                         disabled={disabled}
                         name="tax_percentage"
                         placeholder="%"
-                        onChange={handleChange}
-                        value={vendorData.tax_percentage}
+                        ref={taxPercentageRef}
                         style={{ width: '50px' }}
                     />
                 </div>
@@ -236,8 +217,8 @@ const ExpressVendorInfo = (props) => {
                     <input
                         disabled={disabled}
                         name="legal_address"
+                        ref={legalAddressRef}
                         placeholder="Legal Address"
-                        onChange={handleChange}
                         defaultValue={vendorData.legal_address}
                         style={{ width: '400px' }}
                     />
@@ -248,7 +229,7 @@ const ExpressVendorInfo = (props) => {
                         disabled={disabled}
                         name="actual_address"
                         placeholder="Actual Address"
-                        onChange={handleChange}
+                        ref={actualAddressRef}
                         defaultValue={vendorData.actual_address}
                         style={{ width: '400px' }}
                     />
@@ -263,7 +244,7 @@ const ExpressVendorInfo = (props) => {
                             placeholder="SAA"
                             name="saa"
                             disabled={disabled}
-                            onChange={handleChange}
+                            ref={saaRef}
                             defaultValue={vendorData.saa}
                             style={{ width: '250px' }}
                         />
@@ -280,14 +261,18 @@ const ExpressVendorInfo = (props) => {
                             />
                         </h3>
                         {
-                            vendorData.phone_numbers.map((phoneNumber) =>
-                                <ContactCard
-                                    disabled={disabled}
-                                    key={phoneNumber.key}
-                                    value={phoneNumber}
-                                    handleDelete={() => handlePhoneDel(phoneNumber.key)}
-                                />
-                            )
+                            vendorData.phone_numbers.map((phoneNumber) => {
+                                const handleChange = (val) => handleCardChange(phoneNumber.key, val, "phone_numbers")
+                                return (
+                                    <ContactCard
+                                        disabled={disabled}
+                                        key={phoneNumber.key}
+                                        value={phoneNumber}
+                                        handleChange={handleChange}
+                                        handleDelete={() => handlePhoneDel(phoneNumber.key)}
+                                    />
+                                )
+                            })
                         }
                     </div>
                     <div style={{ width: '225px' }}>
@@ -302,14 +287,18 @@ const ExpressVendorInfo = (props) => {
                             />
                         </h3>
                         {
-                            vendorData.emails.map((email) =>
-                                <ContactCard
-                                    key={email.key}
-                                    disabled={disabled}
-                                    value={email}
-                                    handleDelete={() => handleEmailDel(email.key)}
-                                />
-                            )
+                            vendorData.emails.map((email) => {
+                                const handleChange = (val) => handleCardChange(email.key, val, "emails")
+                                return (
+                                    <ContactCard
+                                        key={email.key}
+                                        disabled={disabled}
+                                        value={email}
+                                        handleChange={handleChange}
+                                        handleDelete={() => handleEmailDel(email.key)}
+                                    />
+                                )
+                            })
                         }
                     </div>
                 </div>
@@ -317,7 +306,7 @@ const ExpressVendorInfo = (props) => {
             <div style={{ paddingLeft: '20px' }}>
                 <div className="form-card">
                     <label>Risk Zonası</label>
-                    <select disabled={disabled} name="risk_zone" onChange={handleChange} value={vendorData.risk_zone} >
+                    <select disabled={disabled} name="risk_zone" ref={riskZoneRef} >
                         {
                             riskZones.map(riskZone =>
                                 <option key={riskZone.val} value={riskZone.val}>{riskZone.text}</option>
@@ -326,18 +315,29 @@ const ExpressVendorInfo = (props) => {
                     </select>
                 </div>
                 <div className="form-card">
-                    <label>Registrasiya tarixi</label>
-                    <input type="date" disabled={disabled} name="reg_date" onChange={handleChange} defaultValue={vendorData.reg_date} />
+                    <label>Qeydiyyat tarixi</label>
+                    <input type="date" disabled={disabled} name="reg_date" ref={regDateRef} defaultValue={vendorData.reg_date} />
                 </div>
             </div>
             <div style={{ paddingLeft: '20px' }}>
                 {
                     vendorData.is_closed === 1 &&
                     <>
-                        <textarea style={{ flex: 1, marginRight: '20px' }} defaultValue={vendorData.close_reason} />
+                        <textarea
+                            style={{ flex: 1, marginRight: '20px' }}
+                            name="close_reason"
+                            defaultValue={vendorData.close_reason}
+                            ref={closeReasonRef}
+                        />
                         <div className="form-card">
                             <label>Bağlanma tarixi</label>
-                            <input type="date" disabled={disabled} name="close_date" onChange={handleChange} defaultValue={vendorData.close_date} />
+                            <input
+                                type="date"
+                                disabled={disabled}
+                                name="close_date"
+                                ref={closeDateRef}
+                                defaultValue={vendorData.close_date}
+                            />
                         </div>
                     </>
                 }
@@ -352,23 +352,26 @@ const ExpressVendorInfo = (props) => {
 export default ExpressVendorInfo
 
 const ContactCard = (props) => {
-    const { value, handleDelete, disabled } = props;
+    const { value, handleDelete, disabled, handleChange } = props;
     const rowRef = useRef(null);
-
     const handleDel = () => {
         if (!disabled) {
             rowRef.current.classList.add('delete-row');
             rowRef.current.addEventListener('animationend', () => {
-                console.log('finished');
                 handleDelete()
             })
         }
+    };
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        handleChange(value)
     }
     return (
         <div ref={rowRef} className="contact-card" >
             <input
                 placeholder="phone number"
                 name="phone"
+                onChange={handleInputChange}
                 disabled={disabled}
                 defaultValue={value.val}
             />

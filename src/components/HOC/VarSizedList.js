@@ -14,7 +14,7 @@ const VarSizedList = (props) => {
         })
     }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/messages/1?from=0&replyto=0&doctype=1&next=0', {
+        fetch('http://192.168.0.182:54321/api/messages/1?from=0&replyto=0&doctype=1&next=0', {
             headers: {
                 "Authorization": "Bearer " + props.token
             }

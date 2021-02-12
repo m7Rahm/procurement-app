@@ -12,7 +12,7 @@ const ForwardDocLayout = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
-            fetch('http://172.16.3.101:54321/api/emplist', {
+            fetch('http://192.168.0.182:54321/api/emplist', {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -30,7 +30,7 @@ const ForwardDocLayout = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if(mounted)
-            fetch('http://172.16.3.101:54321/api/departments', {
+            fetch('http://192.168.0.182:54321/api/departments', {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }

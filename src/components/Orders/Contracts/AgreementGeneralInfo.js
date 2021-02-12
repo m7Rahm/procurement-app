@@ -17,7 +17,7 @@ const AgreementGeneralInfo = (props) => {
         history.push('/tender/agreements', { agreement: { ...props } })
     }
     const fetchMaterials = useCallback(() =>
-        fetch(`http://172.16.3.101:54321/api/agreement-materials/${props.id}`, {
+        fetch(`http://192.168.0.182:54321/api/agreement-materials/${props.id}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -51,7 +51,7 @@ const AgreementReviews = (props) => {
     const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/agreement-reviews/${props.id}`, {
+        fetch(`http://192.168.0.182:54321/api/agreement-reviews/${props.id}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }

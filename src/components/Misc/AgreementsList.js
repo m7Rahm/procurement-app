@@ -16,7 +16,7 @@ const AgreementsList = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted) {
-            fetch(`http://172.16.3.101:54321/api/agreements-per-ord-mat-id/${props.id}`, {
+            fetch(`http://192.168.0.182:54321/api/agreements-per-ord-mat-id/${props.id}`, {
                 headers: {
                     'Authorization': 'Bearer ' + props.token
                 }

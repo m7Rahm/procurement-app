@@ -182,7 +182,7 @@ export const OrderContent = (props) => {
             ordNumb: ordNumb,
             version: version
         })
-        fetch('http://172.16.3.101:54321/api/get-order-materials', {
+        fetch('http://192.168.0.182:54321/api/get-order-materials', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

@@ -1,127 +1,84 @@
-import React, { useState, useEffect } from 'react'
-import {
-    IoIosAdd
-} from 'react-icons/io'
-import PontentialVendorRow from '../../components/PriceOffers/PotentialVendorRow'
-import ForwardDocLayout from '../../components/Misc/ForwardDocLayout'
-import OfferPictures from '../../components/modal content/OfferPictures'
-const vendorDataInit = {
-    key: Date.now(),
-    className: '',
-    name: '',
-    voen: '',
-    sphere: '0',
-    ordNumb: '',
-    comment: '',
-    files: [],
-    orders: []
-}
+import React, { useState, useRef } from 'react'
+import { FaEdit, FaEdge, FaCheck, FaTimes } from 'react-icons/fa'
+import { workSectors } from '../../data/data'
+
 const PotentialVendor = (props) => {
-    const { token, ordNumb } = props;
-    const [pendingOrders, setPendingOrders] = useState([]);
-    const [potentialVendors, setPotentialVendors] = useState([vendorDataInit]);
-    const [modalState, setModalState] = useState({ display: false, vendorIndex: null });
-    const [update, setUpdate] = useState(false);
-    const addNewVendor = () => {
-        const newVendor = { ...vendorDataInit, className: 'new-row', key: Date.now() }
-        setPotentialVendors(prev => [...prev, newVendor])
+    const [disabled, setDisabled] = useState(true);
+    const nameRef = useRef(null);
+    const voenRef = useRef(null);
+    const sphereRef = useRef(null);
+    const handleEditStart = () => {
+        setDisabled(prev => !prev)
     }
-    useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/get-orders-for-potven', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-        .then(resp => resp.json())
-        .then(respJ => setPendingOrders(respJ))
-        .catch(ex => console.log(ex))
-    }, [update, token])
-    const handleSendClick = (receivers, comment) => {
-        const files = potentialVendors.flatMap(vendor => vendor.files);
-        const recs = receivers.map(receiver => [receiver.id]);
-        const toFin = receivers.length === 0 ? 1 : 0;
-        const potVends = JSON.stringify(potentialVendors.map(potentialVendor =>
-            [potentialVendor.key, potentialVendor.name, potentialVendor.voen, potentialVendor.sphere, potentialVendor.comment]
-        ));
-        const filesMetaData = files.map(file => [file.name, file.name.split('.').pop(), file.supplier]);
-        const vendorsPerOffer = potentialVendors.flatMap(vendor => vendor.orders.map(ord => [vendor.key, ord.ord_numb]));
-        const formData = new FormData();
-        formData.append('ordNumb', ordNumb);
-        formData.append('vendorsPerOffer', JSON.stringify(vendorsPerOffer))
-        formData.append('recs', JSON.stringify(recs));
-        formData.append('comment', comment);
-        formData.append('toFin', toFin);
-        formData.append('potVends', potVends);
-        formData.append('filesMetaData', JSON.stringify(filesMetaData));
-        for (let i = 0; i < files.length; i++)
-            formData.append('files', files[i]);
-        fetch('http://172.16.3.101:54321/api/create-price-offer', {
+    const revertChanges = () => {
+        nameRef.current.value = props.name;
+        voenRef.current.value = props.voen;
+        sphereRef.current.value = props.sphere;
+        setDisabled(prev => !prev)
+    }
+    const updateVendor = () => {
+        const data = JSON.stringify({
+            id: props.id,
+            name: nameRef.current.value,
+            voen: voenRef.current.value,
+            sphere: sphereRef.current.value
+        });
+        fetch('http://192.168.0.182:54321/api/update-potential-vendor', {
             method: 'POST',
-            body: formData,
             headers: {
-                'Authorization': 'Bearer ' + token
-            }
+                'Content-Type': 'application/json',
+                'Content-Length': data.length,
+                'Authorization': 'Bearer ' + props.token
+            },
+            body: data
         })
             .then(resp => resp.json())
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
-                    setUpdate(prev => !prev)
-                    setPotentialVendors([{ ...vendorDataInit, key: Date.now() }])
+                    props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })
+                    setDisabled(true)
                 }
             })
             .catch(ex => console.log(ex))
     }
     return (
-        <div style={{ paddingTop: '50px', clear: 'both', width: 'auto' }} className="wrapper">
-            {
-                modalState.display &&
-                    <OfferPictures
-                        setModalState={setModalState}
-                        vendor={potentialVendors[modalState.vendorIndex]}
-                        setPotentialVendors={setPotentialVendors}
-                    />
-            }
-            <ul className="modified">
-                <li>
-                    <div>#</div>
-                    <div>Name</div>
-                    <div>VOEN</div>
-                    <div>Sphere</div>
-                    <div>Comment</div>
-                    <div>Sifariş №</div>
-                    <div>Attachment</div>
-                    <div></div>
-                </li>
+        <li>
+            <div style={{ textAlign: 'center' }}>
+                {props.index + 1}
+            </div>
+            <div>
+                <input disabled={disabled} ref={nameRef} defaultValue={props.name} />
+            </div>
+            <div>
+                <input disabled={disabled} ref={voenRef} defaultValue={props.voen} />
+            </div>
+            <div>
+                <select disabled={disabled} ref={sphereRef} defaultValue={props.sphere}>
+                    {
+                        workSectors.map(sector =>
+                            <option key={sector.val} value={sector.val}>{sector.text}</option>
+                        )
+                    }
+                </select>
+            </div>
+            <div style={{ textAlign: 'center' }}>
                 {
-                    potentialVendors.map((vendor, index) =>
-                        <PontentialVendorRow
-                            vendor={vendor}
-                            pendingOrders={pendingOrders}
-                            key={vendor.key}
-                            token={token}
-                            index={index + 1}
-                            setModalState={setModalState}
-                            setPotentialVendors={setPotentialVendors}
-                        />
-                    )
+                    props.can_be_express &&
+                    <FaEdge onClick={() => props.makeExpressVendor(props.id)} color="rgb(255, 174, 0)" cursor="pointer" />
                 }
-                <li style={{ height: '25px', backgroundColor: 'transparent' }}>
-                    <div style={{ padding: '0px' }}></div>
-                    <div style={{ padding: '0px' }}></div>
-                    <div style={{ padding: '0px' }}></div>
-                    <div style={{ padding: '0px' }}></div>
-                    <div style={{ padding: '0px' }}></div>
-                    <div style={{ padding: '0px' }}></div>
-                    <div style={{ padding: '0px' }}>
-                        <IoIosAdd title="Əlavə et" cursor="pointer" onClick={addNewVendor} size="25" style={{ margin: 'auto' }} />
-                    </div>
-                </li>
-            </ul>
-            <ForwardDocLayout
-                handleSendClick={handleSendClick}
-                token={token}
-            />
-        </div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+                {
+                    disabled ?
+                        <FaEdit onClick={handleEditStart} cursor="pointer" />
+                        : <>
+                            <FaCheck onClick={updateVendor} />
+                            <FaTimes onClick={revertChanges} />
+                        </>
+                }
+            </div>
+        </li>
     )
 }
-export default PotentialVendor
+
+export default React.memo(PotentialVendor)

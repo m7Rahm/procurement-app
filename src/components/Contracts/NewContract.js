@@ -29,7 +29,7 @@ const NewContract = (props) => {
         formData.append('vendorid', vendor.id)
         for (let i = 0; i < files.length; i++)
             formData.append('files', files[i])
-        fetch('http://172.16.3.101:54321/api/contract-agreement', {
+        fetch('http://192.168.0.182:54321/api/contract-agreement', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -139,7 +139,7 @@ const AgreementsList = (props) => {
     const [agreements, setAgreements] = useState({ all: [], available: [], visible: [], offset: 2 });
     useEffect(() => {
         const controller = new AbortController();
-        fetch('http://172.16.3.101:54321/api/agreements?result=1', {
+        fetch('http://192.168.0.182:54321/api/agreements?result=1', {
             signal: controller.signal,
             headers: {
                 'Authorization': 'Bearer ' + props.token

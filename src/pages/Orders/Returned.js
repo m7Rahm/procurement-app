@@ -12,7 +12,7 @@ const MyOrders = (props) => {
   const activePageRef = useRef(0);
   const token = useContext(TokenContext)[0].token;
   const updateList = (from) => {
-    fetch(`http://172.16.3.101:54321/api/returned-orders?from=${from}&until=20`, {
+    fetch(`http://192.168.0.182:54321/api/returned-orders?from=${from}&until=20`, {
       headers: {
         'Authorization': 'Bearer ' + token,
       }
@@ -25,7 +25,7 @@ const MyOrders = (props) => {
       .catch(err => console.log(err))
   }
   useEffect(() => {
-    fetch(`http://172.16.3.101:54321/api/returned-orders?from=0&until=20`, {
+    fetch(`http://192.168.0.182:54321/api/returned-orders?from=0&until=20`, {
       headers: {
         'Authorization': 'Bearer ' + token,
       },

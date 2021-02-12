@@ -12,7 +12,7 @@ const ContractRelatedDocs = (props) => {
     useEffect(() => {
         let mounted = true;
         if (props.id !== 0 && mounted)
-            fetch(`http://172.16.3.101:54321/api/contract-related-docs/${props.id}`, {
+            fetch(`http://192.168.0.182:54321/api/contract-related-docs/${props.id}`, {
                 headers: {
                     'Authorization': 'Bearer ' + props.token
                 }
@@ -61,7 +61,7 @@ const ContractsList = (props) => {
     useEffect(() => {
         let mounted = true
         const controller = new AbortController();
-        fetch('http://172.16.3.101:54321/api/contract-agreements', {
+        fetch('http://192.168.0.182:54321/api/contract-agreements', {
             signal: controller.signal,
             headers: {
                 'Authorization': 'Bearer ' + props.token

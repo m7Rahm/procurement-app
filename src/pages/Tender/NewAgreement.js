@@ -7,7 +7,7 @@ const NewAgreement = (props) => {
     const [isEmpty, setIsEmpty] = useState(true);
     const token = tokenContext[0].token;
     const fetchFunction = useCallback(() =>
-        fetch('http://172.16.3.101:54321/api/get-agreement-in-staging-area', {
+        fetch('http://192.168.0.182:54321/api/get-agreement-in-staging-area', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

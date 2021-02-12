@@ -1,49 +1,58 @@
 import React, { useState, useEffect } from 'react'
 import {
     AiOutlineFilePdf,
-    AiFillCloseCircle
+    AiFillCloseCircle,
+    AiOutlinePlusCircle
 } from 'react-icons/ai'
-import {
-    ImAttachment
-} from 'react-icons/im'
 const Attachments = (props, attachmentsRef) => {
     const { vendorFiles, disabled } = props;
-    const [files, setFiles] = useState(vendorFiles);
+    const [files, setFiles] = useState({ fetched: vendorFiles, new: [], all: vendorFiles });
     useEffect(() => {
-        setFiles(vendorFiles)
+        setFiles(prev => ({ ...prev, fetched: vendorFiles, all: [...prev.new, ...vendorFiles] }))
     }, [vendorFiles])
     const handleChange = (e) => {
         const filesArray = Object.values(e.target.files);
         setFiles(prev => {
-            const newState = [...prev];
-            let contains = false;
+            const newFilesState = [...prev.new]
             for (let i = 0; i < filesArray.length; i++) {
-                contains = false;
-                for (let j = 0; j < prev.length; j++)
-                    if (filesArray[i].name === prev[j].val.name) {
-                        contains = true
+                let duplicate = false;
+                for (let j = 0; j < newFilesState.length; j++) {
+                    if (newFilesState[j].key === filesArray[i].name) {
+                        duplicate = true;
                         break;
                     }
-                if (!contains)
-                    newState.push({key: Math.random(), val: filesArray[i]})
+                }
+                if (!duplicate)
+                    newFilesState.push({ key: filesArray[i].name, val: filesArray[i] })
             }
+            const newState = { ...prev, new: newFilesState, all: [...prev.fetched, ...newFilesState] };
             attachmentsRef.current = newState;
             return newState;
         })
     }
-    const handleFileRemove = (key) => {
+    const handleFileRemove = (key, from) => {
         setFiles(prev => {
-            const newState = prev.filter(file => file.key !== key);
-            attachmentsRef.current = newState;
-            return newState
+            if (from === 0) {
+                const fetched = prev.fetched.filter(file => file.key !== key);
+                const newState = { ...prev, fetched: fetched, all: [...fetched, ...prev.new] };
+                attachmentsRef.current = newState;
+                return newState
+            }
+            else {
+                const newFiles = prev.new.filter(file => file.key !== key);
+                const newState = { ...prev, new: newFiles, all: [...prev.fetched, ...newFiles] };
+                attachmentsRef.current = newState;
+                return newState
+            }
         })
     }
     return (
         <div style={{ width: '100%' }}>
             <div>
                 {
-                    files.map(file => {
-                        const src = typeof(file.val) === 'string' ? `http://172.16.3.101:54321/original/${file.val}` : URL.createObjectURL(file.val);
+                    files.all.map(file => {
+                        const src = typeof (file.val) === 'string' ? `http://192.168.0.182:54321/original/${file.val}` : URL.createObjectURL(file.val);
+                        const from = typeof (file.val) === 'string' ? 0 : 1
                         return (
                             <div style={{ position: 'relative', display: 'inline-block' }} key={file.key} >
                                 <a
@@ -56,19 +65,18 @@ const Attachments = (props, attachmentsRef) => {
                                     <AiOutlineFilePdf size="40" />
                                 </a>
                                 <AiFillCloseCircle
-                                    onClick={() => handleFileRemove(file.key)}
+                                    onClick={() => handleFileRemove(file.key, from)}
                                     style={{ position: 'absolute', top: '-5px', right: '-4px', zIndex: 1 }}
                                 />
                             </div>
                         )
-                    }
-                    )
+                    })
                 }
             </div>
             <div>
                 <div style={{ float: 'right' }}>
                     <label htmlFor="files">
-                        <ImAttachment cursor="pointer" />
+                        <AiOutlinePlusCircle cursor="pointer" size="30" />
                     </label>
                     <input
                         id="files"

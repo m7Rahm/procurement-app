@@ -24,7 +24,7 @@ const Login = (props) => {
             }, false)
     }, [isPasswordCorrect])
     const handleLoginCheck = () => {
-        fetch('http://172.16.3.101:54321/api/login', {
+        fetch('http://192.168.0.182:54321/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

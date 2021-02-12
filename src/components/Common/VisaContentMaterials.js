@@ -87,7 +87,7 @@ const TableRow = (props) => {
 			materialid: order_material_id,
 			price: servicePriceRef.current.value
 		})
-		fetch('http://172.16.3.101:54321/api/update-service-price', {
+		fetch('http://192.168.0.182:54321/api/update-service-price', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,

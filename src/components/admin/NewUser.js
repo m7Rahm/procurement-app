@@ -17,7 +17,7 @@ const NewUser = (props) => {
     const [departments, setDepartments] = useState([]);
     const [roles, setRoles] = useState([]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://192.168.0.182:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -32,7 +32,7 @@ const NewUser = (props) => {
             .catch(ex => console.log(ex));
     }, [token]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/roles', {
+        fetch('http://192.168.0.182:54321/api/roles', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -54,7 +54,7 @@ const NewUser = (props) => {
     const availableMenus = roles.length === 0 ? [] : roles.find(role => role.id === Number(userData.role_id)).modules.split(',');
     const addNewUser = () => {
         const data = userData;
-        fetch('http://172.16.3.101:54321/api/add-new-user', {
+        fetch('http://192.168.0.182:54321/api/add-new-user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

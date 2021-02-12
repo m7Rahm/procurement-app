@@ -52,7 +52,7 @@ const AgreementMaterialsSum = (props) => {
         const data = JSON.stringify({
             materialid: props.material.id
         });
-        fetch('http://172.16.3.101:54321/api/remove-material-from-staging-area', {
+        fetch('http://192.168.0.182:54321/api/remove-material-from-staging-area', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,

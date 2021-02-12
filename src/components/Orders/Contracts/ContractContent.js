@@ -14,7 +14,7 @@ const ContractContent = (props) => {
     const [modalState, setModalState] = useState({ visible: false });
     const textareaRef = useRef(null);
     const docid = props.docid;
-    const fetchParticipants = () => fetch(`http://172.16.3.101:54321/api/doc-participants?id=${docid}&doctype=2`, {
+    const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=2`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
@@ -39,7 +39,7 @@ const ContractContent = (props) => {
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
         const apiData = JSON.stringify({ ...data, docType: 2 });
-        return fetch(`http://172.16.3.101:54321/api/send-message`, {
+        return fetch(`http://192.168.0.182:54321/api/send-message`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,
@@ -51,7 +51,7 @@ const ContractContent = (props) => {
     }
         , [props.token]);
     const fetchMessages = useCallback(() =>
-        fetch(`http://172.16.3.101:54321/api/messages/${docid}?from=0&replyto=0&doctype=2`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=0&replyto=0&doctype=2`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -68,7 +68,7 @@ const ContractContent = (props) => {
             action: action,
             comment: textareaRef.current.value
         })
-        fetch('http://172.16.3.101:54321/api/accept-decline-doc', {
+        fetch('http://192.168.0.182:54321/api/accept-decline-doc', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,
@@ -91,7 +91,7 @@ const ContractContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetch(`http://172.16.3.101:54321/api/contract-files/${docid}?type=2`, {
+    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=2`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
@@ -217,7 +217,7 @@ export const ContractFiles = React.memo((props) => {
             {
                 files.map(file => {
                     const ext = file.ext;
-                    const src = `http://172.16.3.101:54321/original/${file.name}`
+                    const src = `http://192.168.0.182:54321/original/${file.name}`
                     switch (true) {
                         case /pdf/.test(ext):
                             return (

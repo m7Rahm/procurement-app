@@ -15,7 +15,7 @@ const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
     query = query.substring(0, query.length - 1);
-    return fetch('http://172.16.3.101:54321/api/tender-docs?doctype=3&' + query, {
+    return fetch('http://192.168.0.182:54321/api/tender-docs?doctype=3&' + query, {
         headers: {
             'Authorization': 'Bearer ' + token
         }
@@ -41,7 +41,7 @@ const Payments = (props) => {
         agreementResult: null,
         tranid: null
     });
-    const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
+    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
     const closeModal = () => {
         setModalState({ visible: false, content: null })
     }

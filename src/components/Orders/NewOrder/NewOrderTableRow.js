@@ -75,7 +75,7 @@ const NewOrderTableRow = (props) => {
   }
   const searchByCode = (e) => {
     const data = JSON.stringify({ product_id: e.target.value, orderType: orderType, structure: structure });
-    fetch('http://172.16.3.101:54321/api/get-by-product-code', {
+    fetch('http://192.168.0.182:54321/api/get-by-product-code', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -108,7 +108,7 @@ const NewOrderTableRow = (props) => {
     const name = e.target.name;
     const value = e.target.value;
     const data = JSON.stringify({ subGlCategoryId: value, structureid: structure, orderType: orderType });
-    fetch('http://172.16.3.101:54321/api/strucutre-budget-info', {
+    fetch('http://192.168.0.182:54321/api/strucutre-budget-info', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,

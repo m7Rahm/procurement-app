@@ -29,7 +29,7 @@ const IconsPanel = (props) => {
                 [id, 0, priority]),
             update: 1
         })
-        fetch(`http://172.16.3.101:54321/api/change-visa-state`, {
+        fetch(`http://192.168.0.182:54321/api/change-visa-state`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

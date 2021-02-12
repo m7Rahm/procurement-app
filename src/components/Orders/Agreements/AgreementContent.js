@@ -18,7 +18,7 @@ const AgreementContent = (props) => {
     useLayoutEffect(() => {
         let mounted = true;
         if (docid && mounted)
-            fetch(`http://172.16.3.101:54321/api/agreement-content?${tranid ? `tranid=${tranid}&` : ''}docid=${docid}`, {
+            fetch(`http://192.168.0.182:54321/api/agreement-content?${tranid ? `tranid=${tranid}&` : ''}docid=${docid}`, {
                 headers: {
                     "Authorization": "Bearer " + props.token
                 }
@@ -37,7 +37,7 @@ const AgreementContent = (props) => {
         return () => mounted = false
     }, [tranid, docid, props.token]);
     const fetchMaterials = useCallback(() =>
-        fetch(`http://172.16.3.101:54321/api/agreement-materials/${docid}`, {
+        fetch(`http://192.168.0.182:54321/api/agreement-materials/${docid}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -48,7 +48,7 @@ const AgreementContent = (props) => {
             history.push('/tender/orders', referer)
     }, [history, referer])
     const fetchMessages = useCallback((from = 0) =>
-        fetch(`http://172.16.3.101:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=1`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=1`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -56,7 +56,7 @@ const AgreementContent = (props) => {
         , [docid, props.token]);
     const sendMessage = useCallback((data) => {
         const apiData = JSON.stringify({ ...data, docType: 1 });
-        return fetch(`http://172.16.3.101:54321/api/send-message`, {
+        return fetch(`http://192.168.0.182:54321/api/send-message`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,

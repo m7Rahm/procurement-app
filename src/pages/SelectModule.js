@@ -53,7 +53,7 @@ const SelectModule = () => {
 	const backgroundRef = useRef(null);
 	useEffect(() => {
 		if (token) {
-			const webSocket = new WebSocket('ws://172.16.3.101:12345');
+			const webSocket = new WebSocket('ws://192.168.0.182:12345');
 			webSocket.onopen = () => {
 				const id = userData.userInfo.id;
 				const data = {

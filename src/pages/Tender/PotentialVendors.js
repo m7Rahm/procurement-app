@@ -1,9 +1,12 @@
-import React, { useContext, useState, useRef, useLayoutEffect } from 'react'
+import React, { useContext, useState, useRef, useLayoutEffect, useCallback } from 'react'
 import { TokenContext } from '../../App'
 import Pagination from '../../components/Misc/Pagination';
 import { workSectors } from '../../data/data'
-import { FaEdit, FaEdge, FaPlus, FaCheck, FaTimes } from 'react-icons/fa'
+import { FaPlus, FaCheck } from 'react-icons/fa'
 import OperationResult from '../../components/Misc/OperationResult'
+import ExpressVendorInfo from '../../components/modal content/ExpressVendorInfo'
+import PotentialVendor from './PotentialVendor'
+import Modal from '../../components/Misc/Modal'
 const PotentialVendors = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -15,8 +18,41 @@ const PotentialVendors = (props) => {
         voen: '',
         sphere: ''
     });
+    const makeExpressVendor = useCallback((id) => {
+        const onFinish = () => {
+            fetch('http://192.168.0.182:54321/api/potential-vendors?from=0', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                    setPotentialVendors({ count: totalCount, content: respJ });
+                    setModalState({ visible: false, content: null })
+                })
+                .catch(ex => console.log(ex))
+        }
+        setModalState({
+            visible: true,
+            content: (props) =>
+                <ExpressVendorInfo
+                    vendorid={id}
+                    disabled={false}
+                    onFinish={onFinish}
+                    {...props}
+                />
+        })
+    }, [token])
+    const [modalState, setModalState] = useState({
+        visible: false,
+        content: null
+    });
+    const closeModal = () => {
+        setModalState({ visible: false, content: null })
+    }
     const updateList = (from) => {
-        fetch(`http://172.16.3.101:54321/api/potential-vendors?from=${from}&name=${searchStateRef.current.name}&voen=${searchStateRef.current.voen}&sphere=${searchStateRef.current.sphere}`, {
+        fetch(`http://192.168.0.182:54321/api/potential-vendors?from=${from}&name=${searchStateRef.current.name}&voen=${searchStateRef.current.voen}&sphere=${searchStateRef.current.sphere}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -28,7 +64,7 @@ const PotentialVendors = (props) => {
             })
     }
     useLayoutEffect(() => {
-        fetch('http://172.16.3.101:54321/api/potential-vendors?from=0', {
+        fetch('http://192.168.0.182:54321/api/potential-vendors?from=0', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -42,6 +78,12 @@ const PotentialVendors = (props) => {
     }, [token]);
     return (
         <div className="dashboard" style={{ paddingTop: '56px' }}>
+            {
+                modalState.visible &&
+                <Modal title="Express Vendor" changeModalState={closeModal}>
+                    {modalState.content}
+                </Modal>
+            }
             <div>
                 <Search
                     searchStateRef={searchStateRef}
@@ -68,7 +110,12 @@ const PotentialVendors = (props) => {
                                 index={index}
                                 token={token}
                                 setOperationResult={setOperationResult}
-                                vendor={potentialVendor}
+                                id={potentialVendor.id}
+                                sphere={potentialVendor.sphere}
+                                name={potentialVendor.name}
+                                voen={potentialVendor.voen}
+                                makeExpressVendor={makeExpressVendor}
+                                can_be_express={potentialVendor.can_be_express}
                             />
                         )
                     }
@@ -133,7 +180,8 @@ const Search = (props) => {
                             fontWeight: '550',
                             backgroundColor: 'rgb(255, 174, 0)',
                             padding: '8px 25px',
-                            borderRadius: '3px'
+                            borderRadius: '3px',
+                            cursor: "pointer"
                         }}
                         onClick={() => props.updateList(0)}
                     >
@@ -154,7 +202,7 @@ const NewVendor = (props) => {
             voen: voenRef.current.value,
             sphere: sphereRef.current.value
         })
-        fetch('http://172.16.3.101:54321/api/new-potential-vendor', {
+        fetch('http://192.168.0.182:54321/api/new-potential-vendor', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -204,81 +252,3 @@ const NewVendor = (props) => {
         </>
     )
 }
-const PotentialVendor = React.memo((props) => {
-    const [disabled, setDisabled] = useState(true);
-    const nameRef = useRef(null);
-    const voenRef = useRef(null);
-    const sphereRef = useRef(null);
-    const handleEditStart = () => {
-        setDisabled(prev => !prev)
-    }
-    const revertChanges = () => {
-        nameRef.current.value = props.vendor.name;
-        voenRef.current.value = props.vendor.voen;
-        sphereRef.current.value = props.vendor.sphere;
-        setDisabled(prev => !prev)
-    }
-    const updateVendor = () => {
-        const data = JSON.stringify({
-            id: props.vendor.id,
-            name: nameRef.current.value,
-            voen: voenRef.current.value,
-            sphere: sphereRef.current.value
-        });
-        fetch('http://172.16.3.101:54321/api/update-potential-vendor', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length,
-                'Authorization': 'Bearer ' + props.token
-            },
-            body: data
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
-                    props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })
-                    setDisabled(true)
-                }
-            })
-            .catch(ex => console.log(ex))
-    }
-    return (
-        <li>
-            <div style={{ textAlign: 'center' }}>
-                {props.index + 1}
-            </div>
-            <div>
-                <input disabled={disabled} ref={nameRef} defaultValue={props.vendor.name} />
-            </div>
-            <div>
-                <input disabled={disabled} ref={voenRef} defaultValue={props.vendor.voen} />
-            </div>
-            <div>
-                <select disabled={disabled} ref={sphereRef} defaultValue={props.vendor.sphere}>
-                    {
-                        workSectors.map(sector =>
-                            <option key={sector.val} value={sector.val}>{sector.text}</option>
-                        )
-                    }
-                </select>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-                {
-                    props.vendor.can_be_express &&
-                    <FaEdge />
-                }
-            </div>
-            <div style={{ textAlign: 'center' }}>
-                {
-                    disabled ?
-                        <FaEdit onClick={handleEditStart} />
-                        : <>
-                            <FaCheck onClick={updateVendor} />
-                            <FaTimes onClick={revertChanges} />
-                        </>
-                }
-            </div>
-        </li>
-    )
-})

@@ -55,7 +55,7 @@ const ListItem = (props) => {
   const onInfoClick = (number) => {
     const onSendClick = (data, setOperationResult) => {
       const reqData = JSON.stringify(data);
-      fetch('http://172.16.3.101:54321/api/new-order', {
+      fetch('http://192.168.0.182:54321/api/new-order', {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + token,

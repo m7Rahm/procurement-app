@@ -11,7 +11,7 @@ const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     const apiData = JSON.stringify(data);
-    return fetch('http://172.16.3.101:54321/api/get-user-agreements', {
+    return fetch('http://192.168.0.182:54321/api/get-user-agreements', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

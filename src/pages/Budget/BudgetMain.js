@@ -36,7 +36,7 @@ const Budget = () => {
     const { path } = useRouteMatch();
     const history = useHistory()
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://192.168.0.182:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -46,7 +46,7 @@ const Budget = () => {
             .catch(ex => console.log(ex));
     }, [token]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/gl-categories', {
+        fetch('http://192.168.0.182:54321/api/gl-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -67,7 +67,7 @@ const Budget = () => {
             from: page,
             next: 20
         };
-        fetch('http://172.16.3.101:54321/api/get-budgets', {
+        fetch('http://192.168.0.182:54321/api/get-budgets', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

@@ -9,7 +9,7 @@ const NewOrderHeader = (props) => {
     const structureid = userData.userInfo.structureid;
     const dependents = structures.filter(structure => structure.dependent_id === structureid);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://192.168.0.182:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

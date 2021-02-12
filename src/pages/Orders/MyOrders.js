@@ -22,7 +22,7 @@ const MyOrders = (props) => {
   })
   const updateList = (from) => {
     const data = JSON.stringify({ ...searchData, from: from, until: 20 });
-    fetch(`http://172.16.3.101:54321/api/orders`, {
+    fetch(`http://192.168.0.182:54321/api/orders`, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -48,7 +48,7 @@ const MyOrders = (props) => {
       ordNumb: ''
     });
     //todo: create socket and connect
-    fetch('http://172.16.3.101:54321/api/orders', {
+    fetch('http://192.168.0.182:54321/api/orders', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,

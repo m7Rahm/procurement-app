@@ -18,7 +18,7 @@ const Structure = () => {
     const activePageRef = useRef(0);
     const [activeDepartments, setActiveDepartments] = useState([]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments?active=0&from=0', {
+        fetch('http://192.168.0.182:54321/api/departments?active=0&from=0', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -31,7 +31,7 @@ const Structure = () => {
             .catch(ex => console.log(ex))
     }, [token]);
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://192.168.0.182:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -41,7 +41,7 @@ const Structure = () => {
             .catch(ex => console.log(ex));
     }, [token])
     const updateList = (page) => {
-        fetch('http://172.16.3.101:54321/api/departments?active=0&from=' + page, {
+        fetch('http://192.168.0.182:54321/api/departments?active=0&from=' + page, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -108,7 +108,7 @@ const NewStructureRow = (props) => {
     }
     const addStructure = () => {
         const data = JSON.stringify(newStructureData);
-        fetch('http://172.16.3.101:54321/api/new-structure', {
+        fetch('http://192.168.0.182:54321/api/new-structure', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -182,7 +182,7 @@ const TableRow = (props) => {
     }
     const handleDone = () => {
         const data = JSON.stringify({ ...structureData, id: structure.id })
-        fetch('http://172.16.3.101:54321/api/update-structure', {
+        fetch('http://192.168.0.182:54321/api/update-structure', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ const TableRow = (props) => {
     }
     const updateFunc = (id, stat) => {
         const data = JSON.stringify({ ...structureData, id, active: stat })
-        fetch('http://172.16.3.101:54321/api/update-structure', {
+        fetch('http://192.168.0.182:54321/api/update-structure', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -14,7 +14,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 	useEffect(() => {
 		if (view === 'returned' || view === 'procurement') {
 			const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
-			fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
+			fetch('http://192.168.0.182:54321/api/get-budget-per-order', {
 				method: 'POST',
 				headers: {
 					'Authorization': 'Bearer ' + token,
@@ -44,7 +44,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 	const handleSubCategoryChange = (e) => {
 		const value = e.target.value;
 		const data = JSON.stringify({ categoryid: value, ordNumb, empVersion: version })
-		fetch('http://172.16.3.101:54321/api/get-budget-per-order', {
+		fetch('http://192.168.0.182:54321/api/get-budget-per-order', {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,

@@ -19,7 +19,7 @@ const checkData = (data) => {
 const Visas = (props) => {
   const { webSocketRef } = props
   const [active, setActive] = useState(undefined);
-  const updateList = useCallback((data, token) => fetch('http://172.16.3.101:54321/api/visas', {
+  const updateList = useCallback((data, token) => fetch('http://192.168.0.182:54321/api/visas', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

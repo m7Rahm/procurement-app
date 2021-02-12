@@ -34,7 +34,7 @@ const NewBudget = (props) => {
             comment: commentRef.current.value,
             subGlCategoryid: subGlCategoryidRef.current.value,
         }
-        fetch('http://172.16.3.101:54321/api/insert-new-budget', {
+        fetch('http://192.168.0.182:54321/api/insert-new-budget', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

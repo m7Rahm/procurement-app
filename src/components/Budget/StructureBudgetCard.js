@@ -17,7 +17,7 @@ const CardContent = React.forwardRef(({ budget, category, period }, ref) => {
             structureid: budget.structure_id,
             glCategoryid: category
         });
-        fetch('http://172.16.3.101:54321/api/structure-budget-per-gl-category', {
+        fetch('http://192.168.0.182:54321/api/structure-budget-per-gl-category', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

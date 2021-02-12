@@ -3,9 +3,8 @@ import { useLocation } from 'react-router-dom'
 import ExpressVendorInfo from '../../components/modal content/ExpressVendorInfo'
 import Modal from '../../components/Misc/Modal'
 import { TokenContext } from '../../App'
-import {
-    MdDetails
-} from 'react-icons/md'
+import { MdDetails } from 'react-icons/md'
+import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
 import Pagination from '../../components/Misc/Pagination'
 import ExpressVendorsSearch from '../../components/Search/ExpressVendorsSearch'
@@ -38,7 +37,7 @@ const ExpressVendors = (props) => {
             risk_zone: 0,
             is_closed: 0
         });
-        fetch('http://172.16.3.101:54321/api/get-express-vendors', {
+        fetch('http://192.168.0.182:54321/api/get-express-vendors', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -79,7 +78,7 @@ const ExpressVendors = (props) => {
             is_closed: searchDataRef.current.is_closed.value,
             from: from
         });
-        fetch('http://172.16.3.101:54321/api/get-express-vendors', {
+        fetch('http://192.168.0.182:54321/api/get-express-vendors', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -95,11 +94,42 @@ const ExpressVendors = (props) => {
             })
     }
     const handleClick = (id) => {
+        const onFinish = () => {
+            const data = JSON.stringify({
+                reg_date: searchDataRef.current.reg_date.value,
+                vendor_type: searchDataRef.current.vendor_type.value,
+                voen: searchDataRef.current.voen.value,
+                sphere: searchDataRef.current.sphere.value,
+                residency: searchDataRef.current.residency.value,
+                tax_type: searchDataRef.current.tax_type.value,
+                name: searchDataRef.current.name.value,
+                risk_zone: searchDataRef.current.risk_zone.value,
+                is_closed: searchDataRef.current.is_closed.value,
+                from: 0
+            });
+            fetch('http://192.168.0.182:54321/api/get-express-vendors', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length
+                },
+                body: data
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                    closeModal();
+                    setExpressVendors({ count: totalCount, vendors: respJ });
+                })
+                .catch(ex => console.log(ex))
+        }
         setModalState({
             visible: true,
             content: (props) =>
                 <ExpressVendorInfo
                     vendorid={id}
+                    onFinish={onFinish}
                     setExpressVendors={setExpressVendors}
                     disabled={true}
                     {...props}
@@ -117,14 +147,14 @@ const ExpressVendors = (props) => {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>Ad</th>
                             <th>VÖEN</th>
-                            <th>Type</th>
-                            <th>Residency</th>
-                            <th>Sphere</th>
+                            <th>Tip</th>
+                            <th>Rezidentlik</th>
+                            <th>Xidmət Sahəsi</th>
                             <th>Tax</th>
-                            <th>Risk zone</th>
-                            <th>Reg Date</th>
+                            <th>Risk zonası</th>
+                            <th>Müqavilə tarixi</th>
                             <th>Status</th>
                             <th></th>
                         </tr>
@@ -143,7 +173,7 @@ const ExpressVendors = (props) => {
                                         {vendor.voen}
                                     </td>
                                     <td>
-                                        {vendorTypes.find(vendorType => vendorType.val === vendor.vendor_type).text}
+                                        {vendorTypes.find(vendorType => vendorType.val === vendor.vendor_type) ? vendorTypes.find(vendorType => vendorType.val === vendor.vendor_type).text : ''}
                                     </td>
                                     <td>
                                         {vendor.residency}
@@ -174,6 +204,9 @@ const ExpressVendors = (props) => {
                         {modalState.content}
                     </Modal>
                 }
+                <div style={{ position: 'fixed', bottom: '100px', right: '50px' }}>
+                    <AiOutlinePlusCircle color="rgb(255, 174, 0)" cursor="pointer" onClick={() => handleClick(null)} size="40" />
+                </div>
                 <div className="my-orders-footer">
                     <Pagination
                         count={expressVendors.count}

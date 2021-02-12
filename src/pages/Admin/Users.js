@@ -20,7 +20,7 @@ const Users = () => {
 		setModal({ visible: true, content: newUser})
 	}
 	const updateList = (from) => {
-		fetch(`http://172.16.3.101:54321/api/get-users?from=${from}&next=20`, {
+		fetch(`http://192.168.0.182:54321/api/get-users?from=${from}&next=20`, {
 			headers: {
 				'Authorization': 'Bearer ' + token
 			}
@@ -33,7 +33,7 @@ const Users = () => {
 			.catch(ex => console.log(ex))
 	}
 	useEffect(() => {
-		fetch(`http://172.16.3.101:54321/api/get-users?from=0&next=20`, {
+		fetch(`http://192.168.0.182:54321/api/get-users?from=0&next=20`, {
 			headers: {
 				'Authorization': 'Bearer ' + token
 			}
@@ -52,7 +52,7 @@ const Users = () => {
 		const editUser = (props) => <EditUser closeModal={closeModal} id={id} {...props}/>
 		setModal({ visible: true, content: editUser})
 	}
-	const updateFunc = (id, state) => fetch(`http://172.16.3.101:54321/api/change-user-status?userid=${id}&status=${state}`, {
+	const updateFunc = (id, state) => fetch(`http://192.168.0.182:54321/api/change-user-status?userid=${id}&status=${state}`, {
 		headers: {
 			'Authorization': 'Bearer ' + token
 		}

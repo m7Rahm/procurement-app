@@ -11,7 +11,7 @@ const onMountFunction = (setVisas) => {
         from: 0,
         until: 20
     }
-    fetch('http://172.16.3.101:54321/api/get-price-offers', {
+    fetch('http://192.168.0.182:54321/api/get-price-offers', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ const handleCardClick = (_, props, stateRef) => {
             orderid: props.number,
             empVersion: props.empVersion
         };
-        fetch(`http://172.16.3.101:54321/api/order`, {
+        fetch(`http://192.168.0.182:54321/api/order`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

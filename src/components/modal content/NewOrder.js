@@ -20,7 +20,7 @@ const NewOrderContent = (props) => {
     orderType: 0
   })
   useEffect(() => {
-    fetch('http://172.16.3.101:54321/api/gl-categories', {
+    fetch('http://192.168.0.182:54321/api/gl-categories', {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -97,7 +97,7 @@ const NewOrderContent = (props) => {
           ordNumb: ''
         });
         //todo: create socket and connect
-        fetch('http://172.16.3.101:54321/api/orders', {
+        fetch('http://192.168.0.182:54321/api/orders', {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -112,7 +112,7 @@ const NewOrderContent = (props) => {
           })
           .catch(err => console.log(err))
       }
-      createApproveNewOrderCallback(materials, 'http://172.16.3.101:54321/api/new-order', onSuccess)
+      createApproveNewOrderCallback(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
     }
   }
   return (

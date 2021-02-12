@@ -21,7 +21,7 @@ const VisaContent = (props) => {
         const stateTranId = location.state ? location.state.tranid : undefined;
         const id = tranid ? tranid : stateTranId;
         if (id)
-            fetch(`http://172.16.3.101:54321/api/tran-info?tranid=${id}`, {
+            fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${id}`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }

@@ -5,7 +5,7 @@ const FinishOrder = (props) => {
     const [materials, setMaterials] = useState([]);
     const [accepted, setAccepted] = useState([]);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}`, {
+        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -38,7 +38,7 @@ const FinishOrder = (props) => {
             empVersion: props.version,
             materials: materials
         });
-        fetch('http://172.16.3.101:54321/api/confirm-accepted', {
+        fetch('http://192.168.0.182:54321/api/confirm-accepted', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,

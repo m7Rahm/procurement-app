@@ -21,7 +21,7 @@ const AgreementContent = (props) => {
     const active = props.active ? props.active : locationState ? locationState.active : null
     useEffect(() => {
         if (active) {
-            fetch(`http://172.16.3.101:54321/api/get-tender-order-content/${active}`, {
+            fetch(`http://192.168.0.182:54321/api/get-tender-order-content/${active}`, {
                 headers: {
                     'Authorization': 'Bearer ' + props.token
                 }
@@ -109,7 +109,7 @@ const AgreementMaterial = (props) => {
         const data = JSON.stringify({
             id: materialState.id
         });
-        fetch('http://172.16.3.101:54321/api/send-to-staging-area', {
+        fetch('http://192.168.0.182:54321/api/send-to-staging-area', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,

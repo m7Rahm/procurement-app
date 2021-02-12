@@ -12,7 +12,7 @@ const AgreementVendors = (props) => {
     const active = props.agreementResult === 0 && props.userResult === 0;
     useEffect(() => {
         if (props.active) {
-            fetch(`http://172.16.3.101:54321/api/agreement-vendors/${props.active}`, {
+            fetch(`http://192.168.0.182:54321/api/agreement-vendors/${props.active}`, {
                 headers: {
                     'Authorization': 'Bearer ' + props.token
                 }
@@ -34,7 +34,7 @@ const AgreementVendors = (props) => {
                 action: -1,
                 tranid: props.tranid
             })
-            fetch('http://172.16.3.101:54321/api/accept-decline-agreement', {
+            fetch('http://192.168.0.182:54321/api/accept-decline-agreement', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + props.token,
@@ -66,7 +66,7 @@ const AgreementVendors = (props) => {
                 action: 1,
                 tranid: props.tranid
             });
-            fetch('http://172.16.3.101:54321/api/accept-decline-agreement', {
+            fetch('http://192.168.0.182:54321/api/accept-decline-agreement', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + props.token,
@@ -95,7 +95,7 @@ const AgreementVendors = (props) => {
                 agreementid: '',
                 comment: comment
             })
-            fetch('http://172.16.3.101:54321/api/cancel-agreement', {
+            fetch('http://192.168.0.182:54321/api/cancel-agreement', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

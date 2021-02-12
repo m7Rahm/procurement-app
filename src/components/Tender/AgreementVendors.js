@@ -28,7 +28,7 @@ const AgreementVendors = (props) => {
             const sentName = `${name}:${files[i].supplier}.${ext}`;
             formData.append('files', files[i], sentName)
         }
-        fetch('http://172.16.3.101:54321/api/new-agreement', {
+        fetch('http://192.168.0.182:54321/api/new-agreement', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token
@@ -122,7 +122,7 @@ export const VendorsList = (props) => {
     const vendorsListRef = useRef(null);
     useEffect(() => {
         const controller = new AbortController();
-        fetch('http://172.16.3.101:54321/api/get-vendors', {
+        fetch('http://192.168.0.182:54321/api/get-vendors', {
             signal: controller.signal,
             headers: {
                 'Authorization': 'Bearer ' + props.token

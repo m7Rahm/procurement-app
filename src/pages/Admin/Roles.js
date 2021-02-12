@@ -22,7 +22,7 @@ const Roles = (props) => {
         setModal({ content: updateRole, state: true })
     }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/roles', {
+        fetch('http://192.168.0.182:54321/api/roles', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -33,7 +33,7 @@ const Roles = (props) => {
     }, [token]);
     const updateFunc = (id, state) => {
         const data = { ...roles.find(role => role.id === id), active_passive: state }
-        fetch('http://172.16.3.101:54321/api/update-role', {
+        fetch('http://192.168.0.182:54321/api/update-role', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

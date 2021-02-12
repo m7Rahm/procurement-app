@@ -12,7 +12,7 @@ const VisaVersionsContainer = (props) => {
     const [versions, setVersions] = useState([]);
     const actionsAvailableRef = useRef(true);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/get-order-versions/${orderNumb}`, {
+        fetch(`http://192.168.0.182:54321/api/get-order-versions/${orderNumb}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -63,7 +63,7 @@ const VisaVersion = (props) => {
             action: action,
             comment: '',
         })
-        fetch(`http://172.16.3.101:54321/api/accept-decline/${tranid}`,
+        fetch(`http://192.168.0.182:54321/api/accept-decline/${tranid}`,
             {
                 method: 'POST',
                 headers: {
@@ -81,7 +81,7 @@ const VisaVersion = (props) => {
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`, {
+        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -97,7 +97,7 @@ const VisaVersion = (props) => {
                 ordNumb: ord_numb,
                 empVersion: emp_id
             })
-            fetch('http://172.16.3.101:54321/api/accept-edited-version', {
+            fetch('http://192.168.0.182:54321/api/accept-edited-version', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,

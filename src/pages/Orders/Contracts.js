@@ -11,7 +11,7 @@ const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     const apiData = JSON.stringify(data);
-    return fetch('http://172.16.3.101:54321/api/get-user-contracts', {
+    return fetch('http://192.168.0.182:54321/api/get-user-contracts', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ const Contracts = () => {
         active: null,
         tranid: undefined
     });
-    const apiString = active.active ? `http://172.16.3.101:54321/api/doc-content?${active.tranid ? `tranid=${active.tranid}&` : ''}doctype=2&docid=${active.active}` : ''
+    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?${active.tranid ? `tranid=${active.tranid}&` : ''}doctype=2&docid=${active.active}` : ''
     return (
         <div className="agreements-container" style={{ top: '-56px' }}>
             <SideBar

@@ -11,7 +11,7 @@ const AcceptDecline = (props) => {
                 action: action,
                 comment: commentRef.current.value,
             })
-            fetch(`http://172.16.3.101:54321/api/accept-decline/${tranid}`,
+            fetch(`http://192.168.0.182:54321/api/accept-decline/${tranid}`,
                 {
                     method: 'POST',
                     headers: {

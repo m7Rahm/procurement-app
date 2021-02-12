@@ -17,7 +17,7 @@ const PaymentContent = (props) => {
     const active = agreementResult === 0 && props.current.userResult === 0;
     const docid = props.current.active
     const actionDate = props.current.action_date_time;
-    const fetchParticipants = () => fetch(`http://172.16.3.101:54321/api/doc-participants?id=${docid}&doctype=3`, {
+    const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=3`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
@@ -34,7 +34,7 @@ const PaymentContent = (props) => {
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
         const apiData = JSON.stringify({ ...data, docType: 3 });
-        return fetch(`http://172.16.3.101:54321/api/send-message`, {
+        return fetch(`http://192.168.0.182:54321/api/send-message`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,
@@ -46,7 +46,7 @@ const PaymentContent = (props) => {
     }
         , [props.token]);
     const fetchMessages = useCallback(() =>
-        fetch(`http://172.16.3.101:54321/api/messages/${docid}?from=0&replyto=0&doctype=2`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=0&replyto=0&doctype=2`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -63,7 +63,7 @@ const PaymentContent = (props) => {
             action: action,
             comment: textareaRef.current.value
         })
-        fetch('http://172.16.3.101:54321/api/accept-decline-doc', {
+        fetch('http://192.168.0.182:54321/api/accept-decline-doc', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,
@@ -86,7 +86,7 @@ const PaymentContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetch(`http://172.16.3.101:54321/api/contract-files/${docid}?type=3`, {
+    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=3`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }

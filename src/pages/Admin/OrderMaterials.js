@@ -27,7 +27,7 @@ const OrderMaterials = () => {
             from: from,
             next: 20
         })
-        fetch('http://172.16.3.101:54321/api/get-models', {
+        fetch('http://192.168.0.182:54321/api/get-models', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -44,7 +44,7 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/gl-categories', {
+        fetch('http://192.168.0.182:54321/api/gl-categories', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -58,7 +58,7 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }, [token])
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/cluster-names', {
+        fetch('http://192.168.0.182:54321/api/cluster-names', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -68,7 +68,7 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }, [token])
     useEffect(() => {
-        fetch('http://172.16.3.101:54321/api/departments', {
+        fetch('http://192.168.0.182:54321/api/departments', {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -84,7 +84,7 @@ const OrderMaterials = () => {
             from: 0,
             next: 20
         })
-        fetch('http://172.16.3.101:54321/api/get-models', {
+        fetch('http://192.168.0.182:54321/api/get-models', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -175,7 +175,7 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
     }
     const handleUpdate = () => {
         const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value, isInv: inventoryRef.current.value });
-        fetch('http://172.16.3.101:54321/api/update-material', {
+        fetch('http://192.168.0.182:54321/api/update-material', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -296,7 +296,7 @@ const NewMaterial = (props) => {
             // procurement: procurementidRef.current.value
             isInv: inventoryRef.current.value
         };
-        fetch('http://172.16.3.101:54321/api/add-new-cat', {
+        fetch('http://192.168.0.182:54321/api/add-new-cat', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

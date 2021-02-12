@@ -11,7 +11,7 @@ const WithSearch = OrdersSearchHOC(SideBarContent, optionsReadyOrders);
 const SideBar = React.memo(SideBarContainer(WithSearch));
 const updateListContent = (data, token) => {
     const apiData = JSON.stringify(data);
-    return fetch('http://172.16.3.101:54321/api/get-ready-orders', {
+    return fetch('http://192.168.0.182:54321/api/get-ready-orders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

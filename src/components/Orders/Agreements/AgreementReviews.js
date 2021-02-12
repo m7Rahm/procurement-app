@@ -14,7 +14,7 @@ const AgreementReviews = (props) => {
     const token = tokenContext[0].token;
     const [reviews, setReviews] = useState([]);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/agreement-reviews/${props.agreementid}`, {
+        fetch(`http://192.168.0.182:54321/api/agreement-reviews/${props.agreementid}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

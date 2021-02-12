@@ -40,7 +40,7 @@ const EditUser = (props) => {
             role: userData.role_id,
             id: id
         });
-        fetch('http://172.16.3.101:54321/api/update-user-data', {
+        fetch('http://192.168.0.182:54321/api/update-user-data', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -56,7 +56,7 @@ const EditUser = (props) => {
             })
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/user/${id}`, {
+        fetch(`http://192.168.0.182:54321/api/user/${id}`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -88,7 +88,7 @@ const EditUser = (props) => {
                 password: password,
                 id: id
             })
-            fetch('http://172.16.3.101:54321/api/reset-password', {
+            fetch('http://192.168.0.182:54321/api/reset-password', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
@@ -215,7 +215,7 @@ const Roles = (props) => {
         setUserData(prev => ({ ...prev, role_id: value, modules: availableModules }))
     }
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/roles`, {
+        fetch(`http://192.168.0.182:54321/api/roles`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }
@@ -261,7 +261,7 @@ const StructureInfo = (props) => {
     const { token, isProtected, userData, handleChange } = props;
     const [departments, setStructures] = useState([]);
     useEffect(() => {
-        fetch(`http://172.16.3.101:54321/api/departments`, {
+        fetch(`http://192.168.0.182:54321/api/departments`, {
             headers: {
                 'Authorization': 'Bearer ' + token
             }

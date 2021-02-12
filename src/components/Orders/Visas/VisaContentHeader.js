@@ -29,7 +29,7 @@ const VisaContentHeader = (props) => {
 	};
 	const editOrderAndApprove = (data, setOperationResult) => {
 		const apiData = JSON.stringify(data);
-		fetch(`http://172.16.3.101:54321/api/edit-accept-order-req/${tranid}`, {
+		fetch(`http://192.168.0.182:54321/api/edit-accept-order-req/${tranid}`, {
 			method: 'POST',
 			headers: {
 				'Authorization': 'Bearer ' + token,

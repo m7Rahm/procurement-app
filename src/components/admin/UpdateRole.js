@@ -11,7 +11,7 @@ const UpdateRole = (props) => {
     const selectPrevRef = useRef(null);
     const selectMenusRef = useRef(null);
     const saveChanges = () => {
-        fetch('http://172.16.3.101:54321/api/update-role', {
+        fetch('http://192.168.0.182:54321/api/update-role', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + props.token,

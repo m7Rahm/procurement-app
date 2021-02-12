@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from 'react'
-import SideBarWithSearch from '../../components/HOC/SideBarWithSearch'
+import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
 import AgreementCard from '../../components/VisaCards/AgreementCard'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
 import CardsList from '../../components/HOC/CardsList'
@@ -7,12 +7,12 @@ import { TokenContext } from '../../App'
 import AgreementContent from '../../components/Orders/Agreements/AgreementContent'
 import { optionsAgreements } from '../../data/data'
 const SideBarContent = CardsList(AgreementCard);
-const Search = SideBarWithSearch(SideBarContent, optionsAgreements);
+const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
     query = query.substring(0, query.length - 1);
-    return fetch('http://172.16.3.101:54321/api/tender-docs?doctype=1&' + query, {
+    return fetch('http://192.168.0.182:54321/api/tender-docs?doctype=1&' + query, {
         headers: {
             'Authorization': 'Bearer ' + token
         }

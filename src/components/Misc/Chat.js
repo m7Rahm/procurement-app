@@ -111,7 +111,7 @@ const Chat = (props) => {
                     <div onClick={loadMore}>Load more..</div>
                 }
             </div>
-            <div className="chat-footer" >
+            <div className="chat-footer" style={{ maxWidth: '1206px' }} >
                 <textarea ref={messageBoxRef} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
                 <span style={{ width: '60px' }}>
                     <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
