@@ -118,6 +118,10 @@ export const modules = [
     {
         text: 'Tender',
         link: '/tender'
+    },
+    {
+        text: 'Warehouse',
+        link: '/tender'
     }
 ]
 export const expressVendorInit = {

@@ -56,4 +56,4 @@ const NewOrderTableBody = (props) => {
     </>
   )
 }
-export default NewOrderTableBody
+export default React.memo(NewOrderTableBody)

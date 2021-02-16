@@ -7,7 +7,7 @@ const NewOrderHeader = (props) => {
     const token = tokenContext[0].token;
     const userData = tokenContext[0].userData;
     const structureid = userData.userInfo.structureid;
-    const dependents = structures.filter(structure => structure.dependent_id === structureid);
+    const dependents = structures.filter(structure => structure.parent_id === structureid);
     useEffect(() => {
         fetch('http://192.168.0.182:54321/api/departments', {
             headers: {
@@ -28,10 +28,10 @@ const NewOrderHeader = (props) => {
             <div className="new-order-header">
                 {
                     dependents.length !== 0 &&
-                    <div>
+                    <div style={{ margin: "0px 10px"}}>
                         <label htmlFor="category">Təyinat</label>
                         <br />
-                        <select value={orderInfo.structure} onChange={handleChange} name="setStructure">
+                        <select value={orderInfo.structure} onChange={handleChange} name="structure">
                             <option value="-1">-</option>
                             {
                                 dependents.map(structure =>

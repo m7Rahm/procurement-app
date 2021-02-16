@@ -18,7 +18,7 @@ const NewOrderContent = (props) => {
     structure: '-1',
     ordNumb: '',
     orderType: 0
-  })
+  });
   useEffect(() => {
     fetch('http://192.168.0.182:54321/api/gl-categories', {
       headers: {
@@ -71,7 +71,6 @@ const NewOrderContent = (props) => {
       })
         .then(resp => resp.json())
         .then(respJ => {
-          console.log(respJ)
           if (respJ[0].result === 'success') {
             onSuccess(data, respJ)
           }
@@ -83,7 +82,6 @@ const NewOrderContent = (props) => {
     else
       setOperationResult({ visible: true, desc: 'Error Parsing Materials' })
   }
-  const createApproveNewOrderCallback = useCallback(createApproveNewOrder, [orderInfo]);
   const handleSendClick = (materials) => {
     if (!current && !isDraft) {
       const onSuccess = (data, respJ) => {
@@ -112,9 +110,11 @@ const NewOrderContent = (props) => {
           })
           .catch(err => console.log(err))
       }
-      createApproveNewOrderCallback(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
+      createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
     }
   }
+  const handleSendClickCallback = useCallback(handleSendClick, [orderInfo]);
+
   return (
     <div className="modal-content-new-order">
       {
@@ -122,6 +122,7 @@ const NewOrderContent = (props) => {
         <OperationResult
           setOperationResult={setOperationResult}
           operationDesc={operationResult.desc}
+          backgroundColor="whitesmoke"
           icon={IoIosCloseCircle}
         />
       }
@@ -131,11 +132,11 @@ const NewOrderContent = (props) => {
         token={token}
         parentGlCategories={glCategories.parent}
       />
-        <NewOrderTableBody
-          orderInfo={orderInfo}
-          glCategories={glCategories}
-          handleSendClick={handleSendClick}
-        />
+      <NewOrderTableBody
+        orderInfo={orderInfo}
+        glCategories={glCategories}
+        handleSendClick={handleSendClickCallback}
+      />
     </div>
   )
 }

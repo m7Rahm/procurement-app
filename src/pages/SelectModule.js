@@ -40,12 +40,12 @@ const availableModules = [
 		label: "Tender",
 		link: '/tender',
 		component: Tender
-	},
+	}
 ]
 const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
-	const userData = tokenContext[0].userData
+	const userData = tokenContext[0].userData;
 	const webSocketRef = useRef(null);
 	const [menuData, setMenuData] = useState({ url: '', routes: [] })
 	const [wSockConnected, setWSockConnected] = useState(false);
@@ -72,12 +72,12 @@ const SelectModule = () => {
 		}
 	}, [token, userData]);
 	const routes = availableModules.filter(availableModule => userData.modules.find(module => module.text === availableModule.label));
+	const warehouseVisible = userData.modules.find(module => module.text === "Warehouse") ? true : false;
 	const handleNavClick = () => {
 		leftPaneRef.current.classList.toggle('left-side-pane-open');
 		const backgroundDisplay = backgroundRef.current.style.display === 'none' ? 'block' : 'none'
 		backgroundRef.current.style.display = backgroundDisplay
 	}
-
 	return (
 		<Switch>
 			<Route exact path="/">
@@ -91,6 +91,14 @@ const SelectModule = () => {
 									</div>
 								</Link>
 							)
+						}
+						{
+							warehouseVisible &&
+							<a href="http://192.168.0.182:62447">
+								<div className="module-card">
+									Anbar
+								</div>
+							</a>
 						}
 					</div>
 				</div>

@@ -16,9 +16,7 @@ const OrderMaterials = () => {
     const [units, setUnits] = useState([]);
     const glCategoriesRef = useRef([]);
     const [glCategories, setGlCategories] = useState([])
-
     const activePageRef = useRef(0);
-
     const [tableData, setTableData] = useState({ content: [], count: 0 });
     const refreshContent = (from) => {
         const data = JSON.stringify({
@@ -111,7 +109,6 @@ const OrderMaterials = () => {
                             <th>GL Kateqoriya</th>
                             <th>Sub-Gl Kateqoriya</th>
                             <th>Kurasiya</th>
-                            {/* <th>Təchizat bölməsi</th> */}
                             <th>Növ</th>
                             <th style={{ maxWidth: '100px' }}>Qiymət</th>
                             <th>Ölçü vahidi</th>
@@ -131,7 +128,7 @@ const OrderMaterials = () => {
                         {
                             tableData.content.map((material, index) =>
                                 <TableRow
-                                    index={index + 1}
+                                    index={activePageRef.current * 20 + index + 1}
                                     token={token}
                                     material={material}
                                     glCategoriesRef={glCategoriesRef}
@@ -155,8 +152,8 @@ const OrderMaterials = () => {
 }
 export default OrderMaterials
 
-const TableRow = React.memo(({ index, material, departments, token, units, glCategories, glCategoriesRef }) => {
-    const [materialData, setMaterialData] = useState({ ...material, type: material.type ? "1" : "0" });
+const TableRow = ({ index, material, departments, token, units, glCategories, glCategoriesRef }) => {
+    const [materialData, setMaterialData] = useState({ ...material, type: material.is_service ? "1" : "0" });
     const [disabled, setDisabled] = useState(true);
     const subGlCategoryRef = useRef(null);
     const inventoryRef = useRef(null);
@@ -174,7 +171,7 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
         setDisabled(prev => !prev)
     }
     const handleUpdate = () => {
-        const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value, isInv: inventoryRef.current.value });
+        const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value, isInv: inventoryRef.current.checked });
         fetch('http://192.168.0.182:54321/api/update-material', {
             method: 'POST',
             headers: {
@@ -225,15 +222,6 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
                     }
                 </select>
             </td>
-            {/* <td>
-                <select disabled={disabled} onChange={handleChange} name="techizatci_id" value={materialData.techizatci_id}>
-                    {
-                        departments.map(department =>
-                            <option key={department.id} value={department.id}>{department.name}</option>
-                        )
-                    }
-                </select>
-            </td> */}
             <td>
                 <select disabled={disabled} name="type" onChange={handleChange} value={materialData.type}>
                     <option value="0">Mal-Material</option>
@@ -267,13 +255,12 @@ const TableRow = React.memo(({ index, material, departments, token, units, glCat
             </td>
         </tr>
     )
-})
-const NewMaterial = (props) => {
+}
+const NewMaterial = React.memo((props) => {
     const { glCategoriesRef, glCategories, units, departments, token, setTableData } = props
     const unitsRef = useRef(null);
     const glCategoryRef = useRef(null);
     const curatoridRef = useRef(null);
-    // const procurementidRef = useRef(null);
     const inventoryRef = useRef(null);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newCatState, setNewCatState] = useState({
@@ -293,8 +280,7 @@ const NewMaterial = (props) => {
             department: curatoridRef.current.value,
             gl_category_id,
             cluster: unitsRef.current.value,
-            // procurement: procurementidRef.current.value
-            isInv: inventoryRef.current.value
+            isInv: inventoryRef.current.checked
         };
         fetch('http://192.168.0.182:54321/api/add-new-cat', {
             method: 'POST',
@@ -311,8 +297,8 @@ const NewMaterial = (props) => {
                     const id = respJ[0].row_id;
                     setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
                     setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }));
-                    inventoryRef.current.value = 0;
-                    setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1" });
+                    inventoryRef.current.checked = false;
+                    setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approxPrice: "" });
                     curatoridRef.current.value = "-1"
                 }
             })
@@ -376,16 +362,6 @@ const NewMaterial = (props) => {
                     }
                 </select>
             </td>
-            {/* <td>
-                <select name="procurement" ref={procurementidRef}>
-                    <option value="-1">-</option>
-                    {
-                        departments.map(department =>
-                            <option key={department.id} value={department.id}>{department.name}</option>
-                        )
-                    }
-                </select>
-            </td> */}
             <td>
                 <select onChange={handleChange} name="type" value={newCatState.type}>
                     <option value="0">Mal-Material</option>
@@ -411,3 +387,4 @@ const NewMaterial = (props) => {
         </tr>
     )
 }
+)

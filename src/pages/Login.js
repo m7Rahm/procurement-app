@@ -63,19 +63,37 @@ const Login = (props) => {
         const value = e.target.value;
         setUserCreds(prev => ({ ...prev, [name]: value }))
     }
+    const handleKeyUp = (e) => {
+        if (e.keyCode === 13)
+            handleLoginCheck()
+    }
     return (
         <div className="login-container">
             <div className="login">
                 <div>
                     <div style={{ marginBottom: '10px' }}>
                         <label htmlFor="username">Username</label>
-                        <input onChange={handleChange} value={userCreds.username} id="username" name="username" type="text" />
+                        <input
+                            onChange={handleChange}
+                            onKeyUp={handleKeyUp}
+                            value={userCreds.username}
+                            id="username"
+                            name="username"
+                            type="text"
+                        />
                     </div>
                     <div style={{ marginBottom: '10px' }}>
                         <label htmlFor="password">Password</label>
-                        <input onChange={handleChange} value={userCreds.password} id="password" name="password" type="password" />
+                        <input
+                            onChange={handleChange}
+                            value={userCreds.password}
+                            onKeyUp={handleKeyUp}
+                            id="password"
+                            name="password"
+                            type="password"
+                        />
                     </div>
-                    <div tabIndex="0" onClick={handleLoginCheck} className="log-in-button">login</div>
+                    <div tabIndex="3" onClick={handleLoginCheck} className="log-in-button">login</div>
                 </div>
             </div>
             {
@@ -84,7 +102,7 @@ const Login = (props) => {
                     <div>
                         <IoIosCloseCircle size="88" />
                     </div>
-                Daxil etdiyiniz şifrə yanlışdır
+                    Daxil etdiyiniz şifrə yanlışdır
 			    </div>
             }
         </div>

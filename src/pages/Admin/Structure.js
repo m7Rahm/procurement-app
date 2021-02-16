@@ -119,7 +119,7 @@ const NewStructureRow = (props) => {
         })
             .then(resp => {
                 if (resp.status === 200)
-                   return resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
@@ -158,16 +158,10 @@ const NewStructureRow = (props) => {
     )
 }
 const TableRow = (props) => {
-    // const departments = props.departments;
-    const activeDepartments = props.activeDepartments;
-    const setActiveDepartments = props.setActiveDepartments;
-    const structure = props.structure;
+    const { activeDepartments, setActiveDepartments, structure } = props;
     const [disabled, setDisabled] = useState(true);
     const [structureData, setStructureData] = useState(structure);
     const id = structure.id;
-    useEffect(() => {
-        setActiveDepartments(prev => prev.map(dep => dep.id === id ? structureData : dep))
-    }, [structureData, id, setActiveDepartments])
     const handleClick = () => {
         setDisabled(prev => !prev)
     }
@@ -193,17 +187,18 @@ const TableRow = (props) => {
         })
             .then(resp => {
                 if (resp.status === 200)
-                   return resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
             .then(_ => {
+                setActiveDepartments(prev => prev.map(dep => dep.id === id ? structureData : dep))
                 setDisabled(true);
             })
             .catch(ex => console.log(ex));
     }
     const updateFunc = (id, stat) => {
-        const data = JSON.stringify({ ...structureData, id, active: stat })
+        const data = JSON.stringify({ ...structureData, id, active: stat });
         fetch('http://192.168.0.182:54321/api/update-structure', {
             method: 'POST',
             headers: {
@@ -219,10 +214,15 @@ const TableRow = (props) => {
                 else
                     throw new Error('Internal Server Error');
             })
-            .then(respJ => { console.log(respJ) })
+            .then(respJ => {
+                setActiveDepartments(prev =>
+                    !respJ[0].active_passive
+                        ? prev.filter(department => department.id !== id)
+                        : [...prev, ...respJ]
+                )
+            })
             .catch(ex => console.log(ex))
     }
-    console.log(structureData)
     return (
         <tr className="structure-row" key={structure.id}>
             <td>
