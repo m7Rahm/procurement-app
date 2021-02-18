@@ -5,7 +5,7 @@ const FinishOrder = (props) => {
     const [materials, setMaterials] = useState([]);
     const [accepted, setAccepted] = useState([]);
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}`, {
+        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }

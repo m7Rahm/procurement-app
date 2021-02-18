@@ -67,7 +67,7 @@ const MyOrders = (props) => {
     };
   }, [token])
   return (
-    <>
+    <div style={{ paddingBottom: '66px' }}>
       <Search
         searchData={searchData}
         setSearchData={setSearchData}
@@ -96,7 +96,7 @@ const MyOrders = (props) => {
           updateList={updateList}
         />
       </div>
-    </>
+    </div>
   )
 }
 export default MyOrders

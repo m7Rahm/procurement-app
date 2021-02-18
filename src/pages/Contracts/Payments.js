@@ -1,5 +1,5 @@
 import React, { useState, useContext, lazy } from 'react'
-import SideBarWithSearch from '../../components/HOC/SideBarWithSearch'
+import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
 import AgreementCard from '../../components/VisaCards/AgreementCard'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
 import CardsList from '../../components/HOC/CardsList'
@@ -10,7 +10,7 @@ import { optionsAgreements } from '../../data/data'
 const Modal = lazy(() => import('../../components/Misc/Modal'))
 const NewPayment = lazy(() => import('../../components/Contracts/NewPayment'))
 const SideBarContent = CardsList(AgreementCard);
-const Search = SideBarWithSearch(SideBarContent, optionsAgreements);
+const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
 const updateListContent = (data, token) => {
     let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
@@ -22,7 +22,8 @@ const updateListContent = (data, token) => {
     })
 }
 const inData = {
-    result: -3,
+    number: '',
+    result: 0,
     from: 0,
     next: 20
 }
