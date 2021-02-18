@@ -9,28 +9,33 @@ import AgreementGeneralInfo from './AgreementGeneralInfo'
 const Modal = lazy(() => import('../../Misc/Modal'));
 const Participants = lazy(() => import('../../Common/ParticipantsUniversal'));
 const PaymentContent = (props) => {
-    const [contractDetails, setContractDetails] = useState([]);
+    const [paymentDetails, setPaymentDetails] = useState({ content: [], active: false });
     const [rightPanel, setRightPanel] = useState({ visible: false, id: null });
     const [modalState, setModalState] = useState({ visible: false })
     const textareaRef = useRef(null);
-    const agreementResult = props.current.agreementResult;
-    const active = agreementResult === 0 && props.current.userResult === 0;
-    const docid = props.current.active
-    const actionDate = props.current.action_date_time;
+    const docid = props.docid;
     const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=3`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
-    })
+    });
     useEffect(() => {
-        if (props.apiString)
+        let mounted = true;
+        if (props.apiString && mounted)
             fetch(props.apiString, {
                 headers: {
                     'Authorization': 'Bearer ' + props.token
                 }
             })
                 .then(resp => resp.json())
-                .then(respJ => setContractDetails(respJ))
+                .then(respJ => {
+                    if (mounted)
+                        setPaymentDetails({
+                            content: respJ,
+                            active: respJ[0].doc_result === 0 && (respJ[0].user_result === 0 || respJ[0].user_result === undefined)
+                        })
+                })
+        return () => mounted = false;
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
         const apiData = JSON.stringify({ ...data, docType: 3 });
@@ -46,18 +51,28 @@ const PaymentContent = (props) => {
     }
         , [props.token]);
     const fetchMessages = useCallback(() =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=0&replyto=0&doctype=2`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=0&replyto=0&doctype=3`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
         })
         , [docid, props.token]);
     const cancel = () => {
-
+        fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=3`, {
+            headers: {
+                'Authorization': 'Bearer ' + props.token
+            }
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                if (respJ.length === 0)
+                    setPaymentDetails(prev => ({ content: prev.content.map(detail => ({ ...detail, doc_result: -1 })), active: false }))
+            })
+            .catch(ex => console.log(ex))
     }
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
-            tranid: props.current.tranid,
+            tranid: props.tranid,
             messageType: 3,
             messageid: docid,
             action: action,
@@ -100,28 +115,32 @@ const PaymentContent = (props) => {
                 </Modal>
             }
             {
-                contractDetails.length !== 0
+                paymentDetails.content.length !== 0
                     ? <>
                         <div>
                             <h1 style={{ fontSize: '24px', color: 'gray' }}>
                                 <span style={{ float: 'left' }}>
                                     {
-                                        props.current.userResult === undefined && agreementResult !== 0
-                                            ? agreementResult === 1
+                                        paymentDetails.content[0].user_result === undefined && paymentDetails.content[0].doc_result !== 0
+                                            ? paymentDetails.content[0].doc_result === 1
                                                 ? <FaCheck size="30" color="#0F9D58" />
                                                 : <FaTimes size="30" color="#D93404" />
-                                            : props.current.userResult !== undefined && props.current.userResult !== 0
-                                                ? props.current.userResult === 1
+                                            : paymentDetails.content[0].user_result !== undefined && paymentDetails.content[0].user_result !== 0
+                                                ? paymentDetails.content[0].user_result === 1
                                                     ? <FaCheck size="30" color="#0F9D58" />
                                                     : <FaTimes size="30" color="#D93404" />
-                                                : ''
+                                                : paymentDetails.content[0].doc_result !== 0 && paymentDetails.content[0].user_result !== undefined
+                                                    ? paymentDetails.content[0].doc_result === 1
+                                                        ? <FaCheck size="30" color="#0F9D58" />
+                                                        : <FaTimes size="30" color="#D93404" />
+                                                    : ''
                                     }
                                 </span>
-                                {contractDetails[0].number}
+                                {paymentDetails.content[0].number}
                                 <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)" }}>
                                     <MdDetails size="30" onClick={showHistory} />
                                 </span>
-                                <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)", fontSize: '20px' }}>{actionDate}</span>
+                                <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)", fontSize: '20px' }}>{paymentDetails.content[0].action_date_time}</span>
                             </h1>
 
                         </div>
@@ -129,20 +148,20 @@ const PaymentContent = (props) => {
                             fetchFiles={fetchFiles}
                         />
                         <RelatedDocs
-                            docs={contractDetails}
+                            docs={paymentDetails.content}
                             setRightPanel={setRightPanel}
                         />
-                        <p>{contractDetails[0].comment}</p>
+                        <p>{paymentDetails.content[0].comment}</p>
                         <div style={{ margin: '6px 0px' }}>
                             {
-                                props.referer === 'procurement' && active ?
+                                props.referer === 'procurement' && paymentDetails.active ?
                                     <div
                                         style={{ background: '#D93404', color: 'white', padding: '6px', cursor: 'pointer', borderRadius: '3px' }}
                                         onClick={cancel}
                                     >
                                         Razılaşmanı ləğv et
                                     </div>
-                                    : active &&
+                                    : paymentDetails.active &&
                                     <>
                                         <textarea ref={textareaRef} placeholder="Qeydlərinizi daxil edin.." style={{ width: '82%', minHeight: '100px' }} />
                                         <div className="accept-decline-container">
@@ -194,16 +213,17 @@ export default React.memo(PaymentContent, (prev, next) => {
 
 const RelatedDocs = (props) => {
     const handleInfoClick = (doc) => {
-        props.setRightPanel(prev => {
-            if (prev.id !== doc.related_doc_id || !prev.visible)
-                return {
-                    visible: true,
-                    id: doc.related_doc_id,
-                    number: doc.related_doc_number,
-                    result: doc.agreement_result,
-                    action_date_time: doc.agreement_action_date_time
-                }
-        })
+        if (doc.related_doc_type === 1)
+            props.setRightPanel(prev => {
+                if (prev.id !== doc.related_doc_id || !prev.visible)
+                    return {
+                        visible: true,
+                        id: doc.related_doc_id,
+                        number: doc.related_doc_number,
+                        result: doc.agreement_result,
+                        action_date_time: doc.agreement_action_date_time
+                    }
+            })
     }
     return (
         <>

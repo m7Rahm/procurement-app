@@ -47,13 +47,22 @@ const Chat = (props) => {
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         setMessages(prev => {
-                            const all = [{ user_id: userInfo.id, review: messageBoxRef.current.value, date_time: 'Just Now', count: 0, id: respJ[0].id, processed: false }, ...prev.all].map(message => ({...message, processed: false }))
-                            all[0].offset = 0;
+                            const newMessage = {
+                                user_id: userInfo.id,
+                                review: messageBoxRef.current.value,
+                                date_time: 'Just Now',
+                                count: 0,
+                                id: respJ[0].id,
+                                offset: 0,
+                                processed: false,
+                                added: true
+                            };
+                            const all = [newMessage,...prev.all]
                             const visible = all.slice(prev.start, prev.end);
                             return ({
                                 ...prev,
                                 all,
-                                visible,
+                                visible: visible.find(message => message.id === newMessage.id) ? visible : [newMessage, ...visible],
                                 height: prev.height + 50,
                                 count: prev.count + 1
                             })
@@ -72,7 +81,7 @@ const Chat = (props) => {
             .then(respJ => {
                 setMessages(prev => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                    const all = respJ.map((message, index) => ({ ...message, offset: prev.height + index * 50, processed: false }));
+                    const all = respJ.filter(message => !prev.all.find(prevMessage => prevMessage.id === message.id)).map((message, index) => ({ ...message, offset: prev.height + index * 50, processed: false }));
                     return { ...prev, count: prev.count + totalCount, all: [...prev.all, ...all], height: prev.height + totalCount * 50 }
                 });
             })
@@ -87,7 +96,7 @@ const Chat = (props) => {
                             messages.visible.map((message, index, messages) => {
                                 const getHeight = !message.height || !message.processed;
                                 const self = message.user_id === userInfo.id;
-                                const same = index - 1 >= 0 ? messages[index].user_id === messages[index - 1].user_id : false
+                                const same = index - 1 >= 0 ? messages[index].user_id === messages[index - 1].user_id : false;
                                 return (
                                     <MessageItem
                                         key={message.id}
@@ -100,6 +109,7 @@ const Chat = (props) => {
                                         message={message}
                                         sendMessage={sendMessage}
                                         self={self}
+                                        added={message.added}
                                     />
                                 )
                             })

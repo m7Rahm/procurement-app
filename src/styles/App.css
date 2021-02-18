@@ -2113,7 +2113,6 @@ ul.chat {
 }
 
 ul.chat>li {
-  margin: 5px 0px;
   overflow: auto;
 }
 div.right-bar{

@@ -6,13 +6,13 @@ const MessageItem = (props) => {
     const setMessages = props.setMessages;
     useEffect(
         () => {
-            if (calcHeight) {
+            if (calcHeight && !props.added) {
                 setMessages(prev => {
                     const height = prev.all.reduce((sum, item) => sum += item.height || 50, 0);
                     const all = prev.all.map((message, index, arr) => {
                         if (index >= prev.start - 2 && index <= prev.end + 2) {
                             const prevOffset = index - 1 >= 0 ? arr[index - 1].offset : 0;
-                            const prevHeight = index - 1 >= 0 ? arr[index - 1].height : 0
+                            const prevHeight = index - 1 >= 0 && arr[index - 1].height !== undefined ? arr[index - 1].height : 0
                             const offset = prevHeight + prevOffset + 5;
                             return message.id === props.id ? ({ ...message, height: ref.current.clientHeight, offset, processed: true }) : ({ ...message, offset: offset, processed: true });
                         }
@@ -23,10 +23,21 @@ const MessageItem = (props) => {
                     return { ...prev, all, visible: all.slice(prev.start, prev.end), height: height };
                 })
             }
-        }, [calcHeight, setMessages, props.id]);
+            else if (props.added)
+                setMessages(prev => {
+                    const all = prev.all.map(message => ({
+                        ...message,
+                        offset: message.id !== props.id ? message.offset + ref.current.clientHeight + 5 : 0,
+                        height: message.id === props.id ? ref.current.clientHeight : message.height,
+                        added: false
+                    }));
+                    return { ...prev, all, visible: all.slice(prev.start, prev.end), height: prev.height + ref.current.clientHeight + 5 };
+                })
+        }, [calcHeight, setMessages, props.id, props.added]);
+    const rightOrLeft = props.self ? { right: '5px' } : { left: '5px' }
     return (
-        <li ref={ref} style={{ position: 'absolute', top: props.offset }}>
-            <div className="message" style={{ clear: 'both', float: props.self ? 'right' : 'left', backgroundColor: props.self && 'rgb(5, 97, 98)' }}>
+        <li ref={ref} style={{ position: 'absolute', top: props.offset, ...rightOrLeft, overflow: 'hidden' }}>
+            <div className="message" style={{ clear: 'both', float: 'right', backgroundColor: props.self && 'rgb(5, 97, 98)' }}>
                 <FaAngleDown />
                 {
                     !props.same && !props.self &&

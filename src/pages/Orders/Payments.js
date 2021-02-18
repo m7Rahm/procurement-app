@@ -38,10 +38,8 @@ const Payments = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [active, setActive] = useState({
-        active: null,
-        userResult: undefined,
-        agreementResult: undefined,
-        tranid: null
+        active: undefined,
+        tranid: undefined
     });
     const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
     return (
@@ -55,7 +53,8 @@ const Payments = (props) => {
             />
             <PaymentContent
                 token={token}
-                current={active}
+                docid={active.active}
+                tranid={active.tranid}
                 apiString={apiString}
                 setActive={setActive}
             />

@@ -28,7 +28,6 @@ const inData = {
 }
 const params = {
     active: 'id',
-    agreementResult: 'result'
 }
 const Payments = (props) => {
     const tokenContext = useContext(TokenContext);
@@ -36,10 +35,8 @@ const Payments = (props) => {
     const [modalState, setModalState] = useState({ visible: false, content: null });
     const [initData, setInitData] = useState(inData)
     const [active, setActive] = useState({
-        active: null,
-        userResult: null,
-        agreementResult: null,
-        tranid: null
+        active: undefined,
+        tranid: undefined
     });
     const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
     const closeModal = () => {
@@ -59,7 +56,8 @@ const Payments = (props) => {
             />
             <PaymentContent
                 token={token}
-                current={active}
+                docid={active.active}
+                tranid={active.tranid}
                 referer="procurement"
                 apiString={apiString}
                 setActive={setActive}

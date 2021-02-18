@@ -58,7 +58,17 @@ const ContractContent = (props) => {
         })
         , [docid, props.token]);
     const cancel = () => {
-
+        fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=2`, {
+            headers: {
+                'Authorization': 'Bearer ' + props.token
+            }
+        })
+            .then(resp => resp.json())
+            .then(respJ => {
+                if (respJ.length === 0)
+                    setContractDetails(prev => ({ content: prev.content.map(detail => ({ ...detail, doc_result: -1 })), active: false }))
+            })
+            .catch(ex => console.log(ex))
     }
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
@@ -80,7 +90,7 @@ const ContractContent = (props) => {
             .then(resp => resp.json())
             .then(respJ => {
                 if (respJ.length === 0) {
-                    setContractDetails(prev => ({active: false, content: prev.content.map(row => ({ ...row, user_result: action }))}))
+                    setContractDetails(prev => ({ active: false, content: prev.content.map(row => ({ ...row, user_result: action })) }))
                 }
             })
             .catch(ex => console.log(ex))
@@ -134,9 +144,7 @@ const ContractContent = (props) => {
                             </h1>
 
                         </div>
-                        <ContractFiles
-                            fetchFiles={fetchFiles}
-                        />
+                        <ContractFiles fetchFiles={fetchFiles} />
                         <h1 style={{ fontSize: '24px', float: 'right' }}>
                             {contractDetails.content[0].vendor_name}
                             <br />

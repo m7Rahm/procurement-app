@@ -61,8 +61,8 @@ const Orders = (props) => {
     const webSocketRef = props.webSocketRef;
     const { path, url } = useRouteMatch()
     useEffect(() => {
-        setMenuData({ url: url, routes: routes })
-    }, [url, setMenuData])
+        setMenuData({ url: url, routes: routes });
+    }, [url, setMenuData]);
     return (
         <div className="app dashboard">
             <Switch>
