@@ -1,33 +1,44 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 const MessageItem = (props) => {
     const ref = useRef(null);
     const calcHeight = props.getHeight;
     const setMessages = props.setMessages;
-    useEffect(
+    useLayoutEffect(
         () => {
             if (calcHeight && !props.added) {
                 setMessages(prev => {
-                    const height = prev.all.reduce((sum, item) => sum += item.height || 50, 0);
+                    const height = prev.all.reduce((sum, item) => sum += (item.height || 50) + 5, 5);
+                    const lastKnownIndex = prev.all.reduce((prev, current, index) => current.offset && index > prev ? index : prev, prev.lastKnownIndex);
+                    let currentIndex = prev.all.length;
                     const all = prev.all.map((message, index, arr) => {
-                        if (index >= prev.start - 2 && index <= prev.end + 2) {
-                            const prevOffset = index - 1 >= 0 ? arr[index - 1].offset : 0;
-                            const prevHeight = index - 1 >= 0 && arr[index - 1].height !== undefined ? arr[index - 1].height : 0
-                            const offset = prevHeight + prevOffset + 5;
-                            return message.id === props.id ? ({ ...message, height: ref.current.clientHeight, offset, processed: true }) : ({ ...message, offset: offset, processed: true });
+                        if (message.id === props.id) {
+                            currentIndex = index;
+                            const offset = arr.slice(lastKnownIndex, index).reduce((_, current) => current.offset + current.height + 5, 0);
+                            const approxOffset = arr.slice(0, index).reduce((sum, item) => sum += (item.height || 50) + 5, 5);
+                            return ({
+                                ...message,
+                                height: ref.current.clientHeight,
+                                approxOffset: offset !== 0 && !isNaN(offset) ? offset : approxOffset,
+                                offset: offset !== 0 && !isNaN(offset) ? offset : message.offset,
+                                processed: true
+                            })
                         }
                         else {
-                            return message
+                            return {
+                                ...message,
+                                approxOffset: index > currentIndex ? message.approxOffset + ref.current.clientHeight - 50 : message.approxOffset
+                            }
                         }
                     });
-                    return { ...prev, all, visible: all.slice(prev.start, prev.end), height: height };
+                    return { ...prev, all, visible: all.slice(prev.start, prev.end), height: height, lastKnownIndex: lastKnownIndex };
                 })
             }
             else if (props.added)
                 setMessages(prev => {
                     const all = prev.all.map(message => ({
                         ...message,
-                        offset: message.id !== props.id ? message.offset + ref.current.clientHeight + 5 : 0,
+                        offset: message.id !== props.id ? message.offset + ref.current.clientHeight + 5 : 5,
                         height: message.id === props.id ? ref.current.clientHeight : message.height,
                         added: false
                     }));

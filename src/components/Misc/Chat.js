@@ -8,16 +8,17 @@ const Chat = (props) => {
     const userInfo = tokenContext[0].userData.userInfo;
     const messageBoxRef = useRef(null);
     const active = useRef(0);
-    const [messages, setMessages] = useState({ all: [], visible: [], height: '250px', count: 0, start: 0, end: 0 });
+    const [messages, setMessages] = useState({ all: [], visible: [], height: '250px', count: 0, start: 0, end: 0, lastKnownIndex: 0 });
     const handleScroll = (e) => {
         const offsetTop = e.target.scrollTop;
         setMessages(prev => {
-            const indexStart = prev.all.findIndex(message => message.offset >= offsetTop - 150);
-            const bottomEdge = offsetTop + 350 <= prev.height ? offsetTop + 350 : prev.height;
-            const indexes = prev.all.filter(message => message.offset <= bottomEdge);
-            const indexEnd = indexes.length - 1;
-            const visible = prev.all.slice(indexStart, indexStart + indexEnd);
-            return ({ ...prev, visible, start: indexStart, end: indexEnd })
+            const indexStart = prev.all.findIndex(message => message.approxOffset >= offsetTop);
+            const bottomEdge = offsetTop + 250;
+            const indexTop = prev.all.findIndex(message => message.approxOffset >= bottomEdge);
+            const indexEnd = indexTop !== -1 ? indexTop + 1 : prev.all.length;
+            const renderedIndexStart = indexStart - 2 < 0 ? 0 : indexStart - 2;
+            const visible = prev.all.slice(indexStart === - 1 ? indexEnd - 6 : renderedIndexStart, indexEnd);
+            return ({ ...prev, visible, start: indexStart === - 1 ? indexEnd - 6 : renderedIndexStart, end: indexEnd })
         })
     }
     useEffect(() => {
@@ -26,15 +27,23 @@ const Chat = (props) => {
             .then(respJ => {
                 active.current = 0;
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                const all = respJ.map((message, index) => ({ ...message, offset: index * 50, processed: false }));
-                if (all.length !== 0)
-                    all[0].offset = 0;
-                const indexEnd = all.findIndex(message => message.offset >= 250);
+                const all = respJ.map((message, index, messages) => ({
+                    ...message,
+                    approxOffset: index * 50,
+                    processed: false,
+                    self: message.user_id === userInfo.id,
+                    same: index >= 1 ? messages[index].user_id === messages[index - 1].user_id : false
+                }));
+                if (all.length !== 0){
+                    all[0].offset = 5;
+                    all[0].processed = true;
+                }
+                const indexEnd = all.findIndex(message => message.approxOffset >= 250) + 1;
                 const visible = all.slice(0, indexEnd);
-                setMessages({ count: totalCount, all, visible, height: totalCount * 50, start: 0, end: indexEnd });
+                setMessages({ count: totalCount, all, visible, height: all.length * 50, start: 0, end: indexEnd, lastKnownIndex: 0 });
             })
             .catch(ex => console.log(ex))
-    }, [props.token, loadMessages]);
+    }, [props.token, loadMessages, userInfo.id]);
     const sendMessage = (replyto) => {
         const data = {
             replyto: replyto,
@@ -49,12 +58,14 @@ const Chat = (props) => {
                         setMessages(prev => {
                             const newMessage = {
                                 user_id: userInfo.id,
+                                self: true,
                                 review: messageBoxRef.current.value,
                                 date_time: 'Just Now',
                                 count: 0,
                                 id: respJ[0].id,
-                                offset: 0,
-                                processed: false,
+                                offset: 5,
+                                approxOffset: 5,
+                                processed: true,
                                 added: true
                             };
                             const all = [newMessage,...prev.all]
@@ -72,7 +83,6 @@ const Chat = (props) => {
                 })
                 .catch(ex => console.log(ex))
     }
-
     const loadMore = () => {
         active.current += 1;
         const from = active.current * 20;
@@ -81,34 +91,49 @@ const Chat = (props) => {
             .then(respJ => {
                 setMessages(prev => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                    const all = respJ.filter(message => !prev.all.find(prevMessage => prevMessage.id === message.id)).map((message, index) => ({ ...message, offset: prev.height + index * 50, processed: false }));
-                    return { ...prev, count: prev.count + totalCount, all: [...prev.all, ...all], height: prev.height + totalCount * 50 }
+                    const all = respJ
+                        .filter(message => !prev.all.find(prevMessage => prevMessage.id === message.id))
+                        .map((message, index, messages) => ({
+                            ...message,
+                            approxOffset: prev.height + index * 50,
+                            processed: false,
+                            self: message.user_id === userInfo.id,
+                            same: index >= 1
+                                ? messages[index].user_id === messages[index - 1].user_id
+                                : messages[index].user_id === prev.all[prev.all.length - 1].user_id 
+                        }));
+                    const newState = [...prev.all, ...all]
+                    return { ...prev, count: totalCount, all: newState, height: prev.height + all.length * 50 }
                 });
             })
             .catch(ex => console.log(ex))
     }
+    // console.log(messages.all.map(message => ({
+    //     offset: message.offset,
+    //     processed: message.processed,
+    //     height: message.height,
+    //     approxOffset: message.approxOffset
+    // })), messages.lastKnownIndex)
     return (
         <>
             <div className="chat-container">
                 <div style={{ maxHeight: '250px', overflow: 'auto' }} onScroll={handleScroll}>
                     <ul className="chat" style={{ height: `${messages.height}px` }}>
                         {
-                            messages.visible.map((message, index, messages) => {
+                            messages.visible.map(message => {
                                 const getHeight = !message.height || !message.processed;
-                                const self = message.user_id === userInfo.id;
-                                const same = index - 1 >= 0 ? messages[index].user_id === messages[index - 1].user_id : false;
                                 return (
                                     <MessageItem
                                         key={message.id}
                                         review={message.review}
                                         getHeight={getHeight}
                                         id={message.id}
-                                        offset={`${message.offset}px`}
+                                        offset={`${message.offset || message.approxOffset}px`}
                                         setMessages={setMessages}
-                                        same={same}
+                                        same={message.same}
                                         message={message}
                                         sendMessage={sendMessage}
-                                        self={self}
+                                        self={message.self}
                                         added={message.added}
                                     />
                                 )
