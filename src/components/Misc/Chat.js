@@ -10,6 +10,9 @@ const Chat = (props) => {
     const userInfo = tokenContext[0].userData.userInfo;
     const messageBoxRef = useRef(null);
     const active = useRef(0);
+    const chatContainerRef = useRef(null);
+    const delimeterRef = useRef(null);
+    const scrollContainerRef = useRef(null)
     const [messages, setMessages] = useState({ all: [], visible: [], height: '250px', count: 0, start: 0, end: 0, lastKnownIndex: 0 });
     const handleScroll = (e) => {
         const offsetTop = e.target.scrollTop;
@@ -54,34 +57,79 @@ const Chat = (props) => {
                     })
                 })
         }
+        const scrollContainer = scrollContainerRef.current
         window.addEventListener("newMessage", addNewMessage, false);
         return () => {
+            scrollContainer.scrollTop = 0;
             window.removeEventListener("newMessage", addNewMessage)
         }
     }, [props.documentType, props.documentid, userInfo.id])
     useEffect(() => {
-        loadMessages()
-            .then(resp => resp.json())
-            .then(respJ => {
-                active.current = 0;
-                const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                const all = respJ.map((message, index, messages) => ({
-                    ...message,
-                    approxOffset: index * 50,
-                    processed: false,
-                    self: message.user_id === userInfo.id,
-                    same: index >= 1 ? messages[index].user_id === messages[index - 1].user_id : false
-                }));
-                if (all.length !== 0) {
-                    all[0].offset = 5;
-                    all[0].processed = true;
+        const delimeter = delimeterRef.current;
+        const callback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting || active.current === 0) {
+                    const from = active.current * 20;
+                    loadMessages(from)
+                        .then(resp => resp.json())
+                        .then(respJ => {
+                            const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                            if (active.current === 0) {
+                                const all = respJ.map((message, index, messages) => ({
+                                    ...message,
+                                    approxOffset: index * 50,
+                                    processed: false,
+                                    self: message.user_id === userInfo.id,
+                                    same: index >= 1 ? messages[index].user_id === messages[index - 1].user_id : false
+                                }));
+                                if (all.length !== 0) {
+                                    all[0].offset = 5;
+                                    all[0].processed = true;
+                                }
+                                const firstFromBottom = all.findIndex(message => message.approxOffset >= 250);
+                                const indexEnd = firstFromBottom !== -1 ? firstFromBottom + 1 : all.length
+                                const visible = all.slice(0, indexEnd);
+                                if (all.length >= totalCount){
+                                    observer.unobserve(entry.target)
+                                }
+                                setMessages({ count: totalCount, all, visible, height: all.length * 50, start: 0, end: indexEnd, lastKnownIndex: 0 });
+                            }
+                            else {
+                                setMessages(prev => {
+                                    const all = respJ
+                                        .filter(message => !prev.all.find(prevMessage => prevMessage.id === message.id))
+                                        .map((message, index, messages) => ({
+                                            ...message,
+                                            approxOffset: prev.height + index * 50,
+                                            processed: false,
+                                            self: message.user_id === userInfo.id,
+                                            same: index >= 1
+                                                ? messages[index].user_id === messages[index - 1].user_id
+                                                : messages[index].user_id === prev.all[prev.all.length - 1].user_id
+                                        }));
+                                    const newState = [...prev.all, ...all];
+                                    if (newState.length >= totalCount){
+                                        observer.unobserve(entry.target)
+                                    }
+                                    return { ...prev, count: totalCount, all: newState, height: prev.height + all.length * 50 }
+                                });
+                            }
+                            active.current += 1;
+                        })
+                        .catch(ex => console.log(ex))
+
                 }
-                const firstFromBottom = all.findIndex(message => message.approxOffset >= 250);
-                const indexEnd = firstFromBottom !== -1 ? firstFromBottom + 1 : all.length
-                const visible = all.slice(0, indexEnd);
-                setMessages({ count: totalCount, all, visible, height: all.length * 50, start: 0, end: indexEnd, lastKnownIndex: 0 });
-            })
-            .catch(ex => console.log(ex))
+            });
+        }
+        const intersectionObserver = new IntersectionObserver(callback, {
+            root: scrollContainerRef.current,
+            rootMargin: '200px'
+        });
+        intersectionObserver.observe(delimeter);
+        return () => {
+            active.current = 0;
+            intersectionObserver.unobserve(delimeter);
+        }
     }, [props.token, loadMessages, userInfo.id]);
     const sendMessage = (replyto) => {
         const data = {
@@ -138,36 +186,11 @@ const Chat = (props) => {
                 })
                 .catch(ex => console.log(ex))
     }
-    const loadMore = () => {
-        active.current += 1;
-        const from = active.current * 20;
-        loadMessages(from)
-            .then(resp => resp.json())
-            .then(respJ => {
-                setMessages(prev => {
-                    const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                    const all = respJ
-                        .filter(message => !prev.all.find(prevMessage => prevMessage.id === message.id))
-                        .map((message, index, messages) => ({
-                            ...message,
-                            approxOffset: prev.height + index * 50,
-                            processed: false,
-                            self: message.user_id === userInfo.id,
-                            same: index >= 1
-                                ? messages[index].user_id === messages[index - 1].user_id
-                                : messages[index].user_id === prev.all[prev.all.length - 1].user_id
-                        }));
-                    const newState = [...prev.all, ...all]
-                    return { ...prev, count: totalCount, all: newState, height: prev.height + all.length * 50 }
-                });
-            })
-            .catch(ex => console.log(ex))
-    }
     return (
         <>
             <div className="chat-container">
-                <div style={{ maxHeight: '250px', minHeight: '250px', overflow: 'auto' }} onScroll={handleScroll}>
-                    <ul className="chat" style={{ height: `${messages.height}px` }}>
+                <div ref={scrollContainerRef} style={{ maxHeight: '250px', minHeight: '250px', overflow: 'auto' }} onScroll={handleScroll}>
+                    <ul className="chat" ref={chatContainerRef} style={{ height: `${messages.height}px`, minHeight: '250px' }}>
                         {
                             messages.visible.map(message => {
                                 const getHeight = !message.height || !message.processed;
@@ -189,12 +212,13 @@ const Chat = (props) => {
                                 )
                             })
                         }
+                        <div ref={delimeterRef} style={{ position: 'absolute', transform: `translateY(${messages.height}px)`, opacity: '0' }}> delimeter </div>
                     </ul>
                 </div>
-                {
-                    messages.count > 20 &&
+                {/* {
+                    messages.count > messages.all.length &&
                     <div style={{ cursor: 'pointer', backgroundColor: 'rgb(240, 240, 240)', color: 'white', padding: '4px 0px', marginTop: '4px' }} onClick={loadMore}>Load more..</div>
-                }
+                } */}
             </div>
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
                 <textarea ref={messageBoxRef} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />

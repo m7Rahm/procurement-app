@@ -14,6 +14,7 @@ const ContractContent = (props) => {
     const [modalState, setModalState] = useState({ visible: false });
     const textareaRef = useRef(null);
     const docid = props.docid;
+    const documentType = 2;
     const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=2`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
@@ -38,7 +39,7 @@ const ContractContent = (props) => {
         return () => mounted = false
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
-        const apiData = JSON.stringify({ ...data, docType: 2 });
+        const apiData = JSON.stringify({ ...data, docType: documentType });
         return fetch(`http://192.168.0.182:54321/api/send-message`, {
             method: 'POST',
             headers: {
@@ -48,17 +49,16 @@ const ContractContent = (props) => {
             },
             body: apiData
         })
-    }
-        , [props.token]);
+    }, [props.token, documentType]);
     const fetchMessages = useCallback((from = 0) =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=2`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
         })
-        , [docid, props.token]);
+        , [docid, props.token, documentType]);
     const cancel = () => {
-        fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=2`, {
+        fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=${documentType}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -73,7 +73,7 @@ const ContractContent = (props) => {
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
             tranid: props.tranid,
-            messageType: 2,
+            messageType: documentType,
             messageid: docid,
             action: action,
             comment: textareaRef.current.value
@@ -101,11 +101,11 @@ const ContractContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=2`, {
+    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
-    }), [docid, props.token]);
+    }), [docid, props.token, documentType]);
     return (
         <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px', paddingTop: '76px' }}>
             {
@@ -187,7 +187,7 @@ const ContractContent = (props) => {
                         <Chat
                             loadMessages={fetchMessages}
                             documentid={docid}
-                            documentType={2}
+                            documentType={documentType}
                             tranid={props.tranid}
                             sendMessage={sendMessage}
                         />

@@ -14,7 +14,8 @@ const PaymentContent = (props) => {
     const [modalState, setModalState] = useState({ visible: false })
     const textareaRef = useRef(null);
     const docid = props.docid;
-    const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=3`, {
+    const documentType = 3;
+    const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=${documentType}`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
@@ -38,7 +39,7 @@ const PaymentContent = (props) => {
         return () => mounted = false;
     }, [props.apiString, props.token]);
     const sendMessage = useCallback((data) => {
-        const apiData = JSON.stringify({ ...data, docType: 3 });
+        const apiData = JSON.stringify({ ...data, docType: documentType });
         return fetch(`http://192.168.0.182:54321/api/send-message`, {
             method: 'POST',
             headers: {
@@ -49,14 +50,14 @@ const PaymentContent = (props) => {
             body: apiData
         })
     }
-        , [props.token]);
+        , [props.token, documentType]);
     const fetchMessages = useCallback((from = 0) =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=3`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
         })
-        , [docid, props.token]);
+        , [docid, props.token, documentType]);
     const cancel = () => {
         fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=3`, {
             headers: {
@@ -73,7 +74,7 @@ const PaymentContent = (props) => {
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
             tranid: props.tranid,
-            messageType: 3,
+            messageType: documentType,
             messageid: docid,
             action: action,
             comment: textareaRef.current.value
@@ -101,7 +102,7 @@ const PaymentContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=3`, {
+    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`, {
         headers: {
             'Authorization': 'Bearer ' + props.token
         }
@@ -184,7 +185,7 @@ const PaymentContent = (props) => {
                         <Chat
                             loadMessages={fetchMessages}
                             documentid={docid}
-                            documentType={3}
+                            documentType={documentType}
                             tranid={props.tranid}
                             sendMessage={sendMessage}
                         />

@@ -15,6 +15,7 @@ const AgreementContent = (props) => {
     const number = props.number ? props.number : locationState ? locationState.agreement.number : null;
     const [docState, setDocState] = useState({ tranid: undefined, docid: docid });
     const tranid = props.tranid;
+    const documentType = 1;
     useLayoutEffect(() => {
         let mounted = true;
         if (docid && mounted)
@@ -48,14 +49,14 @@ const AgreementContent = (props) => {
             history.push('/tender/orders', referer)
     }, [history, referer])
     const fetchMessages = useCallback((from = 0) =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=1`, {
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
         })
-        , [docid, props.token]);
+        , [docid, props.token, documentType]);
     const sendMessage = useCallback((data) => {
-        const apiData = JSON.stringify({ ...data, docType: 1 });
+        const apiData = JSON.stringify({ ...data, docType: documentType });
         return fetch(`http://192.168.0.182:54321/api/send-message`, {
             method: 'POST',
             headers: {
@@ -65,7 +66,7 @@ const AgreementContent = (props) => {
             },
             body: apiData
         })
-    }, [props.token]);
+    }, [props.token, documentType]);
     return (
         <div className="visa-content-container" style={{ padding: '88px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
             {
@@ -114,7 +115,7 @@ const AgreementContent = (props) => {
                         <Chat
                             loadMessages={fetchMessages}
                             documentid={docid}
-                            documentType={1}
+                            documentType={documentType}
                             tranid={props.tranid}
                             sendMessage={sendMessage}
                         />

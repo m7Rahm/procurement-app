@@ -2110,6 +2110,7 @@ div.big-picture-ref>div>span>svg {
 ul.chat {
   list-style-type: none;
   position: relative;
+  margin: 0px;
 }
 
 ul.chat>li {
