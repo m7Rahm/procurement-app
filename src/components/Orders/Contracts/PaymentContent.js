@@ -50,8 +50,8 @@ const PaymentContent = (props) => {
         })
     }
         , [props.token]);
-    const fetchMessages = useCallback(() =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=0&replyto=0&doctype=3`, {
+    const fetchMessages = useCallback((from = 0) =>
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=3`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -90,7 +90,7 @@ const PaymentContent = (props) => {
             .then(resp => resp.json())
             .then(respJ => {
                 if (respJ.length === 0) {
-                    props.setActive(prev => ({ ...prev, userResult: action }))
+                    setPaymentDetails(prev => ({ active: false, content: prev.content.map(row => ({ ...row, user_result: action })) }))
                 }
             })
             .catch(ex => console.log(ex))
@@ -184,6 +184,8 @@ const PaymentContent = (props) => {
                         <Chat
                             loadMessages={fetchMessages}
                             documentid={docid}
+                            documentType={3}
+                            tranid={props.tranid}
                             sendMessage={sendMessage}
                         />
                         {

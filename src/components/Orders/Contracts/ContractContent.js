@@ -50,8 +50,8 @@ const ContractContent = (props) => {
         })
     }
         , [props.token]);
-    const fetchMessages = useCallback(() =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=0&replyto=0&doctype=2`, {
+    const fetchMessages = useCallback((from = 0) =>
+        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=2`, {
             headers: {
                 'Authorization': 'Bearer ' + props.token
             }
@@ -187,6 +187,8 @@ const ContractContent = (props) => {
                         <Chat
                             loadMessages={fetchMessages}
                             documentid={docid}
+                            documentType={2}
+                            tranid={props.tranid}
                             sendMessage={sendMessage}
                         />
                         {

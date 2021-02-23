@@ -7,7 +7,6 @@ import { TokenContext } from '../../App'
 const MyOrders = (props) => {
   const wrapperRef = useRef(null);
   const [orders, setOrders] = useState({ count: 0, orders: [] });
-  const webSocketRef = useRef(props.webSocketRef.current);
   const activePageRef = useRef(0);
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0].token
@@ -63,8 +62,6 @@ const MyOrders = (props) => {
         setOrders({ count: totalCount, orders: respJ });
       })
       .catch(err => console.log(err))
-    webSocketRef.current.onmessage = (msg) => {
-    };
   }, [token])
   return (
     <div style={{ paddingBottom: '66px' }}>
@@ -84,7 +81,6 @@ const MyOrders = (props) => {
       {
         canCreateNewOrder &&
         <NewOrderButton
-          webSocketRef={webSocketRef}
           setOrders={setOrders}
           wrapperRef={wrapperRef}
         />

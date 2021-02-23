@@ -21,9 +21,9 @@ const updateListContent = (data, token) => {
         body: apiData
     })
 }
-const initData = {
+const inData = {
     number: '',
-    result: -3,
+    result: 0,
     from: 0,
     next: 20
 }
@@ -41,11 +41,11 @@ const Payments = (props) => {
         active: undefined,
         tranid: undefined
     });
-    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
+    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}${active.tranid ? `&tranid=${active.tranid}` : ''}` : ''
     return (
         <div className="agreements-container" style={{ top: '-56px' }}>
             <SideBar
-                initData={initData}
+                initData={inData}
                 setActive={setActive}
                 updateListContent={updateListContent}
                 token={token}

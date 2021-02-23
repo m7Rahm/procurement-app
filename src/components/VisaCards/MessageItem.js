@@ -27,7 +27,9 @@ const MessageItem = (props) => {
                         else {
                             return {
                                 ...message,
-                                approxOffset: index > currentIndex ? message.approxOffset + ref.current.clientHeight - 50 : message.approxOffset
+                                approxOffset: index > currentIndex
+                                    ? message.approxOffset + ref.current.clientHeight - 50
+                                    : message.approxOffset
                             }
                         }
                     });
@@ -36,18 +38,34 @@ const MessageItem = (props) => {
             }
             else if (props.added)
                 setMessages(prev => {
+                    const end = prev.height + ref.current.clientHeight < 350 ? prev.end + 1 : prev.end;
                     const all = prev.all.map(message => ({
                         ...message,
                         offset: message.id !== props.id ? message.offset + ref.current.clientHeight + 5 : 5,
+                        approxOffset: message.id !== props.id ? message.approxOffset + ref.current.clientHeight + 5 : 5,
                         height: message.id === props.id ? ref.current.clientHeight : message.height,
                         added: false
                     }));
-                    return { ...prev, all, visible: all.slice(prev.start, prev.end), height: prev.height + ref.current.clientHeight + 5 };
+                    return { ...prev, all, visible: all.slice(prev.start, end), height: prev.height + ref.current.clientHeight + 5, end: end };
                 })
-        }, [calcHeight, setMessages, props.id, props.added]);
+            else if (props.updated)
+                setMessages(prev => {
+                    const end = prev.height + ref.current.clientHeight < 350 ? prev.end + 1 : prev.end;
+                    const currentIndex = prev.all.findIndex(message => message.id === props.id);
+                    const diff = ref.current.clientHeight - prev.all[currentIndex].height;
+                    const all = prev.all.map((message, index) => ({
+                        ...message,
+                        offset: index > currentIndex ? message.offset + diff : message.offset,
+                        approxOffset: index > currentIndex ? message.approxOffset + diff : message.approxOffset,
+                        height: message.id === props.id ? ref.current.clientHeight : message.height,
+                        updated: false
+                    }));
+                    return { ...prev, all, visible: all.slice(prev.start, end), height: prev.height + diff, end: end };
+                })
+        }, [calcHeight, setMessages, props.id, props.added, props.updated]);
     const rightOrLeft = props.self ? { right: '5px' } : { left: '5px' }
     return (
-        <li ref={ref} style={{ position: 'absolute', top: props.offset, ...rightOrLeft, overflow: 'hidden' }}>
+        <li ref={ref} style={{ position: 'absolute', transform: `translateY(${props.offset})`, ...rightOrLeft, overflow: 'hidden' }}>
             <div className="message" style={{ clear: 'both', float: 'right', backgroundColor: props.self && 'rgb(5, 97, 98)' }}>
                 <FaAngleDown />
                 {

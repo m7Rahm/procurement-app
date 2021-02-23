@@ -114,6 +114,8 @@ const AgreementContent = (props) => {
                         <Chat
                             loadMessages={fetchMessages}
                             documentid={docid}
+                            documentType={1}
+                            tranid={props.tranid}
                             sendMessage={sendMessage}
                         />
                     </>

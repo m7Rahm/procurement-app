@@ -5,15 +5,14 @@ import logo from '../../logo.svg';
 const Navigation = (props) => {
     const moduleNavigationRef = useRef(null);
     useEffect(() => {
-        props.webSocketRef.current.onmessage = (data) => {
+        props.webSocket.onmessage = (data) => {
             const webSockMessage = JSON.parse(data.data);
                 const event = new CustomEvent(webSockMessage.messageType, {
                     detail: { data: webSockMessage.data }
                 });
-            console.log("dispatched", webSockMessage)
             window.dispatchEvent(event);
         }
-    }, [props.webSocketRef])
+    }, [props.webSocket])
     const handleLogOut = () => {
         props.tokenContext[1]({ token: '', userData: {} })
         localStorage.removeItem('token');

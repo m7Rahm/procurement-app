@@ -150,6 +150,7 @@ const NewStructureRow = (props) => {
                 <select style={{ minWidth: '130px' }} name="type" value={newStructureData.type} onChange={handleChange}>
                     <option value="0">Filial</option>
                     <option value="1">Struktur Vahidi</option>
+                    <option value="2">Anbar</option>
                 </select>
             </td>
             <td></td>
@@ -242,6 +243,7 @@ const TableRow = (props) => {
                 <select style={{ minWidth: '130px' }} disabled={disabled} name="type" value={structureData.type} onChange={handleChange}>
                     <option value="0">Filial</option>
                     <option value="1">Struktur Vahidi</option>
+                    <option value="2">Anbar</option>
                 </select>
             </td>
             <td>

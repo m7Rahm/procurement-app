@@ -46,9 +46,8 @@ const SelectModule = () => {
 	const tokenContext = useContext(TokenContext);
 	const token = tokenContext[0].token;
 	const userData = tokenContext[0].userData;
-	const webSocketRef = useRef(null);
 	const [menuData, setMenuData] = useState({ url: '', routes: [] })
-	const [wSockConnected, setWSockConnected] = useState(false);
+	const [webSocket, setWebSocket] = useState(null);
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);
 	useEffect(() => {
@@ -61,12 +60,11 @@ const SelectModule = () => {
 					userid: id // todo: get from session
 				}
 				webSocket.send(JSON.stringify(data));
-				webSocketRef.current = webSocket;
-				setWSockConnected(true);
+				setWebSocket(webSocket);
 			}
 			return () => {
 				webSocket.close();
-				setWSockConnected(false);
+				setWebSocket(null);
 				console.log('connection closed');
 			}
 		}
@@ -79,76 +77,78 @@ const SelectModule = () => {
 		backgroundRef.current.style.display = backgroundDisplay
 	}
 	return (
-		<Switch>
-			<Route exact path="/">
-				<div className="splash-screen">
-					<div className="module-select">
-						{
-							routes.map(module =>
-								<Link key={module.link} to={module.link}>
+		<WebSocketContext.Provider value={webSocket}>
+			<Switch>
+				<Route exact path="/">
+					<div className="splash-screen">
+						<div className="module-select">
+							{
+								routes.map(module =>
+									<Link key={module.link} to={module.link}>
+										<div className="module-card">
+											{module.text}
+										</div>
+									</Link>
+								)
+							}
+							{
+								warehouseVisible &&
+								<a href="http://192.168.0.182:62447">
 									<div className="module-card">
-										{module.text}
-									</div>
-								</Link>
+										Anbar
+								</div>
+								</a>
+							}
+						</div>
+					</div>
+				</Route>
+				{
+					webSocket &&
+					<>
+						<>
+							<Navigation
+								handleNavClick={handleNavClick}
+								routes={routes}
+								webSocket={webSocket}
+								tokenContext={tokenContext}
+							/>
+							<div
+								onClick={handleNavClick}
+								ref={backgroundRef}
+								style={{
+									position: 'fixed',
+									height: '100%',
+									width: '100%',
+									top: 0,
+									left: 0,
+									display: 'none',
+									background: 'rgba(0, 0, 0, 0.6)',
+									zIndex: 2
+								}}>
+							</div>
+						</>
+						{
+							routes.map(route =>
+								<Route key={route.link} path={route.link}>
+									<LeftSidePane
+										url={menuData.url}
+										links={menuData.routes}
+										ref={leftPaneRef}
+										handleNavClick={handleNavClick}
+									/>
+									<route.component
+										handleNavClick={handleNavClick}
+										menuData={menuData}
+										setMenuData={setMenuData}
+									/>
+								</Route>
 							)
 						}
-						{
-							warehouseVisible &&
-							<a href="http://192.168.0.182:62447">
-								<div className="module-card">
-									Anbar
-								</div>
-							</a>
-						}
-					</div>
-				</div>
-			</Route>
-			{
-				wSockConnected &&
-				<>
-					<>
-						<Navigation
-							handleNavClick={handleNavClick}
-							routes={routes}
-							webSocketRef={webSocketRef}
-							tokenContext={tokenContext}
-						/>
-						<div
-							onClick={handleNavClick}
-							ref={backgroundRef}
-							style={{
-								position: 'fixed',
-								height: '100%',
-								width: '100%',
-								top: 0,
-								left: 0,
-								display: 'none',
-								background: 'rgba(0, 0, 0, 0.6)',
-								zIndex: 2
-							}}>
-						</div>
 					</>
-					{
-						routes.map(route =>
-							<Route key={route.link} path={route.link}>
-								<LeftSidePane
-									url={menuData.url}
-									links={menuData.routes}
-									ref={leftPaneRef}
-									handleNavClick={handleNavClick}
-								/>
-								<route.component
-									webSocketRef={webSocketRef}
-									handleNavClick={handleNavClick}
-									menuData={menuData}
-									setMenuData={setMenuData}
-								/>
-							</Route>
-						)
-					}
-				</>
-			}
-		</Switch>
+				}
+			</Switch>
+		</WebSocketContext.Provider>
 	)
 }
 export default SelectModule
+export const WebSocketContext = React.createContext();
