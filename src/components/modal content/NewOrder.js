@@ -7,12 +7,12 @@ import { IoIosCloseCircle } from 'react-icons/io'
 
 
 const NewOrderContent = (props) => {
+  const { handleModalClose: closeModal, current, isDraft } = props;
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0].token;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
-  const { handleModalClose: closeModal, current, isDraft } = props;
   const [glCategories, setGlCategories] = useState({ all: [], parent: [], sub: [] });
-
+  const [active, setActive] = useState(true);
   const [orderInfo, setOrderInfo] = useState({
     glCategory: '-1',
     structure: '-1',
@@ -72,7 +72,8 @@ const NewOrderContent = (props) => {
         .then(resp => resp.json())
         .then(respJ => {
           if (respJ[0].result === 'success') {
-            onSuccess(data, respJ)
+            setActive(false)
+            onSuccess(respJ)
           }
           else if (respJ[0].error)
             setOperationResult({ visible: true, desc: respJ[0].error })
@@ -84,8 +85,10 @@ const NewOrderContent = (props) => {
   }
   const handleSendClick = (materials) => {
     if (!current && !isDraft) {
-      const onSuccess = (data, respJ) => {
-        const recs = [...data.receivers, respJ[0].head_id];
+      const onSuccess = (respJ) => {
+        const recs = respJ.map(resultRow =>
+          resultRow.receiver_id
+        );
         const apiData = JSON.stringify({
           from: 0,
           until: 20,
@@ -110,7 +113,8 @@ const NewOrderContent = (props) => {
           })
           .catch(err => console.log(err))
       }
-      createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
+      if(active)
+        createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
     }
   }
   const handleSendClickCallback = useCallback(handleSendClick, [orderInfo]);
@@ -134,6 +138,7 @@ const NewOrderContent = (props) => {
       />
       <NewOrderTableBody
         orderInfo={orderInfo}
+        active={active}
         glCategories={glCategories}
         handleSendClick={handleSendClickCallback}
       />

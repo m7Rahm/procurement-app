@@ -12,7 +12,12 @@ const getColorBasedOnPriority = (priority) => {
 const VisaCard = (props) => {
 	const {
 		activeRef,
-		visa,
+		id,
+		isOpened,
+		from,
+		priority,
+		remark,
+		date,
 		checkedAmount,
 		iconsPanelRef,
 		setIconsVisible,
@@ -21,14 +26,6 @@ const VisaCard = (props) => {
 	const stateRef = useRef(null);
 	const checkBoxRef = useRef(null)
 	const isReadDivRef = useRef(null);
-	const {
-		id,
-		is_read: isOpened,
-		sender_full_name: from,
-		priority,
-		comment: remark,
-		date_time: date,
-	} = visa;
 	const backgroundColor = getColorBasedOnPriority(priority);
 	const handleCheck = (e) => {
 		const prevAmount = checkedAmount.current.length;

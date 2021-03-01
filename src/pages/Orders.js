@@ -58,7 +58,6 @@ const routes = [
 ]
 const Orders = (props) => {
     const setMenuData = props.setMenuData;
-    const webSocketRef = props.webSocketRef;
     const { path, url } = useRouteMatch()
     useEffect(() => {
         setMenuData({ url: url, routes: routes });
@@ -69,7 +68,7 @@ const Orders = (props) => {
                 {
                     routes.map(route =>
                         <Route key={route.link} path={`${path}${route.link}`}>
-                            <route.component webSocketRef={webSocketRef} />
+                            <route.component />
                         </Route>
                     )
                 }

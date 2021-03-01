@@ -200,14 +200,15 @@ div.agreements-container {
   display: none;
   z-index: 3;
   width: 150px;
-  height: 30px;
-  font-size: 15px;
+  height: 2rem;
+  /* font-size: 15px; */
   margin: auto;
+  text-align: center;
+  line-height: 2rem;
   left: 100px;
   cursor: pointer;
   color: white;
   animation: anim-up-to-down 1.5s ease-in both;
-  padding: 5px 10px;
   border-radius: 20px;
 }
 
@@ -2111,6 +2112,50 @@ ul.chat {
   list-style-type: none;
   position: relative;
   margin: 0px;
+}
+div.notifications-container{
+  position: relative;
+  height: 500px;
+  width: 260px;
+  background-color: rgb(36, 37, 38);
+  overflow-y: auto;
+  scrollbar-color: gray white;
+  scrollbar-width: thin;
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 0.5px gray solid;
+}
+
+div.notifications-container::-webkit-scrollbar-thumb{
+  background-color: gray;
+}
+div.notifications-container::-webkit-scrollbar{
+  width: 8px;
+}
+div.notifications-container>ul{
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+div.notifications-container>ul>li {
+  height: 52px;
+  cursor: default;
+  position: inherit;
+  font-size: 1.3rem;
+  padding: 3px 5px;
+  border-radius: 8px;
+  color: rgb(191, 193, 197);
+}
+div.notifications-container>ul>li>span {
+  font-size: 10px;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+div.notifications-container>ul>li:hover {
+  background-color: rgb(55, 56, 57);
 }
 
 ul.chat>li {

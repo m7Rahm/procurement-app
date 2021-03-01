@@ -44,7 +44,7 @@ const ContractsModule = (props) => {
                 {
                     routes.map(route =>
                         <Route key={route.link} path={`${path}${route.link}`}>
-                            <route.component webSocketRef={props.webSocketRef} />
+                            <route.component />
                         </Route>
                     )
                 }

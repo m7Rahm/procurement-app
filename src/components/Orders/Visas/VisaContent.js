@@ -16,12 +16,11 @@ const VisaContent = (props) => {
     const { sendNotification } = props;
     const [visa, setVisa] = useState(undefined);
     const token = tokenContext[0].token;
+    const locationTranid = location.state ? location.state.tranid : undefined
     const canProceed = useRef({});
     useEffect(() => {
-        const stateTranId = location.state ? location.state.tranid : undefined;
-        const id = tranid ? tranid : stateTranId;
-        if (id)
-            fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${id}`, {
+        if (tranid)
+            fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
@@ -34,14 +33,31 @@ const VisaContent = (props) => {
                     }
                 })
                 .catch(error => console.log(error));
-    }, [tranid, token, location])
+    }, [tranid, token]);
+    useEffect(() => {
+        if (locationTranid)
+            fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    if (respJ.length !== 0) {
+                        canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
+                        setVisa(respJ);
+                    }
+                })
+                .catch(error => console.log(error));
+    }, [locationTranid, token]);
+
     const participantsRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
     const handleParticipantsTransition = () => {
         if (participantsRef.current) {
             participantsRef.current.classList.toggle('visa-content-participants-hide');
             participantsRef.current.addEventListener('animationend', () => {
-                if(participantsRef.current)
+                if (participantsRef.current)
                     setParticipantsVisiblity(prev => !prev)
             })
         }
@@ -74,7 +90,7 @@ const VisaContent = (props) => {
                             </div>
                         }
                     </div>
-                    : <EmptyContent/>
+                    : <EmptyContent />
             }
         </div>
     )

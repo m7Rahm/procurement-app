@@ -18,6 +18,9 @@ const NewOrderTableBody = (props) => {
       count: 1
     }
   ]);
+  const onSendClick = () => {
+    handleSendClick(materials)
+  }
   return (
     <>
       <ul className="new-order-table">
@@ -50,7 +53,7 @@ const NewOrderTableBody = (props) => {
         }
         <NewOrderTableRowAdd setMaterials={setMaterials} />
       </ul>
-      <div className="send-order" onClick={() => handleSendClick(materials)}>
+      <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
         Göndər
       </div>
     </>

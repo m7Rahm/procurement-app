@@ -110,6 +110,7 @@ const SelectModule = () => {
 								handleNavClick={handleNavClick}
 								routes={routes}
 								webSocket={webSocket}
+								token={token}
 								tokenContext={tokenContext}
 							/>
 							<div

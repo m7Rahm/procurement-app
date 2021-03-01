@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   MdAdd
 } from 'react-icons/md'
+import { WebSocketContext } from '../../../pages/SelectModule'
 import Modal from '../../Misc/Modal'
 const NewOrderContent = React.lazy(() => import('../../modal content/NewOrder'))
 const NewOrder = (props) => {
+  const webSocket = useContext(WebSocketContext)
   const [isModalVisible, setIsModalVisible] = useState(false);
   const handleClick = (action) => {
     setIsModalVisible(_ => action);
@@ -12,8 +14,12 @@ const NewOrder = (props) => {
   const handleClose = (data, receivers) => {
     // todo: send notif on new order to receivers
     setIsModalVisible(_ => false);
-    props.webSocketRef.current.send(JSON.stringify({ action: 'newOrder', people: receivers }));
-    console.log(receivers, data);
+    const message = {
+      message: "newOrder",
+      receivers: receivers,
+      data: undefined
+  }
+    webSocket.send(JSON.stringify(message))
     props.setOrders({ count: data[0].total_count, orders: data });
   };
   return (
@@ -24,9 +30,7 @@ const NewOrder = (props) => {
       {
         isModalVisible &&
         <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
-          {
-            (props) => <NewOrderContent handleModalClose={handleClose} {...props} />
-          }
+          {(props) => <NewOrderContent handleModalClose={handleClose} {...props} />}
         </Modal>
       }
     </>
