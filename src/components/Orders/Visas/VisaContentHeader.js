@@ -20,14 +20,14 @@ const VisaContentHeader = (props) => {
 	const userData = tokenContext[0].userData;
 	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək');
 	const closeModal = (respJ, receivers) => {
-		updateContent(receivers, {
+		updateContent({
 			id: respJ[1].id,
 			act_date_time: respJ[1].act_date_time,
 			result: respJ[1].result,
 			comment: respJ[1].comment
-		})
+		}, receivers, respJ[1].origin_emp_id)
 	};
-	const editOrderAndApprove = (data, setOperationResult) => {
+	const editOrderAndApprove = (data, receivers, setOperationResult) => {
 		const apiData = JSON.stringify(data);
 		fetch(`http://192.168.0.182:54321/api/edit-accept-order-req/${tranid}`, {
 			method: 'POST',
@@ -41,7 +41,7 @@ const VisaContentHeader = (props) => {
 			.then(resp => resp.json())
 			.then(respJ => {
 				if (respJ[0].result === 'success')
-					closeModal(respJ, data.recs)
+					closeModal(respJ, receivers.map(receiver => receiver.id))
 				else if (respJ[0].error)
 					setOperationResult({ visible: true, desc: respJ[0].error })
 				else
@@ -52,10 +52,10 @@ const VisaContentHeader = (props) => {
 	const showOrderVersions = () => {
 		handleEditClick((props) =>
 			<VisaVersionsContainer
-				closeModal={closeModal}
 				tranid={tranid}
 				version={version}
 				content={current}
+				doneEditing={updateContent}
 				token={token}
 				orderNumb={orderNumb}
 				{...props}
@@ -64,7 +64,6 @@ const VisaContentHeader = (props) => {
 	}
 	const showEditOrderContent = () => handleEditClick((props) =>
 		<EditOrderRequest
-			closeModal={closeModal}
 			version={version}
 			view='procurement'
 			content={current}

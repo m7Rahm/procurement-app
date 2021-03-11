@@ -65,7 +65,7 @@ const EditOrderRequest = (props) => {
                 comment: text,
                 action: action
             }
-            editOrderAndApprove(data, setOperationResult);
+            editOrderAndApprove(data, receivers, setOperationResult);
         }
         else
             setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })

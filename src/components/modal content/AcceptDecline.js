@@ -23,9 +23,16 @@ const AcceptDecline = (props) => {
                 })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    console.log(respJ)
-                    if (respJ[0].operation_result === 'success')
-                        props.handleModalClose([respJ[0].head_id], respJ[0])
+                    if (respJ.length !== 0 && respJ[0].operation_result === 'success') {
+                        const [{ origin_emp_id: originid }, ...rest] = respJ
+                        const receivers = rest.map(receiver => receiver.user_id)
+                        props.handleModalClose({
+                            id: tranid,
+                            act_date_time: "Biraz öncə",
+                            result: action,
+                            comment: commentRef.current.value
+                        }, receivers, originid);
+                    }
                     else if (respJ[0].error)
                         setOperationResult({ visible: true, desc: respJ[0].error })
                 })

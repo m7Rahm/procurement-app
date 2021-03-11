@@ -2117,7 +2117,7 @@ div.notifications-container{
   position: relative;
   height: 500px;
   width: 260px;
-  background-color: rgb(36, 37, 38);
+  background-color: rgb(18, 52, 86);
   overflow-y: auto;
   scrollbar-color: gray white;
   scrollbar-width: thin;
@@ -2140,22 +2140,25 @@ div.notifications-container>ul{
   list-style-type: none;
 }
 div.notifications-container>ul>li {
-  height: 52px;
+  height: 62px;
   cursor: default;
   position: inherit;
-  font-size: 1.3rem;
-  padding: 3px 5px;
-  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 3px 10px;
+  border-bottom: 0.5px solid rgb(36, 72, 109);
+  /* border-radius: 8px; */
   color: rgb(191, 193, 197);
 }
 div.notifications-container>ul>li>span {
   font-size: 10px;
   position: absolute;
-  right: 0px;
-  bottom: 0px;
+  right: 2px;
+  color: tomato;
+  bottom: 2px;
 }
 div.notifications-container>ul>li:hover {
-  background-color: rgb(55, 56, 57);
+  background-color: rgb(36, 72, 109);
 }
 
 ul.chat>li {

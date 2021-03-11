@@ -10,7 +10,7 @@ const initData = {
   from: 0,
   until: 20
 }
-const Visas = (props) => {
+const Visas = () => {
   const [active, setActive] = useState(undefined);
   const updateList = useCallback((data, token) => fetch('http://192.168.0.182:54321/api/visas', {
     method: 'POST',

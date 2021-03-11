@@ -3,14 +3,26 @@ import { IoMdMenu } from 'react-icons/io';
 import { Link, useHistory } from 'react-router-dom';
 import { MdNotifications } from 'react-icons/md'
 import logo from '../../logo.svg';
-const getNotifText = (category) => {
-    if (category === 1)
-        return " yeni sifariş göndərdi"
-    else if (category === 2)
-        return " yeni qiymət təklifi razılaşması göndərdi"
-    else if (category === 3)
+const getNotifText = (notif) => {
+    if (notif.category_id === 1)
+        return <> yeni sifariş</>
+    else if (notif.category_id === 2)
+        return (
+            <>
+                № <span style={{ color: 'tomato' }}>{notif.doc_number}</span> sənəd {
+                    notif.action === 1
+                        ? 'təsdiq edildi'
+                        : notif.action === 2
+                            ? "redaktəyə qaytarıldı"
+                            : notif.action === 3
+                                ? "redaktə edildi"
+                                : "etiraz edildi"
+                }
+            </>
+        )
+    else if (notif.category_id === 3)
         return " yeni müqavilə razılaşması göndərdi"
-    else if (category === 4)
+    else if (notif.category_id === 4)
         return " yeni ödəniş razılaşması göndərdi"
 }
 const Navigation = (props) => {
@@ -44,11 +56,11 @@ const Navigation = (props) => {
                         .then(respJ => {
                             if (respJ.length !== 0) {
                                 setNotifications(prev => {
-                                    const newNotifications = respJ.filter(notification => !prev.all.find(prevNotification => prevNotification.id === notification.id));
-                                    const height = prev.height + newNotifications.length * 52;
-                                    const all = [...newNotifications, ...prev.all]
-                                        .sort((a, b) => a.id > b.id)
-                                        .map((notification, index) => ({ ...notification, offset: index * 52 }));
+                                    const newNotifications = prev.all.filter(notification => !respJ.find(newNotifications => newNotifications.id === notification.id));
+                                    const all = [...newNotifications, ...respJ]
+                                        .sort((a, b) => a.id < b.id)
+                                        .map((notification, index) => ({ ...notification, offset: index * 62 }));
+                                    const height = all.length * 62;
                                     return { ...prev, all: all, visible: all.slice(prev.offsetStart, prev.offsetEnd), height: height, count: prev.count + 1 }
                                 })
                             }
@@ -67,9 +79,7 @@ const Navigation = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ[0].total_count) {
-                    setNotifications(prev => ({ ...prev, count: respJ[0].total_count }))
-                }
+                setNotifications(prev => ({ ...prev, count: respJ[0].total_count === 0 ? "" : respJ[0].total_count }))
             })
             .catch(ex => console.log(ex))
         const intersectionCallback = (entries, observer) => {
@@ -91,11 +101,11 @@ const Navigation = (props) => {
                                         .filter(fetchedNotif => !prev.all.find(notif => fetchedNotif.id === notif.id))
                                         .map((notif, index) => ({
                                             ...notif,
-                                            offset: (fromIndex !== 0 ? prev.height : 0) + index * 52
+                                            offset: (fromIndex !== 0 ? prev.height : 0) + index * 62
                                         }));
                                     const newState = [...prev.all, ...fetched];
                                     const visible = newState.filter(notif => notif.offset < 604);
-                                    if (prev.count <= newState.length) {
+                                    if (prev.count <= newState.filter(notif => !notif.is_read).length) {
                                         observer.unobserve(delimterRef.current)
                                     }
                                     return ({
@@ -103,7 +113,7 @@ const Navigation = (props) => {
                                         all: newState,
                                         visible: fromIndex === 0 ? visible : prev.visible,
                                         offsetEnd: fromIndex === 0 ? visible.length : prev.offsetEnd,
-                                        height: newState.length * 52
+                                        height: newState.length * 62
                                     })
                                 });
                             }
@@ -140,27 +150,30 @@ const Navigation = (props) => {
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         setNotifications(prev => {
-                            const newNotifications = respJ.filter(notification => !prev.all.find(prevNotification => prevNotification.id === notification.id));
-                            const height = prev.height + newNotifications.length * 52;
-                            const all = [...newNotifications, ...prev.all]
-                                .sort((a, b) => a.id > b.id)
-                                .map((notification, index) => ({ ...notification, offset: index * 52 }));
-                            return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, prev.offsetEnd) }
+                            const newNotifications = prev.all.filter(notification => !respJ.find(newNotifications => newNotifications.id === notification.id));
+                            const all = [...newNotifications, ...respJ]
+                                .sort((a, b) => a.id < b.id)
+                                .map((notification, index) => ({ ...notification, offset: index * 62 }));
+                            const height = all.length * 62;
+                            const end = prev.offsetEnd === 0 ? all.length - 1 : prev.offsetEnd
+                            return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, end), offsetEnd: end }
                         })
                     }
 
                 })
                 .catch(ex => console.log(ex))
         }
-        if (notifications.count !== 0 && notifications.count !== '') {
-            notificationsRef.current.style.display = notificationsRef.current.style.display === "block" ? "none" : "block"
-        }
+        notificationsRef.current.style.display = notificationsRef.current.style.display === "block" ? "none" : "block"
     }
     const pushHistory = (notification) => {
-        const module = notification.notif_type === 0 ? "/orders" : notification.notif_type === 1 ? "/tender" : "/contracts";
-        const subModule = notification.category_id === 1 ? "/visas" : notification.category_id === 1 ? "/my-orders" : "/contracts";
-        const tranid = notification.tran_id;
-        history.push(module + subModule, { tranid });
+        const module = notification.category_id < 5 ? "/orders" : notification.category_id < 10 ? "/tender" : "/contracts";
+        const subModule = notification.category_id === 1
+            ? "/visas"
+            : notification.category_id === 2
+                ? "/my-orders"
+                : "/contracts";
+        const { tran_id: tranid, doc_number: docNumber } = notification;
+        history.push(module + subModule, { tranid, docNumber: docNumber });
     }
     const handleScroll = (e) => {
         const scrollTop = e.target.scrollTop;
@@ -172,6 +185,25 @@ const Navigation = (props) => {
             const visible = prev.all.slice(indexStart < 0 ? 0 : indexStart, indexEnd);
             return { ...prev, visible: visible, offsetStart: indexStart < 0 ? 0 : indexStart, offsetEnd: indexEnd }
         })
+    }
+    const onNotificationClick = (notif) => {
+        if (!notif.is_read)
+            fetch(`http://192.168.0.182:54321/api/update-notifcation-state/${notif.id}`, {
+                headers: {
+                    "Authorization": "Bearer " + props.token
+                }
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    if (respJ.length === 0)
+                        setNotifications(prev => {
+                            const all = prev.all.map(notification => notification.id === notif.id ? ({ ...notification, is_read: true }) : notification);
+                            const visible = all.slice(prev.offsetStart, prev.offsetEnd)
+                            return { ...prev, all, visible, count: prev.count !== 0 && prev.count !== "" ? prev.count - 1 : "" }
+                        })
+                })
+                .catch(ex => console.log(ex))
+        pushHistory(notif)
     }
     return (
         <nav>
@@ -191,14 +223,26 @@ const Navigation = (props) => {
                                     <ul style={{ height: `${notifications.height}px` }}>
                                         {
                                             notifications.visible.map(notification =>
-                                                <li key={notification.id} style={{ transform: `translateY(${notification.offset}px)`, right: 0, left: 0 }} onClick={() => pushHistory(notification)}>
-                                                    <strong style={{ fontSize: "1.3rem" }}>{notification.full_name}</strong>
-                                                    {getNotifText(notification.category_id)}
+                                                <li
+                                                    key={notification.id}
+                                                    style={{
+                                                        transform: `translateY(${notification.offset}px)`,
+                                                        right: 0,
+                                                        left: 0,
+                                                        backgroundColor: notification.is_read ? "rgb(68 112 156)" : ""
+                                                    }}
+                                                    onClick={() => onNotificationClick(notification)}
+                                                >
+                                                    <strong style={{ fontSize: "1.2rem" }}>{notification.full_name}</strong>
+                                                    <br />
+                                                    <div>
+                                                        {getNotifText(notification)}
+                                                    </div>
                                                     <span>{notification.date_time}</span>
                                                 </li>
                                             )
                                         }
-                                        <div ref={delimterRef} style={{ position: "absolute", top: `${notifications.height}px` }}>demileter</div>
+                                        <div ref={delimterRef} style={{ position: "absolute", top: `${notifications.height}px`, opacity: 0 }}>demileter</div>
                                     </ul>
                                 </div>
                             </div>

@@ -15,10 +15,10 @@ const NewOrder = (props) => {
     // todo: send notif on new order to receivers
     setIsModalVisible(_ => false);
     const message = {
-      message: "newOrder",
-      receivers: receivers,
+      message: "notification",
+      receivers: receivers.map(receiver => ({ id: receiver, notif: "newOrder" })),
       data: undefined
-  }
+    }
     webSocket.send(JSON.stringify(message))
     props.setOrders({ count: data[0].total_count, orders: data });
   };

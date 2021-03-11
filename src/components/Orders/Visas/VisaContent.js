@@ -13,7 +13,6 @@ const VisaContent = (props) => {
     const location = useLocation();
     const { tranid } = props;
     const tokenContext = useContext(TokenContext);
-    const { sendNotification } = props;
     const [visa, setVisa] = useState(undefined);
     const token = tokenContext[0].token;
     const locationTranid = location.state ? location.state.tranid : undefined
@@ -70,7 +69,6 @@ const VisaContent = (props) => {
                 visa ?
                     <div>
                         <OrderContentProtected
-                            sendNotification={sendNotification}
                             footerComponent={VisaContentFooter}
                             setVisa={setVisa}
                             canProceed={canProceed}

@@ -130,18 +130,21 @@ const SelectModule = () => {
 						</>
 						{
 							routes.map(route =>
-								<Route key={route.link} path={route.link}>
-									<LeftSidePane
-										url={menuData.url}
-										links={menuData.routes}
-										ref={leftPaneRef}
-										handleNavClick={handleNavClick}
-									/>
-									<route.component
-										handleNavClick={handleNavClick}
-										menuData={menuData}
-										setMenuData={setMenuData}
-									/>
+								<Route key={route.link} path={route.link} render={() =>
+									<>
+										<LeftSidePane
+											url={menuData.url}
+											links={menuData.routes}
+											ref={leftPaneRef}
+											handleNavClick={handleNavClick}
+										/>
+										<route.component
+											handleNavClick={handleNavClick}
+											menuData={menuData}
+											setMenuData={setMenuData}
+										/>
+									</>
+								}>
 								</Route>
 							)
 						}

@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fa'
 
 const VisaVersionsContainer = (props) => {
-    const { orderNumb, token, closeModal, tranid } = props;
+    const { orderNumb, token, doneEditing, tranid } = props;
     const [versions, setVersions] = useState([]);
     const actionsAvailableRef = useRef(true);
     useEffect(() => {
@@ -37,7 +37,7 @@ const VisaVersionsContainer = (props) => {
                         tranid={tranid}
                         key={version.id}
                         actionsAvailableRef={actionsAvailableRef}
-                        closeModal={closeModal}
+                        closeModal={doneEditing}
                     />
                 )
             }
@@ -75,8 +75,9 @@ const VisaVersion = (props) => {
             })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ[0].operation_result === 'success')
-                    closeModal()
+                if (respJ[0].operation_result === 'success') {
+                    closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
+                }
             })
             .catch(err => console.log(err))
     }
@@ -108,8 +109,9 @@ const VisaVersion = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (respJ[0].result === 'success')
-                        closeModal()
+                    if (respJ[0].operation_result === 'success') {
+                        closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
+                    }
                 })
         }
     }

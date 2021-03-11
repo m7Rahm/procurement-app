@@ -13,14 +13,13 @@ const VisaContentFooter = (props) => {
     const canDecline = userData.previliges.find(prev => prev === 'Sifarişə etiraz etmək');
     const canReturn = userData.previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-
-    const setIsModalOpen = (recs, order) => {
-        updateContent(recs, {
+    const setIsModalOpen = (order, receivers, originid) => {
+        updateContent({
             id: order.id,
             act_date_time: order.act_date_time,
             result: order.result,
             comment: order.comment
-        })
+        }, receivers, originid)
     }
     const handleForwardOrder = (receivers, comment) => {
         const data = JSON.stringify({
@@ -39,7 +38,6 @@ const VisaContentFooter = (props) => {
             })
             .then(resp => resp.json())
             .then(respJ => {
-                console.log(respJ)
                 if (respJ[0].operation_result === 'success')
                     setIsModalOpen([respJ[0].head_id], respJ[0])
                 else if (respJ[0].error === 'Logical Error')

@@ -77,7 +77,7 @@ const SideBar = (props) => {
 					activePageRef={activePageRef}
 				/>
 			</div>
-			<div onClick={onNotifIconClick} ref={notifIcon} style={{ display: "block" }} className="new-visa-notification">
+			<div onClick={onNotifIconClick} ref={notifIcon} style={{ display: "none" }} className="new-visa-notification">
 				<span style={{ verticalAlign: "middle" }}>
 					<BsArrowUpShort color="#00acee" size="24" style={{ marginRight: '8px', color: "white" }} />
 				</span>
