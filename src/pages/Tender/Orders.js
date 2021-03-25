@@ -34,22 +34,21 @@ const Orders = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const searchStateRef = useRef({ result: 0 });
-    const [updateCards, setUpdateCards] = useState(false);
+    const [initData, setInitData] = useState(init)
     return (
         <div className="agreements-container">
             <SideBar
-                initData={init}
+                initData={initData}
                 setActive={setActive}
                 updateListContent={updateListContent}
                 token={token}
                 searchStateRef={searchStateRef}
-                updateCards={updateCards}
             />
             <AgreementContent
                 active={active.id}
                 searchStateRef={searchStateRef}
                 token={token}
-                setUpdateCards={setUpdateCards}
+                setInitData={setInitData}
                 ordNumb={active.ordNumb}
                 basedOn={active.basedOn}
                 departmentName={active.departmentName}

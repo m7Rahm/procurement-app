@@ -1,65 +1,93 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
-import ForwardDocLayout from '../Misc/ForwardDocLayout'
-import { TokenContext } from '.././../App'
-import { FaTimes } from 'react-icons/fa';
-import ContractFiles from './ContractFiles'
+import React, { useState, useEffect, useContext, useCallback, useRef, lazy, Suspense } from "react"
+import ForwardDocLayout from "../Misc/ForwardDocLayout"
+import { TokenContext } from ".././../App"
+import ContractFiles from "./ContractFiles"
+import PaymentOrderMaterials from "./PaymentOrderMaterials"
+const OperationResult = lazy(() => import("../Misc/OperationResult"))
 const fetchAgreements = (token, controller) =>
-    fetch('http://192.168.0.182:54321/api/agreements?result=1', {
+    fetch("http://192.168.0.182:54321/api/payment-ready-orders", {
         signal: controller.signal,
         headers: {
-            'Authorization': 'Bearer ' + token
+            "Authorization": "Bearer " + token
         }
     })
-const fetchExpressContracts = (token, controller) =>
-    fetch('http://192.168.0.182:54321/api/express-contracts?result=1', {
-        signal: controller.signal,
-        headers: {
-            'Authorization': 'Bearer ' + token
-        }
-    })
-const NewContract = (props) => {
+const NewPayment = (props) => {
     const tokenContext = useContext(TokenContext);
+    const [operationResult, setOperationResult] = useState({ visible: false, desc: "" })
     const token = tokenContext[0].token;
-    const [selectedDocs, setSelectedDocs] = useState([]);
     const [files, setFiles] = useState([]);
-
-    const addDocument = (document, type) => {
-        setSelectedDocs(prev => prev.find(doc => doc.id === document.id && doc.type === type) ? prev : [...prev, {...document, type: type }])
-    }
-    const handleSendClick = (users, comment) => {
-        const formData = new FormData();
-        const relatedDocs = selectedDocs.map(doc => [doc.id, doc.type]);
-        const receivers = users.map((user, index) => [user.id, index === 0 ? 1 : 0]);
-        formData.append('relatedDocs', JSON.stringify(relatedDocs))
-        formData.append('receivers', JSON.stringify(receivers))
-        formData.append('comment', comment);
-        formData.append("type", 3);
-        for (let i = 0; i < files.length; i++)
-            formData.append('files', files[i])
-        fetch('http://192.168.0.182:54321/api/contract-agreement', {
-            method: 'POST',
+    const [orderState, setOrderState] = useState({ materials: [], numbers: [], all: {} });
+    const getOrderMaterials = useCallback((order) => {
+        const { number, id } = order;
+        fetch(`http://192.168.0.182:54321/api/order-materials?orderid=${id}`, {
             headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            body: formData
+                "Authorization": "Bearer " + token,
+            }
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ.length === 0) {
-                    props.closeModal();
-                    props.updateCards({
-                        result: -3,
-                        from: 0,
-                        next: 20,
-                        update: true
-                    })
-                }
+                setOrderState(prev => {
+                    if (!prev.numbers.find(order => order.number === number)) {
+                        let newState = [];
+                        if (prev.materials.length === 0)
+                            newState = respJ.map(material => ({ ...material, order: material.id }));
+                        else {
+                            newState = prev.materials.map(mat => {
+                                const elem = respJ.find(material => material.material_id === mat.material_id)
+                                return { ...mat, order: !mat.order ? mat.id : mat.order, amount: elem ? mat.amount + elem.amount : mat.amount }
+                            });
+                            const newMaterials = respJ
+                                .filter(material => !prev.materials.find(mat => material.material_id === mat.material_id))
+                                .map(material => ({ ...material, order: material.id }));
+                            newState = [...newState, ...newMaterials]
+                        }
+                        return { materials: newState, numbers: [...prev.numbers, { id: id, number: number }], all: { ...prev.all, [number]: respJ } }
+                    } else
+                        return prev
+                })
             })
             .catch(ex => console.log(ex))
+    }, [token]);
+    const handleSendClick = (users, comment) => {
+        const malformedMaterialRow = orderState.materials.find(material => !material.contract_id);
+        if (malformedMaterialRow)
+            setOperationResult({ visible: true, desc: "Məhsulların siyahısı düzgün doldurulmamışdır" })
+        else if (users.length === 0)
+            setOperationResult({ visible: true, desc: "Yönləndiriləcək istifadəçilər seçilməyib" })
+        else {
+            const formData = new FormData();
+            const receivers = users.map((user, index) => [user.id, index === 0 ? 1 : 0]);
+            const paymentOrders = orderState.numbers.map(order => [order.id, 10]);
+            const paymentMaterials = orderState.materials.map(material => [material.material_id, material.amount, material.contract_id]);
+            formData.append("paymentMaterials", JSON.stringify(paymentMaterials));
+            formData.append("relatedDocs", JSON.stringify(paymentOrders));
+            formData.append("receivers", JSON.stringify(receivers));
+            formData.append("comment", comment);
+            formData.append("type", 3);
+            for (let i = 0; i < files.length; i++)
+                formData.append("files", files[i])
+            fetch("http://192.168.0.182:54321/api/contract-agreement", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                body: formData
+            })
+                .then(resp => resp.json())
+                .then(respJ => {
+                    if (respJ.length === 0) {
+                        props.closeModal();
+                        props.setInitData({
+                            result: 0,
+                            from: 0,
+                            next: 20,
+                            update: true
+                        })
+                    }
+                })
+                .catch(ex => console.log(ex))
+        }
     }
-    const removeSelected = useCallback((selected) => {
-        setSelectedDocs(prev => prev.filter(doc => doc.id !== selected.id))
-    }, []);
     const removeFile = useCallback((files) => {
         setFiles(prev => prev.filter(doc => doc.name !== files.name))
     }, [])
@@ -97,27 +125,35 @@ const NewContract = (props) => {
     }, []);
     return (
         <div>
+            <Suspense fallback="">
+                {
+                    operationResult.visible &&
+                    <OperationResult
+                        setOperationResult={setOperationResult}
+                        operationDesc={operationResult.desc}
+                        backgroundColor={"gainsboro"}
+                    />
+                }
+            </Suspense>
             <AgreementsList
                 token={token}
-                header="Razılaşmalar"
+                header="Sifarişlər"
                 type="1"
                 fetchFun={fetchAgreements}
-                addDocument={addDocument}
+                handleClick={getOrderMaterials}
             />
-            <div style={{ float: 'right', marginRight: '10px' }}>
-                <AgreementsList
-                    token={token}
-                    type="2"
-                    header="Müqavilələr"
-                    fetchFun={fetchExpressContracts}
-                    addDocument={addDocument}
-                />
+            <div style={{ float: "right", marginRight: "10px", minWidth: "600px" }}>
+                {
+                    orderState.materials.length !== 0 &&
+                    <PaymentOrderMaterials
+                        materials={orderState.materials}
+                        numbers={orderState.numbers}
+                        token={token}
+                        setOrderState={setOrderState}
+                    />
+                }
             </div>
-            <Actives
-                actives={selectedDocs}
-                removeSelected={removeSelected}
-            />
-            <div style={{ clear: 'both' }}>
+            <div style={{ clear: "both" }}>
                 <ContractFiles
                     files={files}
                     addFiles={handleChange}
@@ -132,10 +168,11 @@ const NewContract = (props) => {
         </div>
     )
 }
-export default NewContract
+export default NewPayment
 
 const AgreementsList = React.memo((props) => {
     const [documents, setDocuments] = useState({ all: [], available: [], visible: [], offset: 2 });
+    const containerRef = useRef(null);
     const fetchFun = props.fetchFun
     useEffect(() => {
         let mounted = true;
@@ -154,6 +191,7 @@ const AgreementsList = React.memo((props) => {
     }, [props.token, fetchFun]);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
+        containerRef.current.scrollTop = 0;
         setDocuments(prev => {
             const available = prev.all.filter(document => document.number.toLowerCase().includes(value))
             return ({ ...prev, available: available, visible: available.slice(0, Math.round(200 / 36)), offset: 2 })
@@ -170,20 +208,20 @@ const AgreementsList = React.memo((props) => {
         })
     }
     return (
-        <div style={{ float: 'left' }}>
-            <h1 style={{ textAlign: 'center', fontSize: '22px', marginLeft: '10px' }}>{props.header}</h1>
-            <div style={{ width: '312px', padding: '5px 4px' }}>
-                <input style={{ display: 'block', width: "100%", padding: '3px' }} type="text" onChange={handleVendorSearch} />
-                <div style={{ height: '200px', position: 'relative', overflow: 'auto' }} onScroll={handleScroll}>
-                    <ul style={{ height: 36 * documents.available.length, width: '100%' }} className="vendors-list">
+        <div style={{ float: "left" }}>
+            <h1 style={{ textAlign: "center", fontSize: "22px", marginLeft: "10px" }}>{props.header}</h1>
+            <div style={{ width: "312px", padding: "5px 4px" }}>
+                <input style={{ display: "block", width: "100%", padding: "3px" }} type="text" onChange={handleVendorSearch} />
+                <div style={{ height: "200px", position: "relative", overflow: "auto" }} ref={containerRef} onScroll={handleScroll}>
+                    <ul style={{ height: 36 * documents.available.length, width: "100%" }} className="vendors-list">
                         {
-                            documents.visible.map((agreement, index) =>
+                            documents.visible.map((document, index) =>
                                 <li
-                                    key={`${agreement.id}-${props.type}`}
-                                    onClick={() => props.addDocument(agreement, props.type)}
-                                    style={{ top: (documents.offset + index - 2) * 36 + 'px' }}
+                                    key={`${document.id}-${props.type}`}
+                                    onClick={() => props.handleClick(document, props.type)}
+                                    style={{ top: (documents.offset + index - 2) * 36 + "px" }}
                                 >
-                                    {agreement.number}
+                                    {document.number}
                                 </li>
                             )
                         }
@@ -193,22 +231,3 @@ const AgreementsList = React.memo((props) => {
         </div>
     )
 })
-
-const Actives = React.memo(({ actives = [], removeSelected }) => {
-    return (
-        <div style={{ overflow: 'hidden', clear: 'left', maxWidth: '50%', margin: '10px', float: 'left' }}>
-            {
-                actives.map(active =>
-                    <div className="forwarded-person-card" style={{ minWidth: '50px', lineHeight: '28px' }} key={`${active.id}-${active.type}`}>
-                        <span style={{ verticalAlign: 'baseline', marginLeft: '10px' }}>
-                            {active.number}
-                        </span>
-                        <span style={{ float: 'right', verticalAlign: 'baseline', marginRight: '4px' }}>
-                            <FaTimes onClick={() => removeSelected(active)} />
-                        </span>
-                    </div>
-                )
-            }
-        </div>
-    )
-});

@@ -56,7 +56,7 @@ const VisaContentFooter = (props) => {
             setOperationResult({ visible: true, desc: 'Operation not finished' })
     }
     return (
-        current.result === 0 && current.order_result === 0
+        current.result === 0 && current.can_influence
             ? <>
                 {
                     operationResult.visible &&

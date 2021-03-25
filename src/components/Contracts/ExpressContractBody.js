@@ -5,7 +5,7 @@ import ExpressContractFiles from './ExpressContractFiles'
 const ExpressContractBody = (props) => {
     const [contractState, setContractState] = useState([]);
     const stateRef = useRef({
-        files: [],
+        files: { new: [], fetched: [] },
         vendorid: null,
         relatedDocs: []
     });

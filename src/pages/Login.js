@@ -72,28 +72,28 @@ const Login = (props) => {
             <div className="login">
                 <div>
                     <div style={{ marginBottom: '10px' }}>
-                        <label htmlFor="username">Username</label>
                         <input
                             onChange={handleChange}
                             onKeyUp={handleKeyUp}
                             value={userCreds.username}
                             id="username"
+                            placeholder="username"
                             name="username"
                             type="text"
                         />
                     </div>
                     <div style={{ marginBottom: '10px' }}>
-                        <label htmlFor="password">Password</label>
                         <input
                             onChange={handleChange}
                             value={userCreds.password}
                             onKeyUp={handleKeyUp}
+                            placeholder="password"
                             id="password"
                             name="password"
                             type="password"
                         />
                     </div>
-                    <div tabIndex="3" onClick={handleLoginCheck} className="log-in-button">login</div>
+                    <div tabIndex="3" onClick={handleLoginCheck} className="log-in-button">log in</div>
                 </div>
             </div>
             {

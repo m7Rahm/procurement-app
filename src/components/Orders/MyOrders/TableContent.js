@@ -14,8 +14,7 @@ const TableContent = (props) => {
         setActiveLinkIndex(_ => activeOptions);
     }
 }, [activeLinkIndex])
-useEffect(
-  () => {
+useEffect(() => {
     document.addEventListener('click', handleOnOuterClick, false);
     return () => document.removeEventListener('click', handleOnOuterClick, false)
   }

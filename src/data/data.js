@@ -122,6 +122,10 @@ export const modules = [
     {
         text: 'Warehouse',
         link: '/tender'
+    },
+    {
+        text: 'Other',
+        link: '/other'
     }
 ]
 export const expressVendorInit = {

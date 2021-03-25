@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Pagination from '../Misc/Pagination'
 import CalendarUniversal from '../Misc/CalendarUniversal'
 import { GoChevronDown } from 'react-icons/go'
@@ -15,10 +15,20 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
     const selectRef = useRef(null);
     const inputNumberRef = useRef(null);
     const searchStateRef = useRef({
+        ...props.initData,
         startDate: '',
         endDate: '',
         number: ''
-    })
+    });
+    useEffect(() => {
+        if (props.newDocNotifName) {
+            const showNotificationIcon = () => {
+                notifIcon.current.style.display = "block";
+            }
+            window.addEventListener(props.newDocNotifName, showNotificationIcon, false)
+            return () => window.removeEventListener(props.newDocNotifName, showNotificationIcon)
+        }
+    }, [props.newDocNotifName]);
     const handleInputChange = (name, value) => {
         searchStateRef.current[name] = value;
     }
@@ -42,6 +52,16 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
         props.updateList({ ...searchStateRef.current, result: selectRef.current.value, number: inputNumberRef.current.value, from: 0 })
     }
     const resetState = () => {
+    }
+    const onNotifIconClick = () => {
+        notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
+        const onAnimationEnd = () => {
+            notifIcon.current.style.display = 'none';
+            notifIcon.current.style.animation = 'anim-up-to-down 1.5s ease-in both';
+            notifIcon.current.removeEventListener('animationend', onAnimationEnd)
+        }
+        notifIcon.current.addEventListener('animationend', onAnimationEnd, false);
+        props.updateList(props.initData)
     }
     return (
         <>
@@ -87,10 +107,12 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
                     }
                 </div>
             </div>
-            <div onClick={() => { }} ref={notifIcon} className="new-visa-notification">
+            <div onClick={onNotifIconClick} ref={notifIcon} style={{ display: "none" }} className="new-visa-notification">
                 <span >
+                    <span style={{ verticalAlign: "middle" }}>
+                        <BsArrowUpShort color="#00acee" size="24" style={{ marginRight: '8px', color: "white" }} />
+                    </span>
                     Yeni bildiriş
-                        <BsArrowUpShort size="20" style={{ verticalAlign: 'middle', float: 'right', marginRight: '8px' }} />
                 </span>
             </div>
             <Content

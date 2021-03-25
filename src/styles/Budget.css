@@ -27,6 +27,55 @@ ul.structure-budget-general>li>div:last-of-type {
     color: white;
     font-weight: 600;
 }
+table.gl-categories{
+    width: 100%;
+    max-width: 1256px;
+    margin: auto;
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.05);
+    padding: 5px;
+    border-collapse: collapse;
+    border-radius: 6px;
+}
+table.gl-categories>thead>tr>th{
+    padding: 6px;
+    color: white;
+    background-color: tomato;
+}
+div.budget-search {
+    background-color: #0495ce;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+div.budget-search>div{
+    max-width: 1256px;
+    margin: auto;
+}
+div.budget-search>div>select,
+div.budget-search>div>input {
+    padding: 6px 4px;
+    margin-right: 20px;
+}
+div.budget-search>div>div:last-of-type{
+    float: right;
+    padding: 10px 30px;
+    cursor: pointer;
+    border-radius: 1px;
+    color: white;
+    font-weight: 600;
+    background-color: rgb(255, 174, 0);
+}
+table.gl-categories>tbody>tr>td{
+    padding: 2px;
+}
+table.gl-categories>tbody>tr:nth-of-type(2n) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+table.gl-categories input,
+table.gl-categories select{
+   display: inline-block;
+   padding: 3px 0px;
+   width: 100%;
+}
 
 ul.sub-gl-category-budget {
     margin: 0px;

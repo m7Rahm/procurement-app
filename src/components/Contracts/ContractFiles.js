@@ -11,14 +11,14 @@ const ContractFiles = ({ files = [], addFiles, removeFile }) => {
                     const uri = URL.createObjectURL(file);
                     const onClick = () => window.open(uri);
                     switch (true) {
-                        case /pdf/.test(ext):
+                        case /(pdf)/i.test(ext):
                             return (
                                 <div key={file.name}>
                                     <FaFilePdf title={file.name} onClick={onClick} color="#F40F02" size="36" />
                                     <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: 'absolute', top: '-2px', right: '0px', zIndex: 1 }} />
                                 </div>
                             )
-                        case /doc./.test(ext):
+                        case /(doc(.*))/.test(ext):
                             return (
                                 <div key={file.name}>
                                     <a href={uri} rel="noopener noreferrer" target="_blank" download>
@@ -27,7 +27,7 @@ const ContractFiles = ({ files = [], addFiles, removeFile }) => {
                                     </a>
                                 </div>
                             )
-                        case /xls./.test(ext):
+                        case /(xls(.*))/.test(ext):
                             return (
                                 <div key={file.name}>
                                     <a href={uri} rel="noopener noreferrer" target="_blank" download>

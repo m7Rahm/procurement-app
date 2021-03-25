@@ -17,8 +17,14 @@ const VisaContent = (props) => {
     const token = tokenContext[0].token;
     const locationTranid = location.state ? location.state.tranid : undefined
     const canProceed = useRef({});
+    // const otherProcurementUsers = useRef([]);
+    // const getOtherProcUsers = (abortController) => {
+    //     fetch()
+    // }
     useEffect(() => {
-        if (tranid)
+        const abortController = new AbortController();
+        let mounted = true;
+        if (tranid && mounted) {
             fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}`, {
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -26,28 +32,41 @@ const VisaContent = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (respJ.length !== 0) {
+                    if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
                         setVisa(respJ);
                     }
                 })
                 .catch(error => console.log(error));
+            return () => {
+                mounted = false;
+                abortController.abort()
+            }
+        }
     }, [tranid, token]);
     useEffect(() => {
-        if (locationTranid)
+        const abortController = new AbortController();
+        let mounted = true;
+        if (locationTranid && mounted) {
             fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}`, {
+                signal: abortController.signal,
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (respJ.length !== 0) {
+                    if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
                         setVisa(respJ);
                     }
                 })
                 .catch(error => console.log(error));
+            return () => {
+                mounted = false;
+                abortController.abort()
+            }
+        }
     }, [locationTranid, token]);
 
     const participantsRef = useRef(null);
@@ -82,8 +101,7 @@ const VisaContent = (props) => {
                             participantsVisiblity &&
                             <div ref={participantsRef} className="visa-content-participants-show">
                                 <Participants
-                                    empVersion={visa[0].emp_version_id}
-                                    number={visa[0].ord_numb}
+                                    id={visa[0].order_id}
                                 />
                             </div>
                         }

@@ -35,7 +35,6 @@ const OrderContentProtected = (props) => {
 					</Modal>
 				}
 				<VisaContentHeader
-					deadline={current[0].deadline}
 					updateContent={updateContent}
 					current={current}
 					version={current[0].emp_version_id}

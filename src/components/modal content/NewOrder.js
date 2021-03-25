@@ -27,8 +27,8 @@ const NewOrderContent = (props) => {
     })
       .then(resp => resp.json())
       .then(respJ => {
-        const parent = respJ.filter(glCategory => glCategory.dependent_id === null);
-        const sub = respJ.filter(glCategory => glCategory.dependent_id !== null);
+        const parent = respJ.filter(glCategory => glCategory.dependent_id === 0);
+        const sub = respJ.filter(glCategory => glCategory.dependent_id !== 0);
         setGlCategories({ all: respJ, parent: parent, sub: sub });
       })
       .catch(ex => console.log(ex))
@@ -45,9 +45,8 @@ const NewOrderContent = (props) => {
         material.subGlCategory
       ]
     );
-
     for (let i = 0; i < parsedMaterials.length; i++) {
-      if (parsedMaterials[i][0] === '') {
+      if (isNaN(parsedMaterials[i][0])) {
         canProceed = false;
         break;
       }
@@ -134,7 +133,6 @@ const NewOrderContent = (props) => {
         orderInfo={orderInfo}
         setOrderInfo={setOrderInfo}
         token={token}
-        parentGlCategories={glCategories.parent}
       />
       <NewOrderTableBody
         orderInfo={orderInfo}

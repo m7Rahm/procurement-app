@@ -17,7 +17,8 @@ const NewOrderTableRow = (props) => {
   const modelInputRef = useRef(null);
   const materialid = material.id;
   const [budget, setBudget] = useState(0);
-
+  const timeoutRef = useRef(null);
+  const codeRef = useRef(null);
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -51,58 +52,90 @@ const NewOrderTableRow = (props) => {
       modelListRef.current.style.display = 'none'
   }
   const handleRowDelete = () => {
-    rowRef.current.classList.add('delete-row');
+    rowRef.current.classList.add("delete-row");
     rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
   }
   const setModel = (model) => {
     setMaterials(prev => prev.map(material => material.id === materialid
       ? {
-        ...material, materialId: model.id,
+        ...material,
+        subGlCategory: model.sub_gl_category_id,
+        materialId: model.id,
         approx_price: model.approx_price,
         code: model.product_id,
-        department: model.department_name
+        department: model.department_name,
+        isService: model.is_service
       }
       : material
-    )
-    )
+    ));
+    setBudget(model.budget)
+    codeRef.current.value = model.product_id;
     modelInputRef.current.value = model.title;
-    modelListRef.current.style.display = 'none';
+    modelListRef.current.style.display = "none";
   }
   const handleInputSearch = (e) => {
     const value = e.target.value;
-    const searchResult = modelsRef.current.filter(model => model.title.toLowerCase().includes(value));
-    setModels(searchResult)
+    if (material.subGlCategory !== "-1" && material.subGlCategory !== undefined && material.subGlCategory !== "") {
+      const searchResult = modelsRef.current.filter(model => model.title.toLowerCase().includes(value));
+      setModels(searchResult);
+    } else {
+      fetch(`http://192.168.0.182:54321/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`, {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      })
+        .then(resp => resp.json())
+        .then(respJ => setModels(respJ))
+        .catch(ex => console.log(ex))
+    }
   }
   const searchByCode = (e) => {
     const data = JSON.stringify({ product_id: e.target.value, orderType: orderType, structure: structure });
-    fetch('http://192.168.0.182:54321/api/get-by-product-code', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json',
-        'Content-Length': data.length
-      },
-      body: data
-    })
-      .then(resp => resp.json())
-      .then(respJ => {
-        const material = respJ.length !== 0 ? respJ[0] : {};
-        modelInputRef.current.value = material.title;
-        setBudget(material.budget)
-        setMaterials(prev => prev.map(prevMaterial => prevMaterial.id === materialid
-          ? {
-            ...prevMaterial,
-            subGlCategory: material.subGlCategory,
-            code: material.product_id,
-            approx_price: material.approx_price,
-            department: material.department_name,
-            materialId: material.id,
-            models: modelsRef.current.filter(model => model.id === material.subGlCategory)
-          }
-          : prevMaterial
-        )
-        )
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    timeoutRef.current = setTimeout(() => {
+      fetch('http://192.168.0.182:54321/api/get-by-product-code', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json',
+          'Content-Length': data.length
+        },
+        body: data
       })
+        .then(resp => resp.json())
+        .then(respJ => {
+          timeoutRef.current = null;
+          if (respJ.length === 1) {
+            const material = respJ.length !== 0 ? respJ[0] : {};
+            modelInputRef.current.value = material.title || "";
+            setMaterials(prev => prev.map(prevMaterial => prevMaterial.id === materialid
+              ? {
+                ...prevMaterial,
+                subGlCategory: material.subGlCategory,
+                code: material.product_id,
+                approx_price: material.approx_price,
+                department: material.department_name,
+                materialId: material.id,
+                models: modelsRef.current.filter(model => model.sub_gl_category_id === material.subGlCategory),
+                isService: material.is_service
+              }
+              : prevMaterial
+            ));
+            setBudget(_ => material.budget || 0);
+            modelListRef.current.style.display = "none";
+          } else {
+            modelListRef.current.style.display = "block";
+            setModels(respJ);
+          }
+        })
+        .catch(ex => {
+          console.log(ex);
+          timeoutRef.current = null;
+        })
+    }, 500)
   }
   const handleSubCategoryChange = (e) => {
     const name = e.target.name;
@@ -124,7 +157,12 @@ const NewOrderTableRow = (props) => {
         setModels(respJ);
         setBudget(budget);
         modelInputRef.current.value = "";
-        setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value, materialId: '' } : material))
+        codeRef.current.value = ""
+        setMaterials(prev => prev.map(material =>
+          material.id === materialid
+          ? { ...material, [name]: value, materialId: '', department: "", isService: orderType }
+          : material
+        ))
       })
       .catch(ex => console.log(ex))
   }
@@ -136,7 +174,7 @@ const NewOrderTableRow = (props) => {
           <option value="-1">-</option>
           {
             subGlCategories.map(category =>
-              <option key={category.id} value={category.id}>{category.name}</option>
+              <option key={category.id} value={category.id}>{`${category.code} ${category.name}`}</option>
             )
           }
         </select>
@@ -164,10 +202,10 @@ const NewOrderTableRow = (props) => {
       </div>
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
-          onBlur={searchByCode}
+          onChange={searchByCode}
           type="text"
           placeholder="Kod"
-          defaultValue={material.code}
+          ref={codeRef}
           name="code"
         />
       </div>

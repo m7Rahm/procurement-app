@@ -15,7 +15,7 @@ const OrderMaterials = () => {
     const [departments, setDepartments] = useState([]);
     const [units, setUnits] = useState([]);
     const glCategoriesRef = useRef([]);
-    const [glCategories, setGlCategories] = useState([])
+    const [glCategories, setGlCategories] = useState([]);
     const activePageRef = useRef(0);
     const [tableData, setTableData] = useState({ content: [], count: 0 });
     const refreshContent = (from) => {
@@ -50,7 +50,7 @@ const OrderMaterials = () => {
             .then(resp => resp.json())
             .then(respJ => {
                 glCategoriesRef.current = respJ;
-                const glCategories = respJ.filter(category => category.dependent_id === null);
+                const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories(glCategories);
             })
             .catch(ex => console.log(ex))
@@ -113,6 +113,7 @@ const OrderMaterials = () => {
                             <th style={{ maxWidth: '100px' }}>Qiymət</th>
                             <th>Ölçü vahidi</th>
                             <th>Inventardır</th>
+                            <th>Əsas Vəsaitdir</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -157,6 +158,7 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
     const [disabled, setDisabled] = useState(true);
     const subGlCategoryRef = useRef(null);
     const inventoryRef = useRef(null);
+    const esasVesaitRef = useRef(null);
     const subCategories = glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(materialData.gl_category_id));
     const handleChange = (e) => {
         const name = e.target.name;
@@ -171,7 +173,12 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
         setDisabled(prev => !prev)
     }
     const handleUpdate = () => {
-        const data = JSON.stringify({ ...materialData, sub_gl_category_id: subGlCategoryRef.current.value, isInv: inventoryRef.current.checked });
+        const data = JSON.stringify({
+            ...materialData,
+            sub_gl_category_id: subGlCategoryRef.current.value,
+            isInv: inventoryRef.current.checked,
+            isEsasVesait: esasVesaitRef.current.checked
+        });
         fetch('http://192.168.0.182:54321/api/update-material', {
             method: 'POST',
             headers: {
@@ -199,7 +206,7 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
                 <select disabled={disabled} onChange={handleChange} name="gl_category_id" value={materialData.gl_category_id}>
                     {
                         glCategories.map(cat =>
-                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                            <option key={cat.id} value={cat.id}>{`${cat.code} ${cat.name}`}</option>
                         )
                     }
                 </select>
@@ -208,7 +215,7 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
                 <select disabled={disabled} name="sub_gl_category_id" ref={subGlCategoryRef} defaultValue={materialData.sub_gl_category_id}>
                     {
                         subCategories.map(subCat =>
-                            <option key={subCat.id} value={subCat.id}>{subCat.name}</option>
+                            <option key={subCat.id} value={subCat.id}>{`${subCat.code} ${subCat.name}`}</option>
                         )
                     }
                 </select>
@@ -244,6 +251,9 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
                 <input disabled={disabled} type="checkbox" ref={inventoryRef} defaultChecked={materialData.is_inventory} />
             </td>
             <td>
+                <input disabled={disabled} type="checkbox" ref={esasVesaitRef} defaultChecked={materialData.is_esas_vesait} />
+            </td>
+            <td>
                 {
                     disabled
                         ? <MdModeEdit color="#195db6" cursor="not-allowed" onClick={handleEdit} />
@@ -262,6 +272,7 @@ const NewMaterial = React.memo((props) => {
     const glCategoryRef = useRef(null);
     const curatoridRef = useRef(null);
     const inventoryRef = useRef(null);
+    const esasVesaitRef = useRef(null);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newCatState, setNewCatState] = useState({
         title: '',
@@ -280,7 +291,8 @@ const NewMaterial = React.memo((props) => {
             department: curatoridRef.current.value,
             gl_category_id,
             cluster: unitsRef.current.value,
-            isInv: inventoryRef.current.checked
+            isInv: inventoryRef.current.checked,
+            isEsasVesait: esasVesaitRef.current.checked
         };
         fetch('http://192.168.0.182:54321/api/add-new-cat', {
             method: 'POST',
@@ -335,7 +347,7 @@ const NewMaterial = React.memo((props) => {
                     <option value="-1">-</option>
                     {
                         glCategories.map(category =>
-                            <option key={category.id} value={category.id}>{category.name}</option>
+                            <option key={category.id} value={category.id}>{`${category.code} ${category.name}`}</option>
                         )
                     }
                 </select>
@@ -347,7 +359,7 @@ const NewMaterial = React.memo((props) => {
                     {
                         glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(newCatState.gl_category_id))
                             .map(subGlCategory =>
-                                <option key={subGlCategory.id} value={subGlCategory.id}>{subGlCategory.name}</option>
+                                <option key={subGlCategory.id} value={subGlCategory.id}>{`${subGlCategory.code} ${subGlCategory.name}`}</option>
                             )
                     }
                 </select>
@@ -382,6 +394,9 @@ const NewMaterial = React.memo((props) => {
             </td>
             <td>
                 <input type="checkbox" ref={inventoryRef} defaultChecked={false} />
+            </td>
+            <td>
+                <input type="checkbox" ref={esasVesaitRef} defaultChecked={false} />
             </td>
             <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
         </tr>

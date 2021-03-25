@@ -64,9 +64,8 @@ const AgreementContent = (props) => {
                                         index={index}
                                         material={material}
                                         token={props.token}
-                                        searchStateRef={props.searchStateRef}
                                         setRightBarState={setRightBarState}
-                                        setUpdateCards={props.setUpdateCards}
+                                        setInitData={props.setInitData}
                                         setOperationResult={setOperationResult}
                                     />
                                 )
@@ -120,13 +119,13 @@ const AgreementMaterial = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ.length === 0 || !respJ[0].error) {
+                if (!respJ.length || !respJ[0].error) {
                     setMaterialState(prev => ({ ...prev, result: 30 }))
                     props.setOperationResult(prev => ({ ...prev, ...{ visible: true, desc: 'Əməliyyat uğurla tamamlandı' } }));
-                    if (respJ.length !== 0 && respJ[0].order_status && props.searchStateRef.current.result === 0)
-                        props.setUpdateCards(prev => !prev)
+                    if (respJ.length !== 0 && respJ[0].order_status)
+                        props.setInitData(prev => ({ ...prev }))
                 }
-                if (respJ.length > 2 || respJ[0].error)
+                else if (respJ.length > 2 || respJ[0].error)
                     props.setOperationResult({ visible: true, desc: respJ[0].error })
             })
             .catch(ex => console.log(ex))

@@ -16,43 +16,44 @@ import CommentContainer from './CommentContainer'
 import ActionsContainer from './ActionsContainer'
 import EditOrderRequest from '../../modal content/EditOrderRequest'
 import { TokenContext } from '../../../App'
+import { WebSocketContext } from '../../../pages/SelectModule'
 const FinishOrder = lazy(() => import('../../modal content/FinishOrder'))
 const ParticipantsModal = lazy(() => import('../../modal content/Participants'))
 const StatusModal = lazy(() => import('../../modal content/Status'))
 const Modal = lazy(() => import('../../Misc/Modal'))
 const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
+  const webSocket = useContext(WebSocketContext);
   const token = tokenContext[0].token;
-  const userData = tokenContext[0].userData;
   const { referer, setOrders, order } = props;
-  const { status, participants, create_date_time: date, ord_numb: number } = order
+  const { status, participants, create_date_time: date, id, ord_numb: number } = order
   const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {} });
 
   const handleClose = () => {
     setModalState(prev => ({ ...prev, visible: false }));
   }
-  const onParticipantsClick = (number) => {
+  const onParticipantsClick = () => {
     const childProps = {
-      empVersion: userData.userInfo.id,
-      number: number
+      id
     }
     setModalState({ visible: true, content: ParticipantsModal, childProps: childProps })
   }
-  const onStatusClick = (number) => {
+  const onStatusClick = () => {
     const childProps = {
-      number: number
+      id
     }
     setModalState({ visible: true, content: StatusModal, childProps: childProps })
   }
   const handleFinishClick = () => {
     const childProps = {
-      version: props.order.emp_id,
-      ordNumb: number,
-      token: token
+      token: token,
+      id,
+      version: -1,
+      ordNumb: number
     }
     setModalState({ visible: true, content: FinishOrder, childProps: childProps })
   }
-  const onInfoClick = (number) => {
+  const onInfoClick = () => {
     const onSendClick = (data, setOperationResult) => {
       const reqData = JSON.stringify(data);
       fetch('http://192.168.0.182:54321/api/new-order', {
@@ -72,8 +73,16 @@ const ListItem = (props) => {
         })
         .then(respJ => {
           if (respJ[0].result === 'success') {
+            const message = {
+              message: "notification",
+              receivers: respJ
+                .filter(receiver => receiver.receiver_id)
+                .map(receiver => ({ id: receiver.receiver_id, notif: "newOrder" })),
+              data: undefined
+            }
+            webSocket.send(JSON.stringify(message))
             setOrders(prev => {
-              const newList = prev.orders.filter(order => order.ord_numb !== number);
+              const newList = prev.orders.filter(order => order.id !== id);
               setModalState(prev => ({ ...prev, visible: false }))
               return ({ orders: newList, count: newList.count })
             });
@@ -93,17 +102,17 @@ const ListItem = (props) => {
     setModalState({ visible: true, content: EditOrderRequest, childProps })
   }
   const icon = status === 0
-    ? <IoMdCheckmark onClick={() => onStatusClick(number)} color='#F4B400' title="Baxılır" size='20' style={{ margin: 'auto', }} />
+    ? <IoMdCheckmark onClick={onStatusClick} color='#F4B400' title="Baxılır" size='20' style={{ margin: 'auto', }} />
     : status === 'Tamamlanmışdır'
-      ? <IoMdDoneAll onClick={() => onStatusClick(number)} color='#0F9D58' title={status} size='20' style={{ margin: 'auto', }} />
+      ? <IoMdDoneAll onClick={onStatusClick} color='#0F9D58' title={status} size='20' style={{ margin: 'auto', }} />
       : status === -1
-        ? <IoMdClose onClick={() => onStatusClick(number)} color='#DB4437' title="Etiraz" size='20' style={{ margin: 'auto', }} />
+        ? <IoMdClose onClick={onStatusClick} color='#DB4437' title="Etiraz" size='20' style={{ margin: 'auto', }} />
         : status === 'Gözlənilir'
-          ? <IoMdPaperPlane onClick={() => onStatusClick(number)} color='#4285F4' title={status} size='20' style={{ margin: 'auto', }} />
+          ? <IoMdPaperPlane onClick={onStatusClick} color='#4285F4' title={status} size='20' style={{ margin: 'auto', }} />
           : status === 'Anbarda'
-            ? <FaBoxOpen onClick={() => onStatusClick(number)} title={status} size='20' color='#777777' style={{ margin: 'auto', }} />
+            ? <FaBoxOpen onClick={onStatusClick} title={status} size='20' color='#777777' style={{ margin: 'auto', }} />
             : status === 'Təsdiq edilib'
-              ? <IoMdCheckmark onClick={() => onStatusClick(number)} color='#0F9D58' title={status} size='20' style={{ margin: 'auto', }} />
+              ? <IoMdCheckmark onClick={onStatusClick} color='#0F9D58' title={status} size='20' style={{ margin: 'auto', }} />
               : ''
   return (
     <>
@@ -124,10 +133,10 @@ const ListItem = (props) => {
           {
             participants
           }
-          <IoMdPeople onClick={_ => onParticipantsClick(number)} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
+          <IoMdPeople onClick={onParticipantsClick} size='20' display='block' style={{ float: 'left', marginRight: '10px' }} color='gray' />
         </div>
         <div style={{ width: '5%' }}>
-          <CommentContainer remark={props.remark} number={number} />
+          <CommentContainer remark={props.remark} number={id} />
         </div>
         <div id={props.index} className='options-button' style={{ flex: 1, overflow: 'visible', textAlign: 'center', cursor: 'pointer', display: 'inline-block', width: 'auto' }}>
           <IoIosOptions size='20' color='#606060' />
@@ -138,7 +147,7 @@ const ListItem = (props) => {
           }
         </div>
         <div style={{ padding: '0px 10px' }}>
-          <IoMdInformationCircle cursor="pointer" size='20' color='#606060' onClick={() => onInfoClick(number)} />
+          <IoMdInformationCircle cursor="pointer" size='20' color='#606060' onClick={onInfoClick} />
         </div>
         <div>{referer === 'protected' && <IoMdMore pointer="cursor" onClick={handleFinishClick} />}</div>
       </li>

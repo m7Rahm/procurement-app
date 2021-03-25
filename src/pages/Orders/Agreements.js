@@ -21,12 +21,7 @@ const updateListContent = (data, token) => {
         body: apiData
     })
 }
-const initData = {
-    fullName: '',
-    result: 0,
-    from: 0,
-    next: 20
-}
+
 const params = {
     active: 'message_id',
     tranid: 'id',
@@ -39,6 +34,11 @@ const Agreements = () => {
         active: undefined,
         tranid: undefined,
         number: ''
+    });
+    const [initData, setInitData] = useState({
+        result: 0,
+        from: 0,
+        next: 20
     });
     return (
         <div className="agreements-container" style={{ top: '-56px' }}>
@@ -55,6 +55,7 @@ const Agreements = () => {
                 tranid={active.tranid}
                 setActive={setActive}
                 number={active.number}
+                setInitData={setInitData}
             />
         </div>
     )

@@ -21,7 +21,8 @@ const VisaCard = (props) => {
 		checkedAmount,
 		iconsPanelRef,
 		setIconsVisible,
-		setActive
+		setActive,
+		orderid
 	} = props;
 	const stateRef = useRef(null);
 	const checkBoxRef = useRef(null)
@@ -50,7 +51,7 @@ const VisaCard = (props) => {
 		}
 	}
 	const handleClick = () => {
-		setActive(() => id)
+		setActive(orderid)
 		activeRef.current.style.background = activeRef.current.prevBackColor;
 		stateRef.current.style.background = 'skyblue'
 		activeRef.current = stateRef.current;

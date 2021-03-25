@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { TokenContext } from '../../../App'
 const NewOrderHeader = (props) => {
-    const { orderInfo, setOrderInfo, parentGlCategories } = props;
+    const { orderInfo, setOrderInfo } = props;
     const [structures, setStructures] = useState([]);
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -41,24 +41,12 @@ const NewOrderHeader = (props) => {
                         </select>
                     </div>
                 }
-                <div style={{ float: 'right' }}>
+                <div style={{ float: "right", marginRight: "1px" }}>
                     <label htmlFor="orderType">Sifariş növü</label>
                     <br />
                     <select name="orderType" value={orderInfo.orderType} onChange={handleChange}>
                         <option value={0}>Mal-Material</option>
                         <option value={1}>Xidmət</option>
-                    </select>
-                </div>
-                <div style={{ float: 'left' }}>
-                    <label htmlFor="glCategory">Gl kateqoriya</label>
-                    <br />
-                    <select onChange={handleChange} name="glCategory" value={orderInfo.glCategory}>
-                        <option value="-1">-</option>
-                        {
-                            parentGlCategories.map(category =>
-                                <option key={category.id} value={category.id}>{category.name}</option>
-                            )
-                        }
                     </select>
                 </div>
             </div>

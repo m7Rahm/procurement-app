@@ -17,7 +17,7 @@ const getResultText = (result) => {
 
 const Participants = (props) => {
   const tokenContext = useContext(TokenContext);
-  const { number, empVersion } = props;
+  const { id } = props;
   const token = tokenContext[0].token;
   const [checked, setChecked] = useState(false);
   const [participants, setParticipants] = useState(null);
@@ -25,7 +25,7 @@ const Participants = (props) => {
     setChecked(prev => !prev);
   }
   useEffect(() => {
-    fetch(`http://192.168.0.182:54321/api/participants/${number}?type=1&empVersion=${empVersion}`, {
+    fetch(`http://192.168.0.182:54321/api/participants/${id}?type=1`, {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -34,7 +34,7 @@ const Participants = (props) => {
       .then(respJ => setParticipants(respJ)
       )
       .catch(err => console.log(err))
-  }, [number, empVersion, token])
+  }, [id, token])
   return (
     participants &&
     <>
@@ -67,8 +67,7 @@ const Participants = (props) => {
       {
         checked &&
         <Reviewers
-          empVersion={empVersion}
-          number={number}
+          id={id}
           token={token}
         />
       }
@@ -76,10 +75,10 @@ const Participants = (props) => {
   )
 }
 
-const Reviewers = ({ empVersion, number, token }) => {
+const Reviewers = ({ id, token }) => {
   const [reviewers, setReviewers] = useState(null);
   useEffect(() => {
-    fetch(`http://192.168.0.182:54321/api/participants/${number}?type=4&empVersion=${empVersion}`, {
+    fetch(`http://192.168.0.182:54321/api/participants/${id}?type=4`, {
       headers: {
         'Authorization': 'Bearer ' + token
       }
@@ -88,7 +87,7 @@ const Reviewers = ({ empVersion, number, token }) => {
       .then(respJ => setReviewers(respJ)
       )
       .catch(err => console.log(err))
-  }, [number, empVersion, token])
+  }, [id, token])
   return (
     reviewers ?
       <>

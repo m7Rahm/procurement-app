@@ -44,7 +44,7 @@ const Payments = (props) => {
         setModalState({ visible: false, content: null })
     }
     const handleNewContractClick = () => {
-        setModalState({ visible: true, content: NewPayment, updateCards: setInitData })
+        setModalState({ visible: true, content: NewPayment, setInitData: setInitData })
     }
     return (
         <div className="agreements-container" style={{ overflow: 'auto' }}>

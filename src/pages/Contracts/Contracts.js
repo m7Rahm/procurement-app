@@ -44,7 +44,7 @@ const Contracts = () => {
         setModalState({ visible: false, content: null })
     }
     const handleNewContractClick = () => {
-        setModalState( { visible: true, content: NewContract, updateCards: setInitData })
+        setModalState( { visible: true, content: NewContract, setInitData: setInitData })
     }
     return (
         <div className="agreements-container" style={{ overflow: 'auto' }}>

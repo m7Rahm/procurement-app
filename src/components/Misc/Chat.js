@@ -45,9 +45,11 @@ const Chat = (props) => {
                         added: true,
                         full_name: data.full_name
                     };
-                    const all = [newMessage, ...prev.all]
-                    all[1].same = all[1].user_id === data.senderid ? true : false;
-                    all[1].updated = true;
+                    const all = [newMessage, ...prev.all];
+                    if (all.length > 1) {
+                        all[1].same = all[1].user_id === data.senderid ? true : false;
+                        all[1].updated = true;
+                    }
                     const visible = all.slice(prev.start, prev.end);
                     return ({
                         ...prev,
@@ -146,13 +148,12 @@ const Chat = (props) => {
                         const text = messageBoxRef.current.value;
                         const message = {
                             message: "newMessage",
-                            receivers: participants,
+                            receivers: participants.map(participant => ({ id: participant })),
                             data: {
                                 id: id,
                                 text: text,
                                 docType: props.documentType,
                                 docid: props.documentid,
-                                tranid: props.tranid,
                                 senderid: userInfo.id,
                                 dateTime: dateTime,
                                 full_name: userInfo.fullName
@@ -185,6 +186,10 @@ const Chat = (props) => {
                     }
                 })
                 .catch(ex => console.log(ex))
+    }
+    const handleTextAreaKeyUp = (e) => {
+        if (e.keyCode === 13)
+            sendMessage(0)
     }
     return (
         <>
@@ -221,7 +226,7 @@ const Chat = (props) => {
                 } */}
             </div>
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
-                <textarea ref={messageBoxRef} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
+                <textarea ref={messageBoxRef} onKeyUp={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
                 <span style={{ width: '60px' }}>
                     <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
                 </span>

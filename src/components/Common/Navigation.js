@@ -44,7 +44,7 @@ const Navigation = (props) => {
                 if (notificationsRef.current.style.display !== "block")
                     setNotifications(prev => {
                         update.current = true;
-                        return ({ ...prev, count: prev.count + 1 })
+                        return ({ ...prev, count: Number(prev.count + 1) })
                     })
                 else {
                     fetch(`http://192.168.0.182:54321/api/notifications?from=0&active=1`, {
@@ -168,12 +168,12 @@ const Navigation = (props) => {
     const pushHistory = (notification) => {
         const module = notification.category_id < 5 ? "/orders" : notification.category_id < 10 ? "/tender" : "/contracts";
         const subModule = notification.category_id === 1
-            ? "/visas"
+            ? "/visas/"
             : notification.category_id === 2
-                ? "/my-orders"
-                : "/contracts";
+                ? "/my-orders/"
+                : "/contracts/";
         const { tran_id: tranid, doc_number: docNumber } = notification;
-        history.push(module + subModule, { tranid, docNumber: docNumber });
+        history.push(module + subModule + tranid, { tranid, docNumber: docNumber });
     }
     const handleScroll = (e) => {
         const scrollTop = e.target.scrollTop;
@@ -185,6 +185,9 @@ const Navigation = (props) => {
             const visible = prev.all.slice(indexStart < 0 ? 0 : indexStart, indexEnd);
             return { ...prev, visible: visible, offsetStart: indexStart < 0 ? 0 : indexStart, offsetEnd: indexEnd }
         })
+    }
+    const handleModuleClick = () => {
+        moduleNavigationRef.current.style.display = "none"
     }
     const onNotificationClick = (notif) => {
         if (!notif.is_read)
@@ -252,9 +255,9 @@ const Navigation = (props) => {
                             <ul ref={moduleNavigationRef} className="profile-icon">
                                 {
                                     props.routes.map(module =>
-                                        <li key={module.link}>
+                                        <li onClick={handleModuleClick} key={module.link}>
                                             <Link to={module.link}>
-                                                <div >
+                                                <div>
                                                     {module.text}
                                                 </div>
                                             </Link>
@@ -262,7 +265,7 @@ const Navigation = (props) => {
                                     )
                                 }
                                 <li onClick={handleLogOut}>
-                                    <div style={{ minWidth: '60px' }}>Log out</div>
+                                    <div style={{ minWidth: '60px' }}>Çıxış</div>
                                 </li>
                             </ul>
                         </div>

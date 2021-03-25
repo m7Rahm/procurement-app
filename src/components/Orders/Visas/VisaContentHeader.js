@@ -77,7 +77,7 @@ const VisaContentHeader = (props) => {
 				<h1>
 					{`Sifariş № ${orderNumb}`}
 					{
-						canEditRequest && !visaGenInfo.result && visaGenInfo.order_result === 0 &&
+						canEditRequest && !visaGenInfo.result && visaGenInfo.can_influence &&
 						<FaEdit onClick={showEditOrderContent}
 							title="düzəliş et"
 							size="20"

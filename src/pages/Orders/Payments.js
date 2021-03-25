@@ -6,6 +6,7 @@ import CardsList from '../../components/HOC/CardsList'
 import { TokenContext } from '../../App'
 import PaymentContent from '../../components/Orders/Contracts/PaymentContent'
 import { optionsAgreements } from '../../data/data'
+import { useParams } from "react-router-dom"
 const SideBarContent = CardsList(AgreementCard);
 const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search));
@@ -37,15 +38,16 @@ const params = {
 const Payments = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
+    const { docid } = useParams()
     const [active, setActive] = useState({
-        active: undefined,
-        tranid: undefined
+        active: docid,
     });
-    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}${active.tranid ? `&tranid=${active.tranid}` : ''}` : ''
+    const [initData, setInitData] = useState(inData)
+    const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=3&docid=${active.active}` : ''
     return (
         <div className="agreements-container" style={{ top: '-56px' }}>
             <SideBar
-                initData={inData}
+                initData={initData}
                 setActive={setActive}
                 updateListContent={updateListContent}
                 token={token}
@@ -57,6 +59,7 @@ const Payments = (props) => {
                 tranid={active.tranid}
                 apiString={apiString}
                 setActive={setActive}
+                setInitData={setInitData}
             />
         </div>
     )

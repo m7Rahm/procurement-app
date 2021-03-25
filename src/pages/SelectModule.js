@@ -10,6 +10,7 @@ const Budget = lazy(() => import('./Budget'))
 const Orders = lazy(() => import('./Orders'))
 const Tender = lazy(() => import('./Tender'))
 const Admin = lazy(() => import('./AdminPage'))
+const Other = lazy(() => import('./Other'))
 const availableModules = [
 	{
 		text: 'Büdcə',
@@ -40,6 +41,12 @@ const availableModules = [
 		label: "Tender",
 		link: '/tender',
 		component: Tender
+	},
+	{
+		text: 'Digər',
+		label: "Other",
+		link: '/other',
+		component: Other
 	}
 ]
 const SelectModule = () => {
@@ -130,9 +137,8 @@ const SelectModule = () => {
 						</>
 						{
 							routes.map(route =>
-								<Route key={route.link} path={route.link} render={() =>
-									<>
-										<LeftSidePane
+								<Route key={route.link} path={route.link} >
+									<LeftSidePane
 											url={menuData.url}
 											links={menuData.routes}
 											ref={leftPaneRef}
@@ -143,8 +149,6 @@ const SelectModule = () => {
 											menuData={menuData}
 											setMenuData={setMenuData}
 										/>
-									</>
-								}>
 								</Route>
 							)
 						}

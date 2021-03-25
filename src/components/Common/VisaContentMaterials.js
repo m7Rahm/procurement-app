@@ -66,7 +66,7 @@ export default React.memo(VisaContentMaterials)
 
 const TableRow = (props) => {
 	const { canProceed, token, setOperationResult, index, forwardType, userData } = props;
-	const { amount, material_comment, order_material_id, material_name, total, department_id, order_type, title, result, order_result: orderResult } = props.material;
+	const { amount, material_comment, order_material_id, material_name, total, department_id, order_type, title, result, can_influence: canInfluence } = props.material;
 
 	const structureid = userData.userInfo.structureid;
 	const [disabled, setDisabled] = useState(true);
@@ -139,7 +139,7 @@ const TableRow = (props) => {
 			</div>
 			<div style={{ minWidth: '50px', flex: 'none' }}>
 				{
-					canEdit && order_type === 1 && result === 0 && orderResult === 0 &&
+					canEdit && order_type === 1 && result === 0 && canInfluence &&
 					<>
 						{
 							disabled && result === 0

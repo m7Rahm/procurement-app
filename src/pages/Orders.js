@@ -67,7 +67,7 @@ const Orders = (props) => {
             <Switch>
                 {
                     routes.map(route =>
-                        <Route key={route.link} path={`${path}${route.link}`}>
+                        <Route key={route.link} path={`${path}${route.link}/:docid?`}>
                             <route.component />
                         </Route>
                     )

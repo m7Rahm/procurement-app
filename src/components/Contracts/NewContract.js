@@ -40,7 +40,7 @@ const NewContract = (props) => {
             .then(respJ => {
                 if (respJ.length === 0) {
                     props.closeModal();
-                    props.updateCards({
+                    props.setInitData({
                         result: -3,
                         from: 0,
                         next: 20,

@@ -7,7 +7,7 @@ const modalContent = (Content) => ({ ...props }) =>
   <Content {...props} />
 
 const Modal = (props) => {
-  const { width, canBeClosed = true, number, title, changeModalState } = props;
+  const { style, canBeClosed = true, number, title, changeModalState } = props;
   const modalWrapperRef = useRef(null)
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
@@ -28,9 +28,9 @@ const Modal = (props) => {
   return (
     <>
       <div className="modal" onClick={closeModal}></div>
-      <div ref={modalWrapperRef} style={{ width: width }} className='modal-content wrapper'>
+      <div ref={modalWrapperRef} className='modal-content wrapper' style={style}>
         <div style={{ marginBottom: '20px' }}>
-          {title || ' Sifariş №'} {number}
+          {title || '_'} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
         <ModalContent

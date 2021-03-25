@@ -5,7 +5,7 @@ import EmptyContent from '../../Misc/EmptyContent'
 import Chat from '../../Misc/Chat'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { useLocation, useHistory } from 'react-router-dom'
-
+import AgreementVendorFiles from './AgreementVendorFiles'
 const AgreementContent = (props) => {
     const location = useLocation();
     const history = useHistory();
@@ -95,6 +95,10 @@ const AgreementContent = (props) => {
                                 <h1 style={{ float: 'right', fontSize: '24px' }}>{docState.actionDate}</h1>
                             </div>
                         }
+                        <AgreementVendorFiles
+                            agreementid={docid}
+                            vendorid={0}
+                        />
                         <AgreementMaterials
                             editable={false}
                             fetchFunction={fetchMaterials}
@@ -109,8 +113,7 @@ const AgreementContent = (props) => {
                             agreementResult={docState.agreementResult}
                             setDocState={setDocState}
                             referer={props.referer}
-                            searchStateRef={props.searchStateRef}
-                            setUpdateCards={props.setUpdateCards}
+                            setInitData={props.setInitData}
                         />
                         <Chat
                             loadMessages={fetchMessages}

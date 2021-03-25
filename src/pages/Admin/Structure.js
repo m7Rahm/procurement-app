@@ -151,6 +151,7 @@ const NewStructureRow = (props) => {
                     <option value="0">Filial</option>
                     <option value="1">Struktur Vahidi</option>
                     <option value="2">Anbar</option>
+                    <option value="3">STTŞ</option>
                 </select>
             </td>
             <td></td>
@@ -244,6 +245,7 @@ const TableRow = (props) => {
                     <option value="0">Filial</option>
                     <option value="1">Struktur Vahidi</option>
                     <option value="2">Anbar</option>
+                    <option value="3">STTŞ</option>
                 </select>
             </td>
             <td>

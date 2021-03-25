@@ -1,11 +1,10 @@
-import React, { useRef, useState, useMemo } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import NewOrderTableRow from './NewOrderTableRow'
 import NewOrderTableRowAdd from './NewOrderTableRowAdd'
 const NewOrderTableBody = (props) => {
   const modelsListRef = useRef(null);
   const { orderInfo, glCategories, handleSendClick } = props;
-  const { orderType, structure, glCategory } = orderInfo;
-  const subGlCategories = useMemo(() => glCategories.sub.filter(category => category.dependent_id === Number(glCategory)), [glCategory, glCategories.sub]);
+  const { orderType, structure } = orderInfo;
   const [materials, setMaterials] = useState([
     {
       id: Date.now(),
@@ -14,13 +13,17 @@ const NewOrderTableBody = (props) => {
       approx_price: 0,
       additionalInfo: '',
       class: '',
-      subGlCategory: '',
-      count: 1
+      subGlCategory: '-1',
+      count: 1,
+      isService: 0
     }
   ]);
   const onSendClick = () => {
     handleSendClick(materials)
   }
+  useEffect(() => {
+    setMaterials(prev => prev.filter(material => material.isService === orderType))
+  }, [orderType])
   return (
     <>
       <ul className="new-order-table">
@@ -45,7 +48,7 @@ const NewOrderTableBody = (props) => {
                 material={material}
                 key={material.id}
                 structure={structure}
-                subGlCategories={subGlCategories}
+                subGlCategories={glCategories.sub}
                 modelsListRef={modelsListRef}
               />
             )

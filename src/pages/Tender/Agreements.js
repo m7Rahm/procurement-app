@@ -18,11 +18,6 @@ const updateListContent = (data, token) => {
         }
     })
 }
-const initData = {
-    result: 0,
-    from: 0,
-    next: 20
-}
 const params = {
     active: 'id',
     number: 'number'
@@ -32,7 +27,11 @@ const Agreements = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const searchStateRef = useRef({ result: 0 });
-    const [updateCards, setUpdateCards] = useState(false);
+    const [initData, setInitData] = useState({
+        result: 0,
+        from: 0,
+        next: 20
+    });
     const [active, setActive] = useState({
         active: undefined,
         tranid: undefined
@@ -46,13 +45,12 @@ const Agreements = () => {
                 token={token}
                 searchStateRef={searchStateRef}
                 params={params}
-                updateCards={updateCards}
             />
             <AgreementContent
                 token={token}
                 docid={active.active}
                 searchStateRef={searchStateRef}
-                setUpdateCards={setUpdateCards}
+                setInitData={setInitData}
                 tranid={active.tranid}
                 setActive={setActive}
                 number={active.number}

@@ -48,8 +48,7 @@ const AgreementVendors = (props) => {
                     if (respJ.length === 0) {
                         closeModal();
                         props.setDocState(prev => ({ ...prev, userResult: -1, actionDate: 'Just now' }));
-                        if (props.searchStateRef.current.result === 0)
-                            props.setUpdateCards(prev => !prev)
+                            props.setInitData(prev => ({ ...prev }))
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -79,8 +78,7 @@ const AgreementVendors = (props) => {
                 .then(respJ => {
                     if (respJ.length === 0) {
                         props.setDocState(prev => ({ ...prev, userResult: 1, actionDate: 'Just now' }))
-                        if (props.searchStateRef.current.result === 0)
-                            props.setUpdateCards(prev => !prev)
+                            props.setInitData(prev => ({ ...prev }))
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -170,7 +168,7 @@ const AgreementVendors = (props) => {
                     </Modal>
                 }
                 <textarea
-                    style={{ margin: '30px', width: '61%', height: '50px' }}
+                    style={{ marginBottom: '10px', width: '61%', height: '50px' }}
                     placeholder="Əlavə qeydlər..."
                     defaultValue={props.comment || ''}
                     disabled={true}

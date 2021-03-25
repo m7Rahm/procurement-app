@@ -97,6 +97,7 @@ const SideBar = (props) => {
 								activeRef={activeRef}
 								id={visa.id}
 								isOpened={visa.is_read}
+								orderid={visa.order_id}
 								from={visa.sender_full_name}
 								priority={visa.priority}
 								remark={visa.comment}

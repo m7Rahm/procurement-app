@@ -6,6 +6,8 @@ import EmptyContent from '../../Misc/EmptyContent'
 import { MdDetails } from 'react-icons/md'
 import RightInfoBar from '../../Misc/RightInfoBar';
 import AgreementGeneralInfo from './AgreementGeneralInfo'
+
+const AreYouSure = lazy(() => import("../../modal content/AreYouSure"))
 const Modal = lazy(() => import('../../Misc/Modal'));
 const Participants = lazy(() => import('../../Common/ParticipantsUniversal'));
 const ContractContent = (props) => {
@@ -58,17 +60,30 @@ const ContractContent = (props) => {
         })
         , [docid, props.token, documentType]);
     const cancel = () => {
-        fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=${documentType}`, {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                if (respJ.length === 0)
-                    setContractDetails(prev => ({ content: prev.content.map(detail => ({ ...detail, doc_result: -1 })), active: false }))
+        const cancelContract = () => {
+            fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=${documentType}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + props.token
+                }
             })
-            .catch(ex => console.log(ex))
+                .then(resp => resp.json())
+                .then(respJ => {
+                    if (respJ.length === 0)
+                        setContractDetails(prev => ({ content: prev.content.map(detail => ({ ...detail, doc_result: -1 })), active: false }))
+                })
+                .catch(ex => console.log(ex))
+        }
+        setModalState({
+            visible: true,
+            style: {
+                width: "600px",
+                minWidth: "auto"
+            },
+            content: AreYouSure,
+            text: "Razılaşmanı imtina etməyə",
+            onCancel: closeModal,
+            onAccept: cancelContract
+        });
     }
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
@@ -96,7 +111,7 @@ const ContractContent = (props) => {
             .catch(ex => console.log(ex))
     }
     const showHistory = () => {
-        setModalState({ visible: true, fetchParticipants: fetchParticipants })
+        setModalState({ visible: true, fetchParticipants: fetchParticipants, content: Participants })
     }
     const closeModal = () => {
         setModalState({ visible: false })
@@ -111,7 +126,7 @@ const ContractContent = (props) => {
             {
                 modalState.visible &&
                 <Modal changeModalState={closeModal} childProps={modalState}>
-                    {Participants}
+                    {modalState.content}
                 </Modal>
             }
             {

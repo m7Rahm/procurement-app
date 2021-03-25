@@ -18,7 +18,7 @@ const AgreementMaterials = (props) => {
             ? <div style={{ maxWidth: '550px', margin: 'auto', overflow: 'visible' }}>
                 <h1>Məhsul siyahısı</h1>
                 <ul className="new-order-table">
-                    <li style={{ width: '100%' }}>
+                    <li style={{ width: '100%', background: "gainsboro" }}>
                         <div>#</div>
                         <div>Ad</div>
                         <div>Say</div>

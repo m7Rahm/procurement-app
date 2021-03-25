@@ -12,7 +12,7 @@ import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
 const ExpressVendorInfo = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
-    const attachmentsRef = useRef({});
+    const attachmentsRef = useRef({ new: [], fetched: [] });
     const { vendorid, onFinish } = props;
     const [disabled, setDisabled] = useState(props.disabled);
     const namRef = useRef(null);
@@ -53,7 +53,9 @@ const ExpressVendorInfo = (props) => {
         formData.append('tax_percentage', taxPercentageRef.current.value);
         formData.append('vendor_type', vendorTypeRef.current.value);
         formData.append('is_closed', vendorData.is_closed);
-        formData.append('close_date', closeDateRef.current ? closeDateRef.current.value : vendorData.close_date);
+        const closeDate = closeDateRef.current ? closeDateRef.current.value : vendorData.close_date
+        if(closeDate)
+            formData.append('close_date', closeDate);
         formData.append('close_reason', closeReasonRef.current ? closeReasonRef.current.value : vendorData.close_reason);
         formData.append('id', vendorData.id);
         const newFiles = attachmentsRef.current.new;
@@ -70,7 +72,7 @@ const ExpressVendorInfo = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
+                if (!respJ.length) {
                     onFinish();
                 }
             })
@@ -85,8 +87,8 @@ const ExpressVendorInfo = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    const emails = respJ[0].emails.split(',').map(email => ({ key: Math.random(), val: email }));
-                    const phone_numbers = respJ[0].phone_numbers.split(',').map(phoneNumb => ({ key: Math.random(), val: phoneNumb }));
+                    const emails = respJ[0].emails ? respJ[0].emails.split(',').map(email => ({ key: Math.random(), val: email })) : [];
+                    const phone_numbers = respJ[0].phone_numbers ? respJ[0].phone_numbers.split(',').map(phoneNumb => ({ key: Math.random(), val: phoneNumb })) : [];
                     const files = respJ[0].files ? respJ[0].files : ''
                     const filesArray = files.length !== 0
                         ? respJ[0].files.split(',').map(file => ({ key: file, val: file }))

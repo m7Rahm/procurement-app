@@ -108,10 +108,6 @@ const EditOrderRequest = (props) => {
             material_comment: ''
         }])
     }
-    const handleGlCategoryChange = (e) => {
-        const value = e.target.value;
-        setOrderState(prev => prev.map(material => ({ ...material, gl_category_id: Number(value) })))
-    }
     return (
         <div className="modal-content-new-order">
             {
@@ -121,18 +117,6 @@ const EditOrderRequest = (props) => {
                     operationDesc={operationResult.desc}
                 />
             }
-            <select
-                disabled={view !== 'returned'}
-                defaultValue={glCatid}
-                style={{ margin: '20px', maxWidth: '250px', padding: '8px 4px' }}
-                onChange={handleGlCategoryChange}
-            >
-                {
-                    glCategories.main.map(glCategory =>
-                        <option key={glCategory.id} value={glCategory.id}>{glCategory.name}</option>
-                    )
-                }
-            </select>
             <ul className="new-order-table">
                 <li>
                     <div>#</div>

@@ -17,25 +17,25 @@ import Materials from './Admin/OrderMaterials'
 import '../styles/Admin.css'
 const routes = [
 	{
-		text: 'Roles',
+		text: 'Rollar',
 		link: '/roles',
 		icon: IoMdSettings,
 		component: Roles
 	},
 	{
-		text: 'Users',
+		text: 'Istifadəçilər',
 		link: '/users',
 		icon: FaUsers,
 		component: Users
 	},
 	{
-		text: 'Structure',
+		text: 'Struktur',
 		link: '/structure',
 		icon: ImTree,
 		component: Structure
 	},
 	{
-		text: 'Materials',
+		text: 'Məhsullar',
 		link: '/materials',
 		icon: FaBoxes,
 		component: Materials

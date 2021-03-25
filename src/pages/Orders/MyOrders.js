@@ -4,24 +4,24 @@ import Search from '../../components/Search/Search'
 import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
 import Pagination from '../../components/Misc/Pagination';
 import { TokenContext } from '../../App'
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router';
 const MyOrders = () => {
   const wrapperRef = useRef(null);
   const [orders, setOrders] = useState({ count: 0, orders: [] });
-  const location = useLocation();
   const activePageRef = useRef(0);
   const tokenContext = useContext(TokenContext);
   const token = tokenContext[0].token
   const userData = tokenContext[0].userData;
-  const docNumber =  location.state ? location.state.docNumber : "";
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
+  const { docid: orderid } = useParams();
   const [searchData, setSearchData] = useState({
     dateFrom: '',
     dateTill: '',
     status: -3,
     date: '',
-    ordNumb: docNumber
+    ordNumb: ""
   });
+
   const updateList = (from) => {
     const data = JSON.stringify({ ...searchData, from: from, until: 20 });
     fetch(`http://192.168.0.182:54321/api/orders`, {
@@ -47,7 +47,8 @@ const MyOrders = () => {
       status: -3,
       dateFrom: '',
       dateTill: '',
-      ordNumb: docNumber
+      ordNumb: "",
+      id: orderid
     });
     //todo: create socket and connect
     fetch('http://192.168.0.182:54321/api/orders', {
@@ -65,7 +66,7 @@ const MyOrders = () => {
         setOrders({ count: totalCount, orders: respJ });
       })
       .catch(err => console.log(err))
-  }, [token, docNumber])
+  }, [token, orderid])
   return (
     <div style={{ paddingBottom: '66px' }}>
       <Search

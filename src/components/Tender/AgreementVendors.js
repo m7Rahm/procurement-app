@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import ForwardDocLayout from '../Misc/ForwardDocLayout';
 import AgreementVendorRow from './AgreementVendorRow'
 import OfferPictures from '../modal content/OfferPictures'
 import OperationResult from '../Misc/OperationResult'
 import { AiFillCheckCircle } from 'react-icons/ai'
+import ContractFiles from '../Contracts/ContractFiles'
+
 const AgreementVendors = (props) => {
     const [agreementVendors, setAgreementVendors] = useState([]);
     const [modalState, setModalState] = useState({ display: false, key: null });
+    const [commonFiles, setCommonFiles] = useState([]);
     const [operationResult, setOperationResult] = useState({
         visible: false,
         desc: '',
@@ -26,7 +29,14 @@ const AgreementVendors = (props) => {
             const ext = fileName.pop();
             const name = fileName.join('.');
             const sentName = `${name}:${files[i].supplier}.${ext}`;
-            formData.append('files', files[i], sentName)
+            formData.append("files", files[i], sentName)
+        }
+        for (let i = 0; i < commonFiles.length; i++) {
+            const fileName = commonFiles[i].name.split('.');
+            fileName.length--;
+            const name = fileName.join('.');
+            const sentName = `${name}:0.${commonFiles[i].ext}`;
+            formData.append("files", commonFiles[i], sentName);
         }
         fetch('http://192.168.0.182:54321/api/new-agreement', {
             method: 'POST',
@@ -37,7 +47,7 @@ const AgreementVendors = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
+                if (!respJ.length) {
                     setOperationResult(prev => ({ ...prev, visible: true, desc: 'Əməliyyat uğurla tamamlandı' }));
                     props.setIsEmpty(true);
                 }
@@ -49,6 +59,42 @@ const AgreementVendors = (props) => {
     const addVendor = (vendor) => {
         setAgreementVendors(prev => [...prev, { ...vendor, key: Date.now(), className: 'new-row', files: [], comment: '' }])
     }
+    const addCommonFiles = useCallback((e) => {
+        const files = e.target.files;
+        if (files)
+            setCommonFiles(prev => {
+                const newFiles = [];
+                let unique = true;
+                if (prev.length !== 0) {
+                    for (let j = 0; j < files.length; j++) {
+                        for (let i = 0; i < prev.length; i++) {
+                            if (files[j].name === prev[i].name) {
+                                unique = false;
+                                break;
+                            }
+                        }
+                        if (unique) {
+                            const ext = files[j].name.split('.').pop();
+                            files[j].ext = ext;
+                            newFiles.push(files[j]);
+                        }
+                        unique = true;
+                    }
+                    return [...prev, ...newFiles]
+                }
+                else {
+                    for (let i = 0; i < files.length; i++) {
+                        const ext = files[i].name.split('.').pop();
+                        files[i].ext = ext;
+                        newFiles.push(files[i]);
+                    }
+                    return newFiles
+                }
+            })
+    }, []);
+    const removeFile = useCallback((file) => {
+        setCommonFiles(prev => prev.filter(doc => doc.name !== file.name))
+    }, [])
     return (
         <>
             <div style={{ float: 'left' }}>
@@ -57,7 +103,15 @@ const AgreementVendors = (props) => {
                     token={props.token}
                 />
             </div>
-            <div style={{ clear: 'both' }}>
+            <div style={{ clear: 'both', position: "relative", top: "10px" }}>
+                <ContractFiles
+                    files={commonFiles}
+                    addFiles={addCommonFiles}
+                    removeFile={removeFile}
+                />
+            </div>
+
+            <div style={{ position: "relative", top: "10px" }}>
                 {
                     modalState.display &&
                     <OfferPictures
@@ -118,8 +172,9 @@ export default AgreementVendors
 
 export const VendorsList = (props) => {
     const [vendors, setVendors] = useState({ all: [], available: [], visible: [], offset: 2 });
-    const { headerVisible = true } = props
+    const { headerVisible = true, uid = "0" } = props
     const vendorsListRef = useRef(null);
+    const inputRef = useRef(null);
     useEffect(() => {
         const controller = new AbortController();
         fetch('http://192.168.0.182:54321/api/get-vendors', {
@@ -155,16 +210,16 @@ export const VendorsList = (props) => {
     }
     const handleFocusLose = (e) => {
         const relatedTarget = e.relatedTarget;
-        if (relatedTarget === null || relatedTarget.id !== "windowed-vendors-list")
+        if (relatedTarget === null || relatedTarget.id !== "windowed-vendors-list" + uid)
             vendorsListRef.current.style.display = "none"
     }
-    const handleVendorClick = (vendor) => {
-        props.addVendor(vendor);
+    const handleVendorClick = (vendor, inputRef, vendorsListRef) => {
+        props.addVendor(vendor, inputRef, vendorsListRef);
         // vendorsListRef.current.style.display = "none"
     }
     const handleItemBlur = (e) => {
         const relatedTarget = e.relatedTarget;
-        if (relatedTarget === null || relatedTarget.id !== "windowed-vendors-input")
+        if (relatedTarget === null || relatedTarget.id !== "windowed-vendors-input" + uid)
             vendorsListRef.current.style.display = "none"
     }
     return (
@@ -172,16 +227,17 @@ export const VendorsList = (props) => {
             {headerVisible && <h1 style={{ textAlign: 'center', fontSize: '22px' }}>Vendorlar</h1>}
             <div style={{ position: 'relative' }}>
                 <input
+                    ref={inputRef}
                     style={{ display: 'block', width: "100%", padding: '3px' }}
                     type="text" onChange={handleVendorSearch}
                     onFocus={handleInputFocus}
                     onBlur={handleFocusLose}
-                    id="windowed-vendors-input"
+                    id={"windowed-vendors-input" + uid}
                 />
                 <div tabIndex="1" ref={vendorsListRef}
                     onBlur={handleItemBlur}
-                    id="windowed-vendors-list"
-                    style={{ position: 'absolute', zIndex: 1, display: 'none', top: "30px", left: 0, right: 0 }}
+                    id={"windowed-vendors-list" + uid}
+                    style={{ position: 'absolute', zIndex: 2, display: 'none', top: "30px", left: 0, right: 0 }}
                 >
                     <div style={{ maxHeight: '200px', position: 'relative', overflow: 'auto', backdropFilter: "blur(3px)", backgroundColor: 'slategray' }} onScroll={handleScroll}>
                         <ul style={{ height: 36 * vendors.available.length, width: "100%" }} className="vendors-list">
@@ -189,8 +245,8 @@ export const VendorsList = (props) => {
                                 vendors.visible.map((vendor, index) =>
                                     <li
                                         key={vendor.id}
-                                        onClick={() => handleVendorClick(vendor)}
-                                        style={{ top: (vendors.offset + index - 2) * 36 + 'px' }}
+                                        onClick={() => handleVendorClick(vendor, inputRef, vendorsListRef)}
+                                        style={{ top: (vendors.offset + index - 2) * 36 + 'px', overflow: "hidden" }}
                                     >
                                         {vendor.name}
                                     </li>

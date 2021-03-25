@@ -54,7 +54,7 @@ const Budget = () => {
             .then(resp => resp.json())
             .then(respJ => {
                 categories.current = respJ;
-                const glCategories = respJ.filter(category => category.dependent_id === null);
+                const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories(glCategories);
             })
             .catch(ex => console.log(ex))
