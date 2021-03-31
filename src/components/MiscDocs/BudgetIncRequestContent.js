@@ -1,12 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { TokenContext } from '../../App';
+import React, { useEffect, useRef, useState } from 'react'
 import { months } from '../../data/data'
 import ParticipantsUniversal from '../Common/ParticipantsUniversal'
 import { FaAngleDown, FaCheck, FaTimes } from 'react-icons/fa'
 const BudgetIncRequestContent = (props) => {
-    const { tranid, docid, docType } = props;
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
+    const { docid, docType, token } = props;
     const [docState, setDocState] = useState({ content: [], active: false });
     const comment = docState.content.length !== 0 ? docState.content[0].comment : "";
     const textareaRef = useRef(null);
@@ -14,24 +11,17 @@ const BudgetIncRequestContent = (props) => {
     const participantsRef = useRef(null);
     let result = undefined;
     let time = undefined;
-    if (docState.content.length && docState.content[0].user_result !== 0 && tranid) {
+    if (docState.content.length && docState.content[0].user_result !== 0 && docState.content[0].tran_id) {
         result = docState.content[0].user_result === 1 ? true : false;
         time = docState.content[0].action_date_time;
-    } else if (docState.content.length && docState.content[0].doc_result !== 0 && !tranid) {
+    } else if (docState.content.length && docState.content[0].doc_result !== 0 && !docState.content[0].tran_id) {
         result = docState.content[0].doc_result === 1 ? true : false;
         time = docState.content[0].doc_action_date_time;
-    }
-    const fetchParticipants = () => {
-        return fetch(`http://192.168.0.182:54321/api/misc-doc-participants?docid=${docid}&docType=${docType}`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
     }
     useEffect(() => {
         const abortController = new AbortController();
         if (docid) {
-            fetch(`http://192.168.0.182:54321/api/misc-doc-content?docid=${docid}&docType=${docType}${tranid ? "&tranid=" + tranid : ""}`, {
+            fetch(`http://192.168.0.182:54321/api/misc-doc-content?docid=${docid}&docType=${docType}`, {
                 signal: abortController.signal,
                 headers: {
                     "Authorization": "Bearer " + token
@@ -47,7 +37,7 @@ const BudgetIncRequestContent = (props) => {
                 })
                 .catch(ex => console.log(ex))
         }
-    }, [token, tranid, docid, docType]);
+    }, [token, docid, docType]);
     const handleParticipantsTransition = () => {
         if (participantsRef.current) {
             participantsRef.current.classList.toggle('visa-content-participants-hide');
@@ -63,7 +53,7 @@ const BudgetIncRequestContent = (props) => {
         const abortController = new AbortController();
         const data = JSON.stringify({
             action: action,
-            tranid: tranid,
+            tranid: docState.content[0].tran_id,
             docid: docid,
             comment: textareaRef.current.value
         })
@@ -78,10 +68,9 @@ const BudgetIncRequestContent = (props) => {
             body: data
         })
             .then(resp => resp.ok ? resp.json() : new Error("Internal Server Error"))
-            .then(respJ => {
-                if (respJ.length !== 0) {
-                    setDocState(prev => ({ content: prev.content.map(row => ({ ...row, user_result: action })), active: false }))
-                }
+            .then(_ => {
+                setDocState(prev => ({ content: prev.content.map(row => ({ ...row, user_result: action })), active: false }))
+                props.setInitData(prev => ({ ...prev }))
             })
             .catch(ex => console.log(ex))
     }
@@ -89,6 +78,7 @@ const BudgetIncRequestContent = (props) => {
 
     }
     return (
+        docState.content.length &&
         <div className="visa-content-container">
             <div style={{ maxWidth: "1024px", margin: "auto" }}>
                 <h1>
@@ -135,7 +125,7 @@ const BudgetIncRequestContent = (props) => {
                     docState.active &&
                     <>
                         {
-                            props.tranid
+                            docState.content[0].tran_id
                                 ? <>
                                     <textarea ref={textareaRef} placeholder="Qeydlərinizi daxil edin.." style={{ width: '82%', minHeight: '100px' }} />
                                     <div className="accept-decline-container">
@@ -169,7 +159,7 @@ const BudgetIncRequestContent = (props) => {
                 {
                     participantsVisiblity &&
                     <div ref={participantsRef} className="visa-content-participants-show">
-                        <ParticipantsUniversal fetchParticipants={fetchParticipants} />
+                        <ParticipantsUniversal fetchParticipants={props.fetchParticipants} />
                     </div>
                 }
             </div>

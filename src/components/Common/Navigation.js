@@ -4,8 +4,9 @@ import { Link, useHistory } from 'react-router-dom';
 import { MdNotifications } from 'react-icons/md'
 import logo from '../../logo.svg';
 const getNotifText = (notif) => {
+    const text = notif.doc_type === 2 ? "Müqavilə Razılaşması" : notif.doc_type === 1 ? "Qiymət Təklifi Araşdırması" : "Ödəniş Razılaşması"
     if (notif.category_id === 1)
-        return <> yeni sifariş</>
+        return <> Yeni {text}</>
     else if (notif.category_id === 2)
         return (
             <>
@@ -20,10 +21,6 @@ const getNotifText = (notif) => {
                 }
             </>
         )
-    else if (notif.category_id === 3)
-        return " yeni müqavilə razılaşması göndərdi"
-    else if (notif.category_id === 4)
-        return " yeni ödəniş razılaşması göndərdi"
 }
 const Navigation = (props) => {
     const moduleNavigationRef = useRef(null);
@@ -166,12 +163,21 @@ const Navigation = (props) => {
         notificationsRef.current.style.display = notificationsRef.current.style.display === "block" ? "none" : "block"
     }
     const pushHistory = (notification) => {
-        const module = notification.category_id < 5 ? "/orders" : notification.category_id < 10 ? "/tender" : "/contracts";
-        const subModule = notification.category_id === 1
+        let module = "/orders";
+        if (notification.category_id === 2 && notification.doc_type !== 0) {
+            module = notification.doc_type === 1
+                ? "/tender"
+                : "/contracts";
+        }
+        const subModule = notification.doc_type === 0 && notification.category_id === 1
             ? "/visas/"
-            : notification.category_id === 2
+            : notification.doc_type === 0 && notification.category_id === 2
                 ? "/my-orders/"
-                : "/contracts/";
+                : notification.doc_type === 1
+                    ? "/agreements/"
+                    : notification.doc_type === 2
+                        ? "/contracts/"
+                        : "/payments/"
         const { tran_id: tranid, doc_number: docNumber } = notification;
         history.push(module + subModule + tranid, { tranid, docNumber: docNumber });
     }

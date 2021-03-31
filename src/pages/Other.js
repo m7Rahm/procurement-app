@@ -1,16 +1,17 @@
 import React, { useEffect } from "react"
 import {
+    Route,
     useRouteMatch
 } from "react-router-dom"
-import { optionsAgreements } from "../data/data"
+import { optionsAgreements, miscDocTypes } from "../data/data"
 import CardsList from "../components/HOC/CardsList"
 import OrdersSearchHOC from "../components/Search/OrdersSearchHOC"
 import SideBarContainer from "../components/HOC/SideBarContainer"
 import AgreementCard from "../components/VisaCards/AgreementCard"
 import MiscDocsContainer from "../components/HOC/MiscDocsContainer"
 const SideBarContent = CardsList(AgreementCard);
-const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
-const SideBar = React.memo(SideBarContainer(Search));
+const Search = OrdersSearchHOC(optionsAgreements, miscDocTypes);
+const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const Inbox = MiscDocsContainer(SideBar)
 
 const updateListContent = (data, token) => {
@@ -40,19 +41,22 @@ const params = {
 const routes = [];
 const Other = (props) => {
     const setMenuData = props.setMenuData;
-    const { url } = useRouteMatch()
+    const { url, path } = useRouteMatch()
     useEffect(() => {
         setMenuData({ url: url, routes: routes })
     }, [url, setMenuData])
     return (
-        <div className="dashboard">
-            <Inbox
-                inData={inData}
-                params={params}
-                docType={inData.docType}
-                updateListContent={updateListContent}
-            />
-        </div>
+        <Route path={`${path}/:docid?`}>
+            <div className="dashboard">
+                <Inbox
+                    inData={inData}
+                    params={params}
+                    referer="receiver"
+                    docType={inData.docType}
+                    updateListContent={updateListContent}
+                />
+            </div>
+        </Route>
     )
 }
 export default Other

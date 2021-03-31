@@ -4,12 +4,14 @@ import { TokenContext } from '.././../App'
 import { FaTimes } from 'react-icons/fa';
 import ContractFiles from './ContractFiles'
 import { VendorsList } from '../../components/Tender/AgreementVendors.js'
+import { WebSocketContext } from "../../pages/SelectModule"
 const NewContract = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
     const [selectedDocs, setSelectedDocs] = useState([]);
     const [files, setFiles] = useState([]);
     const [vendor, setVendor] = useState(null);
+    const webSocket = useContext(WebSocketContext);
 
     const addAgreement = useCallback((agreement) => {
         setSelectedDocs(prev => {
@@ -38,15 +40,21 @@ const NewContract = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (respJ.length === 0) {
-                    props.closeModal();
-                    props.setInitData({
-                        result: -3,
-                        from: 0,
-                        next: 20,
-                        update: true
-                    })
+                console.log(respJ)
+                if (respJ.length !== 0) {
+                    const message = {
+                        message: "notification",
+                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nC" })),
+                        data: undefined
+                    }
+                    webSocket.send(JSON.stringify(message))
                 }
+                props.closeModal();
+                props.setInitData({
+                    result: 0,
+                    from: 0,
+                    next: 20
+                })
             })
             .catch(ex => console.log(ex))
     }

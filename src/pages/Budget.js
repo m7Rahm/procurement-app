@@ -22,8 +22,8 @@ import SideBarContainer from '../components/HOC/SideBarContainer'
 import AgreementCard from '../components/VisaCards/AgreementCard'
 
 const SideBarContent = CardsList(AgreementCard);
-const Search = OrdersSearchHOC(SideBarContent, optionsAgreements);
-const SideBar = React.memo(SideBarContainer(Search));
+const Search = OrdersSearchHOC(optionsAgreements);
+const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const BudgetDocuments = MiscDocsContainer(SideBar)
 
 const routes = [

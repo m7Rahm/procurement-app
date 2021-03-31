@@ -24,7 +24,7 @@ const Visas = () => {
     body: data
   }), []);
   return (
-    <div style={{ display: 'flex', position: 'relative', top: '-56px' }}>
+    <div style={{ display: 'flex', position: 'relative' }}>
       <SideBar
         updateList={updateList}
         setActive={setActive}

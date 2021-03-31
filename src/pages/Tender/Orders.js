@@ -7,8 +7,8 @@ import OrdersSearchHOC from '../../components/Search/OrdersSearchHOC'
 import AgreementContent from '../../components/Tender/AgreementContent'
 import { optionsReadyOrders } from '../../data/data'
 const SideBarContent = CardsList(ReadyOfferCard);
-const WithSearch = OrdersSearchHOC(SideBarContent, optionsReadyOrders);
-const SideBar = React.memo(SideBarContainer(WithSearch));
+const WithSearch = OrdersSearchHOC(optionsReadyOrders);
+const SideBar = React.memo(SideBarContainer(WithSearch, SideBarContent));
 const updateListContent = (data, token) => {
     const apiData = JSON.stringify(data);
     return fetch('http://192.168.0.182:54321/api/get-ready-orders', {

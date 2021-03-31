@@ -14,12 +14,11 @@ const AgreementContent = (props) => {
     const docid = props.docid ? props.docid : locationState ? locationState.agreement.id : undefined;
     const number = props.number ? props.number : locationState ? locationState.agreement.number : null;
     const [docState, setDocState] = useState({ tranid: undefined, docid: docid });
-    const tranid = props.tranid;
     const documentType = 1;
     useLayoutEffect(() => {
         let mounted = true;
         if (docid && mounted)
-            fetch(`http://192.168.0.182:54321/api/agreement-content?${tranid ? `tranid=${tranid}&` : ''}docid=${docid}`, {
+            fetch(`http://192.168.0.182:54321/api/agreement-content?docid=${docid}`, {
                 headers: {
                     "Authorization": "Bearer " + props.token
                 }
@@ -31,12 +30,13 @@ const AgreementContent = (props) => {
                             agreementResult: respJ[0].agreement_result,
                             userResult: respJ[0].result,
                             comment: respJ[0].comment,
-                            actionDate: respJ[0].action_date_time
+                            actionDate: respJ[0].action_date_time,
+                            tranid: respJ[0].tran_id
                         }))
                 })
                 .catch(ex => console.log(ex));
         return () => mounted = false
-    }, [tranid, docid, props.token]);
+    }, [docid, props.token]);
     const fetchMaterials = useCallback(() =>
         fetch(`http://192.168.0.182:54321/api/agreement-materials/${docid}`, {
             headers: {
@@ -107,7 +107,7 @@ const AgreementContent = (props) => {
                         <AgreementVendors
                             token={props.token}
                             active={docid}
-                            tranid={tranid}
+                            tranid={docState.tranid}
                             comment={docState.comment}
                             userResult={docState.userResult}
                             agreementResult={docState.agreementResult}
@@ -119,7 +119,7 @@ const AgreementContent = (props) => {
                             loadMessages={fetchMessages}
                             documentid={docid}
                             documentType={documentType}
-                            tranid={props.tranid}
+                            tranid={docState.tranid}
                             sendMessage={sendMessage}
                         />
                     </>

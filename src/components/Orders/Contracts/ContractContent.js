@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, lazy } from 'react'
+import React, { useState, useEffect, useCallback, useRef, lazy, useContext } from 'react'
 import { FaFilePdf, FaFileExcel, FaFileWord, FaCheck, FaTimes } from 'react-icons/fa';
 import { AiFillFileUnknown } from 'react-icons/ai'
 import Chat from '../../Misc/Chat'
@@ -6,6 +6,7 @@ import EmptyContent from '../../Misc/EmptyContent'
 import { MdDetails } from 'react-icons/md'
 import RightInfoBar from '../../Misc/RightInfoBar';
 import AgreementGeneralInfo from './AgreementGeneralInfo'
+import { WebSocketContext } from "../../../pages/SelectModule";
 
 const AreYouSure = lazy(() => import("../../modal content/AreYouSure"))
 const Modal = lazy(() => import('../../Misc/Modal'));
@@ -16,6 +17,7 @@ const ContractContent = (props) => {
     const [modalState, setModalState] = useState({ visible: false });
     const textareaRef = useRef(null);
     const docid = props.docid;
+    const webSocket = useContext(WebSocketContext);
     const documentType = 2;
     const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=2`, {
         headers: {
@@ -32,7 +34,7 @@ const ContractContent = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (mounted)
+                    if (mounted && respJ.length !== 0)
                         setContractDetails({
                             content: respJ,
                             active: respJ[0].doc_result === 0 && (respJ[0].user_result === 0 || respJ[0].user_result === undefined)
@@ -87,7 +89,7 @@ const ContractContent = (props) => {
     }
     const acceptDeclince = (action) => {
         const data = JSON.stringify({
-            tranid: props.tranid,
+            tranid: contractDetails.content[0].id,
             messageType: documentType,
             messageid: docid,
             action: action,
@@ -102,11 +104,18 @@ const ContractContent = (props) => {
             },
             body: data
         })
-            .then(resp => resp.json())
+            .then(resp => resp.ok ? resp.json() : new Error("Internal Server Error"))
             .then(respJ => {
-                if (respJ.length === 0) {
-                    setContractDetails(prev => ({ active: false, content: prev.content.map(row => ({ ...row, user_result: action })) }))
+                if (respJ.length !== 0) {
+                    const message = {
+                        message: "notification",
+                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.next_id !== 0 ? "nC" : "sNot" })),
+                        data: undefined
+                    }
+                    webSocket.send(JSON.stringify(message))
                 }
+                setContractDetails(prev => ({ active: false, content: prev.content.map(row => ({ ...row, user_result: action })) }))
+                props.setInitData(prev => ({ ...prev }))
             })
             .catch(ex => console.log(ex))
     }
@@ -151,7 +160,7 @@ const ContractContent = (props) => {
                                                     : ''
                                     }
                                 </span>
-                                {props.number}
+                                {contractDetails.content[0].number}
                                 <span style={{ float: 'right', cursor: 'pointer', color: "rgb(255, 174, 0)" }}>
                                     <MdDetails size="30" onClick={showHistory} />
                                 </span>
@@ -203,7 +212,6 @@ const ContractContent = (props) => {
                             loadMessages={fetchMessages}
                             documentid={docid}
                             documentType={documentType}
-                            tranid={props.tranid}
                             sendMessage={sendMessage}
                         />
                         {

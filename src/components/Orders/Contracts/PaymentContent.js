@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, lazy } from "react"
+import React, { useState, useEffect, useCallback, useRef, lazy, useContext } from "react"
 import { FaCheck, FaTimes } from "react-icons/fa";
 import Chat from "../../Misc/Chat"
 import EmptyContent from "../../Misc/EmptyContent"
@@ -7,6 +7,7 @@ import { ContractFiles } from "./ContractContent"
 import RightInfoBar from "../../Misc/RightInfoBar";
 import AgreementGeneralInfo from "./AgreementGeneralInfo"
 import PaymentMaterials from "./PaymentMaterials"
+import { WebSocketContext } from "../../../pages/SelectModule";
 
 const Modal = lazy(() => import("../../Misc/Modal"));
 const AreYouSure = lazy(() => import("../../modal content/AreYouSure"))
@@ -16,6 +17,7 @@ const PaymentContent = (props) => {
     const [rightPanel, setRightPanel] = useState({ visible: false, id: null });
     const [modalState, setModalState] = useState({ visible: false })
     const textareaRef = useRef(null);
+    const webSocket = useContext(WebSocketContext);
     const docid = props.docid;
     const documentType = 3;
     const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=${documentType}`, {
@@ -52,8 +54,7 @@ const PaymentContent = (props) => {
             },
             body: apiData
         })
-    }
-        , [props.token, documentType]);
+    }, [props.token, documentType]);
     const fetchMessages = useCallback((from = 0) =>
         fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`, {
             headers: {
@@ -107,12 +108,18 @@ const PaymentContent = (props) => {
             },
             body: data
         })
-            .then(resp => resp.json())
+            .then(resp => resp.ok ? resp.json() : new Error("Internal Server Error"))
             .then(respJ => {
-                if (respJ.length === 0) {
-                    setPaymentDetails(prev => ({ active: false, content: prev.content.map(row => ({ ...row, user_result: action })) }))
-                    props.setInitData(prev => ({ ...prev }))
+                if (respJ.length !== 0) {
+                    const message = {
+                        message: "notification",
+                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.next_id !== 0 ? "nP" : "sNot" })),
+                        data: undefined
+                    }
+                    webSocket.send(JSON.stringify(message))
                 }
+                setPaymentDetails(prev => ({ active: false, content: prev.content.map(row => ({ ...row, user_result: action })) }))
+                props.setInitData(prev => ({ ...prev }))
             })
             .catch(ex => console.log(ex))
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 
-const SideBarContainer = (Search) => function SideBar(props) {
+const SideBarContainer = (Search, CardsList) => function SideBar(props) {
     const { updateListContent, initData, setActive, token, newDocNotifName } = props;
     const [cards, setCards] = useState(props.cards ? props.cards : { content: [], count: 0 });
     const updateList = useCallback((data) => {
@@ -25,13 +25,18 @@ const SideBarContainer = (Search) => function SideBar(props) {
     return (
         <div className='side-bar'>
             <Search
-                cards={cards}
+                count={cards.count}
                 initData={initData}
                 newDocNotifName={newDocNotifName}
-                setActive={setActive}
                 updateList={updateList}
                 params={props.params}
-            />
+            >
+                <CardsList
+                    params={props.params}
+                    cards={cards.content}
+                    setActive={setActive}
+                />
+            </Search>
         </div>
     )
 }

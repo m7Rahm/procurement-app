@@ -68,7 +68,7 @@ const MyOrders = () => {
       .catch(err => console.log(err))
   }, [token, orderid])
   return (
-    <div style={{ paddingBottom: '66px' }}>
+    <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
       <Search
         searchData={searchData}
         setSearchData={setSearchData}

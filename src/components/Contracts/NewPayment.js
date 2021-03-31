@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback, useRef, lazy, Susp
 import ForwardDocLayout from "../Misc/ForwardDocLayout"
 import { TokenContext } from ".././../App"
 import ContractFiles from "./ContractFiles"
+import { WebSocketContext } from "../../pages/SelectModule"
 import PaymentOrderMaterials from "./PaymentOrderMaterials"
 const OperationResult = lazy(() => import("../Misc/OperationResult"))
 const fetchAgreements = (token, controller) =>
@@ -17,6 +18,7 @@ const NewPayment = (props) => {
     const token = tokenContext[0].token;
     const [files, setFiles] = useState([]);
     const [orderState, setOrderState] = useState({ materials: [], numbers: [], all: {} });
+    const webSocket = useContext(WebSocketContext);
     const getOrderMaterials = useCallback((order) => {
         const { number, id } = order;
         fetch(`http://192.168.0.182:54321/api/order-materials?orderid=${id}`, {
@@ -75,15 +77,20 @@ const NewPayment = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (respJ.length === 0) {
-                        props.closeModal();
-                        props.setInitData({
-                            result: 0,
-                            from: 0,
-                            next: 20,
-                            update: true
-                        })
+                    if (respJ.length !== 0) {
+                        const message = {
+                            message: "notification",
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nP" })),
+                            data: undefined
+                        }
+                        webSocket.send(JSON.stringify(message))
                     }
+                    props.closeModal();
+                    props.setInitData({
+                        result: 0,
+                        from: 0,
+                        next: 20
+                    })
                 })
                 .catch(ex => console.log(ex))
         }

@@ -6,13 +6,14 @@ import { BsArrowUpShort } from 'react-icons/bs'
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
-const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
+const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(props) {
     const activePageRef = useRef(0);
     const advSearchRef = useRef(null);
     const iconRef = useRef(null);
     const notifIcon = useRef(null);
     const [searchBarState, setSearchBarState] = useState(false);
     const selectRef = useRef(null);
+    const docTypesRef = useRef(null);
     const inputNumberRef = useRef(null);
     const searchStateRef = useRef({
         ...props.initData,
@@ -46,10 +47,15 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
         }
     }
     const refreshList = (from) => {
-        props.updateList({ ...searchStateRef.current, from, result: selectRef.current.value, number: inputNumberRef.current.value })
+        const searchData = { ...searchStateRef.current, from, number: inputNumberRef.current.value };
+        if (selectRef.current)
+            searchData.result = selectRef.current.value;
+        if (docTypesRef.current)
+            searchData.docType = docTypesRef.current.value;
+        props.updateList(searchData)
     }
     const handleSearchClick = () => {
-        props.updateList({ ...searchStateRef.current, result: selectRef.current.value, number: inputNumberRef.current.value, from: 0 })
+        refreshList(0)
     }
     const resetState = () => {
     }
@@ -92,13 +98,26 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
                                     handleInputChange={handleInputChange}
                                 />
                             </div>
-                            <select defaultValue="0" style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
-                                {
-                                    options.map(option =>
-                                        <option key={option.val} value={option.val}>{option.text}</option>
-                                    )
-                                }
-                            </select>
+                            {
+                                options.length &&
+                                <select defaultValue="0" style={{ padding: '6px 0px', float: 'left' }} ref={selectRef}>
+                                    {
+                                        options.map(option =>
+                                            <option key={option.val} value={option.val}>{option.text}</option>
+                                        )
+                                    }
+                                </select>
+                            }
+                            {
+                                docTypes.length !== 0 &&
+                                <select defaultValue="0" style={{ padding: '6px 0px', float: 'right', margin: "0px 5px" }} ref={docTypesRef}>
+                                    {
+                                        docTypes.map(option =>
+                                            <option key={option.val} value={option.val}>{option.text}</option>
+                                        )
+                                    }
+                                </select>
+                            }
                             <div className="search-ribbon">
                                 <div onClick={handleSearchClick}>Axtar</div>
                                 <div onClick={resetState}>Filteri təmizlə</div>
@@ -115,13 +134,9 @@ const OrdersSearchHOC = (Content, options = []) => function SearchBar(props) {
                     Yeni bildiriş
                 </span>
             </div>
-            <Content
-                params={props.params}
-                cards={props.cards.content}
-                setActive={props.setActive}
-            />
+            {props.children}
             <Pagination
-                count={props.cards.count}
+                count={props.count}
                 activePageRef={activePageRef}
                 updateList={refreshList}
             />

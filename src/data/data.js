@@ -74,30 +74,43 @@ export const months = [
 
 
 export const availableLinks = [
-        'Sifarişlərim',
-        'Vizalarım',
-        'Drafts',
-        'Arxiv',
-        'Gələnlər',
-        'Qiymət təklifləri',
-        'Anbar',
-        'Users',
-        'System Params',
-        'Structure',
-        'Dashboard',
-        'Büccə'
-    ];
+    'Sifarişlərim',
+    'Vizalarım',
+    'Drafts',
+    'Arxiv',
+    'Gələnlər',
+    'Qiymət təklifləri',
+    'Anbar',
+    'Users',
+    'System Params',
+    'Structure',
+    'Dashboard',
+    'Büccə'
+];
 export const availableOperations = [
-        'Sifariş yaratmaq',
-        'Sifarişi təsdiq etmək',
-        'Sifarişə etiraz etmək',
-        'Sifarişi redaktəyə qaytarmaq',
-        'Sifarişi redaktə etmək',
-        'Büccə daxil etmək',
-        'Yeni məhsul əlavə etmək'
-    ];
+    'Sifariş yaratmaq',
+    'Sifarişi təsdiq etmək',
+    'Sifarişə etiraz etmək',
+    'Sifarişi redaktəyə qaytarmaq',
+    'Sifarişi redaktə etmək',
+    'Büccə daxil etmək',
+    'Yeni məhsul əlavə etmək'
+];
 
-
+export const miscDocTypes = [
+    {
+        val: "0",
+        text: "Hamısı"
+    },
+    {
+        val: "1",
+        text: "Büdcə artırılması"
+    },
+    {
+        val: "2",
+        text: "Silinmə"
+    },
+]
 export const modules = [
     {
         text: 'Admin',
@@ -109,7 +122,7 @@ export const modules = [
     },
     {
         text: 'Orders',
-        link:'/orders'
+        link: '/orders'
     },
     {
         text: 'Contracts',
@@ -149,11 +162,11 @@ export const expressVendorInit = {
 export const vendorTypes = [
     {
         val: 1,
-        text: 'Fiziki şəxs' 
+        text: 'Fiziki şəxs'
     },
     {
         val: 2,
-        text: 'Hüquqi şəxs' 
+        text: 'Hüquqi şəxs'
     }
 ];
 export const optionsAgreements = [
@@ -195,38 +208,38 @@ export const optionsReadyOrders = [
 export const workSectors = [
     {
         val: 1,
-        text: 'Satış' 
+        text: 'Satış'
     },
     {
         val: 2,
-        text: 'Ximət' 
+        text: 'Ximət'
     }
 ];
 export const taxTypes = [
     {
         val: 1,
-        text: 'ƏDV' 
+        text: 'ƏDV'
     },
     {
         val: 2,
-        text: 'Sadələşdirilmiş' 
+        text: 'Sadələşdirilmiş'
     },
     {
         val: 3,
-        text: 'Ticarət və ictimai iaşə' 
+        text: 'Ticarət və ictimai iaşə'
     }
 ];
 export const riskZones = [
     {
         val: 1,
-        text: 'Orta' 
+        text: 'Orta'
     },
     {
         val: 2,
-        text: 'Yüksək' 
+        text: 'Yüksək'
     },
     {
         val: 3,
-        text: 'Qara siyahı' 
+        text: 'Qara siyahı'
     }
 ];

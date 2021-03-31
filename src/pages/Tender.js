@@ -1,46 +1,62 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react"
 import {
     Switch,
     Route,
     useRouteMatch
-} from 'react-router-dom';
-import { MdLocalOffer } from 'react-icons/md'
-import { FaCartArrowDown, FaTasks } from 'react-icons/fa'
-import { IoIosDocument, IoIosBulb } from 'react-icons/io'
-import ExpressVendors from './Tender/ExpressVendors'
-import PotentialVendors from './Tender/PotentialVendors'
-import Orders from './Tender/Orders';
-import '../styles/Tender.css'
-import NewAgreement from './Tender/NewAgreement';
-import Agreements from './Tender/Agreements';
+} from "react-router-dom";
+import { MdLocalOffer } from "react-icons/md"
+import { FaCartArrowDown, FaTasks } from "react-icons/fa"
+import { IoIosDocument, IoIosBulb } from "react-icons/io"
+import ExpressVendors from "./Tender/ExpressVendors"
+import PotentialVendors from "./Tender/PotentialVendors"
+import Orders from "./Tender/Orders";
+import "../styles/Tender.css"
+import NewAgreement from "./Tender/NewAgreement";
+import Agreements from "./Orders/Agreements";
 const routes = [
     {
-        text: 'Express Vendorlar',
-        link: '/express-vendors',
+        text: "Express Vendorlar",
+        link: "/express-vendors",
         icon: MdLocalOffer,
         component: ExpressVendors
     },
     {
-        text: 'Sifarişlər',
-        link: '/orders',
+        text: "Sifarişlər",
+        link: "/orders",
         icon: FaCartArrowDown,
         component: Orders
     },
     {
-        text: 'Potensial Vendorlar',
-        link: '/potential-vendors',
+        text: "Potensial Vendorlar",
+        link: "/potential-vendors",
         icon: IoIosBulb,
         component: PotentialVendors
     },
     {
-        text: 'Razılaşmalar',
-        link: '/agreements',
+        text: "Razılaşmalar",
+        link: "/agreements",
         icon: FaTasks,
-        component: Agreements
+        component: Agreements,
+        props: {
+            updateListContent: (data, token) => {
+                let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
+                query = query.substring(0, query.length - 1);
+                return fetch("http://192.168.0.182:54321/api/tender-docs?doctype=1&" + query, {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                })
+            },
+            params: {
+                active: "id",
+                number: "number"
+            },
+            referer: "procurement"
+        }
     },
     {
-        text: 'Yeni Razılaşma',
-        link: '/new-agreement',
+        text: "Yeni Razılaşma",
+        link: "/new-agreement",
         icon: IoIosDocument,
         component: NewAgreement
     }
@@ -56,7 +72,7 @@ const Tender = (props) => {
             {
                 routes.map(route =>
                     <Route key={route.link} path={`${path}${route.link}`}>
-                        <route.component />
+                        <route.component {...route.props} />
                     </Route>
                 )
             }
