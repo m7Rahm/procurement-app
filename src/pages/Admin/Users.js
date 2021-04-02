@@ -6,7 +6,6 @@ import {
 import Pagination from '../../components/Misc/Pagination'
 import Modal from '../../components/Misc/Modal'
 import EditUser from '../../components/Admin/EditUser'
-import NewUser from '../../components/Admin/NewUser'
 import StatusButton from '../../components/Misc/StatusButton';
 import { TokenContext } from '../../App'
 const Users = () => {
@@ -15,10 +14,6 @@ const Users = () => {
 	const [users, setUsers] = useState({ count: 0, users: [] });
 	const activePageRef = useRef(0);
 	const [modal, setModal] = useState({ visible: false, content: undefined });
-	const createNewUser = () => {
-		const newUser = (props) => <NewUser updateList={updateList} closeModal={closeModal} {...props}/>
-		setModal({ visible: true, content: newUser})
-	}
 	const updateList = (from) => {
 		fetch(`http://192.168.0.182:54321/api/get-users?from=${from}&next=20`, {
 			headers: {
@@ -49,8 +44,8 @@ const Users = () => {
 		setModal({ visible: false, content: undefined })
 	}
 	const editUserData = (id) => {
-		const editUser = (props) => <EditUser closeModal={closeModal} id={id} {...props}/>
-		setModal({ visible: true, content: editUser})
+		const editUser = (props) => <EditUser updateList={updateList} closeModal={closeModal} id={id} {...props} />
+		setModal({ visible: true, content: editUser })
 	}
 	const updateFunc = (id, state) => fetch(`http://192.168.0.182:54321/api/change-user-status?userid=${id}&status=${state}`, {
 		headers: {
@@ -104,7 +99,7 @@ const Users = () => {
 						}
 					</tbody>
 				</table>
-				<div title="yeni işçi əlavə et" className="new-order-button" onClick={createNewUser}>
+				<div title="yeni işçi əlavə et" className="new-order-button" onClick={() => editUserData()}>
 					<MdAdd color="white" size="30" />
 				</div>
 				<Pagination

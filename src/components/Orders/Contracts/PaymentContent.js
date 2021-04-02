@@ -35,7 +35,7 @@ const PaymentContent = (props) => {
             })
                 .then(resp => resp.json())
                 .then(respJ => {
-                    if (mounted)
+                    if (mounted && respJ.length)
                         setPaymentDetails({
                             content: respJ,
                             active: respJ[0].doc_result === 0 && (respJ[0].user_result === 0 || respJ[0].user_result === undefined)

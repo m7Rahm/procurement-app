@@ -217,6 +217,9 @@ div.new-budget-modal table select {
 .new-budget>tbody>tr>td {
     width: 35%;
 }
+.new-budget>tbody>tr>td>select {
+    padding: 3px;
+}
 
 @keyframes scale-up-budget {
     from {
@@ -267,4 +270,7 @@ div.budget>div:first-of-type {
     max-width: 1256px;
     margin: auto;
     margin-top: 50px;
+}
+div.date-ribbon>select{
+    padding: 6px;
 }

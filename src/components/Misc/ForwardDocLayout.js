@@ -89,6 +89,8 @@ const ForwardDocLayout = (props) => {
                             empList.map(employee =>
                                 <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
                                     {employee.full_name}
+                                    <br/>
+                                    <span>{employee.vezife}</span>
                                 </li>
                             )
                         }

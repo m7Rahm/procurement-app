@@ -6,7 +6,7 @@ import Agreements from "./Orders/Agreements"
 import ContractsHOC from "../components/HOC/ContractsHOC"
 import { IoMdDocument, IoMdCheckmarkCircleOutline, IoMdCart } from "react-icons/io"
 import { FaHandshake } from "react-icons/fa"
-import { Route, Switch, useRouteMatch } from "react-router-dom"
+import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom"
 import { MdPayment } from "react-icons/md"
 import "../styles/Orders.css"
 import PaymentContent from "../components/Orders/Contracts/PaymentContent"
@@ -54,7 +54,8 @@ const routes = [
             params: {
                 active: "message_id",
                 number: "number"
-            }
+            },
+            newDocNotifName: "nA"
         }
     },
     {
@@ -144,6 +145,7 @@ const Orders = (props) => {
                         </Route>
                     )
                 }
+                <Redirect to={`${path}/my-orders/:docid?`} />
             </Switch>
         </div>
     )

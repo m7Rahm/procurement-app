@@ -4,7 +4,13 @@ import { Link, useHistory } from 'react-router-dom';
 import { MdNotifications } from 'react-icons/md'
 import logo from '../../logo.svg';
 const getNotifText = (notif) => {
-    const text = notif.doc_type === 2 ? "Müqavilə Razılaşması" : notif.doc_type === 1 ? "Qiymət Təklifi Araşdırması" : "Ödəniş Razılaşması"
+    const text = notif.doc_type === 2
+        ? "Müqavilə Razılaşması"
+        : notif.doc_type === 1
+            ? "Qiymət Təklifi Araşdırması"
+            : notif.doc_type === 3
+                ? "Ödəniş Razılaşması"
+                : "Sifariş"
     if (notif.category_id === 1)
         return <> Yeni {text}</>
     else if (notif.category_id === 2)

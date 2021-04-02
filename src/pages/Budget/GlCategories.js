@@ -50,7 +50,6 @@ const GlCategories = () => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                console.log(respJ)
                 const totalCount = respJ[0].total_count;
                 setGlCategories(prev => ({ ...prev, content: respJ, count: totalCount }))
             })
@@ -143,7 +142,7 @@ const GlCategoryRow = (props) => {
     const [rowData, setRowData] = useState({
         code: props.code,
         name: props.name,
-        department: props.departmentid,
+        dependentid: props.dependentid,
         warehouseid: props.warehouseid,
         procurementid: props.procurementid
     });
@@ -157,7 +156,7 @@ const GlCategoryRow = (props) => {
         setRowData({
             code: props.code,
             name: props.name,
-            department: props.departmentid,
+            dependentid: props.dependentid,
             warehouseid: props.warehouseid,
             procurementid: props.procurementid
         })

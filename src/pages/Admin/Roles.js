@@ -13,11 +13,10 @@ const Roles = (props) => {
     const token = tokenContext[0].token;
     const [modal, setModal] = useState({ content: null, state: false })
     const [roles, setRoles] = useState([]);
-
     const handleRoleUpdate = (id) => {
         const role = id !== -1
             ? roles.find(role => role.id === id)
-            : { id: -1, name: '', modules: '', previliges: '', active_passive: 1};
+            : { id: -1, name: '', modules: '', previliges: '', active_passive: 1 };
         const updateRole = (props) => <UpdateRole token={token} closeModal={changeModalState} setRoles={setRoles} {...props} role={role} />
         setModal({ content: updateRole, state: true })
     }
@@ -42,8 +41,8 @@ const Roles = (props) => {
             },
             body: JSON.stringify(data)
         })
-        .then(resp => resp.json())
-        .catch(ex => console.log(ex))
+            .then(resp => resp.json())
+            .catch(ex => console.log(ex))
     }
     const changeModalState = () => setModal({ content: null, state: false })
     return (
@@ -113,7 +112,7 @@ const Roles = (props) => {
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td><MdAdd title="yeni rol yarat" style={{color: '#0495ce'}} size="26" onClick={(e) => handleRoleUpdate(-1)} /></td>
+                            <td><MdAdd title="yeni rol yarat" style={{ color: '#0495ce' }} size="26" onClick={(e) => handleRoleUpdate(-1)} /></td>
                         </tr>
                     </tfoot>
                 </table>

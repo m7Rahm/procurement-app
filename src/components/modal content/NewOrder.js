@@ -86,7 +86,7 @@ const NewOrderContent = (props) => {
     if (!current && !isDraft) {
       const onSuccess = (respJ) => {
         const recs = respJ.map(resultRow =>
-          resultRow.receiver_id
+          resultRow.receiver
         );
         const apiData = JSON.stringify({
           from: 0,

@@ -2,7 +2,8 @@ import React, { useEffect } from "react"
 import {
     Switch,
     Route,
-    useRouteMatch
+    useRouteMatch,
+    Redirect
 } from "react-router-dom";
 import { MdLocalOffer } from "react-icons/md"
 import { FaCartArrowDown, FaTasks } from "react-icons/fa"
@@ -15,16 +16,16 @@ import NewAgreement from "./Tender/NewAgreement";
 import Agreements from "./Orders/Agreements";
 const routes = [
     {
-        text: "Express Vendorlar",
-        link: "/express-vendors",
-        icon: MdLocalOffer,
-        component: ExpressVendors
-    },
-    {
         text: "Sifarişlər",
         link: "/orders",
         icon: FaCartArrowDown,
         component: Orders
+    },
+    {
+        text: "Express Vendorlar",
+        link: "/express-vendors",
+        icon: MdLocalOffer,
+        component: ExpressVendors
     },
     {
         text: "Potensial Vendorlar",
@@ -71,11 +72,12 @@ const Tender = (props) => {
         <Switch>
             {
                 routes.map(route =>
-                    <Route key={route.link} path={`${path}${route.link}`}>
+                    <Route key={route.link} path={`${path}${route.link}/:docid?`}>
                         <route.component {...route.props} />
                     </Route>
                 )
             }
+            <Redirect to={`${path}/orders/:docid?`} />
         </Switch>
     )
 }

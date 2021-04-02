@@ -28,6 +28,7 @@ const Agreements = (props) => {
                 setActive={setActive}
                 updateListContent={props.updateListContent}
                 token={token}
+                newDocNotifName={props.newDocNotifName}
                 params={props.params}
             />
             <AgreementContent

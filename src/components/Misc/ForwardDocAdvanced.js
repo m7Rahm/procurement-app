@@ -150,6 +150,8 @@ const ForwardDocAdvanced = (props) => {
                             empList.map(employee =>
                                 <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
                                     {employee.full_name}
+                                    <br />
+                                    <span>{employee.vezife}</span>
                                 </li>
                             )
                         }
@@ -170,19 +172,35 @@ const ForwardDocAdvanced = (props) => {
                     Göndər
                 </div>
             </div>
-            <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
-                <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
-                    {
-                        receivers.map(emp =>
-                            <VisaForwardPerson
-                                key={Math.random()}
-                                emp={emp}
-                                handleSelectChange={handleSelectChange}
-                            />)
-                    }
-                </div>
-            </div>
+            <ForwardedPeople
+                receivers={receivers}
+                setReceivers={setReceivers}
+                handleSelectChange={handleSelectChange}
+            />
         </div>
     )
 }
 export default React.memo(ForwardDocAdvanced)
+
+const ForwardedPeople = (props) => {
+    const draggedElement = useRef(null);
+    return (
+        <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
+            <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
+                {
+                    props.receivers.map((emp, index) =>
+                        <VisaForwardPerson
+                            key={emp.id}
+                            id={emp.id}
+                            emp={emp}
+                            index={index}
+                            draggedElement={draggedElement}
+                            setReceivers={props.setReceivers}
+                            handleSelectChange={props.handleSelectChange}
+                        />
+                    )
+                }
+            </div>
+        </div>
+    )
+}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 
-import { Switch, Route, useRouteMatch } from "react-router-dom"
+import { Switch, Route, useRouteMatch, Redirect } from "react-router-dom"
 import ExpressContracts from "./Contracts/ExpressContracts"
 import { FaFileContract, FaHandshake } from "react-icons/fa"
 import { MdPayment } from "react-icons/md"
@@ -85,11 +85,12 @@ const ContractsModule = (props) => {
             <Switch>
                 {
                     routes.map(route =>
-                        <Route key={route.link} path={`${path}${route.link}`}>
+                        <Route key={route.link} path={`${path}${route.link}/:docid?`}>
                             <route.component {...route.props} />
                         </Route>
                     )
                 }
+				<Redirect to={`${path}/contracts/:docid?`} />
             </Switch>
         </div>
     )

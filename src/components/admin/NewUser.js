@@ -24,7 +24,7 @@ const NewUser = (props) => {
         })
             .then(resp => {
                 if (resp.status === 200)
-                   return resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
@@ -65,12 +65,11 @@ const NewUser = (props) => {
         })
             .then(resp => {
                 if (resp.status === 200)
-                   return resp.json()
+                    return resp.json()
                 else
                     throw new Error('Internal Server Error');
             })
             .then(respJ => {
-                console.log(respJ);
                 if (respJ[0].result === 'success') {
                     props.updateList(0);
                     props.closeModal();

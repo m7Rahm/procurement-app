@@ -61,27 +61,29 @@ const UpdateRole = (props) => {
     }
     const addMenu = () => {
         const menu = selectMenusRef.current.value;
-        setUserModules(prev => {
-            const newPrevs = [...prev, menu];
-            const reduced = newPrevs.reduce((sum, current, index) => {
-                const last = index !== newPrevs.length - 1 ? ',' : '';
-                return sum + current + last
-            }, '');
-            setRoleData(prev => ({ ...prev, modules: reduced }))
-            return newPrevs
-        })
+        if (menu)
+            setUserModules(prev => {
+                const newPrevs = [...prev, menu];
+                const reduced = newPrevs.reduce((sum, current, index) => {
+                    const last = index !== newPrevs.length - 1 ? ',' : '';
+                    return sum + current + last
+                }, '');
+                setRoleData(prev => ({ ...prev, modules: reduced }))
+                return newPrevs
+            })
     }
     const addPriv = () => {
         const privilige = selectPrevRef.current.value;
-        setPreviliges(prev => {
-            const newMenus = [...prev, privilige];
-            const reduced = newMenus.reduce((sum, current, index) => {
-                const last = index !== newMenus.length - 1 ? ',' : '';
-                return sum + current + last
-            }, '');
-            setRoleData(prev => ({ ...prev, previliges: reduced }))
-            return newMenus
-        })
+        if (privilige)
+            setPreviliges(prev => {
+                const newMenus = [...prev, privilige];
+                const reduced = newMenus.reduce((sum, current, index) => {
+                    const last = index !== newMenus.length - 1 ? ',' : '';
+                    return sum + current + last
+                }, '');
+                setRoleData(prev => ({ ...prev, previliges: reduced }))
+                return newMenus
+            })
     }
     return (
         <div>
@@ -92,14 +94,10 @@ const UpdateRole = (props) => {
                     <IoMdAdd size="20" onClick={addMenu} />
                     <select ref={selectMenusRef}>
                         {
-                            modules.map(module => {
-                                if (userModules.indexOf(module.text) < 0)
-                                    return (
-                                        <option key={module.link}>{module.text}</option>
-                                    )
-                                else
-                                    return null;
-                            })
+                            modules.filter(module => userModules.indexOf(module.text) < 0)
+                                .map(module =>
+                                    <option key={module.link}>{module.text}</option>
+                                )
                         }
                     </select>
                 </p>

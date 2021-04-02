@@ -10,7 +10,8 @@ import { ImTree } from 'react-icons/im'
 import {
 	useRouteMatch,
 	Route,
-	Switch
+	Switch,
+	Redirect
 } from 'react-router-dom'
 import Structure from './Admin/Structure'
 import Materials from './Admin/OrderMaterials'
@@ -57,6 +58,7 @@ const AdminPage = (props) => {
 						</Route>
 					)
 				}
+				<Redirect to={`${path}/roles/:docid?`} />
 			</Switch>
 		</div>
 	)

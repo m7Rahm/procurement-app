@@ -55,7 +55,7 @@ const Participants = (props) => {
           participants.map((participant, index) =>
             <li key={index}>
               <div>{participant.full_name}
-                <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{'Mütəxəssis'}</div>
+                <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{participant.vezife || ""}</div>
               </div>
               <div>{getResultText(participant.result)}</div>
               <div>{participant.act_date_time || participant.date_time}</div>
@@ -87,7 +87,7 @@ const Reviewers = ({ id, token }) => {
       .then(respJ => setReviewers(respJ)
       )
       .catch(err => console.log(err))
-  }, [id, token])
+  }, [id, token]);
   return (
     reviewers ?
       <>
@@ -103,7 +103,7 @@ const Reviewers = ({ id, token }) => {
             reviewers.map((reviewer, index) =>
               <li key={index}>
                 <div>{reviewer.full_name}
-                  <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>Mütəxəssis</div>
+                  <div style={{ fontWeight: '600', fontSize: 11, color: '#777777' }}>{reviewer.vezife || ""}</div>
                 </div>
                 <div>{getResultText(reviewer.result)}</div>
                 <div>{reviewer.act_date_time || reviewer.date_time}</div>

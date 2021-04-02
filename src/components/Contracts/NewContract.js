@@ -40,7 +40,6 @@ const NewContract = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                console.log(respJ)
                 if (respJ.length !== 0) {
                     const message = {
                         message: "notification",

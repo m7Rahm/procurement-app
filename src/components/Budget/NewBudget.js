@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import { months } from '../../data/data'
 const date = new Date();
 const month = date.getMonth() + 1;
+const year = date.getFullYear();
 
 const NewBudget = (props) => {
     const { token, departments } = props;
@@ -61,10 +62,8 @@ const NewBudget = (props) => {
                         }
                     </select>
                     <select value={newBudgetData.year} name="year" onChange={handleChange}>
-                        <option>2020</option>
-                        <option>2021</option>
-                        <option>2022</option>
-                        <option>2023</option>
+                        <option value={year}>{year}</option>
+                        <option value={year + 1}>{year + 1}</option>
                     </select>
                 </div>
             </div>

@@ -134,7 +134,7 @@ export const modules = [
     },
     {
         text: 'Warehouse',
-        link: '/tender'
+        link: '/warehouse'
     },
     {
         text: 'Other',

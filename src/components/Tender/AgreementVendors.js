@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react'
 import ForwardDocLayout from '../Misc/ForwardDocLayout';
 import AgreementVendorRow from './AgreementVendorRow'
 import OfferPictures from '../modal content/OfferPictures'
 import OperationResult from '../Misc/OperationResult'
 import { AiFillCheckCircle } from 'react-icons/ai'
 import ContractFiles from '../Contracts/ContractFiles'
+import { WebSocketContext } from '../../pages/SelectModule';
 
 const AgreementVendors = (props) => {
     const [agreementVendors, setAgreementVendors] = useState([]);
     const [modalState, setModalState] = useState({ display: false, key: null });
     const [commonFiles, setCommonFiles] = useState([]);
+    const webSocket = useContext(WebSocketContext)
     const [operationResult, setOperationResult] = useState({
         visible: false,
         desc: '',
@@ -47,7 +49,13 @@ const AgreementVendors = (props) => {
         })
             .then(resp => resp.json())
             .then(respJ => {
-                if (!respJ.length) {
+                if (respJ.length) {
+                    const message = {
+                        message: "notification",
+                        receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nA" })),
+                        data: undefined
+                    }
+                    webSocket.send(JSON.stringify(message))
                     setOperationResult(prev => ({ ...prev, visible: true, desc: 'Əməliyyat uğurla tamamlandı' }));
                     props.setIsEmpty(true);
                 }

@@ -1,12 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react'
+import { months } from '../../data/data'
 import ForwardDocAdvanced from '../../components/Misc/ForwardDocAdvanced'
+import OperationResult from "../../components/Misc/OperationResult"
 const date = new Date();
 const month = date.getMonth() + 1;
+const year = date.getFullYear();
 
 const NewBudgetRequest = (props) => {
     const [glCategories, setGlCategories] = useState({ parent: [], sub: [], all: [] });
     const subGlCategoryidRef = useRef(null);
     const [departments, setDepartments] = useState([]);
+    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newBudgetData, setNewBudgetData] = useState({
         year: date.getFullYear(),
         month: month < 10 ? `0${month}` : `${month}`,
@@ -60,7 +64,7 @@ const NewBudgetRequest = (props) => {
                 },
                 body: data
             })
-                .then(resp => resp.ok ? resp.json() : new Error('Internal Server Error'))
+                .then(resp => resp.json())
                 .then(respJ => {
                     if (!respJ[0].error) {
                         props.closeModal();
@@ -69,6 +73,8 @@ const NewBudgetRequest = (props) => {
                             result: 0,
                             from: 0
                         }))
+                    } else {
+                        setOperationResult({ visible: true, desc: respJ[0].error })
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -85,7 +91,27 @@ const NewBudgetRequest = (props) => {
     }
     return (
         <div>
+            {
+                operationResult.visible &&
+                <OperationResult
+                    setOperationResult={setOperationResult}
+                    operationDesc={operationResult.desc}
+                />
+            }
             <div style={{ padding: "20px" }}>
+                <div className="date-ribbon" style={{ margin: "10px 0px" }}>
+                    <select value={newBudgetData.month} name="month" onChange={handleChange}>
+                        {
+                            months.map((month, index) =>
+                                <option key={index} value={month.value}>{month.name}</option>
+                            )
+                        }
+                    </select>
+                    <select value={newBudgetData.year} name="year" onChange={handleChange}>
+                        <option value={year}>{year}</option>
+                        <option value={year + 1}>{year + 1}</option>
+                    </select>
+                </div>
                 <table className="new-budget users-table">
                     <thead>
                         <tr>
