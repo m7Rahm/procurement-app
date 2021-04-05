@@ -1,69 +1,47 @@
-import React, { useEffect, useContext, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Pagination from '../Misc/Pagination'
-import { TokenContext } from '../../App'
 import { useLocation } from 'react-router-dom';
 import { FaEdit } from 'react-icons/fa';
-import {
-    MdDone,
-    MdClose
-} from 'react-icons/md'
-const StructureBudgetDetailed = (props) => {
-    const tokenConext = useContext(TokenContext);
-    const token = tokenConext[0].token;
+import { MdDone, MdClose } from 'react-icons/md'
+import useFetch from '../../hooks/useFetch';
+const StructureBudgetDetailed = () => {
     const location = useLocation();
     const state = location.state;
     const activePageRef = useRef(0);
-    const searchStateRef = useRef(
-        (() => {
-            if (state) {
-                const structureid = state.structure.id;
-                const glCategoryId = state.glCategoryid;
-                const period = state.searchState.year + state.searchState.month
-                return ({ period, glCategoryId, from: 0, next: 20, structureid })
-            }
-            else
-                return undefined
-        })()
+    const fetchPost = useFetch("POST");
+    const searchStateRef = useRef((() => {
+        if (state) {
+            const structureid = state.structure.id;
+            const glCategoryId = state.glCategoryid;
+            const period = state.searchState.year + state.searchState.month
+            return ({ period, glCategoryId, from: 0, next: 20, structureid })
+        }
+        else
+            return undefined
+    })()
     )
     const [budgets, setBudgets] = useState({ count: 0, content: [] })
     useEffect(() => {
         if (searchStateRef.current) {
             const structureid = searchStateRef.current.structureid;
-            const data = JSON.stringify(searchStateRef.current)
-            fetch(`http://192.168.0.182:54321/api/structure-budget/${structureid}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Length': data.length,
-                    'Content-Type': 'application/json'
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            const data = searchStateRef.current
+            fetchPost(`http://192.168.0.182:54321/api/structure-budget/${structureid}`, data)
                 .then(respJ => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     setBudgets({ count: totalCount, content: respJ });
                 })
         }
-    }, [state, token])
+    }, [state, fetchPost])
 
     const updateList = (from) => {
         const structureid = searchStateRef.current.structureid;
-        const data = JSON.stringify({ ...searchStateRef.current, from })
-        fetch(`http://192.168.0.182:54321/api/structure-budget/${structureid}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Length': data.length,
-                'Content-Type': 'application/json'
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        const data = { ...searchStateRef.current, from };
+        fetchPost(`http://192.168.0.182:54321/api/structure-budget/${structureid}`, data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setBudgets({ count: totalCount, content: respJ });
             })
+            .catch(ex => console.log(ex))
     }
     return (
         <div className="structure-budget-detailed">
@@ -86,7 +64,7 @@ const StructureBudgetDetailed = (props) => {
                                 index={index + 1}
                                 key={budget.id}
                                 budget={budget}
-                                token={token}
+                                fetchPost={fetchPost}
                             />
                         )
                     }
@@ -103,7 +81,7 @@ const StructureBudgetDetailed = (props) => {
 
 export default StructureBudgetDetailed
 
-const TableRow = ({ budget, index, token }) => {
+const TableRow = ({ budget, index, fetchPost }) => {
     const [budgetData, setBudgetData] = useState(budget);
     const [disabled, setDisabled] = useState(true);
     const handleChange = (e) => {
@@ -115,24 +93,15 @@ const TableRow = ({ budget, index, token }) => {
         setDisabled(false)
     }
     const handleUpdate = (id) => {
-        const data = JSON.stringify({
+        const data = {
             budget: budgetData.budget,
             active: 1
-        })
-        fetch(`http://192.168.0.182:54321/api/update-budget/${id}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-        .then(resp => resp.json())
-        .then(respJ => {
-            if(respJ[0].operation_result === 'success')
-                setDisabled(true)
-        })
+        }
+        fetchPost(`http://192.168.0.182:54321/api/update-budget/${id}`, data)
+            .then(respJ => {
+                if (respJ[0].operation_result === 'success')
+                    setDisabled(true)
+            })
     }
     const handleCancel = () => {
         setBudgetData(budget);

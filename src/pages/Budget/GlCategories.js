@@ -3,6 +3,7 @@ import { TokenContext } from '../../App'
 import Pagination from '../../components/Misc/Pagination';
 import { FaCheck, FaEdit, FaPlus, FaTimes } from 'react-icons/fa'
 import OperationResult from '../../components/Misc/OperationResult'
+import useFetch from '../../hooks/useFetch';
 const GlCategories = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -12,43 +13,29 @@ const GlCategories = () => {
     const [structures, setStructures] = useState({ warehouse: [], procurement: [] });
     const glCategoryRef = useRef(null);
     const codeRef = useRef(null);
+    const fetchUpdateList = useFetch("GET");
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/budget-gl-categories?from=0&all=true`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchUpdateList(`http://192.168.0.182:54321/api/budget-gl-categories?from=0&all=true`)
             .then(respJ => {
                 const totalCount = respJ[0].total_count;
                 const parents = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories({ content: respJ.filter((_, index) => index < 20), all: parents, count: totalCount })
             })
             .catch(ex => console.log(ex));
-        fetch("http://192.168.0.182:54321/api/departments", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-            .then(resp => resp.json())
+            fetchUpdateList("http://192.168.0.182:54321/api/departments")
             .then(respJ => {
                 const warehouse = respJ.filter(department => department.type === 2)
                 const procurement = respJ.filter(department => department.type === 3);
                 setStructures({ warehouse: warehouse, procurement: procurement })
             })
-    }, [token]);
+    }, [fetchUpdateList]);
     const updateList = (from) => {
         let query = "";
         if (codeRef.current.value !== "")
             query += `&code=${codeRef.current.value}`
         if (glCategoryRef.current.value !== "0")
             query += `&parentid=${glCategoryRef.current.value}`
-        fetch(`http://192.168.0.182:54321/api/budget-gl-categories?from=${from}${query}`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchUpdateList(`http://192.168.0.182:54321/api/budget-gl-categories?from=${from}${query}`)
             .then(respJ => {
                 const totalCount = respJ[0].total_count;
                 setGlCategories(prev => ({ ...prev, content: respJ, count: totalCount }))
@@ -162,25 +149,16 @@ const GlCategoryRow = (props) => {
         })
         setDisabled(true)
     }
+    const updateGlCategory = useFetch("POST")
     const handleSave = () => {
-        const data = JSON.stringify({ ...rowData, id: props.id })
-        fetch("http://192.168.0.182:54321/api/update-gl-category", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + props.token,
-                "Content-Type": "application/json",
-                "Content-Length": data.length
-            },
-            body: data
-        })
-            .then(resp => {
-                if (resp.ok) {
-                    setDisabled(true)
-                    if (rowData.name !== props.name || rowData.code !== props.code)
-                        props.setGlCategories(prev =>
-                            ({ ...prev, all: prev.all.map(category => category.id === props.id ? { ...category, name: rowData.name, code: rowData.code } : category) })
-                        )
-                }
+        const data = { ...rowData, id: props.id };
+        updateGlCategory("http://192.168.0.182:54321/api/update-gl-category", data)
+            .then(_ => {
+                setDisabled(true)
+                if (rowData.name !== props.name || rowData.code !== props.code)
+                    props.setGlCategories(prev =>
+                        ({ ...prev, all: prev.all.map(category => category.id === props.id ? { ...category, name: rowData.name, code: rowData.code } : category) })
+                    )
             })
             .catch(ex => {
                 props.setOperationResult({ visible: true, desc: "Xəta baş verdi", icon: FaTimes })
@@ -244,6 +222,7 @@ const NewGlCategory = (props) => {
     const dependentRef = useRef(null);
     const warehouseRef = useRef(null);
     const procurementRef = useRef(null);
+    const fetchAddCategory = useFetch("POST");
     const addNewCategory = () => {
         const data = {
             code: codeRef.current.value,
@@ -252,20 +231,7 @@ const NewGlCategory = (props) => {
             procurementid: procurementRef.current.value,
             warehouseid: warehouseRef.current.value
         }
-        const apiData = JSON.stringify(data)
-        fetch("http://192.168.0.182:54321/api/new-gl-category", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Content-Length": apiData.length,
-                "Authorization": "Bearer " + props.token
-            },
-            body: apiData
-        })
-            .then(resp => {
-                if (resp.ok)
-                    return resp.json()
-            })
+        fetchAddCategory("http://192.168.0.182:54321/api/new-gl-category", data)
             .then(respJ => {
                 props.setGlCategories(prev => {
                     const all = [...prev.all, { ...data, id: respJ[0].id }];

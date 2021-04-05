@@ -18,7 +18,6 @@ const ParticipantsUniversal = (props) => {
     const fetchParticipants = props.fetchParticipants;
     useEffect(() => {
         fetchParticipants()
-            .then(resp => resp.json())
             .then(respJ => setParticipants(respJ))
             .catch(err => console.log(err))
     }, [fetchParticipants])

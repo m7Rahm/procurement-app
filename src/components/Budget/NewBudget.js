@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { months } from '../../data/data'
+import useFetch from '../../hooks/useFetch';
 const date = new Date();
 const month = date.getMonth() + 1;
 const year = date.getFullYear();
 
 const NewBudget = (props) => {
-    const { token, departments } = props;
+    const { departments } = props;
     const categories = props.categories.current;
     const commentRef = useRef(null);
     const glCategories = useRef(categories.filter(category => category.dependent_id === null));
@@ -17,7 +18,8 @@ const NewBudget = (props) => {
         glCategoryid: '',
         budget: 0
     })
-    const subGlCategories = categories.filter(category => category.dependent_id === newBudgetData.glCategoryid)
+    const subGlCategories = categories.filter(category => category.dependent_id === newBudgetData.glCategoryid);
+    const fetchPost = useFetch("POST");
     const handleBudgetChange = (e) => {
         const value = e.target.value;
         setNewBudgetData(prev => ({ ...prev, budget: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.budget }))
@@ -35,16 +37,7 @@ const NewBudget = (props) => {
             comment: commentRef.current.value,
             subGlCategoryid: subGlCategoryidRef.current.value,
         }
-        fetch('http://192.168.0.182:54321/api/insert-new-budget', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/insert-new-budget', data)
             .then(respJ => {
                 if (respJ[0].result === 'success')
                     props.closeModal()

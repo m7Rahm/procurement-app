@@ -1,33 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { lazy, useEffect, useRef, useState } from 'react'
 import { IoMdMenu } from 'react-icons/io';
 import { Link, useHistory } from 'react-router-dom';
 import { MdNotifications } from 'react-icons/md'
 import logo from '../../logo.svg';
-const getNotifText = (notif) => {
-    const text = notif.doc_type === 2
-        ? "Müqavilə Razılaşması"
-        : notif.doc_type === 1
-            ? "Qiymət Təklifi Araşdırması"
-            : notif.doc_type === 3
-                ? "Ödəniş Razılaşması"
-                : "Sifariş"
-    if (notif.category_id === 1)
-        return <> Yeni {text}</>
-    else if (notif.category_id === 2)
-        return (
-            <>
-                № <span style={{ color: 'tomato' }}>{notif.doc_number}</span> sənəd {
-                    notif.action === 1
-                        ? 'təsdiq edildi'
-                        : notif.action === 2
-                            ? "redaktəyə qaytarıldı"
-                            : notif.action === 3
-                                ? "redaktə edildi"
-                                : "etiraz edildi"
-                }
-            </>
-        )
-}
+import { Suspense } from 'react';
+import useFetch from '../../hooks/useFetch';
+const ProfileInfo = lazy(() => import("./ProfileInfo"))
 const Navigation = (props) => {
     const moduleNavigationRef = useRef(null);
     const update = useRef(true);
@@ -35,8 +13,11 @@ const Navigation = (props) => {
     const from = useRef(0);
     const [notifications, setNotifications] = useState({ all: [], visible: [], offsetStart: 0, offsetEnd: 0, count: '', height: 0 })
     const notificationsRef = useRef(null);
-    const delimterRef = useRef(null)
+    const delimterRef = useRef(null);
+    const [profileData, setProfileData] = useState({ visible: false })
+    const fetchNotifications = useFetch("GET");
     useEffect(() => {
+        let mounted = true;
         props.webSocket.onmessage = (data) => {
             const webSockMessage = JSON.parse(data.data);
             const event = new CustomEvent(webSockMessage.messageType, {
@@ -44,20 +25,15 @@ const Navigation = (props) => {
             });
             if (webSockMessage.messageType !== "recognition") {
                 window.dispatchEvent(event);
-                if (notificationsRef.current.style.display !== "block")
+                if (notificationsRef.current.style.display !== "block" && mounted)
                     setNotifications(prev => {
                         update.current = true;
                         return ({ ...prev, count: Number(prev.count + 1) })
                     })
                 else {
-                    fetch(`http://192.168.0.182:54321/api/notifications?from=0&active=1`, {
-                        headers: {
-                            'Authorization': 'Bearer ' + props.token
-                        }
-                    })
-                        .then(resp => resp.json())
+                    fetchNotifications(`http://192.168.0.182:54321/api/notifications?from=0&active=1`)
                         .then(respJ => {
-                            if (respJ.length !== 0) {
+                            if (respJ.length !== 0 && mounted) {
                                 setNotifications(prev => {
                                     const newNotifications = prev.all.filter(notification => !respJ.find(newNotifications => newNotifications.id === notification.id));
                                     const all = [...newNotifications, ...respJ]
@@ -73,30 +49,25 @@ const Navigation = (props) => {
                 }
             }
         }
-    }, [props.webSocket, props.token]);
+        return () => {
+            mounted = false
+        }
+    }, [props.webSocket, fetchNotifications]);
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/notifications?from=0', {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        let mounted = true;
+        fetchNotifications('http://192.168.0.182:54321/api/notifications?from=0')
             .then(respJ => {
-                setNotifications(prev => ({ ...prev, count: respJ[0].total_count === 0 ? "" : respJ[0].total_count }))
+                if (mounted)
+                    setNotifications(prev => ({ ...prev, count: respJ[0].total_count === 0 ? "" : respJ[0].total_count }))
             })
             .catch(ex => console.log(ex))
         const intersectionCallback = (entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    fetch(`http://192.168.0.182:54321/api/notifications?from=${from.current * 14}&active=1`, {
-                        headers: {
-                            'Authorization': 'Bearer ' + props.token
-                        }
-                    })
-                        .then(resp => resp.json())
+                    fetchNotifications(`http://192.168.0.182:54321/api/notifications?from=${from.current * 14}&active=1`)
                         .then(respJ => {
                             update.current = false;
-                            if (respJ.length) {
+                            if (respJ.length && mounted) {
                                 const fromIndex = from.current;
                                 from.current += 1;
                                 setNotifications(prev => {
@@ -131,9 +102,10 @@ const Navigation = (props) => {
         });
         intersectionObserver.observe(delimterRef.current)
         return () => {
-            intersectionObserver.unobserve(delimeterRef)
+            intersectionObserver.unobserve(delimeterRef);
+            mounted = false
         }
-    }, [props.token]);
+    }, [fetchNotifications]);
     const handleLogOut = () => {
         props.tokenContext[1]({ token: '', userData: {} })
         localStorage.removeItem('token');
@@ -144,12 +116,7 @@ const Navigation = (props) => {
     }
     const handleNotificationsClick = () => {
         if (update.current) {
-            fetch(`http://192.168.0.182:54321/api/notifications?from=0&active=1`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchNotifications(`http://192.168.0.182:54321/api/notifications?from=0&active=1`)
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         setNotifications(prev => {
@@ -201,14 +168,12 @@ const Navigation = (props) => {
     const handleModuleClick = () => {
         moduleNavigationRef.current.style.display = "none"
     }
+    const onProfileClick = () => {
+        setProfileData({ visible: true })
+    }
     const onNotificationClick = (notif) => {
         if (!notif.is_read)
-            fetch(`http://192.168.0.182:54321/api/update-notifcation-state/${notif.id}`, {
-                headers: {
-                    "Authorization": "Bearer " + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchNotifications(`http://192.168.0.182:54321/api/update-notifcation-state/${notif.id}`)
                 .then(respJ => {
                     if (respJ.length === 0)
                         setNotifications(prev => {
@@ -222,10 +187,20 @@ const Navigation = (props) => {
     }
     return (
         <nav>
+            {
+                profileData.visible &&
+                <Suspense fallback="">
+                    <ProfileInfo
+                        fullName={props.userData.userInfo.fullName}
+                        token={props.token}
+                        setProfileData={setProfileData}
+                    />
+                </Suspense>
+            }
             <ul>
                 <li>
                     <div>
-                        <div className="left-side-toggle">
+                        <div className="left-side-toggle" ref={props.leftNavRef}>
                             <IoMdMenu size="24" cursor="pointer" color="#606060" onClick={props.handleNavClick} />
                         </div>
                         <div style={{ position: 'relative' }}>
@@ -263,6 +238,7 @@ const Navigation = (props) => {
                             </div>
                         </div>
                         <div style={{ position: 'relative' }}>
+                            <p className="profile" onClick={onProfileClick}>{props.userData.userInfo.fullName}</p>
                             <img style={{ height: '32px', cursor: 'pointer', width: '45px' }} onClick={handleIconClick} src={logo} alt='user pic' />
                             <ul ref={moduleNavigationRef} className="profile-icon">
                                 {
@@ -289,3 +265,29 @@ const Navigation = (props) => {
 }
 
 export default Navigation
+
+const getNotifText = (notif) => {
+    const text = notif.doc_type === 2
+        ? "Müqavilə Razılaşması"
+        : notif.doc_type === 1
+            ? "Qiymət Təklifi Araşdırması"
+            : notif.doc_type === 3
+                ? "Ödəniş Razılaşması"
+                : "Sifariş"
+    if (notif.category_id === 1)
+        return <> Yeni {text}</>
+    else if (notif.category_id === 2)
+        return (
+            <>
+                № <span style={{ color: 'tomato' }}>{notif.doc_number}</span> sənəd {
+                    notif.action === 1
+                        ? 'təsdiq edildi'
+                        : notif.action === 2
+                            ? "redaktəyə qaytarıldı"
+                            : notif.action === 3
+                                ? "redaktə edildi"
+                                : "etiraz edildi"
+                }
+            </>
+        )
+}

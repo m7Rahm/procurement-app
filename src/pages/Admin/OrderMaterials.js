@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useLayoutEffect } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import {
     MdModeEdit,
     MdDone,
@@ -6,35 +6,26 @@ import {
 } from 'react-icons/md'
 import { FaPlus } from 'react-icons/fa'
 import { AiFillCheckCircle } from 'react-icons/ai'
-import { TokenContext } from '../../App';
 import OperationResult from '../../components/Misc/OperationResult'
 import Pagination from '../../components/Misc/Pagination'
+import useFetch from '../../hooks/useFetch';
 const OrderMaterials = () => {
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const [departments, setDepartments] = useState([]);
     const [units, setUnits] = useState([]);
     const glCategoriesRef = useRef([]);
     const [glCategories, setGlCategories] = useState([]);
     const activePageRef = useRef(0);
     const [tableData, setTableData] = useState({ content: [], count: 0 });
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     const refreshContent = (from) => {
-        const data = JSON.stringify({
+        const data = {
             categoryid: 34,
             subGlCategoryId: 0,
             from: from,
             next: 20
-        })
-        fetch('http://192.168.0.182:54321/api/get-models', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        }
+        fetchPost('http://192.168.0.182:54321/api/get-models', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setTableData({ count: totalCount, content: respJ });
@@ -42,62 +33,34 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/gl-categories', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/gl-categories')
             .then(respJ => {
                 glCategoriesRef.current = respJ;
                 const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories(glCategories);
             })
             .catch(ex => console.log(ex))
-    }, [token])
-    useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/cluster-names', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/cluster-names')
             .then(respJ => setUnits(respJ))
             .catch(ex => console.log(ex))
-    }, [token])
-    useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/departments', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
-    }, [token]);
+    }, [fetchGet])
     useLayoutEffect(() => {
-        const data = JSON.stringify({
+        const data = {
             categoryid: 34,
             subGlCategoryId: 0,
             from: 0,
             next: 20
-        })
-        fetch('http://192.168.0.182:54321/api/get-models', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        }
+        fetchPost('http://192.168.0.182:54321/api/get-models', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setTableData({ count: totalCount, content: respJ });
             })
             .catch(ex => console.log(ex))
-    }, [token])
+    }, [fetchPost])
     return (
         <div className="sys-param-modal">
             <div >
@@ -123,14 +86,12 @@ const OrderMaterials = () => {
                             glCategories={glCategories}
                             units={units}
                             departments={departments}
-                            token={token}
                             setTableData={setTableData}
                         />
                         {
                             tableData.content.map((material, index) =>
                                 <TableRow
                                     index={activePageRef.current * 20 + index + 1}
-                                    token={token}
                                     material={material}
                                     glCategoriesRef={glCategoriesRef}
                                     glCategories={glCategories}
@@ -153,7 +114,8 @@ const OrderMaterials = () => {
 }
 export default OrderMaterials
 
-const TableRow = ({ index, material, departments, token, units, glCategories, glCategoriesRef }) => {
+const TableRow = ({ index, material, departments, units, glCategories, glCategoriesRef }) => {
+    const fetchPost = useFetch("POST");
     const [materialData, setMaterialData] = useState({ ...material, type: material.is_service ? "1" : "0" });
     const [disabled, setDisabled] = useState(true);
     const subGlCategoryRef = useRef(null);
@@ -173,23 +135,14 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
         setDisabled(prev => !prev)
     }
     const handleUpdate = () => {
-        const data = JSON.stringify({
+        const data = {
             ...materialData,
             sub_gl_category_id: subGlCategoryRef.current.value,
             isInv: inventoryRef.current.checked,
             isEsasVesait: esasVesaitRef.current.checked
-        });
-        fetch('http://192.168.0.182:54321/api/update-material', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
-            .then(_ => setDisabled(true))
+        };
+        fetchPost('http://192.168.0.182:54321/api/update-material', data)
+            .then(() => setDisabled(true))
             .catch(ex => console.log(ex))
     }
     const handlePriceChange = (e) => {
@@ -267,7 +220,7 @@ const TableRow = ({ index, material, departments, token, units, glCategories, gl
     )
 }
 const NewMaterial = React.memo((props) => {
-    const { glCategoriesRef, glCategories, units, departments, token, setTableData } = props
+    const { glCategoriesRef, glCategories, units, departments, setTableData } = props
     const unitsRef = useRef(null);
     const glCategoryRef = useRef(null);
     const curatoridRef = useRef(null);
@@ -284,6 +237,7 @@ const NewMaterial = React.memo((props) => {
         sub_gl_category_id: '-1',
         type: 0
     });
+    const fetchPost = useFetch("POST");
     const handleAddNewCategory = () => {
         const gl_category_id = glCategoryRef.current.value;
         const data = {
@@ -294,16 +248,7 @@ const NewMaterial = React.memo((props) => {
             isInv: inventoryRef.current.checked,
             isEsasVesait: esasVesaitRef.current.checked
         };
-        fetch('http://192.168.0.182:54321/api/add-new-cat', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/add-new-cat')
             .then(respJ => {
                 if (respJ[0].result === 'success') {
                     const id = respJ[0].row_id;

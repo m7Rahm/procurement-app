@@ -1,18 +1,12 @@
-import React, { lazy, Suspense, useContext } from "react"
-import { TokenContext } from "../../App.js"
+import React, { lazy, Suspense } from "react"
+import useFetch from "../../hooks/useFetch.js";
 const DecommissionContent = lazy(() => import("../MiscDocs/DecommissionContent"));
 const BudgetIncRequestContent = lazy(() => import("../MiscDocs/BudgetIncRequestContent"))
 const MiscDocContainer = (props) => {
     const { docid, docType } = props;
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
-    const fetchParticipants = () => {
-        return fetch(`http://192.168.0.182:54321/api/misc-doc-participants?docid=${docid}&docType=${docType}`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-    }
+    const fetchParticipantsFunc = useFetch("GET")
+    const fetchParticipants = () => fetchParticipantsFunc(`http://192.168.0.182:54321/api/misc-doc-participants?docid=${docid}&docType=${docType}`)
+
     return (
         <>
             <Suspense fallback="">
@@ -21,7 +15,6 @@ const MiscDocContainer = (props) => {
                         ? <BudgetIncRequestContent
                             docid={docid}
                             docType={docType}
-                            token={token}
                             fetchParticipants={fetchParticipants}
                             setInitData={props.setInitData}
                         />
@@ -29,7 +22,6 @@ const MiscDocContainer = (props) => {
                             ? <DecommissionContent
                                 docid={docid}
                                 docType={docType}
-                                token={token}
                                 fetchParticipants={fetchParticipants}
                                 setInitData={props.setInitData}
                             />

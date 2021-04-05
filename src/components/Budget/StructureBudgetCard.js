@@ -1,35 +1,25 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
-import { TokenContext } from '../../App'
+import React, { useState, useEffect, useRef } from 'react'
 import { FaEdit } from 'react-icons/fa';
 import { useHistory, useRouteMatch } from 'react-router-dom';
+import useFetch from '../../hooks/useFetch';
 const CardContent = React.forwardRef(({ budget, category, period }, ref) => {
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const [subGlBudgets, setSubGlBudgets] = useState([]);
+    const fetchPost = useFetch("POST");
     const handleClick = () => {
 
     }
     useEffect(() => {
-        const data = JSON.stringify({
+        const data = {
             from: 0,
             next: 20,
             period: period,
             structureid: budget.structure_id,
             glCategoryid: category
-        });
-        fetch('http://192.168.0.182:54321/api/structure-budget-per-gl-category', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/structure-budget-per-gl-category', data)
             .then(respJ => setSubGlBudgets(respJ))
             .catch(ex => console.log(ex))
-    }, [token, category, budget, period]);
+    }, [fetchPost, category, budget, period]);
     return (
         <div style={{ padding: '20px 0px' }}>
             <ul className="sub-gl-category-budget">

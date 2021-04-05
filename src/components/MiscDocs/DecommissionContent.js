@@ -2,24 +2,20 @@ import React, { useEffect, useRef, useState } from "react"
 import { FaInfo, FaCheck, FaTimes, FaAngleDown } from "react-icons/fa"
 import DecomInventoryNumbers from "./DecomInventoryNumbers"
 import ParticipantsUniversal from "../Common/ParticipantsUniversal"
+import useFetch from "../../hooks/useFetch"
 const DecommissionContent = (props) => {
-    const { token } = props;
     const [decommissioned, setDecommissioned] = useState({ content: [], active: false });
     const [visible, setVisible] = useState({ visible: false, docid: null });
     const textareaRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
+    const fetchDecommissionedContent = useFetch("GET");
+    const fetchAcceptDecline = useFetch("POST");
     const participantsRef = useRef(null);
     useEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
         if (mounted && props.docid) {
-            fetch("http://192.168.0.182:54321/api/decommisioned-doc-content?did=" + props.docid, {
-                signal: abortController.signal,
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            })
-                .then(resp => resp.json())
+            fetchDecommissionedContent("http://192.168.0.182:54321/api/decommisioned-doc-content?did=" + props.docid, abortController)
                 .then(respJ => {
                     if (mounted && respJ.length) {
                         const active = respJ[0].user_result === 0 && respJ[0].doc_result === 0;
@@ -32,7 +28,7 @@ const DecommissionContent = (props) => {
             abortController.abort();
             mounted = false;
         }
-    }, [token, props.docid]);
+    }, [fetchDecommissionedContent, props.docid]);
     const closeModal = () => {
         setVisible({ visible: false })
     }
@@ -43,22 +39,13 @@ const DecommissionContent = (props) => {
 
     }
     const acceptDeclince = (action) => {
-        const data = JSON.stringify({
+        const data = {
             comment: textareaRef.current ? textareaRef.current.value : "",
             action,
             tranid: decommissioned.content[0].tran_id,
             docid: props.docid
-        });
-        fetch("http://192.168.0.182:54321/api/accept-decline-decommission", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json",
-                "Content-Length": data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchAcceptDecline("http://192.168.0.182:54321/api/accept-decline-decommission", data)
             .then(respJ => {
                 if (respJ) {
                     setDecommissioned(prev => ({ ...prev, active: false }))
@@ -84,7 +71,6 @@ const DecommissionContent = (props) => {
             <DecomInventoryNumbers
                 docid={visible.docid}
                 visible={visible.visible}
-                token={token}
                 closeModal={closeModal}
             />
             <div>

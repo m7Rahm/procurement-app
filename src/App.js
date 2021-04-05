@@ -32,6 +32,7 @@ const App = () => {
   const location = useLocation();
   const history = useHistory();
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
+  // localStorage.removeItem("token")
   useEffect(() => {
     if (/from=(.*)/.test(location.search)) {
       if (location.search.match(/from=(.*)&/)[1] === 'warehouse' && location.search.match(/action=(.*)/)[1] === 'login') {

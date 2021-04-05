@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
 	MdAdd,
 	MdEdit
@@ -7,20 +7,14 @@ import Pagination from '../../components/Misc/Pagination'
 import Modal from '../../components/Misc/Modal'
 import EditUser from '../../components/Admin/EditUser'
 import StatusButton from '../../components/Misc/StatusButton';
-import { TokenContext } from '../../App'
+import useFetch from '../../hooks/useFetch'
 const Users = () => {
-	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0].token;
 	const [users, setUsers] = useState({ count: 0, users: [] });
 	const activePageRef = useRef(0);
 	const [modal, setModal] = useState({ visible: false, content: undefined });
+	const fetchGet = useFetch("GET");
 	const updateList = (from) => {
-		fetch(`http://192.168.0.182:54321/api/get-users?from=${from}&next=20`, {
-			headers: {
-				'Authorization': 'Bearer ' + token
-			}
-		})
-			.then(resp => resp.json())
+		fetchGet(`http://192.168.0.182:54321/api/get-users?from=${from}&next=20`)
 			.then(respJ => {
 				const totalCount = respJ[0] ? respJ[0].total_count : 0;
 				setUsers({ count: totalCount, users: respJ })
@@ -28,18 +22,13 @@ const Users = () => {
 			.catch(ex => console.log(ex))
 	}
 	useEffect(() => {
-		fetch(`http://192.168.0.182:54321/api/get-users?from=0&next=20`, {
-			headers: {
-				'Authorization': 'Bearer ' + token
-			}
-		})
-			.then(resp => resp.json())
+		fetchGet(`http://192.168.0.182:54321/api/get-users?from=0&next=20`)
 			.then(respJ => {
 				const totalCount = respJ[0] ? respJ[0].total_count : 0;
 				setUsers({ count: totalCount, users: respJ })
 			})
 			.catch(ex => console.log(ex))
-	}, [token]);
+	}, [fetchGet]);
 	const closeModal = () => {
 		setModal({ visible: false, content: undefined })
 	}
@@ -47,11 +36,7 @@ const Users = () => {
 		const editUser = (props) => <EditUser updateList={updateList} closeModal={closeModal} id={id} {...props} />
 		setModal({ visible: true, content: editUser })
 	}
-	const updateFunc = (id, state) => fetch(`http://192.168.0.182:54321/api/change-user-status?userid=${id}&status=${state}`, {
-		headers: {
-			'Authorization': 'Bearer ' + token
-		}
-	})
+	const updateFunc = (id, state) => fetchGet(`http://192.168.0.182:54321/api/change-user-status?userid=${id}&status=${state}`)
 		.catch(ex => console.log(ex))
 	return (
 		<div style={{ paddingTop: '56px' }}>

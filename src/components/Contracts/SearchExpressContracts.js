@@ -4,7 +4,6 @@ import Pagination from '../Misc/Pagination'
 import { VendorsList } from '../Tender/AgreementVendors'
 const SearchExpressContracts = (props) => {
     const [vendorsList, setVendorsList] = useState([]);
-
     const onVendorSelect = (vendor) => {
         setVendorsList(prev => {
             const newState = prev.find(ven => ven.id === vendor.id) ? prev : [...prev, vendor]
@@ -19,21 +18,12 @@ const SearchExpressContracts = (props) => {
         updateList(0)
     }
     const updateList = (from) => {
-        const data = JSON.stringify({
+        const data = {
             vendors: vendorsList.length !== 0 ? vendorsList.map(vendor => [vendor.id]) : null,
             from: from,
             number: props.numberRef.current.value
-        });
-        fetch('http://192.168.0.182:54321/api/get-express-contracts', {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + props.token,
-                "Content-Type": "application/json",
-                "Content-Length": data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        props.fetchGet('http://192.168.0.182:54321/api/get-express-contracts', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 props.setContracts({ count: totalCount, content: respJ });
@@ -54,7 +44,6 @@ const SearchExpressContracts = (props) => {
                         <br />
                         <VendorsList
                             addVendor={onVendorSelect}
-                            token={props.token}
                             headerVisible={false}
                         />
                     </div>

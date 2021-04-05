@@ -1,14 +1,18 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react'
+import { TokenContext } from '../../App'
+import useFetch from '../../hooks/useFetch'
 import { VendorsList } from '../Tender/AgreementVendors'
 import ContractRelatedDocs from './ContractRelatedDocs'
 import ExpressContractFiles from './ExpressContractFiles'
 const ExpressContractBody = (props) => {
     const [contractState, setContractState] = useState([]);
+    const fetchGet = useFetch("GET");
     const stateRef = useRef({
         files: { new: [], fetched: [] },
         vendorid: null,
         relatedDocs: []
     });
+    const token = useContext(TokenContext)[0].token
     const numberRef = useRef(null);
     const dateRef = useRef(null);
     const textareaRef = useRef(null);
@@ -29,7 +33,7 @@ const ExpressContractBody = (props) => {
         fetch("http://192.168.0.182:54321/api/new-express-contract", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + props.token
+                "Authorization": "Bearer " + token
             },
             body: formData
         })
@@ -58,7 +62,7 @@ const ExpressContractBody = (props) => {
         fetch("http://192.168.0.182:54321/api/update-express-contract", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + props.token
+                "Authorization": "Bearer " + token
             },
             body: formData
         })
@@ -90,17 +94,12 @@ const ExpressContractBody = (props) => {
     const action = props.id === 0 ? createContract : updateContract
     useLayoutEffect(() => {
         if (props.id !== 0)
-            fetch(`http://192.168.0.182:54321/api/express-contract/${props.id}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/express-contract/${props.id}`)
                 .then(respJ => {
                     setContractState(respJ)
                 })
                 .catch(ex => console.log(ex))
-    }, [props.token, props.id])
+    }, [fetchGet, props.id])
     const onVendorSelect = (vendor) => {
         setContractState(prev => {
             stateRef.current.vendorid = vendor.id;
@@ -129,7 +128,6 @@ const ExpressContractBody = (props) => {
                 <div style={{ float: 'left' }}>
                     <VendorsList
                         addVendor={onVendorSelect}
-                        token={props.token}
                         headerVisible={false}
                     />
                 </div>
@@ -146,14 +144,12 @@ const ExpressContractBody = (props) => {
                 <ContractRelatedDocs
                     id={props.id}
                     stateRef={stateRef}
-                    token={props.token}
                 />
             </div>
             <div style={{ clear: 'both' }}>
                 <ExpressContractFiles
                     id={props.id}
                     stateRef={stateRef}
-                    token={props.token}
                 />
             </div>
             <textarea defaultValue={comment} ref={textareaRef} placeholder="Əlavə qeydlər" />

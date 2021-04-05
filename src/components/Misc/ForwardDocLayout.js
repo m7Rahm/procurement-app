@@ -1,5 +1,5 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
-import VisaForwardPerson from './VisaForwardPerson'
+import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
     const { handleSendClick, token, textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
@@ -29,7 +29,7 @@ const ForwardDocLayout = (props) => {
     }, [token]);
     useLayoutEffect(() => {
         let mounted = true;
-        if(mounted)
+        if (mounted)
             fetch('http://192.168.0.182:54321/api/departments', {
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -37,7 +37,7 @@ const ForwardDocLayout = (props) => {
             })
                 .then(resp => resp.status === 200 ? resp.json() : new Error('Internal Server Error'))
                 .then(respJ => {
-                    if(mounted){
+                    if (mounted) {
                         setDepartments(respJ)
                     }
                 })
@@ -89,7 +89,7 @@ const ForwardDocLayout = (props) => {
                             empList.map(employee =>
                                 <li key={employee.id} value={employee.id} onClick={() => handleSelectChange(employee)}>
                                     {employee.full_name}
-                                    <br/>
+                                    <br />
                                     <span>{employee.vezife}</span>
                                 </li>
                             )
@@ -102,13 +102,11 @@ const ForwardDocLayout = (props) => {
                     Göndər
                 </div>
             </div>
-            <div style={{ padding: '0px 20px', borderRadius: '5px' }}>
-                <div style={{ marginTop: '20px', overflow: 'hidden', padding: '15px', border: '1px solid gray', borderRadius: '3px' }}>
-                    {
-                        receivers.map(emp => <VisaForwardPerson key={Math.random()} emp={emp} handleSelectChange={handleSelectChange} />)
-                    }
-                </div>
-            </div>
+            <ForwardedPeople
+                receivers={receivers}
+                setReceivers={setReceivers}
+                handleSelectChange={handleSelectChange}
+            />
         </div>
     )
 }

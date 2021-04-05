@@ -20,6 +20,7 @@ import CardsList from '../components/HOC/CardsList'
 import OrdersSearchHOC from '../components/Search/OrdersSearchHOC'
 import SideBarContainer from '../components/HOC/SideBarContainer'
 import AgreementCard from '../components/VisaCards/AgreementCard'
+import useFetch from '../hooks/useFetch'
 
 const SideBarContent = CardsList(AgreementCard);
 const Search = OrdersSearchHOC(optionsAgreements);
@@ -46,18 +47,6 @@ const routes = [
         component: BudgetDocuments
     },
 ];
-const updateListContent = (data, token) => {
-    const apiData = JSON.stringify(data);
-    return fetch('http://192.168.0.182:54321/api/get-sender-misc-docs', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': apiData.length,
-            'Authorization': 'Bearer ' + token
-        },
-        body: apiData
-    })
-}
 const inData = {
     result: 0,
     from: 0,
@@ -70,10 +59,13 @@ const params = {
 }
 const Budget = (props) => {
     const setMenuData = props.setMenuData
-    const { path, url } = useRouteMatch()
+    const { path, url } = useRouteMatch();
     useEffect(() => {
-        setMenuData({ url: url, routes: routes })
-    }, [url, setMenuData])
+        setMenuData({ url: url, routes: routes });
+        props.leftNavRef.current.style.display = "block";
+    }, [url, setMenuData, props.leftNavRef]);
+    const fetchSenderMiscDocs = useFetch("POST");
+    const updateListContent = (data) => fetchSenderMiscDocs('http://192.168.0.182:54321/api/get-sender-misc-docs', data)
     return (
         <div className="dashboard">
             <Switch>

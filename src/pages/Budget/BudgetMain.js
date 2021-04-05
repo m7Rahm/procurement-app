@@ -1,20 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { months } from '../../data/data'
 import Modal from '../../components/Misc/Modal'
-import {
-    useRouteMatch,
-    useHistory,
-    useLocation
-} from 'react-router-dom'
+import { useRouteMatch, useHistory, useLocation } from 'react-router-dom'
 import Pagination from '../../components/Misc/Pagination'
-import {
-    MdAdd
-} from 'react-icons/md'
-import { TokenContext } from '../../App'
+import { MdAdd } from 'react-icons/md'
 import NewBudget from '../../components/Budget/NewBudget'
+import useFetch from '../../hooks/useFetch'
 const Budget = () => {
-    const tokenContext = useContext(TokenContext)
-    const token = tokenContext[0].token;
     const location = useLocation();
     const categories = useRef([]);
     const [modalState, setModalState] = useState({ visibility: false, content: null });
@@ -34,31 +26,23 @@ const Budget = () => {
     const [glCategories, setGlCategories] = useState([])
     const [departments, setDepartments] = useState([]);
     const { path } = useRouteMatch();
-    const history = useHistory()
+    const history = useHistory();
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/departments', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
-    }, [token]);
+    }, [fetchGet]);
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/gl-categories', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/gl-categories')
             .then(respJ => {
                 categories.current = respJ;
                 const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories(glCategories);
             })
             .catch(ex => console.log(ex))
-    }, [token])
+    }, [fetchGet])
     const updateList = (page) => {
         const data = {
             period: budgetData.year + budgetData.month,
@@ -67,16 +51,7 @@ const Budget = () => {
             from: page,
             next: 20
         };
-        fetch('http://192.168.0.182:54321/api/get-budgets', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/get-budgets', data)
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setBudgets({ count: totalCount, budgets: respJ });
@@ -100,7 +75,7 @@ const Budget = () => {
         })
     }
     const addNewBudget = () => {
-        const newBudget = (props) => <NewBudget categories={categories} departments={departments} token={token} {...props} />
+        const newBudget = (props) => <NewBudget categories={categories} departments={departments} {...props} />
         setModalState({ visibility: true, content: newBudget })
     }
     const closeModal = () => {

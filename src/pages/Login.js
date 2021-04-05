@@ -7,9 +7,11 @@ import {
 } from 'react-icons/io'
 import jwt from 'jsonwebtoken'
 import { modules } from '../data/data'
+import useFetch from '../hooks/useFetch'
 const Login = (props) => {
     const [userCreds, setUserCreds] = useState({ username: '', password: '' });
     const history = useHistory();
+    const loginFunc = useFetch("POST")
     const [isPasswordCorrect, setIsPasswordCorrect] = useState(true);
     const operationResultDiv = useRef(null);
     const count = useRef(0)
@@ -24,15 +26,7 @@ const Login = (props) => {
             }, false)
     }, [isPasswordCorrect])
     const handleLoginCheck = () => {
-        fetch('http://192.168.0.182:54321/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(userCreds).length
-            },
-            body: JSON.stringify(userCreds)
-        })
-            .then(resp => resp.json())
+        loginFunc('http://192.168.0.182:54321/api/login', userCreds)
             .then(respJ => {
                 if (!respJ.token)
                     setIsPasswordCorrect(false);

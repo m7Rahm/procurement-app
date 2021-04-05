@@ -1,12 +1,7 @@
-import React, { useEffect, useState, useRef, useContext } from "react"
-import {
-    FaLock,
-    FaUnlock
-} from "react-icons/fa"
-import {
-    IoMdCheckmarkCircle
-} from "react-icons/io"
-import { TokenContext } from "../../App"
+import React, { useEffect, useState, useRef } from "react"
+import { FaLock, FaUnlock } from "react-icons/fa"
+import { IoMdCheckmarkCircle } from "react-icons/io"
+import useFetch from "../../hooks/useFetch"
 const userDataInit = {
     username: "",
     full_name: "",
@@ -23,16 +18,16 @@ const userDataInit = {
 const EditUser = (props) => {
     const { id, closeModal } = props;
     const [userData, setUserData] = useState(userDataInit);
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const [isProtected, setIsProtected] = useState(id !== undefined);
     const [resetPasswordVisibility, setResetPasswordVisibility] = useState(false);
     const [password, setPassword] = useState("");
     const [showAlertModal, setShowAlertModal] = useState(false);
     const repeatPass = useRef(null);
     const positionRef = useRef(null);
+    const fetchPost = useFetch("POST");
+    const fetchGet = useFetch("GET");
     const updateUserData = () => {
-        const data = JSON.stringify({
+        const data = {
             username: userData.username,
             fullName: userData.full_name,
             email: userData.email,
@@ -42,17 +37,8 @@ const EditUser = (props) => {
             role: userData.role_id,
             id: id,
             vezifeN: positionRef.current.value
-        });
-        fetch("http://192.168.0.182:54321/api/update-user-data", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token,
-                "Content-Type": "application/json",
-                "Content-Length": data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost("http://192.168.0.182:54321/api/update-user-data", data)
             .then(respJ => {
                 if (respJ[0].result === "success")
                     closeModal()
@@ -60,17 +46,8 @@ const EditUser = (props) => {
             .catch(ex => console.log(ex))
     }
     const addNewUser = () => {
-        const data = JSON.stringify({ ...userData, vezifeN: positionRef.current.value });
-        fetch('http://192.168.0.182:54321/api/add-new-user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length,
-                'Authorization': 'Bearer ' + token
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        const data = { ...userData, vezifeN: positionRef.current.value };
+        fetchPost('http://192.168.0.182:54321/api/add-new-user', data)
             .then(respJ => {
                 if (respJ[0].result === 'success') {
                     props.updateList(0);
@@ -82,13 +59,7 @@ const EditUser = (props) => {
         let mounted = true;
         const abortController = new AbortController();
         if (id !== undefined)
-            fetch(`http://192.168.0.182:54321/api/user/${id}`, {
-                signal: abortController.signal,
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/user/${id}`)
                 .then(respJ => {
                     if (respJ.length && mounted) {
                         setUserData(respJ[0]);
@@ -101,7 +72,7 @@ const EditUser = (props) => {
             mounted = false;
             abortController.abort()
         }
-    }, [id, token]);
+    }, [id, fetchGet]);
 
     const handleChange = (e) => {
         const name = e.target.name;
@@ -121,20 +92,11 @@ const EditUser = (props) => {
     }
     const changePassword = () => {
         if (password === repeatPass.current.value) {
-            const data = JSON.stringify({
+            const data = {
                 password: password,
                 id: id
-            })
-            fetch("http://192.168.0.182:54321/api/reset-password", {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json",
-                    "Content-Length": data.length
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            }
+            fetchPost("http://192.168.0.182:54321/api/reset-password", data)
                 .then(respJ => {
                     if (respJ[0].result === "success")
                         setResetPasswordVisibility(false);
@@ -189,15 +151,15 @@ const EditUser = (props) => {
                             <input disabled={isProtected} ref={positionRef} name="vezife" />
                         </div>
                         <StructureInfo
-                            token={token}
                             isProtected={isProtected}
                             handleChange={handleChange}
                             userData={userData}
+                            fetchGet={fetchGet}
                         />
                     </div>
                 </div>
             </div>
-            <Roles token={token} userData={userData} isProtected={isProtected} setUserData={setUserData} />
+            <Roles fetchGet={fetchGet} userData={userData} isProtected={isProtected} setUserData={setUserData} />
             <div style={{ paddingBottom: "20px", overflow: "hidden" }}>
                 <h1>Təhlükəsizlik</h1>
                 <div>
@@ -253,7 +215,7 @@ const EditUser = (props) => {
 }
 export default EditUser
 const Roles = (props) => {
-    const { token, userData, isProtected, setUserData } = props;
+    const { fetchGet, userData, isProtected, setUserData } = props;
     const [roles, setRoles] = useState([]);
     const availableModules = userData.modules.length !== 0 ? userData.modules.split(",") : []
     const handleRoleChange = (e) => {
@@ -265,13 +227,7 @@ const Roles = (props) => {
     useEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
-        fetch(`http://192.168.0.182:54321/api/roles`, {
-            signal: abortController.signal,
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/roles`, abortController)
             .then(respJ => {
                 if (mounted)
                     setRoles(respJ)
@@ -281,7 +237,7 @@ const Roles = (props) => {
             abortController.abort();
             mounted = false
         }
-    }, [token])
+    }, [fetchGet])
     return (
         <div style={{ minHeight: "250px" }}>
             <h1>Yetkilər</h1>
@@ -316,20 +272,15 @@ const Roles = (props) => {
     )
 }
 const StructureInfo = (props) => {
-    const { token, isProtected, userData, handleChange } = props;
+    const { isProtected, userData, handleChange, fetchGet } = props;
     const [departments, setStructures] = useState([]);
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/departments`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/departments`)
             .then(respJ => {
                 setStructures(respJ)
             })
             .catch(ex => console.log(ex));
-    }, [token]);
+    }, [fetchGet]);
     return (
         <>
             <div>

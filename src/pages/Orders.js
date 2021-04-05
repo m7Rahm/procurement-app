@@ -134,7 +134,8 @@ const Orders = (props) => {
     const { path, url } = useRouteMatch()
     useEffect(() => {
         setMenuData({ url: url, routes: routes });
-    }, [url, setMenuData]);
+        props.leftNavRef.current.style.display = "block";
+    }, [url, setMenuData, props.leftNavRef]);
     return (
         <div className="dashboard">
             <Switch>

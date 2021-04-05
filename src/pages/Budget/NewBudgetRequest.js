@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { months } from '../../data/data'
 import ForwardDocAdvanced from '../../components/Misc/ForwardDocAdvanced'
 import OperationResult from "../../components/Misc/OperationResult"
+import useFetch from '../../hooks/useFetch';
 const date = new Date();
 const month = date.getMonth() + 1;
 const year = date.getFullYear();
@@ -10,7 +11,9 @@ const NewBudgetRequest = (props) => {
     const [glCategories, setGlCategories] = useState({ parent: [], sub: [], all: [] });
     const subGlCategoryidRef = useRef(null);
     const [departments, setDepartments] = useState([]);
-    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
+    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     const [newBudgetData, setNewBudgetData] = useState({
         year: date.getFullYear(),
         month: month < 10 ? `0${month}` : `${month}`,
@@ -20,32 +23,22 @@ const NewBudgetRequest = (props) => {
     })
     const subGlCategories = glCategories.all.filter(category => category.dependent_id === newBudgetData.glCategoryid);
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/departments', {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
-    }, [props.token]);
+    }, [fetchGet]);
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/gl-categories', {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/gl-categories')
             .then(respJ => {
                 const glCategories = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories({ parent: glCategories, all: respJ, sub: [] });
             })
             .catch(ex => console.log(ex))
-    }, [props.token]);
+    }, [fetchGet]);
     const handleSendClick = (receivers, comment, isGroup) => {
         if (receivers.length !== 0) {
             const recs = receivers.map((receiver, index) => [receiver.id, isGroup ? 1 : (index === 0) ? 1 : 0])
-            const data = JSON.stringify({
+            const data = {
                 sendType: !isGroup ? 0 : 1,
                 comment: comment,
                 year: newBudgetData.year,
@@ -54,17 +47,8 @@ const NewBudgetRequest = (props) => {
                 structure: newBudgetData.department,
                 amount: newBudgetData.budget,
                 recs
-            })
-            fetch("http://192.168.0.182:54321/api/new-budget-inc-req", {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + props.token,
-                    "Content-Type": "application/json",
-                    "Content-Length": data.length
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            }
+            fetchPost("http://192.168.0.182:54321/api/new-budget-inc-req", data)
                 .then(respJ => {
                     if (!respJ[0].error) {
                         props.closeModal();
@@ -160,7 +144,6 @@ const NewBudgetRequest = (props) => {
                     </tbody>
                 </table>
                 <ForwardDocAdvanced
-                    token={props.token}
                     handleSendClick={handleSendClick}
                 />
             </div>

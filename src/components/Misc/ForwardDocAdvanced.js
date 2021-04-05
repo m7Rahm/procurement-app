@@ -1,7 +1,8 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import useFetch from '../../hooks/useFetch';
 import VisaForwardPerson from './VisaForwardPerson'
 const ForwardDocAdvanced = (props) => {
-    const { handleSendClick, token, textareaVisible = true } = props;
+    const { handleSendClick, textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
     const [receivers, setReceivers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -11,17 +12,12 @@ const ForwardDocAdvanced = (props) => {
     const selectRef = useRef(null);
     const empListRef = useRef(null);
     const textareaRef = useRef(null);
+    const fetchGet = useFetch("GET");
     useLayoutEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
         if (mounted)
-            fetch('http://192.168.0.182:54321/api/emplist', {
-                signal: abortController.signal,
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.status === 200 ? resp.json() : new Error('Internal Server Error'))
+            fetchGet('http://192.168.0.182:54321/api/emplist', abortController)
                 .then(respJ => {
                     if (mounted) {
                         empListRef.current = respJ;
@@ -33,18 +29,12 @@ const ForwardDocAdvanced = (props) => {
             mounted = false;
             abortController.abort();
         }
-    }, [token]);
+    }, [fetchGet]);
     useLayoutEffect(() => {
         let mounted = true;
         const abortController = new AbortController()
         if (mounted)
-            fetch('http://192.168.0.182:54321/api/departments', {
-                signal: abortController.signal,
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.ok ? resp.json() : new Error('Internal Server Error'))
+            fetchGet('http://192.168.0.182:54321/api/departments', abortController)
                 .then(respJ => {
                     if (mounted) {
                         setDepartments(respJ)
@@ -55,18 +45,12 @@ const ForwardDocAdvanced = (props) => {
             mounted = false;
             abortController.abort();
         }
-    }, [token]);
+    }, [fetchGet]);
     useEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
         if (checked && allGroupsRef.current.length === 0 && mounted) {
-            fetch("http://192.168.0.182:54321/api/roles", {
-                signal: abortController.signal,
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            })
-                .then(resp => resp.ok ? resp.json() : new Error('Internal Server Error'))
+            fetchGet("http://192.168.0.182:54321/api/roles", abortController)
                 .then(respJ => {
                     const groups = respJ
                         .filter(group => group.active_passive === 1)
@@ -80,7 +64,7 @@ const ForwardDocAdvanced = (props) => {
             mounted = false;
             abortController.abort();
         }
-    }, [token, checked])
+    }, [fetchGet, checked])
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         let searchResult
@@ -182,7 +166,7 @@ const ForwardDocAdvanced = (props) => {
 }
 export default React.memo(ForwardDocAdvanced)
 
-const ForwardedPeople = (props) => {
+export const ForwardedPeople = (props) => {
     const draggedElement = useRef(null);
     return (
         <div style={{ padding: '0px 20px', borderRadius: '5px' }}>

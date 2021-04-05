@@ -1,47 +1,29 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import StatusButton from '../../components/Misc/StatusButton'
-import {
-    MdEdit,
-    MdAdd
-} from 'react-icons/md'
-
+import { MdEdit, MdAdd } from 'react-icons/md'
 import Modal from '../../components/Misc/Modal'
 import UpdateRole from '../../components/Admin/UpdateRole'
-import { TokenContext } from '../../App'
-const Roles = (props) => {
-    const tokenContext = useContext(TokenContext)
-    const token = tokenContext[0].token;
+import useFetch from '../../hooks/useFetch'
+const Roles = () => {
     const [modal, setModal] = useState({ content: null, state: false })
     const [roles, setRoles] = useState([]);
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     const handleRoleUpdate = (id) => {
         const role = id !== -1
             ? roles.find(role => role.id === id)
             : { id: -1, name: '', modules: '', previliges: '', active_passive: 1 };
-        const updateRole = (props) => <UpdateRole token={token} closeModal={changeModalState} setRoles={setRoles} {...props} role={role} />
+        const updateRole = (props) => <UpdateRole closeModal={changeModalState} setRoles={setRoles} {...props} role={role} />
         setModal({ content: updateRole, state: true })
     }
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/roles', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/roles')
             .then(respJ => setRoles(respJ))
             .catch(ex => console.log(ex));
-    }, [token]);
+    }, [fetchGet]);
     const updateFunc = (id, state) => {
         const data = { ...roles.find(role => role.id === id), active_passive: state }
-        fetch('http://192.168.0.182:54321/api/update-role', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(data).length
-            },
-            body: JSON.stringify(data)
-        })
-            .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/update-role', data)
             .catch(ex => console.log(ex))
     }
     const changeModalState = () => setModal({ content: null, state: false })

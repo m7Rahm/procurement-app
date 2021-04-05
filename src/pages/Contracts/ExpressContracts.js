@@ -1,51 +1,34 @@
-import React, { useEffect, useContext, useState, lazy, useRef } from 'react'
-import { TokenContext } from '../../App'
+import React, { useEffect, useState, lazy, useRef } from 'react'
 import { workSectors } from '../../data/data'
 import { IoIosMore, IoIosAddCircle } from 'react-icons/io'
 import ExpressContractBody from '../../components/Contracts/ExpressContractBody'
 import SearchExpressContracts from '../../components/Contracts/SearchExpressContracts'
+import useFetch from '../../hooks/useFetch'
 const Modal = lazy(() => import('../../components/Misc/Modal'));
 
-const ExpressContracts = (props) => {
-    const tokenContext = useContext(TokenContext);
+const ExpressContracts = () => {
     const [contracts, setContracts] = useState({ count: 0, content: [] });
-    const token = tokenContext[0].token;
     const [modalState, setModalState] = useState({ visible: false, content: ExpressContractBody })
     const numberRef = useRef(null);
     const vendorsListRef = useRef([]);
     const activePageRef = useRef(0);
+    const fetchPost = useFetch("POST");
+    const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/get-express-contracts', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': 0
-            },
-        })
-            .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', {})
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setContracts({ count: totalCount, content: respJ });
             })
             .catch(ex => console.log(ex))
-    }, [token]);
+    }, [fetchPost]);
     const updateContent = () => {
-        const data = JSON.stringify({
+        const data = {
             vendors: vendorsListRef.current.length !== 0 ? vendorsListRef.current.map(vendor => [vendor.id]) : null,
             from: activePageRef.current,
             number: numberRef.current.value
-        });
-        fetch('http://192.168.0.182:54321/api/get-express-contracts', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setContracts({ count: totalCount, content: respJ });
@@ -58,7 +41,7 @@ const ExpressContracts = (props) => {
             visible: true,
             content: ExpressContractBody,
             id,
-            token,
+            fetchGet,
             updateContent,
             setContracts
         })
@@ -76,11 +59,11 @@ const ExpressContracts = (props) => {
                     </Modal>
                 }
                 <SearchExpressContracts
-                    token={token}
                     activePageRef={activePageRef}
                     vendorsListRef={vendorsListRef}
                     numberRef={numberRef}
                     count={contracts.count}
+                    fetchPost={fetchGet}
                     setContracts={setContracts}
                 />
                 <div style={{ position: "fixed", right: '50px', bottom: "86px", }}>

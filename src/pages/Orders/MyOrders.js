@@ -5,15 +5,16 @@ import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
 import Pagination from '../../components/Misc/Pagination';
 import { TokenContext } from '../../App'
 import { useParams } from 'react-router';
+import useFetch from '../../hooks/useFetch';
 const MyOrders = () => {
   const wrapperRef = useRef(null);
   const [orders, setOrders] = useState({ count: 0, orders: [] });
   const activePageRef = useRef(0);
   const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0].token
   const userData = tokenContext[0].userData;
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
   const { docid: orderid } = useParams();
+  const fetchOrders = useFetch("POST");
   const [searchData, setSearchData] = useState({
     dateFrom: '',
     dateTill: '',
@@ -21,19 +22,9 @@ const MyOrders = () => {
     date: '',
     ordNumb: ""
   });
-
   const updateList = (from) => {
-    const data = JSON.stringify({ ...searchData, from: from, until: 20 });
-    fetch(`http://192.168.0.182:54321/api/orders`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Length': data.length,
-        'Content-Type': 'application/json'
-      },
-      body: data
-    })
-      .then(resp => resp.json())
+    const data = { ...searchData, from: from, until: 20 };
+    fetchOrders(`http://192.168.0.182:54321/api/orders`, data)
       .then(respJ => {
         const totalCount = respJ[0] ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
@@ -41,7 +32,7 @@ const MyOrders = () => {
       .catch(err => console.log(err))
   }
   useEffect(() => {
-    const data = JSON.stringify({
+    const data = {
       from: 0,
       until: 20,
       status: -3,
@@ -49,24 +40,15 @@ const MyOrders = () => {
       dateTill: '',
       ordNumb: "",
       id: orderid
-    });
+    };
     //todo: create socket and connect
-    fetch('http://192.168.0.182:54321/api/orders', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Length': data.length,
-        'Content-Type': 'application/json'
-      },
-      body: data
-    })
-      .then(resp => resp.json())
+    fetchOrders(`http://192.168.0.182:54321/api/orders`, data)
       .then(respJ => {
         const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
       })
       .catch(err => console.log(err))
-  }, [token, orderid])
+  }, [fetchOrders, orderid])
   return (
     <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
       <Search
@@ -80,7 +62,7 @@ const MyOrders = () => {
           orders={orders}
           referer="protected"
           setOrders={setOrders}
-          />
+        />
       </div>
       {
         canCreateNewOrder &&

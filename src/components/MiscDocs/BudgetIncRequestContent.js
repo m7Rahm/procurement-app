@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { months } from '../../data/data'
 import ParticipantsUniversal from '../Common/ParticipantsUniversal'
 import { FaAngleDown, FaCheck, FaTimes } from 'react-icons/fa'
+import useFetch from '../../hooks/useFetch'
 const BudgetIncRequestContent = (props) => {
-    const { docid, docType, token } = props;
+    const { docid, docType } = props;
     const [docState, setDocState] = useState({ content: [], active: false });
     const comment = docState.content.length !== 0 ? docState.content[0].comment : "";
     const textareaRef = useRef(null);
@@ -18,16 +19,12 @@ const BudgetIncRequestContent = (props) => {
         result = docState.content[0].doc_result === 1 ? true : false;
         time = docState.content[0].doc_action_date_time;
     }
+    const fetchDocContent = useFetch("GET");
+    const fetchAcceptDecline = useFetch("POST");
     useEffect(() => {
         const abortController = new AbortController();
         if (docid) {
-            fetch(`http://192.168.0.182:54321/api/misc-doc-content?docid=${docid}&docType=${docType}`, {
-                signal: abortController.signal,
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            })
-                .then(resp => resp.ok ? resp.json() : new Error("Interval Server Error"))
+            fetchDocContent(`http://192.168.0.182:54321/api/misc-doc-content?docid=${docid}&docType=${docType}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0) {
                         setDocState({ content: respJ, active: respJ[0].doc_result === 0 && !respJ[0].user_result })
@@ -37,7 +34,7 @@ const BudgetIncRequestContent = (props) => {
                 })
                 .catch(ex => console.log(ex))
         }
-    }, [token, docid, docType]);
+    }, [fetchDocContent, docid, docType]);
     const handleParticipantsTransition = () => {
         if (participantsRef.current) {
             participantsRef.current.classList.toggle('visa-content-participants-hide');
@@ -51,23 +48,13 @@ const BudgetIncRequestContent = (props) => {
     }
     const acceptDeclince = (action) => {
         const abortController = new AbortController();
-        const data = JSON.stringify({
+        const data = {
             action: action,
             tranid: docState.content[0].tran_id,
             docid: docid,
             comment: textareaRef.current.value
-        })
-        fetch("http://192.168.0.182:54321/api/accept-budget-inc-req", {
-            signal: abortController.signal,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Content-Length": data.length,
-                "Authorization": "Bearer " + token
-            },
-            body: data
-        })
-            .then(resp => resp.ok ? resp.json() : new Error("Internal Server Error"))
+        }
+        fetchAcceptDecline("http://192.168.0.182:54321/api/accept-budget-inc-req", data, abortController)
             .then(_ => {
                 setDocState(prev => ({ content: prev.content.map(row => ({ ...row, user_result: action })), active: false }))
                 props.setInitData(prev => ({ ...prev }))

@@ -4,23 +4,16 @@ import {
     IoMdAdd
 } from 'react-icons/io'
 import { modules, availableOperations } from '../../data/data'
+import useFetch from '../../hooks/useFetch';
 const UpdateRole = (props) => {
     const [roleData, setRoleData] = useState(props.role);
     const [userModules, setUserModules] = useState(props.role.modules === '' ? [] : props.role.modules.split(','));
     const [priviliges, setPreviliges] = useState(props.role.previliges === '' ? [] : props.role.previliges.split(','));
     const selectPrevRef = useRef(null);
     const selectMenusRef = useRef(null);
+    const fetchPost = useFetch("POST");
     const saveChanges = () => {
-        fetch('http://192.168.0.182:54321/api/update-role', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': JSON.stringify(roleData).length
-            },
-            body: JSON.stringify(roleData)
-        })
-            .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/update-role', roleData)
             .then(respJ => {
                 if (respJ[0].result === 'success') {
                     if (roleData.id !== -1)

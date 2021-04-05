@@ -43,8 +43,9 @@ const Other = (props) => {
     const setMenuData = props.setMenuData;
     const { url, path } = useRouteMatch()
     useEffect(() => {
+        props.leftNavRef.current.style.display = "none";
         setMenuData({ url: url, routes: routes })
-    }, [url, setMenuData])
+    }, [url, setMenuData, props.leftNavRef])
     return (
         <Route path={`${path}/:docid?`}>
             <div className="dashboard">

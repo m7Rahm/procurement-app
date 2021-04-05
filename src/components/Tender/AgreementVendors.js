@@ -6,6 +6,7 @@ import OperationResult from '../Misc/OperationResult'
 import { AiFillCheckCircle } from 'react-icons/ai'
 import ContractFiles from '../Contracts/ContractFiles'
 import { WebSocketContext } from '../../pages/SelectModule';
+import useFetch from '../../hooks/useFetch';
 
 const AgreementVendors = (props) => {
     const [agreementVendors, setAgreementVendors] = useState([]);
@@ -183,19 +184,14 @@ export const VendorsList = (props) => {
     const { headerVisible = true, uid = "0" } = props
     const vendorsListRef = useRef(null);
     const inputRef = useRef(null);
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         const controller = new AbortController();
-        fetch('http://192.168.0.182:54321/api/get-vendors', {
-            signal: controller.signal,
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/get-vendors', controller)
             .then(respJ => setVendors({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 }))
             .catch(ex => console.log(ex))
         return () => controller.abort();
-    }, [props.token]);
+    }, [fetchGet]);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         setVendors(prev => {

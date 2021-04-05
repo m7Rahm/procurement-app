@@ -46,8 +46,9 @@ const AdminPage = (props) => {
 	const setMenuData = props.setMenuData
 	const { path, url } = useRouteMatch()
 	useEffect(() => {
-		setMenuData({ url: url, routes: routes })
-	}, [url, setMenuData])
+		setMenuData({ url: url, routes: routes });
+        props.leftNavRef.current.style.display = "block";
+	}, [url, setMenuData, props.leftNavRef])
 	return (
 		<div className="dashboard" style={{ paddingTop: '76px' }}>
 			<Switch>
