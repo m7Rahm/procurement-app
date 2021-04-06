@@ -9,15 +9,14 @@ const VisaContentMaterials = (props) => {
 	const tokenContext = useContext(TokenContext)
 	const userData = tokenContext[0].userData;
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-	const { emp_version_id, order_type, department_content } = props.orderContent[0];
+	const { emp_version_id, order_type } = props.orderContent[0];
 	let orders = [];
 	if (forwardType === 3)
 		orders = orderContent.filter(material => material.techizatci_id === userData.userInfo.structureid)
-	else if (forwardType === 4)
-		orders = orderContent.filter(material => material.techizatci_id === department_content)
 	else
 		orders = orderContent
 	return (
+		orders.length !== 0 &&
 		<>
 			{
 				operationResult.visible &&
@@ -53,6 +52,7 @@ const VisaContentMaterials = (props) => {
 					)
 				}
 			</ul>
+			<div className="sender-comment">{orders[0].sender_comment}</div>
 		</>
 	)
 }
@@ -67,7 +67,7 @@ const TableRow = (props) => {
 	const [disabled, setDisabled] = useState(true);
 	const servicePriceRef = useRef(null);
 	let canEdit = false;
-	if(forwardType === 5)
+	if (forwardType === 5)
 		canEdit = structureid === department_id
 	else if (forwardType === 3)
 		canEdit = true;

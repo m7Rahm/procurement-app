@@ -142,13 +142,15 @@ const Navigation = (props) => {
         }
         const subModule = notification.doc_type === 0 && notification.category_id === 1
             ? "/visas/"
-            : notification.doc_type === 0 && notification.category_id === 2
+            : notification.doc_type === 0 && notification.category_id === 2 && notification.action !== 2
                 ? "/my-orders/"
-                : notification.doc_type === 1
-                    ? "/agreements/"
-                    : notification.doc_type === 2
-                        ? "/contracts/"
-                        : "/payments/"
+                : notification.doc_type === 0 && notification.category_id === 2 && notification.action === 2
+                    ? "/returned/"
+                    : notification.doc_type === 1
+                        ? "/agreements/"
+                        : notification.doc_type === 2
+                            ? "/contracts/"
+                            : "/payments/"
         const { tran_id: tranid, doc_number: docNumber } = notification;
         let link = module + subModule + tranid
         if (notification.category_id === 10) {
@@ -276,12 +278,12 @@ const getNotifText = (notif) => {
             : notif.doc_type === 3
                 ? "Ödəniş Razılaşması"
                 : "Sifariş"
-    if(notif.category_id === 10) {
+    if (notif.category_id === 10) {
         text = notif.doc_type === 1
-        ? "Büdcə Artırılması Razılaşması"
-        : notif.doc_type === 2
-            ? "Silinmə Sənədi"
-            : ""
+            ? "Büdcə Artırılması Razılaşması"
+            : notif.doc_type === 2
+                ? "Silinmə Sənədi"
+                : ""
     }
     if (notif.category_id === 1 || notif.category_id === 10)
         return <> Yeni {text}</>

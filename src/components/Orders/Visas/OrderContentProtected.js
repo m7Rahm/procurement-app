@@ -24,6 +24,15 @@ const OrderContentProtected = (props) => {
 		setModalContent(prev => ({ ...prev, visible: false }))
 		setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, ...updatedCtnt }) : row));
 	}
+	const forwardDoc = (receivers) => {
+		setModalContent({ visible: false, content: null })
+		const message = JSON.stringify({
+			message: "notification",
+			receivers: receivers.map(receiver => ({ id: receiver.id, notif: "newOrder" })),
+			data: undefined
+		})
+		webSocket.send(message)
+	}
 	return (
 		current &&
 		<>
@@ -51,6 +60,7 @@ const OrderContentProtected = (props) => {
 			<Component
 				current={current[0]}
 				canProceed={canProceed}
+				forwardDoc={forwardDoc}
 				handleEditClick={handleEditClick}
 				updateContent={updateContent}
 			/>

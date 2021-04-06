@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import EditOrderTableRow from './EditOrderTableRow';
 import { IoIosAdd } from 'react-icons/io';
 import OperationResult from '../Misc/OperationResult';
 import useFetch from '../../hooks/useFetch';
+import { TokenContext } from '../../App';
 const ForwardDocLayout = React.lazy(() => import('../../components/Misc/ForwardDocLayout'));
 
 const EditOrderRequest = (props) => {
@@ -10,6 +11,7 @@ const EditOrderRequest = (props) => {
     const ordNumb = props.current || props.ordNumb;
     const textareaRef = useRef(null);
     const initialValuesRef = useRef(null);
+    const { structureid } = useContext(TokenContext)[0].userData.userInfo;
     const [orderState, setOrderState] = useState([]);
     const [glCategories, setGlCategories] = useState({ all: [], main: [] });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
@@ -98,6 +100,7 @@ const EditOrderRequest = (props) => {
         }])
     }
     return (
+        orderState.length !== 0 &&
         <div className="modal-content-new-order">
             {
                 operationResult.visible &&
@@ -105,6 +108,10 @@ const EditOrderRequest = (props) => {
                     setOperationResult={setOperationResult}
                     operationDesc={operationResult.desc}
                 />
+            }
+            {
+                orderState[0].structure_id !== structureid &&
+                <div className="filial-name-header">{orderState[0].structure_name}</div>
             }
             <ul className="new-order-table">
                 <li>
@@ -127,7 +134,9 @@ const EditOrderRequest = (props) => {
                             index={index}
                             setOrderState={setOrderState}
                             glCategories={glCategories}
+                            orderType={row.order_type}
                             glCatid={glCatid}
+                            structure={row.structure_id}
                             ordNumb={ordNumb}
                             version={version}
                         />

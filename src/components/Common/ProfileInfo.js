@@ -12,7 +12,9 @@ const Profile = (props) => {
     const [changePassword, setChangePassword] = useState(false);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const setProfileData = props.setProfileData;
-    const setTokenContext = useContext(TokenContext)[1];
+    const tokenContext = useContext(TokenContext)[1];
+    const setTokenContext = tokenContext[1];
+    const logout = tokenContext[2];
     const fetchUserData = useFetch("GET")
     const fetchUpdateUserData = useFetch("POST")
     useEffect(() => {
@@ -79,7 +81,7 @@ const Profile = (props) => {
                                 }
                             })
                         } else {
-
+                            logout()
                         }
                     } else if (mounted) {
                         setOperationResult({ visible: true, desc: resp[0].error })

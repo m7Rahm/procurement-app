@@ -5,13 +5,14 @@ import {
 	FaMinus
 } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch';
-const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, version, view, glCatid }) => {
+const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, version, view, glCatid, orderType, structure }) => {
 	const { sub_gl_category_id: subCategoryid } = row;
 	const rowid = row.id;
 	const modelsRef = useRef([]);
 	const codeRef = useRef(null);
 	const rowRef = useRef(null);
 	const modelListRef = useRef(null);
+	const timeoutRef = useRef(null);
 	const fetchPost = useFetch("POST");
 	useEffect(() => {
 		if (view === 'returned' || view === 'procurement') {
@@ -41,17 +42,43 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 			.then(respJ => {
 				modelsRef.current = respJ;
 				const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-				setOrderState(prev =>
-					prev.map(row => row.id !== rowid
-						? row
-						: ({ ...row, sub_gl_category_id: value, models: respJ, budget: budget, title: '', material_id: 'NaN' })
-					)
-				)
+				setOrderState(prev => prev.map(row => row.id !== rowid
+					? row
+					: ({ ...row, sub_gl_category_id: value, models: respJ, budget: budget, title: '', material_id: 'NaN' })
+				))
 			})
 			.catch(ex => console.log(ex))
 	}
 	const searchByCode = (e) => {
-		console.log(e.target.value)
+		const data = { product_id: e.target.value, orderType: orderType, structure: structure };
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+			timeoutRef.current = null;
+		}
+		timeoutRef.current = setTimeout(() => {
+			fetchPost('http://192.168.0.182:54321/api/get-by-product-code', data)
+				.then(respJ => {
+					timeoutRef.current = null;
+					if (respJ.length !== 0) {
+						const updatedRow = respJ.length === 1
+							? { sub_gl_category_id: respJ[0].subGlCategory, models: respJ, budget: respJ[0].budget, title: respJ[0].title, material_id: respJ[0].id, department_name: respJ[0].department_name }
+							: { models: respJ, title: '', material_id: 'NaN' }
+						if (respJ.length === 1) {
+							modelListRef.current.style.display = "none";
+						} else if (respJ.length > 1) {
+							modelListRef.current.style.display = "block";
+						}
+						setOrderState(prev => prev.map(row => row.id !== rowid
+							? row
+							: ({ ...row, ...updatedRow })
+						));
+					}
+				})
+				.catch(ex => {
+					console.log(ex);
+					timeoutRef.current = null;
+				})
+		}, 500)
 	};
 	const handleAmountChange = (e) => {
 		const value = e.target.value;
@@ -88,7 +115,9 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 			material_id: model.id,
 			approx_price: model.approx_price,
 			title: model.title,
-			department_name: model.department_name
+			department_name: model.department_name,
+			budget: model.budget,
+			sub_gl_category_id: model.sub_gl_category_id
 		})))
 		codeRef.current.value = model.product_id;
 		modelListRef.current.style.display = 'none';
@@ -134,7 +163,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 			</div>
 			<div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
 				<input
-					onBlur={searchByCode}
+					onChange={searchByCode}
 					type="text"
 					disabled={view !== 'returned'}
 					ref={codeRef}

@@ -6,7 +6,7 @@ import OperationResult from '../../Misc/OperationResult'
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
 
 const VisaContentFooter = (props) => {
-    const { handleEditClick, current, canProceed, updateContent } = props;
+    const { handleEditClick, current, canProceed, updateContent, forwardDoc } = props;
     const tokenContext = useContext(TokenContext);
     const userData = tokenContext[0].userData;
     const canApprove = userData.previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
@@ -27,12 +27,12 @@ const VisaContentFooter = (props) => {
             receivers: receivers.map(receiver => [receiver.id]),
             comment: comment
         }
-        fetchPost(`http://192.168.0.182:54321/api/forward-order/${current.id}`, data)
+        fetchPost(`http://192.168.0.182:54321/api/forward-order/${current.order_id}`, data)
             .then(respJ => {
-                if (respJ[0].operation_result === 'success')
-                    setIsModalOpen([respJ[0].head_id], respJ[0])
-                else if (respJ[0].error === 'Logical Error')
-                    setOperationResult({ visible: true, desc: 'Operation not finished' })
+                if (respJ.length === 0)
+                    forwardDoc(receivers)
+                else
+                    setOperationResult({ visible: true, desc: 'Xəta baş verdi' })
             })
             .catch(ex => console.log(ex))
     }
@@ -44,7 +44,7 @@ const VisaContentFooter = (props) => {
                     {...props}
                 />)
         else
-            setOperationResult({ visible: true, desc: 'Operation not finished' })
+            setOperationResult({ visible: true, desc: 'Xəta baş verdi' })
     }
     return (
         current.result === 0 && current.can_influence
