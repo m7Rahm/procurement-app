@@ -1,32 +1,23 @@
 import React, { useState, useEffect, useContext, useCallback, useRef, lazy, Suspense } from "react"
 import ForwardDocLayout from "../Misc/ForwardDocLayout"
-import { TokenContext } from ".././../App"
 import ContractFiles from "./ContractFiles"
 import { WebSocketContext } from "../../pages/SelectModule"
 import PaymentOrderMaterials from "./PaymentOrderMaterials"
+import useFetch from "../../hooks/useFetch"
+import { TokenContext } from "../../App"
 const OperationResult = lazy(() => import("../Misc/OperationResult"))
-const fetchAgreements = (token, controller) =>
-    fetch("http://192.168.0.182:54321/api/payment-ready-orders", {
-        signal: controller.signal,
-        headers: {
-            "Authorization": "Bearer " + token
-        }
-    })
 const NewPayment = (props) => {
-    const tokenContext = useContext(TokenContext);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: "" })
-    const token = tokenContext[0].token;
     const [files, setFiles] = useState([]);
     const [orderState, setOrderState] = useState({ materials: [], numbers: [], all: {} });
+    const tokenContext = useContext(TokenContext);
+    const token = tokenContext[0].token
+    const fetchGet = useFetch("GET");
     const webSocket = useContext(WebSocketContext);
+    const fetchAgreements = useCallback((controller) => fetchGet("http://192.168.0.182:54321/api/payment-ready-orders", controller), [fetchGet])
     const getOrderMaterials = useCallback((order) => {
         const { number, id } = order;
-        fetch(`http://192.168.0.182:54321/api/order-materials?orderid=${id}`, {
-            headers: {
-                "Authorization": "Bearer " + token,
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/order-materials?orderid=${id}`)
             .then(respJ => {
                 setOrderState(prev => {
                     if (!prev.numbers.find(order => order.number === number)) {
@@ -49,7 +40,7 @@ const NewPayment = (props) => {
                 })
             })
             .catch(ex => console.log(ex))
-    }, [token]);
+    }, [fetchGet]);
     const handleSendClick = (users, comment) => {
         const malformedMaterialRow = orderState.materials.find(material => !material.contract_id);
         if (malformedMaterialRow)
@@ -143,7 +134,6 @@ const NewPayment = (props) => {
                 }
             </Suspense>
             <AgreementsList
-                token={token}
                 header="Sifarişlər"
                 type="1"
                 fetchFun={fetchAgreements}
@@ -155,7 +145,6 @@ const NewPayment = (props) => {
                     <PaymentOrderMaterials
                         materials={orderState.materials}
                         numbers={orderState.numbers}
-                        token={token}
                         setOrderState={setOrderState}
                     />
                 }
@@ -170,7 +159,6 @@ const NewPayment = (props) => {
 
             <ForwardDocLayout
                 handleSendClick={handleSendClick}
-                token={token}
             />
         </div>
     )
@@ -184,8 +172,7 @@ const AgreementsList = React.memo((props) => {
     useEffect(() => {
         let mounted = true;
         const controller = new AbortController();
-        fetchFun(props.token, controller)
-            .then(resp => resp.json())
+        fetchFun(controller)
             .then(respJ => {
                 if (mounted)
                     setDocuments({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 })
@@ -195,7 +182,7 @@ const AgreementsList = React.memo((props) => {
             controller.abort();
             mounted = false
         }
-    }, [props.token, fetchFun]);
+    }, [fetchFun]);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         containerRef.current.scrollTop = 0;

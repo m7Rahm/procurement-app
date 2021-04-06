@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useState } from 'react'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { VscLoading } from 'react-icons/vsc'
 import { useHistory } from 'react-router-dom'
+import useFetch from '../../hooks/useFetch'
 const getIcon = (result) => result === 1
     ? <FaCheck style={{ float: 'right' }} color="white" />
     : result === -1
@@ -13,15 +14,11 @@ const AgreementsList = (props) => {
     const handleClick = (agreement) => {
         history.push('/tender/agreements', { agreement: agreement, orderState: { rightBarState: { visible: true, id: props.id }, active: props.active } });
     }
+    const fetchGet = useFetch("GET");
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted) {
-            fetch(`http://192.168.0.182:54321/api/agreements-per-ord-mat-id/${props.id}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/agreements-per-ord-mat-id/${props.id}`)
                 .then(respJ => {
                     if (mounted) {
                         setAgreements(respJ)
@@ -29,7 +26,7 @@ const AgreementsList = (props) => {
                 })
                 .catch(ex => console.log(ex))
         }
-    }, [props.id, props.token])
+    }, [props.id, fetchGet])
     return (
         <div style={{ paddingTop: '56px', marginLeft: '50px' }}>
             {

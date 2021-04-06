@@ -4,6 +4,7 @@ import { FaInfoCircle } from 'react-icons/fa'
 import OperationResult from '../Misc/OperationResult'
 import EmptyContent from '../Misc/EmptyContent'
 import { useLocation } from 'react-router-dom'
+import useFetch from '../../hooks/useFetch'
 const RightInfoBar = lazy(() => import('../Misc/RightInfoBar'))
 const AgreementsList = lazy(() => import('../Misc/AgreementsList'));
 const AgreementContent = (props) => {
@@ -19,18 +20,14 @@ const AgreementContent = (props) => {
         icon: AiFillCheckCircle
     });
     const active = props.active ? props.active : locationState ? locationState.active : null
+    const fetchGet = useFetch("GET")
     useEffect(() => {
         if (active) {
-            fetch(`http://192.168.0.182:54321/api/get-tender-order-content/${active}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/get-tender-order-content/${active}`)
                 .then(respJ => setOrderContent(respJ))
                 .catch(ex => console.log(ex))
         }
-    }, [active, props.token]);
+    }, [active, fetchGet]);
     return (
         <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', paddingTop: '76px' }}>
             {
@@ -63,7 +60,6 @@ const AgreementContent = (props) => {
                                         key={material.id}
                                         index={index}
                                         material={material}
-                                        token={props.token}
                                         setRightBarState={setRightBarState}
                                         setInitData={props.setInitData}
                                         setOperationResult={setOperationResult}
@@ -76,7 +72,6 @@ const AgreementContent = (props) => {
                             <RightInfoBar setRightBarState={setRightBarState}>
                                 <AgreementsList
                                     id={rightBarState.id}
-                                    token={props.token}
                                     active={active}
                                 />
                             </RightInfoBar>
@@ -101,23 +96,15 @@ const getMaterialState = (result) => {
 const AgreementMaterial = (props) => {
     const [materialState, setMaterialState] = useState(props.material);
     const stateText = getMaterialState(materialState.result);
+    const fetchPost = useFetch("POST")
     const handleInfoClick = () => {
         props.setRightBarState({ visible: true, id: materialState.id })
     }
     const sendToAgreement = () => {
-        const data = JSON.stringify({
+        const data = {
             id: materialState.id
-        });
-        fetch('http://192.168.0.182:54321/api/send-to-staging-area', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/send-to-staging-area', data)
             .then(respJ => {
                 if (!respJ.length || !respJ[0].error) {
                     setMaterialState(prev => ({ ...prev, result: 30 }))

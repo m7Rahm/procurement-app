@@ -1,20 +1,14 @@
-import React, { useContext, useCallback, useState, useEffect } from 'react'
-import { TokenContext } from '../../App'
+import React, { useCallback, useState, useEffect } from 'react'
 import AgreementMaterials from '../../components/Tender/AgreementMaterials'
 import AgreementVendors from '../../components/Tender/AgreementVendors'
-const NewAgreement = (props) => {
-    const tokenContext = useContext(TokenContext);
+import useFetch from '../../hooks/useFetch';
+const NewAgreement = () => {
     const [isEmpty, setIsEmpty] = useState(true);
-    const token = tokenContext[0].token;
+    const fetchGet = useFetch("GET")
     const fetchFunction = useCallback(() =>
-        fetch('http://192.168.0.182:54321/api/get-agreement-in-staging-area', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        }), [token])
+        fetchGet('http://192.168.0.182:54321/api/get-agreement-in-staging-area'), [fetchGet])
     useEffect(() => {
         fetchFunction()
-            .then(resp => resp.json())
             .then(respJ => {
                 if (respJ.length !== 0)
                     setIsEmpty(false)
@@ -28,12 +22,10 @@ const NewAgreement = (props) => {
                     ?
                     <>
                         <AgreementMaterials
-                            token={token}
                             fetchFunction={fetchFunction}
                             editable={true}
                         />
                         <AgreementVendors
-                            token={token}
                             setIsEmpty={setIsEmpty}
                         />
                     </>

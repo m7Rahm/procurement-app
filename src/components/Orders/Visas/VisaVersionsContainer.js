@@ -6,18 +6,16 @@ import {
     FaCheck,
     FaTimes
 } from 'react-icons/fa'
+import useFetch from '../../../hooks/useFetch'
 
 const VisaVersionsContainer = (props) => {
-    const { orderNumb, token, doneEditing, tranid } = props;
+    const { orderNumb, doneEditing, tranid } = props;
     const [versions, setVersions] = useState([]);
     const actionsAvailableRef = useRef(true);
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/get-order-versions/${orderNumb}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/get-order-versions/${orderNumb}`)
             .then(respJ => {
                 for (let i = 0; i < respJ.length; i++)
                     if (respJ[i].is_confirmed || respJ[i].result !== 0) {
@@ -26,14 +24,15 @@ const VisaVersionsContainer = (props) => {
                     }
                 setVersions(respJ)
             })
-    }, [token, orderNumb]);
+    }, [fetchGet, orderNumb]);
     return (
         <div>
             {
                 versions.map(version =>
                     <VisaVersion
                         version={version}
-                        token={token}
+                        fetchPost={fetchPost}
+                        fetchGet={fetchGet}
                         tranid={tranid}
                         key={version.id}
                         actionsAvailableRef={actionsAvailableRef}
@@ -45,7 +44,7 @@ const VisaVersionsContainer = (props) => {
     )
 }
 const VisaVersion = (props) => {
-    const { version, token, closeModal, actionsAvailableRef, tranid } = props;
+    const { version, fetchPost, closeModal, actionsAvailableRef, tranid, fetchGet } = props;
     const { emp_id, ord_numb, is_confirmed, conf_date, override } = version;
     const [visaContent, setVisaContent] = useState([]);
     const participantsRef = useRef(null);
@@ -59,21 +58,11 @@ const VisaVersion = (props) => {
             setParticipantsVisiblity(prev => !prev);
     }
     const handleClick = (action) => {
-        const data = JSON.stringify({
+        const data = {
             action: action,
             comment: '',
-        })
-        fetch(`http://192.168.0.182:54321/api/accept-decline/${tranid}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length,
-                    'Authorization': 'Bearer ' + token
-                },
-                body: data
-            })
-            .then(resp => resp.json())
+        }
+        fetchPost(`http://192.168.0.182:54321/api/accept-decline/${tranid}`, data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
                     closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
@@ -82,32 +71,18 @@ const VisaVersion = (props) => {
             .catch(err => console.log(err))
     }
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${ord_numb}&vers=${emp_id}`)
             .then(respJ => setVisaContent(respJ))
             .catch(ex => console.log(ex))
-    }, [ord_numb, emp_id, token]);
+    }, [ord_numb, emp_id, fetchGet]);
 
     const acceptEditedVersion = () => {
         if (visaContent[0].override) {
-            const data = JSON.stringify({
+            const data = {
                 ordNumb: ord_numb,
                 empVersion: emp_id
-            })
-            fetch('http://192.168.0.182:54321/api/accept-edited-version', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            }
+            fetchPost('http://192.168.0.182:54321/api/accept-edited-version', data)
                 .then(respJ => {
                     if (respJ[0].operation_result === 'success') {
                         closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)

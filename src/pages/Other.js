@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useCallback, useEffect } from "react"
 import {
     Route,
     useRouteMatch
@@ -9,23 +9,11 @@ import OrdersSearchHOC from "../components/Search/OrdersSearchHOC"
 import SideBarContainer from "../components/HOC/SideBarContainer"
 import AgreementCard from "../components/VisaCards/AgreementCard"
 import MiscDocsContainer from "../components/HOC/MiscDocsContainer"
+import useFetch from "../hooks/useFetch"
 const SideBarContent = CardsList(AgreementCard);
 const Search = OrdersSearchHOC(optionsAgreements, miscDocTypes);
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const Inbox = MiscDocsContainer(SideBar)
-
-const updateListContent = (data, token) => {
-    const apiData = JSON.stringify(data);
-    return fetch("http://192.168.0.182:54321/api/get-receiver-misc-docs", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Content-Length": apiData.length,
-            "Authorization": "Bearer " + token
-        },
-        body: apiData
-    })
-}
 const inData = {
     result: 0,
     from: 0,
@@ -45,7 +33,9 @@ const Other = (props) => {
     useEffect(() => {
         props.leftNavRef.current.style.display = "none";
         setMenuData({ url: url, routes: routes })
-    }, [url, setMenuData, props.leftNavRef])
+    }, [url, setMenuData, props.leftNavRef]);
+    const fetchPost = useFetch("POST");
+    const updateListContent = useCallback((data) => fetchPost("http://192.168.0.182:54321/api/get-receiver-misc-docs", data), [fetchPost])
     return (
         <Route path={`${path}/:docid?`}>
             <div className="dashboard">

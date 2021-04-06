@@ -73,7 +73,6 @@ const Chat = (props) => {
                 if (entry.isIntersecting || active.current === 0) {
                     const from = active.current * 20;
                     loadMessages(from)
-                        .then(resp => resp.json())
                         .then(respJ => {
                             const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                             if (active.current === 0) {
@@ -132,7 +131,7 @@ const Chat = (props) => {
             active.current = 0;
             intersectionObserver.unobserve(delimeter);
         }
-    }, [props.token, loadMessages, userInfo.id]);
+    }, [loadMessages, userInfo.id]);
     const sendMessage = (replyto) => {
         const data = {
             replyto: replyto,
@@ -141,7 +140,6 @@ const Chat = (props) => {
         }
         if (messageBoxRef.current.value !== "")
             props.sendMessage(data)
-                .then(resp => resp.json())
                 .then(respJ => {
                     if (respJ) {
                         const { id, date_time: dateTime, participants } = respJ;
@@ -188,6 +186,7 @@ const Chat = (props) => {
                 .catch(ex => console.log(ex))
     }
     const handleTextAreaKeyUp = (e) => {
+        e.preventDefault()
         if (e.keyCode === 13)
             sendMessage(0)
     }

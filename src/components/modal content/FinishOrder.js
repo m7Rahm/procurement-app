@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { FaCheck } from 'react-icons/fa'
 import { IoMdDoneAll } from 'react-icons/io'
+import useFetch from '../../hooks/useFetch';
 const FinishOrder = (props) => {
     const [materials, setMaterials] = useState([]);
     const [accepted, setAccepted] = useState([]);
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`, {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`)
             .then(respJ => setMaterials(respJ))
             .catch(ex => console.log(ex))
-    }, [props.token, props.ordNumb, props.version]);
+    }, [fetchGet, props.ordNumb, props.version]);
     const handleAcceptedClick = (material) => {
         setAccepted(prev => {
             let unique = true;
@@ -33,21 +31,12 @@ const FinishOrder = (props) => {
     }
     const confirmSelection = () => {
         const materials = accepted.map(material => [material.id, material.amount - material.handed_amount === 0 ? 99 : material.handed_amount !== 0 ? 55 : 0]);
-        const data = JSON.stringify({
+        const data = {
             ordNumb: props.ordNumb,
             empVersion: props.version,
             materials: materials
-        });
-        fetch('http://192.168.0.182:54321/api/confirm-accepted', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/confirm-accepted', data)
             .then(respJ => {
                 if (respJ.length === 0)
                     props.closeModal()

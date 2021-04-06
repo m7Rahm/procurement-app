@@ -19,8 +19,7 @@ const SideBar = (props) => {
 	const [iconsVisible, setIconsVisible] = useState(false);
 	const searchParamsRef = useRef({ userName: '', startDate: null, endDate: null, deadline: '', docType: -3 })
 	const updateSideBarContent = (data) => {
-		updateList(data, token)
-		.then(resp => resp.json())
+		updateList(data)
 		.then(respJ => {
 			const totalCount = respJ[0] ? respJ[0].total_count : 0;
 			setVisas({ count: totalCount, visas: respJ });
@@ -34,8 +33,8 @@ const SideBar = (props) => {
 			endDate: searchParamsRef.current.endDate,
 			docType: searchParamsRef.current.docType,
 		}
-		const data = JSON.stringify({ ...searchRefData, from, until: 20 })
-		updateSideBarContent(data, token)
+		const data = { ...searchRefData, from, until: 20 }
+		updateSideBarContent(data)
 	}
 	useEffect(() => {
 		const showNotificationIcon = () => {
@@ -45,15 +44,14 @@ const SideBar = (props) => {
 		return () => window.removeEventListener("newOrder", showNotificationIcon)
 	}, []);
 	useEffect(() => {
-		const data = JSON.stringify(initData);
-		updateList(data, token)
-			.then(resp => resp.json())
+		const data = initData;
+		updateList(data)
 			.then(respJ => {
 				const totalCount = respJ[0] ? respJ[0].total_count : 0;
 				setVisas({ count: totalCount, visas: respJ })
 			})
 			.catch(err => console.log(err))
-	}, [updateList, initData, token]);
+	}, [updateList, initData]);
 	const onNotifIconClick = () => {
 		notifIcon.current.style.animation = 'visibility-hide 0.2s ease-in both';
 		const onAnimationEnd = () => {

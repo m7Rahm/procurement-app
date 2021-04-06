@@ -1,4 +1,4 @@
-import React, { useContext, useState, lazy } from 'react'
+import React, { useContext, useState, lazy, useEffect } from 'react'
 
 import { TokenContext } from '../../App';
 import { FaPlus } from 'react-icons/fa';
@@ -7,7 +7,7 @@ import EmptyContent from "../Misc/EmptyContent";
 import { useParams, useLocation } from "react-router-dom"
 const Modal = lazy(() => import('../Misc/Modal'));
 const NewBudgetRequest = lazy(() => import('../../pages/Budget/NewBudgetRequest'));
-const miscDocNotifName = "miscDoc";
+const miscDocNotifName = "nO";
 
 const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     const { updateListContent, params, inData, referer } = props
@@ -17,10 +17,11 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     const [initData, setInitData] = useState(inData);
     const { docid } = useParams();
     const docType = useLocation().search.match(/dt=(\d{1,3})/);
+    const dType = docType ? Number(docType[1]) : 0
     const [active, setActive] = useState({
         active: Number(docid),
         number: '',
-        docType: docType ? Number(docType[1]) : 0
+        docType: dType
     });
     const closeModal = () => {
         setModalState({ visible: false, content: null })
@@ -28,6 +29,13 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     const handleNewContractClick = () => {
         setModalState({ visible: true, content: NewBudgetRequest, setInitData: setInitData, token: token })
     }
+    useEffect(() => {
+        setActive({
+            active: Number(docid),
+            number: '',
+            docType: dType
+        })
+    }, [docid, dType])
     return (
         <div>
             <div style={{ display: 'flex', position: 'relative' }}>

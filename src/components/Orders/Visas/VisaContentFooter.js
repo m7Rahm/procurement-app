@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { TokenContext } from '../../../App'
+import useFetch from '../../../hooks/useFetch';
 import ForwardDocLayout from '../../Misc/ForwardDocLayout';
 import OperationResult from '../../Misc/OperationResult'
 const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline'))
@@ -7,12 +8,12 @@ const AcceptDecline = React.lazy(() => import('../../modal content/AcceptDecline
 const VisaContentFooter = (props) => {
     const { handleEditClick, current, canProceed, updateContent } = props;
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const userData = tokenContext[0].userData;
     const canApprove = userData.previliges.find(prev => prev === 'Sifarişi təsdiq etmək');
     const canDecline = userData.previliges.find(prev => prev === 'Sifarişə etiraz etmək');
     const canReturn = userData.previliges.find(prev => prev === 'Sifarişi redaktəyə qaytarmaq');
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
+    const fetchPost = useFetch("POST");
     const setIsModalOpen = (order, receivers, originid) => {
         updateContent({
             id: order.id,
@@ -22,21 +23,11 @@ const VisaContentFooter = (props) => {
         }, receivers, originid)
     }
     const handleForwardOrder = (receivers, comment) => {
-        const data = JSON.stringify({
+        const data = {
             receivers: receivers.map(receiver => [receiver.id]),
             comment: comment
-        })
-        fetch(`http://192.168.0.182:54321/api/forward-order/${current.id}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length,
-                    'Authorization': 'Bearer ' + token
-                },
-                body: data
-            })
-            .then(resp => resp.json())
+        }
+        fetchPost(`http://192.168.0.182:54321/api/forward-order/${current.id}`, data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success')
                     setIsModalOpen([respJ[0].head_id], respJ[0])
@@ -76,7 +67,6 @@ const VisaContentFooter = (props) => {
                                         tranid: current.id,
                                         action: -1,
                                         setOperationResult: setOperationResult,
-                                        token: token,
                                         backgroundColor: '#D93404'
                                     }
                                 )
@@ -96,7 +86,6 @@ const VisaContentFooter = (props) => {
                                         tranid: current.id,
                                         setOperationResult: setOperationResult,
                                         action: 1,
-                                        token: token,
                                         backgroundColor: 'rgb(15, 157, 88)'
                                     }
                                 )
@@ -116,7 +105,6 @@ const VisaContentFooter = (props) => {
                                         tranid: current.id,
                                         setOperationResult: setOperationResult,
                                         action: 2,
-                                        token: token,
                                         backgroundColor: '#F4B400'
                                     }
                                 )
@@ -133,7 +121,6 @@ const VisaContentFooter = (props) => {
                                 hoc(ForwardDocLayout,
                                     {
                                         handleSendClick: handleForwardOrder,
-                                        token: token,
                                     }
                                 )
                             }

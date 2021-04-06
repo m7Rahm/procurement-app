@@ -7,6 +7,7 @@ import { MdDetails } from 'react-icons/md'
 import RightInfoBar from '../../Misc/RightInfoBar';
 import AgreementGeneralInfo from './AgreementGeneralInfo'
 import { WebSocketContext } from "../../../pages/SelectModule";
+import useFetch from '../../../hooks/useFetch';
 
 const AreYouSure = lazy(() => import("../../modal content/AreYouSure"))
 const Modal = lazy(() => import('../../Misc/Modal'));
@@ -19,20 +20,13 @@ const ContractContent = (props) => {
     const docid = props.docid;
     const webSocket = useContext(WebSocketContext);
     const documentType = 2;
-    const fetchParticipants = () => fetch(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=2`, {
-        headers: {
-            'Authorization': 'Bearer ' + props.token
-        }
-    });
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
+    const fetchParticipants = () => fetchGet(`http://192.168.0.182:54321/api/doc-participants?id=${docid}&doctype=${documentType}`);
     useEffect(() => {
         let mounted = true;
         if (props.apiString && mounted)
-            fetch(props.apiString, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(props.apiString)
                 .then(respJ => {
                     if (mounted && respJ.length !== 0)
                         setContractDetails({
@@ -40,35 +34,20 @@ const ContractContent = (props) => {
                             active: respJ[0].doc_result === 0 && (respJ[0].user_result === 0 || respJ[0].user_result === undefined)
                         })
                 })
-        return () => mounted = false
-    }, [props.apiString, props.token]);
+        return () => {
+            mounted = false
+        }
+    }, [props.apiString, fetchGet]);
     const sendMessage = useCallback((data) => {
-        const apiData = JSON.stringify({ ...data, docType: documentType });
-        return fetch(`http://192.168.0.182:54321/api/send-message`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': apiData.length
-            },
-            body: apiData
-        })
-    }, [props.token, documentType]);
+        const apiData = { ...data, docType: documentType };
+        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+    }, [fetchPost, documentType]);
     const fetchMessages = useCallback((from = 0) =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`, {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-        , [docid, props.token, documentType]);
+        fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`)
+        , [docid, fetchGet, documentType]);
     const cancel = () => {
         const cancelContract = () => {
-            fetch(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=${documentType}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/cancel-doc/${docid}?type=${documentType}`)
                 .then(respJ => {
                     if (respJ.length === 0)
                         setContractDetails(prev => ({ content: prev.content.map(detail => ({ ...detail, doc_result: -1 })), active: false }))
@@ -88,23 +67,14 @@ const ContractContent = (props) => {
         });
     }
     const acceptDeclince = (action) => {
-        const data = JSON.stringify({
+        const data = {
             tranid: contractDetails.content[0].id,
             messageType: documentType,
             messageid: docid,
             action: action,
             comment: textareaRef.current.value
-        })
-        fetch('http://192.168.0.182:54321/api/accept-decline-doc', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.ok ? resp.json() : new Error("Internal Server Error"))
+        }
+        fetchPost('http://192.168.0.182:54321/api/accept-decline-doc', data)
             .then(respJ => {
                 if (respJ.length !== 0) {
                     const message = {
@@ -125,11 +95,7 @@ const ContractContent = (props) => {
     const closeModal = () => {
         setModalState({ visible: false })
     }
-    const fetchFiles = useCallback(() => fetch(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`, {
-        headers: {
-            'Authorization': 'Bearer ' + props.token
-        }
-    }), [docid, props.token, documentType]);
+    const fetchFiles = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`), [docid, fetchGet, documentType]);
     return (
         <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px', paddingTop: '76px' }}>
             {
@@ -221,7 +187,6 @@ const ContractContent = (props) => {
                             >
                                 <AgreementGeneralInfo
                                     {...rightPanel}
-                                    token={props.token}
                                     referer={props.referer}
                                 />
                             </RightInfoBar>
@@ -241,7 +206,6 @@ export const ContractFiles = React.memo((props) => {
     const fetchFiles = props.fetchFiles;
     useEffect(() => {
         fetchFiles()
-            .then(resp => resp.json())
             .then(respJ => setFiles(respJ))
             .catch(ex => console.log(ex))
     }, [fetchFiles])

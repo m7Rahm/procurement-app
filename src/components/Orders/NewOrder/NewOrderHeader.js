@@ -1,23 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { TokenContext } from '../../../App'
+import useFetch from '../../../hooks/useFetch';
 const NewOrderHeader = (props) => {
     const { orderInfo, setOrderInfo } = props;
     const [structures, setStructures] = useState([]);
     const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const userData = tokenContext[0].userData;
     const structureid = userData.userInfo.structureid;
     const dependents = structures.filter(structure => structure.parent_id === structureid);
+    const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/departments', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/departments')
             .then(respJ => setStructures(respJ))
             .catch(ex => console.log(ex))
-    }, [token])
+    }, [fetchGet])
     const handleChange = (e) => {
         const name = e.target.name;
         const value = (e.target.value)

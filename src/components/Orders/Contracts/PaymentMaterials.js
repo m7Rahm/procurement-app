@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react"
+import useFetch from "../../../hooks/useFetch";
 const PaymentMaterials = (props) => {
     const [materials, setMaterials] = useState([]);
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         let mounted = true;
         const abortController = new AbortController();
         if (mounted && props.pid) {
-            fetch(`http://192.168.0.182:54321/api/payment-materials?pid=${props.pid}`, {
-                signal: abortController.signal,
-                headers: {
-                    "Authorization": "Bearer " + props.token
-                }
-            })
-                .then(resp => resp.ok ? resp.json() : new Error("Internal Server Error"))
+            fetchGet(`http://192.168.0.182:54321/api/payment-materials?pid=${props.pid}`)
                 .then(respJ => {
                     if (mounted)
                         setMaterials(respJ)
@@ -22,7 +18,7 @@ const PaymentMaterials = (props) => {
             mounted = false;
             abortController.abort();
         }
-    }, [props.token, props.pid])
+    }, [fetchGet, props.pid])
     return (
         <table className="users-table">
             <thead>

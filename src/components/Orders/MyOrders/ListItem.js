@@ -17,6 +17,7 @@ import ActionsContainer from './ActionsContainer'
 import EditOrderRequest from '../../modal content/EditOrderRequest'
 import { TokenContext } from '../../../App'
 import { WebSocketContext } from '../../../pages/SelectModule'
+import useFetch from '../../../hooks/useFetch'
 const FinishOrder = lazy(() => import('../../modal content/FinishOrder'))
 const ParticipantsModal = lazy(() => import('../../modal content/Participants'))
 const StatusModal = lazy(() => import('../../modal content/Status'))
@@ -53,24 +54,11 @@ const ListItem = (props) => {
     }
     setModalState({ visible: true, content: FinishOrder, childProps: childProps })
   }
+  const fetchPost = useFetch("POST");
   const onInfoClick = () => {
     const onSendClick = (data, setOperationResult) => {
-      const reqData = JSON.stringify(data);
-      fetch('http://192.168.0.182:54321/api/new-order', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-          'Content-Length': reqData.length
-        },
-        body: reqData
-      })
-        .then(resp => {
-          if (resp.status === 200)
-            return resp.json()
-          else
-            throw new Error('Internal Server Error');
-        })
+      const reqData = data;
+      fetchPost('http://192.168.0.182:54321/api/new-order', reqData)
         .then(respJ => {
           if (respJ[0].result === 'success') {
             const message = {

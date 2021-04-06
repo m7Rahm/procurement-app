@@ -1,5 +1,4 @@
-import React, { useContext, useState, useRef, useLayoutEffect, useCallback } from 'react'
-import { TokenContext } from '../../App'
+import React, { useState, useRef, useLayoutEffect, useCallback } from 'react'
 import Pagination from '../../components/Misc/Pagination';
 import { workSectors } from '../../data/data'
 import { FaPlus, FaCheck } from 'react-icons/fa'
@@ -7,9 +6,8 @@ import OperationResult from '../../components/Misc/OperationResult'
 import ExpressVendorInfo from '../../components/modal content/ExpressVendorInfo'
 import PotentialVendor from './PotentialVendor'
 import Modal from '../../components/Misc/Modal'
+import useFetch from '../../hooks/useFetch';
 const PotentialVendors = (props) => {
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const [potentialVendors, setPotentialVendors] = useState({ count: 0, content: [] });
     const activePageRef = useRef(0);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '', icon: null })
@@ -18,14 +16,10 @@ const PotentialVendors = (props) => {
         voen: '',
         sphere: ''
     });
+    const fetchGet = useFetch("GET");
     const makeExpressVendor = useCallback((id) => {
         const onFinish = () => {
-            fetch('http://192.168.0.182:54321/api/potential-vendors?from=0', {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet('http://192.168.0.182:54321/api/potential-vendors?from=0')
                 .then(respJ => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     setPotentialVendors({ count: totalCount, content: respJ });
@@ -43,7 +37,7 @@ const PotentialVendors = (props) => {
                     {...props}
                 />
         })
-    }, [token])
+    }, [fetchGet])
     const [modalState, setModalState] = useState({
         visible: false,
         content: null
@@ -52,30 +46,20 @@ const PotentialVendors = (props) => {
         setModalState({ visible: false, content: null })
     }
     const updateList = (from) => {
-        fetch(`http://192.168.0.182:54321/api/potential-vendors?from=${from}&name=${searchStateRef.current.name}&voen=${searchStateRef.current.voen}&sphere=${searchStateRef.current.sphere}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/potential-vendors?from=${from}&name=${searchStateRef.current.name}&voen=${searchStateRef.current.voen}&sphere=${searchStateRef.current.sphere}`)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setPotentialVendors({ count: totalCount, content: respJ });
             })
     }
     useLayoutEffect(() => {
-        fetch('http://192.168.0.182:54321/api/potential-vendors?from=0', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/potential-vendors?from=0')
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setPotentialVendors({ count: totalCount, content: respJ });
             })
             .catch(ex => console.log(ex))
-    }, [token]);
+    }, [fetchGet]);
     return (
         <div className="dashboard" style={{ paddingTop: '56px' }}>
             {
@@ -99,7 +83,6 @@ const PotentialVendors = (props) => {
                         <div></div>
                     </li>
                     <NewVendor
-                        token={token}
                         setPotentialVendors={setPotentialVendors}
                         setOperationResult={setOperationResult}
                     />
@@ -108,7 +91,6 @@ const PotentialVendors = (props) => {
                             <PotentialVendor
                                 key={potentialVendor.id}
                                 index={index}
-                                token={token}
                                 setOperationResult={setOperationResult}
                                 id={potentialVendor.id}
                                 sphere={potentialVendor.sphere}
@@ -196,22 +178,14 @@ const NewVendor = (props) => {
     const nameRef = useRef(null);
     const voenRef = useRef(null);
     const sphereRef = useRef(null);
+    const fetchPost = useFetch("POST");
     const addNewPotentialVendor = () => {
-        const data = JSON.stringify({
+        const data = {
             name: nameRef.current.value,
             voen: voenRef.current.value,
             sphere: sphereRef.current.value
-        })
-        fetch('http://192.168.0.182:54321/api/new-potential-vendor', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length,
-                'Authorization': 'Bearer ' + props.token
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        }
+        fetchPost('http://192.168.0.182:54321/api/new-potential-vendor', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 props.setPotentialVendors({ count: totalCount, content: respJ });

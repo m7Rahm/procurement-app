@@ -17,15 +17,12 @@ const routes = [
         icon: FaHandshake,
         component: Contracts,
         props: {
-            updateListContent: (data, token) => {
+            method: "GET",
+            transformData: (data) => {
                 let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
-                query = query.substring(0, query.length - 1);
-                return fetch("http://192.168.0.182:54321/api/tender-docs?doctype=2&" + query, {
-                    headers: {
-                        "Authorization": "Bearer " + token
-                    }
-                })
+                return query = query.substring(0, query.length - 1);
             },
+            link: "http://192.168.0.182:54321/api/tender-docs?doctype=2&",
             inData: {
                 number: "",
                 result: 0,
@@ -51,15 +48,12 @@ const routes = [
         icon: MdPayment,
         component: Payments,
         props: {
-            updateListContent: (data, token) => {
+            method: "GET",
+            transformData: (data) => {
                 let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
-                query = query.substring(0, query.length - 1);
-                return fetch("http://192.168.0.182:54321/api/tender-docs?doctype=3&" + query, {
-                    headers: {
-                        "Authorization": "Bearer " + token
-                    }
-                })
+                return query = query.substring(0, query.length - 1);
             },
+            link: "http://192.168.0.182:54321/api/tender-docs?doctype=3&",
             inData: {
                 number: "",
                 result: 0,
@@ -91,7 +85,7 @@ const ContractsModule = (props) => {
                         </Route>
                     )
                 }
-				<Redirect to={`${path}/contracts/:docid?`} />
+                <Redirect to={`${path}/contracts/:docid?`} />
             </Switch>
         </div>
     )

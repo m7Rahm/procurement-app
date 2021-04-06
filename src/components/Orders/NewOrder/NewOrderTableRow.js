@@ -1,16 +1,10 @@
-import React, { useRef, useState, useContext } from 'react'
-import {
-  FaTrashAlt,
-  FaPlus,
-  FaMinus
-} from 'react-icons/fa'
-import { TokenContext } from '../../../App';
+import React, { useRef, useState } from 'react'
+import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
+import useFetch from '../../../hooks/useFetch';
 
 const NewOrderTableRow = (props) => {
-  const tokenContext = useContext(TokenContext);
   const rowRef = useRef(null);
   const { orderType, structure, material, subGlCategories, setMaterials } = props;
-  const token = tokenContext[0].token;
   const modelListRef = useRef(null);
   const [models, setModels] = useState([]);
   const modelsRef = useRef([]);
@@ -19,6 +13,8 @@ const NewOrderTableRow = (props) => {
   const [budget, setBudget] = useState(0);
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
+  const fetchGet = useFetch("GET");
+  const fetchPost = useFetch("POST")
   const handleAmountChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -79,33 +75,19 @@ const NewOrderTableRow = (props) => {
       const searchResult = modelsRef.current.filter(model => model.title.toLowerCase().includes(value));
       setModels(searchResult);
     } else {
-      fetch(`http://192.168.0.182:54321/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`, {
-        headers: {
-          "Authorization": "Bearer " + token
-        }
-      })
-        .then(resp => resp.json())
+      fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
         .then(respJ => setModels(respJ))
         .catch(ex => console.log(ex))
     }
   }
   const searchByCode = (e) => {
-    const data = JSON.stringify({ product_id: e.target.value, orderType: orderType, structure: structure });
+    const data = { product_id: e.target.value, orderType: orderType, structure: structure };
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
     timeoutRef.current = setTimeout(() => {
-      fetch('http://192.168.0.182:54321/api/get-by-product-code', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-          'Content-Length': data.length
-        },
-        body: data
-      })
-        .then(resp => resp.json())
+      fetchPost('http://192.168.0.182:54321/api/get-by-product-code', data)
         .then(respJ => {
           timeoutRef.current = null;
           if (respJ.length === 1) {
@@ -140,17 +122,8 @@ const NewOrderTableRow = (props) => {
   const handleSubCategoryChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
-    const data = JSON.stringify({ subGlCategoryId: value, structureid: structure, orderType: orderType });
-    fetch('http://192.168.0.182:54321/api/strucutre-budget-info', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json',
-        'Content-Length': data.length
-      },
-      body: data
-    })
-      .then(resp => resp.json())
+    const data = { subGlCategoryId: value, structureid: structure, orderType: orderType };
+    fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
       .then(respJ => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;

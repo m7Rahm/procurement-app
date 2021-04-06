@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import UserAgreementVendorRow from './UserAgreementVendorRow'
 import AgreementVendorInfo from '../../modal content/AgreementVendorInfo'
 import OperationResult from '../../Misc/OperationResult'
+import useFetch from '../../../hooks/useFetch';
 const Modal = React.lazy(() => import('../../Misc/Modal'));
 
 const AgreementVendors = (props) => {
@@ -10,40 +11,28 @@ const AgreementVendors = (props) => {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '', icon: null })
     const textAreaRef = useRef(null);
     const active = props.agreementResult === 0 && props.userResult === 0;
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     useEffect(() => {
         if (props.active) {
-            fetch(`http://192.168.0.182:54321/api/agreement-vendors/${props.active}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/agreement-vendors/${props.active}`)
                 .then(respJ => setAgreementVendors(respJ))
                 .catch(ex => console.log(ex))
         }
-    }, [props.active, props.token]);
+    }, [props.active, fetchGet]);
     const handleDetailsClick = (messageid, vendorid) => {
         setModalState({ visible: true, messageid: messageid, vendorid: vendorid, content: AgreementVendorInfo })
     }
     const closeModal = () => setModalState({ visible: false });
     const declineAgreement = () => {
         const handleDecline = (text) => {
-            const data = JSON.stringify({
+            const data = {
                 agreementid: props.active,
                 comment: text,
                 action: -1,
                 tranid: props.tranid
-            })
-            fetch('http://192.168.0.182:54321/api/accept-decline-agreement', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + props.token,
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            }
+            fetchPost('http://192.168.0.182:54321/api/accept-decline-agreement', data)
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();
@@ -58,23 +47,14 @@ const AgreementVendors = (props) => {
     const confirmSelections = () => {
         const selected = agreementVendors.filter(vendor => vendor.result === 1).map(vendor => [vendor.id, vendor.review]);
         if (selected.length !== 0) {
-            const data = JSON.stringify({
+            const data = {
                 vendors: selected,
                 agreementid: props.active,
                 comment: textAreaRef.current.value,
                 action: 1,
                 tranid: props.tranid
-            });
-            fetch('http://192.168.0.182:54321/api/accept-decline-agreement', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + props.token,
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            };
+            fetchPost('http://192.168.0.182:54321/api/accept-decline-agreement', data)
                 .then(respJ => {
                     if (respJ.length === 0) {
                         props.setDocState(prev => ({ ...prev, userResult: 1, actionDate: 'Just now' }))
@@ -89,20 +69,11 @@ const AgreementVendors = (props) => {
     const cancelAgreement = () => {
 
         const handleCnacel = (comment) => {
-            const data = JSON.stringify({
+            const data = {
                 agreementid: '',
                 comment: comment
-            })
-            fetch('http://192.168.0.182:54321/api/cancel-agreement', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length,
-                    'Authorization': 'Bearer ' + props.token
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            }
+            fetchPost('http://192.168.0.182:54321/api/cancel-agreement', data)
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();

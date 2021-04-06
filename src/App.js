@@ -32,6 +32,11 @@ const App = () => {
   const location = useLocation();
   const history = useHistory();
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
+  const logout = () => {
+    setToken({ token: '', userData: {} })
+        localStorage.removeItem('token');
+        window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
+  }
   // localStorage.removeItem("token")
   useEffect(() => {
     if (/from=(.*)/.test(location.search)) {
@@ -49,7 +54,7 @@ const App = () => {
     }
   }, [location, history, token.token])
   return (
-    <TokenContext.Provider value={[token, setToken]}>
+    <TokenContext.Provider value={[token, setToken, logout]}>
       <Suspense fallback={<Loading />}>
         <Switch>
           <Route path="/login" render={() => !token.token ?

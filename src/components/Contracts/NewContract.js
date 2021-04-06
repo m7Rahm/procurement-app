@@ -5,6 +5,7 @@ import { FaTimes } from 'react-icons/fa';
 import ContractFiles from './ContractFiles'
 import { VendorsList } from '../../components/Tender/AgreementVendors.js'
 import { WebSocketContext } from "../../pages/SelectModule"
+import useFetch from '../../hooks/useFetch';
 const NewContract = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -12,7 +13,7 @@ const NewContract = (props) => {
     const [files, setFiles] = useState([]);
     const [vendor, setVendor] = useState(null);
     const webSocket = useContext(WebSocketContext);
-
+    const fetchGet = useFetch("GET");
     const addAgreement = useCallback((agreement) => {
         setSelectedDocs(prev => {
             if (!prev.some(elem => elem.id === agreement.id))
@@ -101,7 +102,7 @@ const NewContract = (props) => {
     return (
         <div>
             <AgreementsList
-                token={token}
+                fetchGet={fetchGet}
                 addAgreement={addAgreement}
             />
             <div style={{ float: 'right', marginRight: '10px' }}>
@@ -144,19 +145,14 @@ export default NewContract
 
 const AgreementsList = (props) => {
     const [agreements, setAgreements] = useState({ all: [], available: [], visible: [], offset: 2 });
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         const controller = new AbortController();
-        fetch('http://192.168.0.182:54321/api/agreements?result=1', {
-            signal: controller.signal,
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/agreements?result=1',controller)
             .then(respJ => setAgreements({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 }))
             .catch(ex => console.log(ex))
         return () => controller.abort();
-    }, [props.token]);
+    }, [fetchGet]);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         setAgreements(prev => {

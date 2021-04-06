@@ -6,6 +6,7 @@ import Chat from '../../Misc/Chat'
 import { FaCheck, FaTimes } from 'react-icons/fa'
 import { useLocation, useHistory } from 'react-router-dom'
 import AgreementVendorFiles from './AgreementVendorFiles'
+import useFetch from '../../../hooks/useFetch'
 const AgreementContent = (props) => {
     const location = useLocation();
     const history = useHistory();
@@ -15,15 +16,12 @@ const AgreementContent = (props) => {
     const number = props.number ? props.number : locationState ? locationState.agreement.number : null;
     const [docState, setDocState] = useState({ tranid: undefined, docid: docid });
     const documentType = 1;
+    const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST");
     useLayoutEffect(() => {
         let mounted = true;
         if (docid && mounted)
-            fetch(`http://192.168.0.182:54321/api/agreement-content?docid=${docid}`, {
-                headers: {
-                    "Authorization": "Bearer " + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/agreement-content?docid=${docid}`)
                 .then(respJ => {
                     if (mounted && respJ.length !== 0)
                         setDocState(prev => ({ ...prev,
@@ -36,37 +34,17 @@ const AgreementContent = (props) => {
                 })
                 .catch(ex => console.log(ex));
         return () => mounted = false
-    }, [docid, props.token]);
-    const fetchMaterials = useCallback(() =>
-        fetch(`http://192.168.0.182:54321/api/agreement-materials/${docid}`, {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-        , [docid, props.token]);
+    }, [docid, fetchGet]);
+    const fetchMaterials = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/agreement-materials/${docid}`), [docid, fetchGet]);
     useEffect(() => () => {
         if (history.action === "POP" && history.location.pathname === '/tender/orders')
             history.push('/tender/orders', referer)
     }, [history, referer])
-    const fetchMessages = useCallback((from = 0) =>
-        fetch(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`, {
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-        , [docid, props.token, documentType]);
+    const fetchMessages = useCallback((from = 0) => fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`), [docid, fetchGet, documentType]);
     const sendMessage = useCallback((data) => {
-        const apiData = JSON.stringify({ ...data, docType: documentType });
-        return fetch(`http://192.168.0.182:54321/api/send-message`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': apiData.length
-            },
-            body: apiData
-        })
-    }, [props.token, documentType]);
+        const apiData = { ...data, docType: documentType };
+        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+    }, [fetchPost, documentType]);
     return (
         <div className="visa-content-container" style={{ padding: '88px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
             {
@@ -102,10 +80,8 @@ const AgreementContent = (props) => {
                         <AgreementMaterials
                             editable={false}
                             fetchFunction={fetchMaterials}
-                            token={props.token}
                         />
                         <AgreementVendors
-                            token={props.token}
                             active={docid}
                             tranid={docState.tranid}
                             comment={docState.comment}

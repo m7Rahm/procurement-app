@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loading from '../Misc/Loading'
-import { TokenContext } from '../../App'
+import useFetch from '../../hooks/useFetch'
 
 const getResultText = (result) => {
   if (result === 0)
@@ -16,25 +16,19 @@ const getResultText = (result) => {
 }
 
 const Participants = (props) => {
-  const tokenContext = useContext(TokenContext);
   const { id } = props;
-  const token = tokenContext[0].token;
   const [checked, setChecked] = useState(false);
   const [participants, setParticipants] = useState(null);
+  const fetchGet = useFetch("GET");
   const handleChange = () => {
     setChecked(prev => !prev);
   }
   useEffect(() => {
-    fetch(`http://192.168.0.182:54321/api/participants/${id}?type=1`, {
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-      .then(resp => resp.json())
+    fetchGet(`http://192.168.0.182:54321/api/participants/${id}?type=1`)
       .then(respJ => setParticipants(respJ)
       )
       .catch(err => console.log(err))
-  }, [id, token])
+  }, [id, fetchGet])
   return (
     participants &&
     <>
@@ -68,26 +62,21 @@ const Participants = (props) => {
         checked &&
         <Reviewers
           id={id}
-          token={token}
+          fetchGet={fetchGet}
         />
       }
     </>
   )
 }
 
-const Reviewers = ({ id, token }) => {
+const Reviewers = ({ id, fetchGet }) => {
   const [reviewers, setReviewers] = useState(null);
   useEffect(() => {
-    fetch(`http://192.168.0.182:54321/api/participants/${id}?type=4`, {
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-      .then(resp => resp.json())
+    fetchGet(`http://192.168.0.182:54321/api/participants/${id}?type=4`)
       .then(respJ => setReviewers(respJ)
       )
       .catch(err => console.log(err))
-  }, [id, token]);
+  }, [id, fetchGet]);
   return (
     reviewers ?
       <>

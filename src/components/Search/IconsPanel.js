@@ -11,11 +11,11 @@ import {
     FaTimes
 } from 'react-icons/fa'
 import SearchBox from './SearchBox';
+import useFetch from '../../hooks/useFetch';
 const IconsPanel = (props) => {
     const searchBoxRef = useRef(null);
     const {
         updateList,
-        token,
         checkedAmountRef,
         setVisas,
         iconsVisible,
@@ -23,27 +23,14 @@ const IconsPanel = (props) => {
         activePageRef
     } = props;
     const [searchBoxState, setSearchBoxState] = useState(false);
+    const fetchPost = useFetch("POST")
     const setBulkPriority = (priority) => {
-        const data = JSON.stringify({
+        const data = {
             visaCards: checkedAmountRef.current.map(id =>
                 [id, 0, priority]),
             update: 1
-        })
-        fetch(`http://192.168.0.182:54321/api/change-visa-state`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length,
-                'Authorization': 'Bearer ' + token
-            },
-            body: data
-        })
-            .then(resp => {
-                if (resp.status === 200)
-                    return resp.json()
-                else
-                    throw new Error('Internal Server Error');
-            })
+        }
+        fetchPost(`http://192.168.0.182:54321/api/change-visa-state`, data)
             .then(respJ => {
                 const totalCount = respJ[0] ? respJ[0].total_count : 0;
                 setVisas({ count: totalCount, visas: respJ });
@@ -79,7 +66,6 @@ const IconsPanel = (props) => {
                                 searchParamsRef={searchParamsRef}
                                 setVisas={setVisas}
                                 updateList={updateList}
-                                token={token}
                                 activePageRef={activePageRef}
                                 ref={searchBoxRef}
                             />

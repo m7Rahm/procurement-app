@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
+import useFetch from '../../hooks/useFetch';
 const AgreementMaterials = (props) => {
     const [agreementMaterials, setAgreementMaterials] = useState([]);
     const fetchFunction = props.fetchFunction;
     useEffect(() => {
         fetchFunction()
-            .then(resp => resp.json())
             .then(respJ => {
                 if (respJ.length !== 0) {
                     setAgreementMaterials(respJ)
@@ -32,7 +32,6 @@ const AgreementMaterials = (props) => {
                             <AgreementMaterialsSum
                                 material={material}
                                 key={material.id}
-                                token={props.token}
                                 index={index}
                                 editable={props.editable}
                                 setAgreementMaterials={setAgreementMaterials}
@@ -48,20 +47,12 @@ export default React.memo(AgreementMaterials)
 
 const AgreementMaterialsSum = (props) => {
     const rowRef = useRef(null);
+    const fetchPost = useFetch("POST");
     const handleMaterialDelete = () => {
-        const data = JSON.stringify({
+        const data = {
             materialid: props.material.id
-        });
-        fetch('http://192.168.0.182:54321/api/remove-material-from-staging-area', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + props.token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/remove-material-from-staging-area', data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
                     rowRef.current.classList.add('delete-row');

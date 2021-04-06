@@ -1,16 +1,12 @@
-import React, { useContext, useState, useRef } from 'react'
-import { TokenContext } from '../../App'
-import {
-	FaEdit,
-	FaCheck,
-	FaTimes
-} from 'react-icons/fa'
+import React, { useState, useRef, useContext } from 'react'
+import { FaEdit, FaCheck, FaTimes } from 'react-icons/fa'
 import OperationResult from '../Misc/OperationResult'
+import useFetch from '../../hooks/useFetch'
+import { TokenContext } from '../../App'
 
 const VisaContentMaterials = (props) => {
 	const { forwardType, canProceed, orderContent } = props;
-	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0].token;
+	const tokenContext = useContext(TokenContext)
 	const userData = tokenContext[0].userData;
 	const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
 	const { emp_version_id, order_type, department_content } = props.orderContent[0];
@@ -49,7 +45,6 @@ const VisaContentMaterials = (props) => {
 							setOperationResult={setOperationResult}
 							key={index}
 							canProceed={canProceed}
-							token={token}
 							empVersion={emp_version_id}
 							userData={userData}
 							forwardType={forwardType}
@@ -65,9 +60,9 @@ const VisaContentMaterials = (props) => {
 export default React.memo(VisaContentMaterials)
 
 const TableRow = (props) => {
-	const { canProceed, token, setOperationResult, index, forwardType, userData } = props;
+	const { canProceed, setOperationResult, index, forwardType, userData } = props;
 	const { amount, material_comment, order_material_id, material_name, total, department_id, order_type, title, result, can_influence: canInfluence } = props.material;
-
+	const fetchPost = useFetch("POST");
 	const structureid = userData.userInfo.structureid;
 	const [disabled, setDisabled] = useState(true);
 	const servicePriceRef = useRef(null);
@@ -83,20 +78,11 @@ const TableRow = (props) => {
 		})
 	}
 	const handleDone = () => {
-		const data = JSON.stringify({
+		const data = {
 			materialid: order_material_id,
 			price: servicePriceRef.current.value
-		})
-		fetch('http://192.168.0.182:54321/api/update-service-price', {
-			method: 'POST',
-			headers: {
-				'Authorization': 'Bearer ' + token,
-				'Content-Type': 'application/json',
-				'Content-Length': data.length
-			},
-			body: data
-		})
-			.then(resp => resp.json())
+		}
+		fetchPost('http://192.168.0.182:54321/api/update-service-price', data)
 			.then(respJ => {
 				if (respJ[0].operation_result === 'success')
 					setDisabled(prev => {

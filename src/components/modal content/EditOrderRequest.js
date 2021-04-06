@@ -1,14 +1,12 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import EditOrderTableRow from './EditOrderTableRow';
 import { IoIosAdd } from 'react-icons/io';
 import OperationResult from '../Misc/OperationResult';
-import { TokenContext } from '../../App';
+import useFetch from '../../hooks/useFetch';
 const ForwardDocLayout = React.lazy(() => import('../../components/Misc/ForwardDocLayout'));
 
 const EditOrderRequest = (props) => {
     const { version, onSendClick, view, editOrderAndApprove } = props;
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const ordNumb = props.current || props.ordNumb;
     const textareaRef = useRef(null);
     const initialValuesRef = useRef(null);
@@ -16,33 +14,24 @@ const EditOrderRequest = (props) => {
     const [glCategories, setGlCategories] = useState({ all: [], main: [] });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
+    const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetch('http://192.168.0.182:54321/api/gl-categories', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/gl-categories')
             .then(respJ => {
                 const main = respJ.filter(glCategory => glCategory.dependent_id === null)
                 setGlCategories({ all: respJ, main: main });
             })
             .catch(err => console.log(err))
-    }, [token, view]);
+    }, [fetchGet, view]);
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
                 const orderRows = respJ.map(row => ({ ...row, id: Math.random().toString(), models: [], className: '' }));
                 initialValuesRef.current = respJ;
                 setOrderState(orderRows);
             })
             .catch(ex => console.log(ex))
-    }, [ordNumb, version, token]);
+    }, [ordNumb, version, fetchGet]);
     const handleConfirmClick = (receivers, text) => {
         const error = orderState.find(material => isNaN(material.material_id * material.amount * material.approx_price * material.sub_gl_category_id))
         if (!error) {
@@ -138,7 +127,6 @@ const EditOrderRequest = (props) => {
                             index={index}
                             setOrderState={setOrderState}
                             glCategories={glCategories}
-                            token={token}
                             glCatid={glCatid}
                             ordNumb={ordNumb}
                             version={version}
@@ -169,7 +157,6 @@ const EditOrderRequest = (props) => {
                 view === 'procurement' &&
                 <ForwardDocLayout
                     handleSendClick={handleConfirmClick}
-                    token={token}
                 />
             }
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>

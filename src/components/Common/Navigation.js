@@ -107,9 +107,7 @@ const Navigation = (props) => {
         }
     }, [fetchNotifications]);
     const handleLogOut = () => {
-        props.tokenContext[1]({ token: '', userData: {} })
-        localStorage.removeItem('token');
-        window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
+        props.tokenContext[2]()
     }
     const handleIconClick = () => {
         moduleNavigationRef.current.style.display = moduleNavigationRef.current.style.display === 'block' ? 'none' : 'block'
@@ -152,7 +150,11 @@ const Navigation = (props) => {
                         ? "/contracts/"
                         : "/payments/"
         const { tran_id: tranid, doc_number: docNumber } = notification;
-        history.push(module + subModule + tranid, { tranid, docNumber: docNumber });
+        let link = module + subModule + tranid
+        if (notification.category_id === 10) {
+            link = "/other/" + tranid + "?dt=" + notification.doc_type
+        }
+        history.push(link, { tranid, docNumber: docNumber });
     }
     const handleScroll = (e) => {
         const scrollTop = e.target.scrollTop;
@@ -267,14 +269,21 @@ const Navigation = (props) => {
 export default Navigation
 
 const getNotifText = (notif) => {
-    const text = notif.doc_type === 2
+    let text = notif.doc_type === 2
         ? "Müqavilə Razılaşması"
         : notif.doc_type === 1
             ? "Qiymət Təklifi Araşdırması"
             : notif.doc_type === 3
                 ? "Ödəniş Razılaşması"
                 : "Sifariş"
-    if (notif.category_id === 1)
+    if(notif.category_id === 10) {
+        text = notif.doc_type === 1
+        ? "Büdcə Artırılması Razılaşması"
+        : notif.doc_type === 2
+            ? "Silinmə Sənədi"
+            : ""
+    }
+    if (notif.category_id === 1 || notif.category_id === 10)
         return <> Yeni {text}</>
     else if (notif.category_id === 2)
         return (

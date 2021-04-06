@@ -9,6 +9,7 @@ import {
 } from 'react-icons/io'
 import VisaVersionsContainer from './VisaVersionsContainer'
 import { TokenContext } from '../../../App'
+import useFetch from '../../../hooks/useFetch'
 const EditOrderRequest = React.lazy(() => import('../../modal content/EditOrderRequest'));
 
 const VisaContentHeader = (props) => {
@@ -16,8 +17,8 @@ const VisaContentHeader = (props) => {
 	const visaGenInfo = current[0];
 	const tranid = current[0].id;
 	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0].token;
 	const userData = tokenContext[0].userData;
+	const fetchPost = useFetch("POST");
 	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək');
 	const closeModal = (respJ, receivers) => {
 		updateContent({
@@ -28,17 +29,7 @@ const VisaContentHeader = (props) => {
 		}, receivers, respJ[1].origin_emp_id)
 	};
 	const editOrderAndApprove = (data, receivers, setOperationResult) => {
-		const apiData = JSON.stringify(data);
-		fetch(`http://192.168.0.182:54321/api/edit-accept-order-req/${tranid}`, {
-			method: 'POST',
-			headers: {
-				'Authorization': 'Bearer ' + token,
-				'Content-Type': 'application/json',
-				'Content-Length': apiData.length
-			},
-			body: apiData
-		})
-			.then(resp => resp.json())
+		fetchPost(`http://192.168.0.182:54321/api/edit-accept-order-req/${tranid}`, data)
 			.then(respJ => {
 				if (respJ[0].result === 'success')
 					closeModal(respJ, receivers.map(receiver => receiver.id))
@@ -56,7 +47,6 @@ const VisaContentHeader = (props) => {
 				version={version}
 				content={current}
 				doneEditing={updateContent}
-				token={token}
 				orderNumb={orderNumb}
 				{...props}
 			/>

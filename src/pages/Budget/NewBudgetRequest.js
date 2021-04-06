@@ -1,8 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import { months } from '../../data/data'
 import ForwardDocAdvanced from '../../components/Misc/ForwardDocAdvanced'
 import OperationResult from "../../components/Misc/OperationResult"
 import useFetch from '../../hooks/useFetch';
+import { WebSocketContext } from '../SelectModule';
 const date = new Date();
 const month = date.getMonth() + 1;
 const year = date.getFullYear();
@@ -14,6 +15,7 @@ const NewBudgetRequest = (props) => {
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
+    const webSocket = useContext(WebSocketContext);
     const [newBudgetData, setNewBudgetData] = useState({
         year: date.getFullYear(),
         month: month < 10 ? `0${month}` : `${month}`,
@@ -57,6 +59,12 @@ const NewBudgetRequest = (props) => {
                             result: 0,
                             from: 0
                         }))
+                        const message = {
+                            message: "notification",
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nO" })),
+                            data: undefined
+                        }
+                        webSocket.send(JSON.stringify(message))
                     } else {
                         setOperationResult({ visible: true, desc: respJ[0].error })
                     }

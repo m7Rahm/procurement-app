@@ -1,7 +1,8 @@
 import React, { useState, useRef, useLayoutEffect } from 'react'
+import useFetch from '../../hooks/useFetch';
 import { ForwardedPeople } from "./ForwardDocAdvanced"
 const ForwardDocLayout = (props) => {
-    const { handleSendClick, token, textareaVisible = true } = props;
+    const { handleSendClick, textareaVisible = true } = props;
     const [empList, setEmpList] = useState([]);
     const [receivers, setReceivers] = useState([]);
     const [departments, setDepartments] = useState([]);
@@ -9,15 +10,11 @@ const ForwardDocLayout = (props) => {
     const selectRef = useRef(null);
     const empListRef = useRef(null);
     const textareaRef = useRef(null);
+    const fetchGet = useFetch("GET");
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
-            fetch('http://192.168.0.182:54321/api/emplist', {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.status === 200 ? resp.json() : new Error('Internal Server Error'))
+            fetchGet('http://192.168.0.182:54321/api/emplist')
                 .then(respJ => {
                     if (mounted) {
                         empListRef.current = respJ;
@@ -25,17 +22,12 @@ const ForwardDocLayout = (props) => {
                     }
                 })
                 .catch(err => console.log(err));
-        return () => mounted = false
-    }, [token]);
+        return () => { mounted = false }
+    }, [fetchGet]);
     useLayoutEffect(() => {
         let mounted = true;
         if (mounted)
-            fetch('http://192.168.0.182:54321/api/departments', {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.status === 200 ? resp.json() : new Error('Internal Server Error'))
+            fetchGet('http://192.168.0.182:54321/api/departments')
                 .then(respJ => {
                     if (mounted) {
                         setDepartments(respJ)
@@ -43,7 +35,7 @@ const ForwardDocLayout = (props) => {
                 })
                 .catch(err => console.log(err));
         return () => mounted = false
-    }, [token]);
+    }, [fetchGet]);
     const handleSearchChange = (e) => {
         const str = e.target.value.toLowerCase();
         const searchResult = empListRef.current.filter(emp => {

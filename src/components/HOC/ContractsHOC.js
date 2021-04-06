@@ -1,12 +1,12 @@
-import React, { useState, useContext, lazy, useEffect } from "react"
+import React, { useState, lazy, useEffect, useCallback } from "react"
 import OrdersSearchHOC from "..//Search/OrdersSearchHOC"
 import AgreementCard from "../VisaCards/AgreementCard"
 import SideBarContainer from "../HOC/SideBarContainer"
 import CardsList from "../HOC/CardsList"
-import { TokenContext } from "../../App"
 import { FaPlus } from "react-icons/fa"
 import { optionsAgreements } from "../../data/data"
 import { useParams } from "react-router-dom"
+import useFetch from "../../hooks/useFetch"
 const Modal = lazy(() => import("..//Misc/Modal"))
 const NewContract = lazy(() => import("../Contracts/NewContract"))
 const NewPayment = lazy(() => import("../Contracts/NewPayment"))
@@ -15,10 +15,18 @@ const Search = OrdersSearchHOC(optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 
 const ContractsHOC = (Content) => function Payments(props) {
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const [modalState, setModalState] = useState({ visible: false, content: null });
     const [initData, setInitData] = useState(props.inData);
+    const fetchPost = useFetch("POST");
+    const fetchGet = useFetch("GET");
+    const { method, link, transformData } = props;
+    const updateListContent = useCallback((data) => {
+        const apiData = !transformData ? data : transformData(data);
+        if (method === "GET")
+            return fetchGet(link + apiData)
+        else
+            return fetchPost(link, apiData)
+    }, [fetchPost, link, fetchGet, method, transformData])
     const { docid } = useParams()
     const [active, setActive] = useState({
         active: docid
@@ -45,13 +53,11 @@ const ContractsHOC = (Content) => function Payments(props) {
             <SideBar
                 initData={initData}
                 setActive={setActive}
-                updateListContent={props.updateListContent}
-                token={token}
+                updateListContent={updateListContent}
                 params={props.params}
                 newDocNotifName={props.newDocNotifName}
             />
             <Content
-                token={token}
                 docid={active.active}
                 referer={props.referer}
                 apiString={apiString}

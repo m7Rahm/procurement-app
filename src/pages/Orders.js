@@ -39,18 +39,7 @@ const routes = [
         icon: IoMdCart,
         component: Agreements,
         props: {
-            updateListContent: (data, token) => {
-                const apiData = JSON.stringify(data);
-                return fetch("http://192.168.0.182:54321/api/get-user-agreements", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Content-Length": apiData.length,
-                        "Authorization": "Bearer " + token
-                    },
-                    body: apiData
-                })
-            },
+            link: "http://192.168.0.182:54321/api/get-user-agreements",
             params: {
                 active: "message_id",
                 number: "number"
@@ -64,18 +53,8 @@ const routes = [
         icon: FaHandshake,
         component: Contracts,
         props: {
-            updateListContent: (data, token) => {
-                const apiData = JSON.stringify(data);
-                return fetch("http://192.168.0.182:54321/api/get-user-contracts", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Content-Length": apiData.length,
-                        "Authorization": "Bearer " + token
-                    },
-                    body: apiData
-                })
-            },
+            link: "http://192.168.0.182:54321/api/get-user-contracts",
+            method: "POST",
             inData: {
                 number: "",
                 result: 0,
@@ -97,18 +76,8 @@ const routes = [
         icon: MdPayment,
         component: Payments,
         props: {
-            updateListContent: (data, token) => {
-                const apiData = JSON.stringify(data);
-                return fetch("http://192.168.0.182:54321/api/get-user-payments", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Content-Length": apiData.length,
-                        "Authorization": "Bearer " + token
-                    },
-                    body: apiData
-                })
-            },
+            link: "http://192.168.0.182:54321/api/get-user-payments",
+            method: "POST",
             inData: {
                 number: "",
                 result: 0,

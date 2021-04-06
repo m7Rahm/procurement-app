@@ -1,15 +1,13 @@
-import React, { useEffect, useContext, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import NewOrderTableBody from '../Orders/NewOrder/NewOrderTableBody'
 import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
-import { TokenContext } from '../../App'
 import OperationResult from '../../components/Misc/OperationResult'
 import { IoIosCloseCircle } from 'react-icons/io'
+import useFetch from '../../hooks/useFetch'
 
 
 const NewOrderContent = (props) => {
   const { handleModalClose: closeModal, current, isDraft } = props;
-  const tokenContext = useContext(TokenContext);
-  const token = tokenContext[0].token;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
   const [glCategories, setGlCategories] = useState({ all: [], parent: [], sub: [] });
   const [active, setActive] = useState(true);
@@ -19,20 +17,17 @@ const NewOrderContent = (props) => {
     ordNumb: '',
     orderType: 0
   });
+  const fetchGet = useFetch("GET");
+  const fetchPost = useFetch("POST");
   useEffect(() => {
-    fetch('http://192.168.0.182:54321/api/gl-categories', {
-      headers: {
-        'Authorization': 'Bearer ' + token
-      }
-    })
-      .then(resp => resp.json())
+    fetchGet('http://192.168.0.182:54321/api/gl-categories')
       .then(respJ => {
         const parent = respJ.filter(glCategory => glCategory.dependent_id === 0);
         const sub = respJ.filter(glCategory => glCategory.dependent_id !== 0);
         setGlCategories({ all: respJ, parent: parent, sub: sub });
       })
       .catch(ex => console.log(ex))
-  }, [token]);
+  }, [fetchGet]);
 
   const createApproveNewOrder = (materials, url, onSuccess) => {
     let canProceed = true;
@@ -59,16 +54,7 @@ const NewOrderContent = (props) => {
         ordNumb: current ? current : '',
         orderType: orderInfo.orderType
       }
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': JSON.stringify(data).length,
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify(data)
-      })
-        .then(resp => resp.json())
+      fetchPost(url, data)
         .then(respJ => {
           if (respJ[0].result === 'success') {
             setActive(false)
@@ -88,25 +74,16 @@ const NewOrderContent = (props) => {
         const recs = respJ.map(resultRow =>
           resultRow.receiver
         );
-        const apiData = JSON.stringify({
+        const apiData = {
           from: 0,
           until: 20,
           status: -3,
           dateFrom: '',
           dateTill: '',
           ordNumb: ''
-        });
+        };
         //todo: create socket and connect
-        fetch('http://192.168.0.182:54321/api/orders', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Length': apiData.length,
-            'Content-Type': 'application/json'
-          },
-          body: apiData
-        })
-          .then(resp => resp.json())
+        fetchPost('http://192.168.0.182:54321/api/orders', apiData)
           .then(respJ => {
             closeModal(respJ, recs);
           })
@@ -132,7 +109,6 @@ const NewOrderContent = (props) => {
       <NewOrderHeader
         orderInfo={orderInfo}
         setOrderInfo={setOrderInfo}
-        token={token}
       />
       <NewOrderTableBody
         orderInfo={orderInfo}

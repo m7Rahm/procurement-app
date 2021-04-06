@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { FaTimes } from 'react-icons/fa'
+import useFetch from '../../hooks/useFetch';
 const ContractRelatedDocs = (props) => {
     const [relatedDocs, setRelatedDocs] = useState([]);
+    const fetchGet = useFetch("GET");
     const onContractClick = (contract) => {
         setRelatedDocs(prev => {
             const newState = prev.find(cont => cont.id === contract.id) ? prev : [...prev, contract];
@@ -12,12 +14,7 @@ const ContractRelatedDocs = (props) => {
     useEffect(() => {
         let mounted = true;
         if (props.id !== 0 && mounted)
-            fetch(`http://192.168.0.182:54321/api/contract-related-docs/${props.id}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/contract-related-docs/${props.id}`)
                 .then(respJ => {
                     if (mounted) {
                         props.stateRef.current.relatedDocs = respJ;
@@ -25,7 +22,7 @@ const ContractRelatedDocs = (props) => {
                     }
                 })
         return () => mounted = false;
-    }, [props.id, props.token, props.stateRef]);
+    }, [props.id, fetchGet, props.stateRef]);
     const onRemoveItemClick = (doc) => {
         setRelatedDocs(prev => {
             const newState = prev.filter(document => document.id !== doc.id)
@@ -37,8 +34,8 @@ const ContractRelatedDocs = (props) => {
         <div>
             <h1>Əlaqəli sənədlər</h1>
             <ContractsList
-                token={props.token}
                 onContractClick={onContractClick}
+                fetchGet={fetchGet}
             />
             <div style={{ marginTop: '200px' }}>
                 {
@@ -55,19 +52,15 @@ const ContractRelatedDocs = (props) => {
 }
 
 export default ContractRelatedDocs
+
 const ContractsList = (props) => {
     const [agreements, setAgreements] = useState({ all: [], available: [], visible: [], offset: 2 });
     const listRef = useRef(null);
+    const fetchGet = props.fetchGet;
     useEffect(() => {
         let mounted = true
         const controller = new AbortController();
-        fetch('http://192.168.0.182:54321/api/contract-agreements', {
-            signal: controller.signal,
-            headers: {
-                'Authorization': 'Bearer ' + props.token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet('http://192.168.0.182:54321/api/contract-agreements')
             .then(respJ => {
                 if (mounted)
                     setAgreements({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 })
@@ -77,7 +70,7 @@ const ContractsList = (props) => {
             controller.abort();
             mounted = false;
         }
-    }, [props.token]);
+    }, [fetchGet]);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         setAgreements(prev => {

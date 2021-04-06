@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react'
 import { FaEdit, FaEdge, FaCheck, FaTimes } from 'react-icons/fa'
 import { workSectors } from '../../data/data'
+import useFetch from '../../hooks/useFetch';
 
 const PotentialVendor = (props) => {
     const [disabled, setDisabled] = useState(true);
     const nameRef = useRef(null);
     const voenRef = useRef(null);
     const sphereRef = useRef(null);
+    const fetchPost = useFetch("POST");
     const handleEditStart = () => {
         setDisabled(prev => !prev)
     }
@@ -17,22 +19,13 @@ const PotentialVendor = (props) => {
         setDisabled(prev => !prev)
     }
     const updateVendor = () => {
-        const data = JSON.stringify({
+        const data = {
             id: props.id,
             name: nameRef.current.value,
             voen: voenRef.current.value,
             sphere: sphereRef.current.value
-        });
-        fetch('http://192.168.0.182:54321/api/update-potential-vendor', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length,
-                'Authorization': 'Bearer ' + props.token
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/update-potential-vendor', data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
                     props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })

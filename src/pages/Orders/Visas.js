@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { useParams } from 'react-router'
 import SideBar from '../../components/Common/SideBar'
 import VisaContent from '../../components/Orders/Visas/VisaContent'
+import useFetch from '../../hooks/useFetch'
 
 const initData = {
   userName: '',
@@ -14,15 +15,8 @@ const initData = {
 const Visas = () => {
   const { docid: orderid } = useParams();
   const [active, setActive] = useState(orderid);
-  const updateList = useCallback((data, token) => fetch('http://192.168.0.182:54321/api/visas', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Content-Length': data.length,
-      'Authorization': 'Bearer ' + token
-    },
-    body: data
-  }), []);
+  const fetchPost = useFetch("POST");
+  const updateList = useCallback((data) => fetchPost('http://192.168.0.182:54321/api/visas', data), [fetchPost]);
   return (
     <div style={{ display: 'flex', position: 'relative' }}>
       <SideBar

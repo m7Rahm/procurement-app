@@ -39,15 +39,6 @@ const routes = [
         icon: FaTasks,
         component: Agreements,
         props: {
-            updateListContent: (data, token) => {
-                let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
-                query = query.substring(0, query.length - 1);
-                return fetch("http://192.168.0.182:54321/api/tender-docs?doctype=1&" + query, {
-                    headers: {
-                        "Authorization": "Bearer " + token
-                    }
-                })
-            },
             params: {
                 active: "id",
                 number: "number"

@@ -6,7 +6,7 @@ const useFetch = (method) => {
     const token = tokenContext[0].token;
     const logout = tokenContext[2];
 
-    const func = method !== "POST"
+    const func = method === "GET"
         ? (url, abortController) => {
             const aController = abortController || new AbortController()
             return fetch(url, {

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { FaPlus, FaTimes, FaTrash } from 'react-icons/fa'
+import useFetch from '../../hooks/useFetch'
 import { VendorsList } from '../Tender/AgreementVendors'
 const PaymentOrderMaterials = (props) => {
     const handleChange = (e, material) => {
@@ -132,17 +133,12 @@ const ContractsList = React.memo((props) => {
     const [documents, setDocuments] = useState({ all: [], available: [], visible: [], offset: 2 });
     const containerRef = useRef(null);
     const inputRef = useRef(null);
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         let mounted = true;
         const controller = new AbortController();
         if (props.vendorid)
-            fetch("http://192.168.0.182:54321/api/vendor-contracts/" + props.vendorid, {
-                signal: controller.signal,
-                headers: {
-                    "Authorization": "Bearer " + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet("http://192.168.0.182:54321/api/vendor-contracts/" + props.vendorid, controller)
                 .then(respJ => {
                     if (mounted)
                         setDocuments({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 })
@@ -152,7 +148,7 @@ const ContractsList = React.memo((props) => {
             controller.abort();
             mounted = false;
         }
-    }, [props.token, props.vendorid]);
+    }, [fetchGet, props.vendorid]);
     const handleVendorSearch = (e) => {
         const value = e.target.value;
         containerRef.current.scrollTop = 0;

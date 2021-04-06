@@ -4,33 +4,26 @@ import {
 	FaTrashAlt,
 	FaMinus
 } from 'react-icons/fa'
-const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ordNumb, version, view, glCatid }) => {
+import useFetch from '../../hooks/useFetch';
+const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, version, view, glCatid }) => {
 	const { sub_gl_category_id: subCategoryid } = row;
 	const rowid = row.id;
 	const modelsRef = useRef([]);
 	const codeRef = useRef(null);
 	const rowRef = useRef(null);
 	const modelListRef = useRef(null);
+	const fetchPost = useFetch("POST");
 	useEffect(() => {
 		if (view === 'returned' || view === 'procurement') {
-			const data = JSON.stringify({ categoryid: subCategoryid, ordNumb, empVersion: version })
-			fetch('http://192.168.0.182:54321/api/get-budget-per-order', {
-				method: 'POST',
-				headers: {
-					'Authorization': 'Bearer ' + token,
-					'Content-Type': 'application/json',
-					'Content-Length': data.length
-				},
-				body: data
-			})
-				.then(resp => resp.json())
+			const data = { categoryid: subCategoryid, ordNumb, empVersion: version }
+			fetchPost('http://192.168.0.182:54321/api/get-budget-per-order', data)
 				.then(respJ => {
 					modelsRef.current = respJ;
 					const budget = respJ.length !== 0 ? respJ[0].budget : 0;
 					setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, budget: budget, models: respJ })))
 				})
 		}
-	}, [subCategoryid, token, ordNumb, version, rowid, setOrderState, view])
+	}, [subCategoryid, fetchPost, ordNumb, version, rowid, setOrderState, view])
 	const subCategories = glCategories.all.filter(category => category.dependent_id === Number(glCatid));
 
 	const handleBlur = (e) => {
@@ -43,17 +36,8 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, token, ord
 	}
 	const handleSubCategoryChange = (e) => {
 		const value = e.target.value;
-		const data = JSON.stringify({ categoryid: value, ordNumb, empVersion: version })
-		fetch('http://192.168.0.182:54321/api/get-budget-per-order', {
-			method: 'POST',
-			headers: {
-				'Authorization': 'Bearer ' + token,
-				'Content-Type': 'application/json',
-				'Content-Length': data.length
-			},
-			body: data
-		})
-			.then(resp => resp.json())
+		const data = { categoryid: value, ordNumb, empVersion: version }
+		fetchPost('http://192.168.0.182:54321/api/get-budget-per-order', data)
 			.then(respJ => {
 				modelsRef.current = respJ;
 				const budget = respJ.length !== 0 ? respJ[0].budget : 0;

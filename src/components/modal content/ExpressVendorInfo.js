@@ -9,6 +9,7 @@ import Attachments from '../PriceOffers/Attachments'
 import { expressVendorInit } from '../../data/data'
 import { TokenContext } from '../../App'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
+import useFetch from '../../hooks/useFetch'
 const ExpressVendorInfo = (props) => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -78,14 +79,10 @@ const ExpressVendorInfo = (props) => {
             })
             .catch(ex => console.log(ex))
     }
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         if (vendorid) {
-            fetch(`http://192.168.0.182:54321/api/get-express-vendor/${vendorid}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/get-express-vendor/${vendorid}`)
                 .then(respJ => {
                     const emails = respJ[0].emails ? respJ[0].emails.split(',').map(email => ({ key: Math.random(), val: email })) : [];
                     const phone_numbers = respJ[0].phone_numbers ? respJ[0].phone_numbers.split(',').map(phoneNumb => ({ key: Math.random(), val: phoneNumb })) : [];
@@ -107,7 +104,7 @@ const ExpressVendorInfo = (props) => {
                 })
                 .catch(ex => console.log(ex))
         }
-    }, [token, vendorid]);
+    }, [fetchGet, vendorid]);
     const handleCardChange = (key, value, type) => {
         setVendorData(prev => ({ ...prev, [type]: prev[type].map(preVal => preVal.key === key ? ({ ...preVal, val: value }) : preVal) }))
     }

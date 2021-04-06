@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import ExpressVendorInfo from '../../components/modal content/ExpressVendorInfo'
 import Modal from '../../components/Misc/Modal'
-import { TokenContext } from '../../App'
 import { MdDetails } from 'react-icons/md'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { riskZones, taxTypes, workSectors, vendorTypes } from '../../data/data'
 import Pagination from '../../components/Misc/Pagination'
 import ExpressVendorsSearch from '../../components/Search/ExpressVendorsSearch'
-const ExpressVendors = (props) => {
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
+import useFetch from '../../hooks/useFetch'
+const ExpressVendors = () => {
     const location = useLocation();
     const activePageRef = useRef(0);
     const searchDataRef = useRef({
@@ -24,8 +22,9 @@ const ExpressVendors = (props) => {
         risk_zone: null,
         is_closed: null
     })
+    const fetchPost = useFetch("POST");
     useEffect(() => {
-        const data = JSON.stringify({
+        const data = {
             from: 0,
             reg_date: '',
             vendor_type: '',
@@ -36,22 +35,13 @@ const ExpressVendors = (props) => {
             name: '',
             risk_zone: 0,
             is_closed: 0
-        });
-        fetch('http://192.168.0.182:54321/api/get-express-vendors', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/get-express-vendors', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setExpressVendors({ count: totalCount, vendors: respJ });
             })
-    }, [token])
+    }, [fetchPost])
     const [expressVendors, setExpressVendors] = useState({ count: 0, vendors: [] })
     const [modalState, setModalState] = useState({
         visible: location.state !== undefined,
@@ -66,7 +56,7 @@ const ExpressVendors = (props) => {
         setModalState({ visible: false, content: null })
     }
     const updateList = (from) => {
-        const data = JSON.stringify({
+        const data = {
             reg_date: searchDataRef.current.reg_date.value,
             vendor_type: searchDataRef.current.vendor_type.value,
             voen: searchDataRef.current.voen.value,
@@ -77,17 +67,8 @@ const ExpressVendors = (props) => {
             risk_zone: searchDataRef.current.risk_zone.value,
             is_closed: searchDataRef.current.is_closed.value,
             from: from
-        });
-        fetch('http://192.168.0.182:54321/api/get-express-vendors', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            },
-            body: data
-        })
-            .then(resp => resp.json())
+        };
+        fetchPost('http://192.168.0.182:54321/api/get-express-vendors', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                 setExpressVendors({ count: totalCount, vendors: respJ });
@@ -95,7 +76,7 @@ const ExpressVendors = (props) => {
     }
     const handleClick = (id) => {
         const onFinish = () => {
-            const data = JSON.stringify({
+            const data = {
                 reg_date: searchDataRef.current.reg_date.value,
                 vendor_type: searchDataRef.current.vendor_type.value,
                 voen: searchDataRef.current.voen.value,
@@ -106,17 +87,8 @@ const ExpressVendors = (props) => {
                 risk_zone: searchDataRef.current.risk_zone.value,
                 is_closed: searchDataRef.current.is_closed.value,
                 from: 0
-            });
-            fetch('http://192.168.0.182:54321/api/get-express-vendors', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                    'Content-Length': data.length
-                },
-                body: data
-            })
-                .then(resp => resp.json())
+            };
+            fetchPost('http://192.168.0.182:54321/api/get-express-vendors', data)
                 .then(respJ => {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     closeModal();

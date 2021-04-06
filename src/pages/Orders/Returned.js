@@ -1,22 +1,17 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Table from '../../components/Orders/MyOrders/Table'
 import Pagination from '../../components/Misc/Pagination';
 import {
   IoMdSearch
 } from 'react-icons/io'
-import { TokenContext } from '../../App'
-const Returned = (props) => {
+import useFetch from '../../hooks/useFetch';
+const Returned = () => {
   const wrapperRef = useRef(null);
   const [orders, setOrders] = useState({ count: 0, orders: [] });
   const activePageRef = useRef(0);
-  const token = useContext(TokenContext)[0].token;
+  const fetchGet = useFetch("GET");
   const updateList = (from) => {
-    fetch(`http://192.168.0.182:54321/api/returned-orders?from=${from}&until=20`, {
-      headers: {
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then(resp => resp.json())
+    fetchGet(`http://192.168.0.182:54321/api/returned-orders?from=${from}&until=20`)
       .then(respJ => {
         const totalCount = respJ[0] ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
@@ -24,18 +19,13 @@ const Returned = (props) => {
       .catch(err => console.log(err))
   }
   useEffect(() => {
-    fetch(`http://192.168.0.182:54321/api/returned-orders?from=0&until=20`, {
-      headers: {
-        'Authorization': 'Bearer ' + token,
-      },
-    })
-      .then(resp => resp.json())
+    fetchGet(`http://192.168.0.182:54321/api/returned-orders?from=0&until=20`)
       .then(respJ => {
         const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
       })
       .catch(err => console.log(err))
-  }, [token])
+  }, [fetchGet])
   return (
     <>
       <div className="wrapper" ref={wrapperRef}>

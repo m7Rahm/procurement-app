@@ -1,36 +1,28 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import OrderContentProtected from './OrderContentProtected'
 import Participants from '../../modal content/Participants'
 import VisaContentFooter from './VisaContentFooter'
 import EmptyContent from '../../Misc/EmptyContent'
-import { TokenContext } from '../../../App'
-import {
-    FaAngleDown,
-} from 'react-icons/fa'
+import { FaAngleDown } from 'react-icons/fa'
 import { useLocation } from 'react-router-dom'
+import useFetch from '../../../hooks/useFetch'
 
 const VisaContent = (props) => {
     const location = useLocation();
     const { tranid } = props;
-    const tokenContext = useContext(TokenContext);
     const [visa, setVisa] = useState(undefined);
-    const token = tokenContext[0].token;
     const locationTranid = location.state ? location.state.tranid : undefined
     const canProceed = useRef({});
     // const otherProcurementUsers = useRef([]);
     // const getOtherProcUsers = (abortController) => {
-    //     fetch()
+    //     fetch
     // }
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;
         if (tranid && mounted) {
-            fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}`, {
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
@@ -43,18 +35,12 @@ const VisaContent = (props) => {
                 abortController.abort()
             }
         }
-    }, [tranid, token]);
+    }, [tranid, fetchGet]);
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;
         if (locationTranid && mounted) {
-            fetch(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}`, {
-                signal: abortController.signal,
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
@@ -67,7 +53,7 @@ const VisaContent = (props) => {
                 abortController.abort()
             }
         }
-    }, [locationTranid, token]);
+    }, [locationTranid, fetchGet]);
 
     const participantsRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);

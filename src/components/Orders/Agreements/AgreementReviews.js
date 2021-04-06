@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { TokenContext } from '../../../App'
+import React, { useEffect, useState } from 'react'
 import { FaCheck, FaTimes } from 'react-icons/fa'
+import useFetch from '../../../hooks/useFetch'
 const getStatusIcon = (status) => {
     const props = { size: '25' }
     if (status === 1) {
@@ -10,19 +10,13 @@ const getStatusIcon = (status) => {
         return { icon: FaTimes, props: { ...props, color: '#D93404', title: 'Etiraz' } }
 }
 const AgreementReviews = (props) => {
-    const tokenContext = useContext(TokenContext);
-    const token = tokenContext[0].token;
     const [reviews, setReviews] = useState([]);
+    const fetchGet = useFetch("GET");
     useEffect(() => {
-        fetch(`http://192.168.0.182:54321/api/agreement-reviews/${props.agreementid}`, {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
-            .then(resp => resp.json())
+        fetchGet(`http://192.168.0.182:54321/api/agreement-reviews/${props.agreementid}`)
             .then(respJ => setReviews(respJ))
             .catch(ex => console.log(ex))
-    }, [props.agreementid, token])
+    }, [props.agreementid, fetchGet])
     return (
         <div>
             <ul className="participants reviews">

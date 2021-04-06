@@ -7,12 +7,14 @@ import { AiFillCheckCircle } from 'react-icons/ai'
 import ContractFiles from '../Contracts/ContractFiles'
 import { WebSocketContext } from '../../pages/SelectModule';
 import useFetch from '../../hooks/useFetch';
+import { TokenContext } from '../../App';
 
 const AgreementVendors = (props) => {
     const [agreementVendors, setAgreementVendors] = useState([]);
     const [modalState, setModalState] = useState({ display: false, key: null });
     const [commonFiles, setCommonFiles] = useState([]);
-    const webSocket = useContext(WebSocketContext)
+    const webSocket = useContext(WebSocketContext);
+    const token = useContext(TokenContext)[0].token
     const [operationResult, setOperationResult] = useState({
         visible: false,
         desc: '',
@@ -44,7 +46,7 @@ const AgreementVendors = (props) => {
         fetch('http://192.168.0.182:54321/api/new-agreement', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + props.token
+                'Authorization': 'Bearer ' + token
             },
             body: formData
         })
@@ -109,7 +111,6 @@ const AgreementVendors = (props) => {
             <div style={{ float: 'left' }}>
                 <VendorsList
                     addVendor={addVendor}
-                    token={props.token}
                 />
             </div>
             <div style={{ clear: 'both', position: "relative", top: "10px" }}>
@@ -157,7 +158,6 @@ const AgreementVendors = (props) => {
                             </ul>
                             <ForwardDocLayout
                                 handleSendClick={handleSendClick}
-                                token={props.token}
                             />
                         </>
                         :

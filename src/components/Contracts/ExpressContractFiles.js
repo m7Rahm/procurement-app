@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react'
 import { FaTimesCircle, FaFileExcel, FaFileWord, FaFilePdf } from 'react-icons/fa'
 import { AiFillFileUnknown } from 'react-icons/ai'
 import ContractFiles from './ContractFiles'
+import useFetch from '../../hooks/useFetch'
 const ExpressContractFiles = (props) => {
     const [files, setFiles] = useState({ fetched: [], new: [] });
     const removeFile = useCallback((f) => {
@@ -51,15 +52,11 @@ const ExpressContractFiles = (props) => {
             return ({ ...prev, fetched: prev.fetched.filter(file => file.name !== f.name) })
         })
     }, [props.stateRef])
+    const fetchGet = useFetch("GET");
     useEffect(() => {
         let mounted = true;
         if (props.id !== 0)
-            fetch(`http://192.168.0.182:54321/api/express_contract_files/${props.id}`, {
-                headers: {
-                    "Authorization": "Bearer " + props.token
-                }
-            })
-                .then(resp => resp.json())
+            fetchGet(`http://192.168.0.182:54321/api/express_contract_files/${props.id}`)
                 .then(respJ => {
                     if (mounted)
                         setFiles(prev => {
@@ -70,7 +67,7 @@ const ExpressContractFiles = (props) => {
                 .catch(ex => console.log(ex))
         return () => mounted = false
 
-    }, [props.id, props.token, props.stateRef])
+    }, [props.id, fetchGet, props.stateRef])
     return (
         <div style={{ overflow: 'hidden' }}>
             <FetchedFiles
