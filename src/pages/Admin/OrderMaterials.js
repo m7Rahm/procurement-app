@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
-import {
-    MdModeEdit,
-    MdDone,
-    MdClose,
-} from 'react-icons/md'
+import { MdModeEdit, MdDone, MdClose } from 'react-icons/md'
 import { FaPlus } from 'react-icons/fa'
 import { AiFillCheckCircle } from 'react-icons/ai'
 import OperationResult from '../../components/Misc/OperationResult'
@@ -248,18 +244,26 @@ const NewMaterial = React.memo((props) => {
             isInv: inventoryRef.current.checked,
             isEsasVesait: esasVesaitRef.current.checked
         };
-        fetchPost('http://192.168.0.182:54321/api/add-new-cat')
-            .then(respJ => {
-                if (respJ[0].result === 'success') {
-                    const id = respJ[0].row_id;
-                    setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
-                    setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }));
-                    inventoryRef.current.checked = false;
-                    setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approxPrice: "" });
-                    curatoridRef.current.value = "-1"
-                }
-            })
-            .catch(ex => console.log(ex))
+        if (data.title !== "" && gl_category_id !== "-1" && data.sub_gl_category_id !== "")
+            fetchPost('http://192.168.0.182:54321/api/add-new-cat', data)
+                .then(respJ => {
+                    if (respJ[0].result === 'success') {
+                        const id = respJ[0].row_id;
+                        setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', backgroundColor: "white", iconColor: "rgb(15, 157, 88)", icon: AiFillCheckCircle })
+                        setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }));
+                        inventoryRef.current.checked = false;
+                        setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approxPrice: "" });
+                        curatoridRef.current.value = "-1"
+                    } else {
+                        setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
+                    }
+                })
+                .catch(ex => {
+                    const message = ex.message === 403 ? "Unauthorized" : "Xəta baş verdi"
+                    setOperationResult({ visible: true, desc: message })
+                })
+        else
+            setOperationResult({ visible: true, desc: "Xanalar düzgün doldurulmamışdır" })
     }
     const handlePriceChange = (e) => {
         const value = e.target.value;
@@ -278,9 +282,9 @@ const NewMaterial = React.memo((props) => {
                     <OperationResult
                         setOperationResult={setOperationResult}
                         operationDesc={operationResult.desc}
-                        backgroundColor={'white'}
-                        iconColor={'rgb(15, 157, 88)'}
-                        icon={AiFillCheckCircle}
+                        backgroundColor={operationResult.backgroundColor}
+                        iconColor={operationResult.iconColor}
+                        icon={operationResult.icon}
                     />
                 }
             </td>

@@ -19,7 +19,54 @@ div.budget-ribbon {
     overflow: hidden;
     margin: 50px 0px;
 }
-
+ul.budget-report{
+    width: 100%;
+    list-style: none;
+    border: 1px solid gainsboro;
+    position: relative;
+    padding: 0px;
+}
+ul.budget-report>li{
+    display: flex;
+    width: 100%;
+}
+ul.budget-report>li:not(:first-of-type)>div {
+    padding: 6px;
+    border: 1px solid gainsboro;
+}
+div.budget-report-container {
+    overflow: auto;
+    height: 75vh;
+    clear: both;
+    max-width: 1156px;
+    margin: auto;
+    border: 1px solid gainsboro;
+    margin-top: 30px
+}
+ul.budget-report>li>div{
+    border: 1px solid rgb(141, 138, 138);
+    color: gray;
+    padding: 6px;
+}
+ul.budget-report>li:first-of-type>div{
+    font-weight: 600;
+    color: white !important;
+}
+ul.budget-report>li>div:first-of-type{
+    width: 50px;
+}
+ul.budget-report>li>div:nth-of-type(2){
+    width: 120px;
+}
+ul.budget-report>li>div:nth-of-type(4),
+ul.budget-report>li>div:last-of-type{
+    width: 120px;
+}
+ul.budget-report>li>div:nth-of-type(3){
+    background-color: gainsboro;
+    color: white;
+    flex: 1;
+}
 ul.structure-budget-general>li>div:last-of-type {
     position: absolute;
     right: 10px;

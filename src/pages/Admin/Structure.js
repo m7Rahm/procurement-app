@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { FaEdit } from 'react-icons/fa'
+import { FaEdit, FaCheck } from 'react-icons/fa'
 import { IoMdClose, IoMdDoneAll, IoMdAdd } from 'react-icons/io'
 import Pagination from '../../components/Misc/Pagination'
 import StatusButton from '../../components/Misc/StatusButton'
 import useFetch from '../../hooks/useFetch'
-
+import OperationResult from "../../components/Misc/OperationResult"
 const Structure = () => {
     const [departments, setDepartments] = useState({ content: [], count: 0 });
     const activePageRef = useRef(0);
@@ -37,6 +37,7 @@ const Structure = () => {
             <table className="users-table">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Ad</th>
                         <th>Tabe olduğu struktur</th>
                         <th>Tip</th>
@@ -54,7 +55,7 @@ const Structure = () => {
                         fetchPost={fetchPost}
                     />
                     {
-                        departments.content.map(department =>
+                        departments.content.map((department, index) =>
                             <TableRow
                                 key={department.id}
                                 setActiveDepartments={setActiveDepartments}
@@ -62,6 +63,7 @@ const Structure = () => {
                                 structure={department}
                                 departments={departments}
                                 fetchPost={fetchPost}
+                                index={activePageRef.current * 20 + (index + 1)}
                             />
                         )
                     }
@@ -79,6 +81,7 @@ export default Structure
 
 const NewStructureRow = (props) => {
     const { activeDepartments, setActiveDepartments, updateList, activePageRef, fetchPost } = props;
+    const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newStructureData, setNewStructureData] = useState({ name: '', parent_id: -1, type: 0 });
     const handleChange = (e) => {
         const name = e.target.name;
@@ -90,14 +93,27 @@ const NewStructureRow = (props) => {
         fetchPost('http://192.168.0.182:54321/api/new-structure', data)
             .then(respJ => {
                 const id = respJ[0].id;
-                setNewStructureData({ name: '', parent_id: -1 })
+                setNewStructureData({ name: '', parent_id: -1 });
+                setOperationResult({ visible: true, desc: "Əməliyyat uğurla nəticələndi", icon: FaCheck, iconColor: "rgb(15, 157, 88)", backgroundColor: "white" })
                 setActiveDepartments(prev => [...prev, { ...newStructureData, id }]);
-                updateList(activePageRef.current)
+                updateList(20 * activePageRef.current)
             })
             .catch(ex => console.log(ex))
     }
     return (
         <tr>
+            <td>
+                {
+                    operationResult.visible &&
+                    <OperationResult
+                        setOperationResult={setOperationResult}
+                        operationDesc={operationResult.desc}
+                        backgroundColor={operationResult.backgroundColor}
+                        iconColor={operationResult.iconColor}
+                        icon={operationResult.icon}
+                    />
+                }
+            </td>
             <td><input value={newStructureData.name} name="name" onChange={handleChange} /></td>
             <td>
                 <select style={{ minWidth: '130px' }} name="parent_id" value={newStructureData.parent_id} onChange={handleChange}>
@@ -164,6 +180,7 @@ const TableRow = (props) => {
     }
     return (
         <tr className="structure-row" key={structure.id}>
+            <td>{props.index}</td>
             <td>
                 <input disabled={disabled} name="name" value={structureData.name} onChange={handleChange} />
             </td>

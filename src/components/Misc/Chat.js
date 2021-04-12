@@ -219,10 +219,6 @@ const Chat = (props) => {
                         <div ref={delimeterRef} style={{ position: 'absolute', transform: `translateY(${messages.height}px)`, opacity: '0' }}> delimeter </div>
                     </ul>
                 </div>
-                {/* {
-                    messages.count > messages.all.length &&
-                    <div style={{ cursor: 'pointer', backgroundColor: 'rgb(240, 240, 240)', color: 'white', padding: '4px 0px', marginTop: '4px' }} onClick={loadMore}>Load more..</div>
-                } */}
             </div>
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
                 <textarea ref={messageBoxRef} onKeyUp={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />

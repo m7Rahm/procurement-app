@@ -21,6 +21,7 @@ import OrdersSearchHOC from '../components/Search/OrdersSearchHOC'
 import SideBarContainer from '../components/HOC/SideBarContainer'
 import AgreementCard from '../components/VisaCards/AgreementCard'
 import useFetch from '../hooks/useFetch'
+import BudgetReport from './Budget/BudgetReport'
 
 const SideBarContent = CardsList(AgreementCard);
 const Search = OrdersSearchHOC(optionsAgreements);
@@ -45,6 +46,12 @@ const routes = [
         link: '/budget-docs',
         icon: GrDocumentPerformance,
         component: BudgetDocuments
+    },
+    {
+        text: 'Reportlar',
+        link: '/reports',
+        icon: GrDocumentPerformance,
+        component: BudgetReport
     },
 ];
 const inData = {
@@ -78,6 +85,9 @@ const Budget = (props) => {
                         params={params}
                         updateListContent={updateListContent}
                     />
+                </Route>
+                <Route path={`${path}/reports`}>
+                    <BudgetReport />
                 </Route>
                 <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
                 </Route>

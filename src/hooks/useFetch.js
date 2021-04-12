@@ -36,10 +36,15 @@ const useFetch = (method) => {
                 body: apiData
             })
                 .then(resp => {
+                    const contentType = resp.headers.get("content-type");
                     if (resp.status === 401)
                         logout()
-                    else
+                    else if (resp.status === 403)
+                        throw new Error(403)
+                    else if (contentType && contentType.indexOf("application/json") !== -1)
                         return resp.json()
+                    else
+                        throw new Error(500)
                 })
         }
     return useCallback(func, [token])
