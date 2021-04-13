@@ -1,14 +1,13 @@
 import React from 'react'
 const Search = (props) => {
-	const searchData = props.searchData;
-	const setSearchData = props.setSearchData;
-	const updateList = props.updateList;
+	const { setLoading, updateList, setSearchData, searchData } = props
 	const handleChange = (e) => {
 		const name = e.target.name;
 		const value = e.target.value;
 		setSearchData(prev => ({ ...prev, [name]: value }))
 	}
 	const handleSearch = () => {
+		setLoading(true)
 		updateList(0)
 	}
 	return (

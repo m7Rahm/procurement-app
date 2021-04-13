@@ -7,10 +7,35 @@
 
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 14px;
 }
-
+div.content-loading>div{
+  animation: content-loading 1.5s ease-in-out infinite both;
+  background-image: linear-gradient(to right, whitesmoke, whitesmoke, whitesmoke);
+  height: 2.5rem;
+  border-radius: 5px;
+  margin: 10px 0px;
+  position: relative;
+}
+@keyframes content-loading {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+div.result-empty>h1 {
+  text-align: center;
+  font-size: 3rem;
+  color: rgb(117, 164, 254);
+  margin: 0px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 .left-side-pane {
   position: fixed;
   top: 0px;
@@ -1182,7 +1207,7 @@ div.profile-info-content>div.header{
   font-weight: 600;
   padding: 5px 6px 10px 10px;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 32px;
+  font-size: 2rem;
   margin-bottom: 10px;
   border-bottom: 1px solid gainsboro;
 }
@@ -1579,19 +1604,27 @@ div.module-select {
 div.login-container {
   min-height: 600px;
   height: 100vh;
-  padding-top: 200px;
-  background-color: rgb(137, 221, 255);
+  padding-top: 100px;
+  background-color: white;
 }
 
 div.login {
   box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.05);
   border-radius: 5px;
-  max-width: 400px;
+  width: 416px;
+  padding: 24px 32px 32px;
   background-color: white;
-  height: 240px;
   margin: auto;
 }
-
+div.login label {
+  font-size: 1.8rem;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  transition: all 0.3s;
+  line-height: 1.3;
+  color: rgba(0, 0, 0, 0.4);
+}
 div.exp-vendor {
   padding: 50px 10px;
 }
@@ -1708,43 +1741,86 @@ div.section-row>div>select, div.section-row>div>input {
   width: 100%;
 }
 
-div.login label {
-  font-size: 18px;
-  font-weight: 600;
-  color: rgb(75, 74, 74);
-  display: block;
-  margin: auto;
-}
-
 div.login>div {
   height: 100%;
   padding-top: 40px;
 }
 
 div.login>div>div {
-  width: 205px;
   margin: auto;
+  border: 0px;
+  position: relative;
+  margin-bottom: 24px;
 }
-
+div.login>div>div>span {
+  color: rgb(10, 102, 194);
+  font-weight: 600;
+  position: absolute;
+  font-size: 14px;
+  background-origin: padding-box;
+  right: 10px;
+  cursor: pointer;
+  height: 24px;
+  line-height: 24px;
+  top: 14px;
+  padding: 0px 8px;
+  z-index: 2;
+  transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+div.login>div>div>span:hover{
+  background-color: #d0e8ff;
+  border-radius: 28px;
+}
 div.log-in-button {
   margin: 20px auto !important;
   text-align: center;
-  padding: 6px 8px;
-  border-radius: 3px;
-  background-color: rgb(200, 64, 0);
+  border-radius: 28px;
+  line-height: 52px;
   cursor: pointer;
+  height: 52px;
+  background-color: rgb(10, 102, 194);
   color: whitesmoke;
-  font-weight: bold;
+  font-weight: 400;
+  transition: all 0.3s;
+}
+div.log-in-button:hover{
+  background-color: rgb(0, 65, 130);
 }
 
 div.login input {
-  padding: 3px;
-  border-radius: 3px;
+  padding: 28px 12px 6px;
+  border-radius: 4px;
   width: 100%;
-  border: 2px rgb(200, 64, 0) solid;
+  height: 52px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.6);
+  background-color: transparent !important;
   display: block;
+  font-size: 18px;
+  outline: none;
+  position: inherit;
+  z-index: 1;
+  transition: all 0.3s;
 }
-
+div.login input:focus,
+div.login input:active{
+  border-color: rgb(0, 115, 177);
+  box-shadow: 0px 0px 0px 1px #0a66c2;
+}
+div.login input:active+label,
+div.login input:not([value=""])+label,
+div.login input:focus+label{
+  top: -4px;
+  font-size: 1.4rem;
+  line-height: 1.5;
+}
+div.login input:-webkit-autofill {
+  background-color: transparent !important;
+  box-shadow: 0 0 0 50px transparent inset;
+}
+div.login input:-webkit-autofill+label{
+  z-index: 2;
+}
 .visa-content-container {
   flex: 1;
   background: transparent;

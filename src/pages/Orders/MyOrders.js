@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useRef, useEffect, useState, useContext, useCallback } from 'react';
 import Table from '../../components/Orders/MyOrders/Table'
 import Search from '../../components/Search/Search'
 import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
@@ -6,7 +6,10 @@ import Pagination from '../../components/Misc/Pagination';
 import { TokenContext } from '../../App'
 import { useParams } from 'react-router';
 import useFetch from '../../hooks/useFetch';
-const MyOrders = () => {
+import ResultEmpty from '../../components/Common/ResultEmpty';
+import ContentLoading from '../../components/Misc/ContentLoading';
+const MyOrders = (props) => {
+  const { referer, method, link, inParams, inLink } = props
   const wrapperRef = useRef(null);
   const [orders, setOrders] = useState({ count: 0, orders: [] });
   const activePageRef = useRef(0);
@@ -14,25 +17,24 @@ const MyOrders = () => {
   const userData = tokenContext[0].userData;
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
   const { docid: orderid } = useParams();
-  const fetchOrders = useFetch("POST");
-  const [searchData, setSearchData] = useState({
-    dateFrom: '',
-    dateTill: '',
-    status: -3,
-    date: '',
-    ordNumb: ""
-  });
+  const fetchPost = useFetch("POST");
+  const fetchGet = useFetch("GET");
+  const fetchFunc = useCallback((data) => method === "GET" ? fetchGet(data) : fetchPost(link, data), [link, method, fetchGet, fetchPost])
+  const [searchData, setSearchData] = useState(inParams);
+  const initLink = method === "GET" ? inLink(0) : ""
+  const [loading, setLoading] = useState(true);
   const updateList = (from) => {
-    const data = { ...searchData, from: from, until: 20 };
-    fetchOrders(`http://192.168.0.182:54321/api/orders`, data)
+    const data = method === "GET" ? inLink(from) : { ...searchData, from: from, until: 20 };
+    fetchFunc(data)
       .then(respJ => {
         const totalCount = respJ[0] ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
+        setLoading(false)
       })
       .catch(err => console.log(err))
   }
   useEffect(() => {
-    const data = {
+    const data = method === "GET" ? initLink : {
       from: 0,
       until: 20,
       status: -3,
@@ -41,31 +43,41 @@ const MyOrders = () => {
       ordNumb: "",
       id: orderid
     };
-    //todo: create socket and connect
-    fetchOrders(`http://192.168.0.182:54321/api/orders`, data)
+    fetchFunc(data)
       .then(respJ => {
         const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
         setOrders({ count: totalCount, orders: respJ });
+        setLoading(false)
       })
       .catch(err => console.log(err))
-  }, [fetchOrders, orderid])
+  }, [fetchFunc, orderid, link, method, initLink])
   return (
     <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
-      <Search
-        searchData={searchData}
-        setSearchData={setSearchData}
-        updateList={updateList}
-      />
-      <div className="wrapper" ref={wrapperRef}>
-        <Table
-          wrapperRef={wrapperRef}
-          orders={orders}
-          referer="protected"
-          setOrders={setOrders}
+      {
+        referer === "protected" &&
+        <Search
+          searchData={searchData}
+          setSearchData={setSearchData}
+          updateList={updateList}
+          setLoading={setLoading}
         />
+      }
+      <div className="wrapper" ref={wrapperRef}>
+        {
+          loading ?
+            <ContentLoading />
+            : orders.orders.length !== 0
+              ? <Table
+                wrapperRef={wrapperRef}
+                orders={orders}
+                referer={referer}
+                setOrders={setOrders}
+              />
+              : <ResultEmpty />
+        }
       </div>
       {
-        canCreateNewOrder &&
+        canCreateNewOrder && referer === "protected" &&
         <NewOrderButton
           setOrders={setOrders}
           wrapperRef={wrapperRef}

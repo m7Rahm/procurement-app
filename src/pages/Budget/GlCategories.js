@@ -4,6 +4,7 @@ import Pagination from '../../components/Misc/Pagination';
 import { FaCheck, FaEdit, FaPlus, FaTimes } from 'react-icons/fa'
 import OperationResult from '../../components/Misc/OperationResult'
 import useFetch from '../../hooks/useFetch';
+import ContentLoading from "../../components/Misc/ContentLoading"
 const GlCategories = () => {
     const tokenContext = useContext(TokenContext);
     const token = tokenContext[0].token;
@@ -14,15 +15,17 @@ const GlCategories = () => {
     const glCategoryRef = useRef(null);
     const codeRef = useRef(null);
     const fetchUpdateList = useFetch("GET");
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         fetchUpdateList(`http://192.168.0.182:54321/api/budget-gl-categories?from=0&all=true`)
             .then(respJ => {
                 const totalCount = respJ[0].total_count;
                 const parents = respJ.filter(category => category.dependent_id === 0);
                 setGlCategories({ content: respJ.filter((_, index) => index < 20), all: parents, count: totalCount })
+                setLoading(false)
             })
             .catch(ex => console.log(ex));
-            fetchUpdateList("http://192.168.0.182:54321/api/departments")
+        fetchUpdateList("http://192.168.0.182:54321/api/departments")
             .then(respJ => {
                 const warehouse = respJ.filter(department => department.type === 2)
                 const procurement = respJ.filter(department => department.type === 3);
@@ -71,50 +74,54 @@ const GlCategories = () => {
                     <div onClick={handleSearch}>Axtar</div>
                 </div>
             </div>
-            <table className="gl-categories">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Kod</th>
-                        <th>Ad</th>
-                        <th>Tabe</th>
-                        <th>Anbar</th>
-                        <th>Təchizat</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <NewGlCategory
-                        warehouse={structures.warehouse}
-                        procurement={structures.procurement}
-                        self={glCategories.all}
-                        token={token}
-                        count={glCategories.count}
-                        setOperationResult={setOperationResult}
-                        setGlCategories={setGlCategories}
-                    />
-                    {
-                        glCategories.content.map((category, index) =>
-                            <GlCategoryRow
-                                key={category.id}
-                                rn={activePageRef.current * 20 + index + 1}
-                                code={category.code}
-                                name={category.name}
-                                dependentid={category.dependent_id}
-                                warehouseid={category.warehouse_id}
-                                procurementid={category.procurement_id}
+            {
+                loading ?
+                    <ContentLoading />
+                    : <table className="gl-categories">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Kod</th>
+                                <th>Ad</th>
+                                <th>Tabe</th>
+                                <th>Anbar</th>
+                                <th>Təchizat</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <NewGlCategory
                                 warehouse={structures.warehouse}
                                 procurement={structures.procurement}
                                 self={glCategories.all}
                                 token={token}
-                                setGlCategories={setGlCategories}
+                                count={glCategories.count}
                                 setOperationResult={setOperationResult}
-                                id={category.id}
+                                setGlCategories={setGlCategories}
                             />
-                        )
-                    }
-                </tbody>
-            </table>
+                            {
+                                glCategories.content.map((category, index) =>
+                                    <GlCategoryRow
+                                        key={category.id}
+                                        rn={activePageRef.current * 20 + index + 1}
+                                        code={category.code}
+                                        name={category.name}
+                                        dependentid={category.dependent_id}
+                                        warehouseid={category.warehouse_id}
+                                        procurementid={category.procurement_id}
+                                        warehouse={structures.warehouse}
+                                        procurement={structures.procurement}
+                                        self={glCategories.all}
+                                        token={token}
+                                        setGlCategories={setGlCategories}
+                                        setOperationResult={setOperationResult}
+                                        id={category.id}
+                                    />
+                                )
+                            }
+                        </tbody>
+                    </table>
+            }
             <Pagination
                 count={glCategories.count}
                 activePageRef={activePageRef}

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react"
 import MyOrders from "./Orders/MyOrders"
 import Visas from "./Orders/Visas"
-import Returned from "./Orders/Returned"
 import Agreements from "./Orders/Agreements"
 import ContractsHOC from "../components/HOC/ContractsHOC"
 import { IoMdDocument, IoMdCheckmarkCircleOutline, IoMdCart } from "react-icons/io"
@@ -19,13 +18,38 @@ const routes = [
         text: "Sifarişlərim",
         link: "/my-orders",
         icon: IoMdCart,
-        component: MyOrders
+        component: MyOrders,
+        props: {
+            inParams: {
+                dateFrom: '',
+                dateTill: '',
+                status: -3,
+                date: '',
+                ordNumb: ""
+              },
+            method: "POST",
+            link: "http://192.168.0.182:54321/api/orders",
+            referer: "protected"
+        }
     },
     {
         text: "Redaktəyə qaytarılmış",
         link: "/returned",
         icon: IoMdDocument,
-        component: Returned
+        component: MyOrders,
+        props: {
+            inParams: {
+                dateFrom: '',
+                dateTill: '',
+                status: -3,
+                date: '',
+                ordNumb: ""
+              },
+            method: "GET",
+            link: "http://192.168.0.182:54321/api/returned-orders?from=0&until=20",
+            referer: "returned",
+            inLink: (from) => `http://192.168.0.182:54321/api/returned-orders?from=${from}&until=20`
+        }
     },
     {
         text: "Vizalar",

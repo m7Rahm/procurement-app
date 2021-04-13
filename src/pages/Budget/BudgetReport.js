@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import useFetch from "../../hooks/useFetch";
 import { months } from "../../data/data"
+import { FaFileExcel } from "react-icons/fa";
 const date = new Date()
 const month = months.find(month => Number(month.value) === date.getMonth() + 1);
 const year = date.getFullYear()
@@ -17,7 +18,7 @@ const BudgetReport = () => {
         return () => {
         }
     }, [fetchPost]);
-    const exportToEXcel = () => {
+    const exportToExcel = () => {
         const tableBody = rows.map(row =>
             `<tr>
                 <td>${row.in}</td>
@@ -96,7 +97,17 @@ const BudgetReport = () => {
                             }
                         </ul>
                     </div>
-                    <div onClick={exportToEXcel} style={{ position: "fixed", zIndex: 2, bottom: "50px", right: "50px" }}>Clcik me</div>
+                    <div
+                        style={{
+                            position: "fixed",
+                            zIndex: 2,
+                            bottom: "50px",
+                            right: "50px"
+                        }}
+                    >
+                        <FaFileExcel onClick={exportToExcel} cursor="pointer" color="#1d6f42" title="Export to Excel" size="40" />
+                        <br />
+                    </div>
                 </div>
             </div>
         </>

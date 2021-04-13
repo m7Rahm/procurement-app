@@ -29,8 +29,20 @@ const NewAgreement = () => {
                             setIsEmpty={setIsEmpty}
                         />
                     </>
-                    : <div style={{ paddingTop: '10%' }}>
-                        <h1 style={{ fontSize: '48px', textAlign: 'center' }}>Razılaşma yaratmaq üçün məhsul əlavə edin</h1>
+                    : <div>
+                        <img
+                            src='/NoMessages.svg'
+                            alt="blah"
+                            height="300"
+                            style={{ margin: "auto", display: "block" }} />
+                        <h1 style={{
+                            fontSize: '3rem',
+                            textAlign: 'center',
+                            color: "rgb(117, 164, 254)"
+                        }}
+                        >
+                            Razılaşma yaratmaq üçün məhsul əlavə edin
+                        </h1>
                     </div>
             }
         </div>

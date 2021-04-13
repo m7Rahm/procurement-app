@@ -14,7 +14,9 @@ const Login = (props) => {
     const loginFunc = useFetch("POST")
     const [isPasswordCorrect, setIsPasswordCorrect] = useState(true);
     const operationResultDiv = useRef(null);
-    const count = useRef(0)
+    const count = useRef(0);
+    const passwordRef = useRef(null);
+    const showPasswordRef = useRef(null)
     useEffect(() => {
         if (operationResultDiv.current)
             operationResultDiv.current.addEventListener('animationend', () => {
@@ -61,33 +63,48 @@ const Login = (props) => {
         if (e.keyCode === 13)
             handleLoginCheck()
     }
+    const showPassword = () => {
+        const type = passwordRef.current.type;
+        const label = showPasswordRef.current.innerHTML
+        passwordRef.current.type = type === "text" ? "password" : "text";
+        showPasswordRef.current.innerHTML = label === "Gizlət" ? "Göstər" : "Gizlət"
+    }
     return (
         <div className="login-container">
             <div className="login">
+                <img
+                    src='/Expresss.svg'
+                    alt="express logo"
+                    height="50"
+                    style={{ margin: "auto", display: "block" }} />
                 <div>
-                    <div style={{ marginBottom: '10px' }}>
+                    <div>
                         <input
                             onChange={handleChange}
                             onKeyUp={handleKeyUp}
                             value={userCreds.username}
                             id="username"
-                            placeholder="username"
                             name="username"
                             type="text"
+                            required
                         />
+                        <label htmlFor="username">Istifadəçi adı</label>
                     </div>
-                    <div style={{ marginBottom: '10px' }}>
+                    <div>
+                        <span ref={showPasswordRef} onClick={showPassword}>Göstər</span>
                         <input
                             onChange={handleChange}
                             value={userCreds.password}
                             onKeyUp={handleKeyUp}
-                            placeholder="password"
+                            ref={passwordRef}
                             id="password"
                             name="password"
                             type="password"
+                            required
                         />
+                        <label htmlFor="password">Şifrə</label>
                     </div>
-                    <div tabIndex="3" onClick={handleLoginCheck} className="log-in-button">log in</div>
+                    <div tabIndex="3" onClick={handleLoginCheck} className="log-in-button">Daxil Ol</div>
                 </div>
             </div>
             {
