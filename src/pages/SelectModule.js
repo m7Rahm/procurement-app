@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext, useRef, lazy } from "react";
-import {
-	Link, Switch, Route, Redirect
-} from "react-router-dom";
+import React, { useState, useEffect, useContext, useRef, lazy, Suspense } from "react";
+import { Link, Switch, Route, Redirect } from "react-router-dom";
 import { TokenContext } from "../App";
 import LeftSidePane from "../components/Common/LeftSidePane"
 import Navigation from "../components/Common/Navigation";
+import Loading from "../components/Misc/Loading"
 const Contracts = lazy(() => import("./Contracts"));
 const Budget = lazy(() => import("./Budget"))
 const Orders = lazy(() => import("./Orders"))
@@ -57,7 +56,8 @@ const SelectModule = () => {
 	const [webSocket, setWebSocket] = useState(null);
 	const leftPaneRef = useRef(null);
 	const backgroundRef = useRef(null);
-    const leftNavIconRef = useRef(null);
+	const leftNavIconRef = useRef(null);
+	const loadingIndicatorRef = useRef(null)
 	useEffect(() => {
 		let mounted = true;
 		if (token) {
@@ -125,6 +125,7 @@ const SelectModule = () => {
 								webSocket={webSocket}
 								token={token}
 								userData={userData}
+								ref={loadingIndicatorRef}
 								leftNavRef={leftNavIconRef}
 								tokenContext={tokenContext}
 							/>
@@ -153,12 +154,15 @@ const SelectModule = () => {
 											ref={leftPaneRef}
 											handleNavClick={handleNavClick}
 										/>
-										<route.component
-											handleNavClick={handleNavClick}
-											menuData={menuData}
-											leftNavRef={leftNavIconRef}
-											setMenuData={setMenuData}
-										/>
+										<Suspense fallback={<Loading />} >
+											<route.component
+												handleNavClick={handleNavClick}
+												menuData={menuData}
+												loadingIndicatorRef={loadingIndicatorRef}
+												leftNavRef={leftNavIconRef}
+												setMenuData={setMenuData}
+											/>
+										</Suspense>
 									</Route>
 								)
 							}

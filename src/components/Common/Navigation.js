@@ -1,15 +1,16 @@
 import React, { lazy, useEffect, useRef, useState } from 'react'
 import { IoMdMenu } from 'react-icons/io';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { MdNotifications } from 'react-icons/md'
 import logo from '../../logo.svg';
 import { Suspense } from 'react';
 import useFetch from '../../hooks/useFetch';
 const ProfileInfo = lazy(() => import("./ProfileInfo"))
-const Navigation = (props) => {
+const Navigation = (props, ref) => {
     const moduleNavigationRef = useRef(null);
     const update = useRef(true);
     const history = useHistory();
+    const location = useLocation();
     const from = useRef(0);
     const [notifications, setNotifications] = useState({ all: [], visible: [], offsetStart: 0, offsetEnd: 0, count: '', height: 0 })
     const notificationsRef = useRef(null);
@@ -169,8 +170,12 @@ const Navigation = (props) => {
             return { ...prev, visible: visible, offsetStart: indexStart < 0 ? 0 : indexStart, offsetEnd: indexEnd }
         })
     }
-    const handleModuleClick = () => {
+    const handleModuleClick = (path) => {
         moduleNavigationRef.current.style.display = "none"
+        ref.current.style.opacity = "1"
+        if (path !== location.pathname.substring(0, path.length)) {
+            ref.current.style.transform = "translateX(-50%)"
+        }
     }
     const onProfileClick = () => {
         setProfileData({ visible: true })
@@ -191,6 +196,9 @@ const Navigation = (props) => {
     }
     return (
         <nav>
+            <div className="loading-indicator">
+                <div ref={ref} className="loaded"></div>
+            </div>
             {
                 profileData.visible &&
                 <Suspense fallback="">
@@ -247,7 +255,7 @@ const Navigation = (props) => {
                             <ul ref={moduleNavigationRef} className="profile-icon">
                                 {
                                     props.routes.map(module =>
-                                        <li onClick={handleModuleClick} key={module.link}>
+                                        <li onClick={() => handleModuleClick(module.link)} key={module.link}>
                                             <Link to={module.link}>
                                                 <div>
                                                     {module.text}
@@ -268,7 +276,7 @@ const Navigation = (props) => {
     )
 }
 
-export default Navigation
+export default React.forwardRef(Navigation)
 
 const getNotifText = (notif) => {
     let text = notif.doc_type === 2

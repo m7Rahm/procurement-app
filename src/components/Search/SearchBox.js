@@ -120,7 +120,7 @@ const SearchBox = (props, ref) => {
                 />
             </div>
             <div>
-                <select value={searchState.docType} onChange={handleSelectChange}>
+                <select style={{ padding: "6px" }} value={searchState.docType} onChange={handleSelectChange}>
                     <option value={-3}>Hamısı</option>
                     <option value={0}>Gözləyən</option>
                     <option value={-1}>Etiraz edilmiş</option>

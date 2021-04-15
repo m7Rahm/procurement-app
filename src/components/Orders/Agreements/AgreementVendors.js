@@ -14,10 +14,17 @@ const AgreementVendors = (props) => {
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
     useEffect(() => {
+        let mounted = true;
         if (props.active) {
             fetchGet(`http://192.168.0.182:54321/api/agreement-vendors/${props.active}`)
-                .then(respJ => setAgreementVendors(respJ))
+                .then(respJ => {
+                    if(mounted)
+                        setAgreementVendors(respJ)
+                })
                 .catch(ex => console.log(ex))
+        }
+        return () => {
+            mounted = false
         }
     }, [props.active, fetchGet]);
     const handleDetailsClick = (messageid, vendorid) => {

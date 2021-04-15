@@ -24,7 +24,7 @@ const Agreements = (props) => {
         let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
         query = query.substring(0, query.length - 1);
         return fetchGet("http://192.168.0.182:54321/api/tender-docs?doctype=1&" + query)
-    }, [fetchGet])
+    }, [fetchGet]);
     return (
         <div className="agreements-container">
             <SideBar

@@ -7,6 +7,7 @@ const AgreementMaterials = (props) => {
     useEffect(() => {
         fetchFunction()
             .then(respJ => {
+                // console.log(respJ)
                 if (respJ.length !== 0) {
                     setAgreementMaterials(respJ)
                 }

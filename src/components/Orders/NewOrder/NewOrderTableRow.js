@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch';
 
@@ -22,6 +22,18 @@ const NewOrderTableRow = (props) => {
       setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: value } : material))
     }
   }
+  useEffect(() => {
+    const data = { subGlCategoryId: material.subGlCategory, structureid: structure, orderType: orderType };
+    fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
+      .then(respJ => {
+        modelsRef.current = respJ;
+        const budget = respJ.length !== 0 ? respJ[0].budget : 0;
+        const modelInput = modelInputRef.current.value.toLowerCase();
+        setModels(respJ.filter(model => model.title.toLowerCase().includes(modelInput)));
+        setBudget(budget);
+      })
+      .catch(ex => console.log(ex))
+  }, [material.subGlCategory, fetchPost, orderType, structure])
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
@@ -72,11 +84,16 @@ const NewOrderTableRow = (props) => {
   const handleInputSearch = (e) => {
     const value = e.target.value;
     if (material.subGlCategory !== "-1" && material.subGlCategory !== undefined && material.subGlCategory !== "") {
-      const searchResult = modelsRef.current.filter(model => model.title.toLowerCase().includes(value));
+      const charArray = value.split("")
+      const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+      const regExp = new RegExp(`${reg}`, "i");
+      const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
       setModels(searchResult);
     } else {
       fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
-        .then(respJ => setModels(respJ))
+        .then(respJ => {
+          setModels(respJ)
+        })
         .catch(ex => console.log(ex))
     }
   }
@@ -123,6 +140,11 @@ const NewOrderTableRow = (props) => {
     const name = e.target.name;
     const value = e.target.value;
     const data = { subGlCategoryId: value, structureid: structure, orderType: orderType };
+    setMaterials(prev => prev.map(material =>
+      material.id === materialid
+        ? { ...material, [name]: value, materialId: '', department: "", isService: orderType }
+        : material
+    ))
     fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
       .then(respJ => {
         modelsRef.current = respJ;
@@ -131,11 +153,7 @@ const NewOrderTableRow = (props) => {
         setBudget(budget);
         modelInputRef.current.value = "";
         codeRef.current.value = ""
-        setMaterials(prev => prev.map(material =>
-          material.id === materialid
-          ? { ...material, [name]: value, materialId: '', department: "", isService: orderType }
-          : material
-        ))
+
       })
       .catch(ex => console.log(ex))
   }
@@ -166,9 +184,20 @@ const NewOrderTableRow = (props) => {
         {
           <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
-              models.map(model =>
-                <li key={model.id} onClick={() => setModel(model)}>{model.title}</li>
-              )
+              models.map(model => {
+                const titleArr = model.title.split("");
+                const inputVal = modelInputRef.current.value;
+                const title = <>{titleArr.map((char, index) => {
+                  const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                  if (strRegExp.test(char))
+                    return <i key={index}>{char}</i>
+                  else {
+                    return char
+                  }
+                })
+                }</>
+                return <li key={model.id} onClick={() => setModel(model)}>{title}</li>
+              })
             }
           </ul>
         }

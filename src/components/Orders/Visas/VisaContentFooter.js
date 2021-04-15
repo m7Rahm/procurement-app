@@ -44,7 +44,7 @@ const VisaContentFooter = (props) => {
                     {...props}
                 />)
         else
-            setOperationResult({ visible: true, desc: 'Xəta baş verdi' })
+            setOperationResult({ visible: true, desc: "Qiymət seçimi tamamlanmamışdır" })
     }
     return (
         current.result === 0 && current.can_influence

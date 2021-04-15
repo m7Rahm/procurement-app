@@ -77,7 +77,7 @@ const SideBar = (props) => {
 			</div>
 			<div onClick={onNotifIconClick} ref={notifIcon} style={{ display: "none" }} className="new-visa-notification">
 				<span style={{ verticalAlign: "middle" }}>
-					<BsArrowUpShort color="#00acee" size="24" style={{ marginRight: '8px', color: "white" }} />
+					<BsArrowUpShort color="#00acee" size="24" style={{  color: "white" }} />
 				</span>
 				Yeni bildiriş
 			</div>

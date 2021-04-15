@@ -43,12 +43,16 @@ const routes = [
 	}
 ]
 const AdminPage = (props) => {
-	const setMenuData = props.setMenuData
+	const { setMenuData, loadingIndicatorRef } = props;
+
 	const { path, url } = useRouteMatch()
 	useEffect(() => {
+		loadingIndicatorRef.current.style.transform = "translateX(0%)";
+		loadingIndicatorRef.current.style.opacity = "0";
+		loadingIndicatorRef.current.classList.add("load-to-start");
 		setMenuData({ url: url, routes: routes });
-        props.leftNavRef.current.style.display = "block";
-	}, [url, setMenuData, props.leftNavRef])
+		props.leftNavRef.current.style.display = "block";
+	}, [url, setMenuData, props.leftNavRef, loadingIndicatorRef])
 	return (
 		<div className="dashboard" style={{ paddingTop: '76px' }}>
 			<Switch>

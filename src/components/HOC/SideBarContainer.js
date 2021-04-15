@@ -19,7 +19,6 @@ const SideBarContainer = (Search, CardsList) => function SideBar(props) {
             })
             .catch(err => console.log(err))
     }, [updateListContent, initData]);
-
     return (
         <div className='side-bar'>
             <Search

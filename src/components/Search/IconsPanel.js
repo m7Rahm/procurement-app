@@ -1,15 +1,7 @@
 import React, { useRef, useState } from 'react'
-import {
-    GoChevronDown
-} from 'react-icons/go'
-import {
-    FcHighPriority,
-    FcLowPriority,
-    FcMediumPriority
-} from 'react-icons/fc'
-import {
-    FaTimes
-} from 'react-icons/fa'
+import { GoChevronDown } from 'react-icons/go'
+import { IoMdBookmark } from 'react-icons/io'
+import { FaTimes } from 'react-icons/fa'
 import SearchBox from './SearchBox';
 import useFetch from '../../hooks/useFetch';
 const IconsPanel = (props) => {
@@ -54,9 +46,9 @@ const IconsPanel = (props) => {
                 iconsVisible ?
                     <>
                         <FaTimes onClick={() => setBulkPriority(0)} title="" size="25" />
-                        <FcLowPriority onClick={() => setBulkPriority(1)} title="Aşağı prioritet" size="25" />
-                        <FcMediumPriority onClick={() => setBulkPriority(2)} title="Orta prioritet" size="25" />
-                        <FcHighPriority onClick={() => setBulkPriority(3)} title="Yüksək prioritet" size="25" />
+                        <IoMdBookmark onClick={() => setBulkPriority(1)} cursor="pointer" color="#1a73e8" title="Aşağı prioritet" size="25" />
+                        <IoMdBookmark onClick={() => setBulkPriority(2)} cursor="pointer" color="#d8eb3e" title="Orta prioritet" size="25" />
+                        <IoMdBookmark onClick={() => setBulkPriority(3)} cursor="pointer" color="tomato" title="Yüksək prioritet" size="25" />
                     </>
                     : <div>
                         <GoChevronDown size="24" onClick={onAdvSearchClick} />

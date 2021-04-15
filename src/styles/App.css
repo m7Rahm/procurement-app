@@ -147,9 +147,26 @@ nav {
   left: 0px;
   width: 100%;
   height: 56px;
-  border-top: 2px solid rgb(255, 174, 0);
 }
-
+div.loading-indicator {
+  position: relative;
+  height: 2px;
+  background-color: gainsboro;
+}
+div.loaded {
+  height: 2px;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  right: 0;
+  transform: translateX(-100%);
+  transition: transform 500ms, opacity 500ms 500ms ;
+  background-color: rgb(255, 170, 0)
+}
+div.load-to-start{
+  transform: translateX(-100%);
+  opacity: 1;
+}
 nav>ul {
   list-style-type: none;
   background-image: linear-gradient(to bottom, white, #ecf1f8);
@@ -521,16 +538,17 @@ div.advanced-search-bar>div>span>span {
 }
 
 div.advanced-search-bar>div>span>input:focus {
-  /* border-color:#1a73e8; */
   outline-color: #1a73e8;
   border-color: transparent;
 }
 
-div.advanced-search-bar>div>span>input:focus+span, div.advanced-search-bar>div>span>input:not([value=""])+span {
+div.advanced-search-bar>div>span>input:focus+span,
+div.advanced-search-bar>div>span>input:not([value=""])+span {
   top: -5px;
   font-size: 12px;
   color: #1a73e8;
   z-index: 1;
+  background-color: rgba(255, 255, 255, .9);
 }
 
 div.advanced-search-bar>div>span>input {
@@ -1863,7 +1881,7 @@ div.files-ribbon {
 }
 
 .loading>svg {
-  animation: loading 350ms ease-in-out both infinite;
+  animation: loading 550ms ease-in-out both infinite;
 }
 
 @keyframes loading {

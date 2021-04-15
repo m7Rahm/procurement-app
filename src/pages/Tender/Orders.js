@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import ReadyOfferCard from '../../components/VisaCards/ReadyOfferCard'
 import CardsList from '../../components/HOC/CardsList'
 import SideBarContainer from '../../components/HOC/SideBarContainer'
@@ -23,7 +23,7 @@ const Orders = () => {
     const searchStateRef = useRef({ result: 0 });
     const [initData, setInitData] = useState(init);
     const fetchPost = useFetch("POST");
-    const updateListContent = (data) => fetchPost('http://192.168.0.182:54321/api/get-ready-orders', data)
+    const updateListContent = useCallback((data) => fetchPost('http://192.168.0.182:54321/api/get-ready-orders', data), [fetchPost])
     return (
         <div className="agreements-container">
             <SideBar

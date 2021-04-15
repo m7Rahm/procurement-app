@@ -28,12 +28,15 @@ const params = {
 
 const routes = [];
 const Other = (props) => {
-    const setMenuData = props.setMenuData;
+    const { setMenuData, loadingIndicatorRef } = props;
     const { url, path } = useRouteMatch()
     useEffect(() => {
+        loadingIndicatorRef.current.style.transform = "translateX(0%)";
+        loadingIndicatorRef.current.style.opacity = "0";
+        loadingIndicatorRef.current.classList.add("load-to-start");
         props.leftNavRef.current.style.display = "none";
         setMenuData({ url: url, routes: routes })
-    }, [url, setMenuData, props.leftNavRef]);
+    }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef]);
     const fetchPost = useFetch("POST");
     const updateListContent = useCallback((data) => fetchPost("http://192.168.0.182:54321/api/get-receiver-misc-docs", data), [fetchPost])
     return (

@@ -9,7 +9,7 @@ const NewBudget = (props) => {
     const { departments } = props;
     const categories = props.categories.current;
     const commentRef = useRef(null);
-    const glCategories = useRef(categories.filter(category => category.dependent_id === null));
+    const glCategories = useRef(categories.filter(category => category.dependent_id === 0));
     const subGlCategoryidRef = useRef(null);
     const [newBudgetData, setNewBudgetData] = useState({
         year: date.getFullYear(),

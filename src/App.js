@@ -34,8 +34,8 @@ const App = () => {
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
   const logout = () => {
     setToken({ token: '', userData: {} })
-        localStorage.removeItem('token');
-        window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
+    localStorage.removeItem('token');
+    window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
   }
   // localStorage.removeItem("token")
   useEffect(() => {
@@ -55,17 +55,17 @@ const App = () => {
   }, [location, history, token.token])
   return (
     <TokenContext.Provider value={[token, setToken, logout]}>
-      <Suspense fallback={<Loading />}>
-        <Switch>
-          <Route path="/login" render={() => !token.token ?
+      <Switch>
+        <Route path="/login" render={() => !token.token ?
+          <Suspense fallback={<Loading />}>
             <Login setToken={setToken} />
-            : <Redirect to="/" />}>
-          </Route>
-          <PrivateRoute token={token.token} path="/">
-            <SelectModule />
-          </PrivateRoute>
-        </Switch>
-      </Suspense>
+          </Suspense>
+          : <Redirect to="/" />}>
+        </Route>
+        <PrivateRoute token={token.token} path="/">
+          <SelectModule />
+        </PrivateRoute>
+      </Switch>
     </TokenContext.Provider>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { Suspense } from 'react'
 import {
   MdAdd
 } from 'react-icons/md'
@@ -29,9 +30,11 @@ const NewOrder = (props) => {
       </div>
       {
         isModalVisible &&
-        <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
-          {(props) => <NewOrderContent handleModalClose={handleClose} {...props} />}
-        </Modal>
+        <Suspense fallback="">
+          <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
+            {(props) => <NewOrderContent handleModalClose={handleClose} {...props} />}
+          </Modal>
+        </Suspense>
       }
     </>
   )

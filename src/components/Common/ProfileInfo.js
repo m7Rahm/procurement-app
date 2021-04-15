@@ -115,7 +115,7 @@ const Profile = (props) => {
                 <div>
                     <input ref={usernameRef} name="username" placeholder="Istifadəçi adı" />
                     <input ref={nameRef} name="name" placeholder="Ad" />
-                    <input ref={emailRef} name="email" placeholder="Email" />
+                    <input ref={emailRef} name="email" placeholder="Email" autoComplete="off" />
                     <input ref={prevPassRef} required autoComplete="off" type="password" name="prev-pass" placeholder={!changePassword ? "Şifrəni daxil edin" : "Öncəki şifrə"} />
                     {
                         changePassword &&

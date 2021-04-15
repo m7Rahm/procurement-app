@@ -26,7 +26,7 @@ const routes = [
                 status: -3,
                 date: '',
                 ordNumb: ""
-              },
+            },
             method: "POST",
             link: "http://192.168.0.182:54321/api/orders",
             referer: "protected"
@@ -44,7 +44,7 @@ const routes = [
                 status: -3,
                 date: '',
                 ordNumb: ""
-              },
+            },
             method: "GET",
             link: "http://192.168.0.182:54321/api/returned-orders?from=0&until=20",
             referer: "returned",
@@ -123,12 +123,15 @@ const routes = [
 ];
 
 const Orders = (props) => {
-    const setMenuData = props.setMenuData;
+    const { setMenuData, loadingIndicatorRef } = props;
     const { path, url } = useRouteMatch()
     useEffect(() => {
+        loadingIndicatorRef.current.style.transform = "translateX(0%)";
+        loadingIndicatorRef.current.style.opacity = "0";
+        loadingIndicatorRef.current.classList.add("load-to-start");
         setMenuData({ url: url, routes: routes });
         props.leftNavRef.current.style.display = "block";
-    }, [url, setMenuData, props.leftNavRef]);
+    }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef]);
     return (
         <div className="dashboard">
             <Switch>
