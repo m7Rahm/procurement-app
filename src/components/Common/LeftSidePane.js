@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
     IoMdMenu,
@@ -18,6 +18,18 @@ const setStyle = (active) => {
 const LeftSidePane = (props, ref) => {
     const [activeLink, setActiveLink] = useState(0);
     const handleNavClick = props.handleNavClick;
+    useEffect(() => {
+        const escPress = (e) => {
+            if (e.keyCode === 27 && ref.current.classList.contains("left-side-pane-open")) {
+                ref.current.classList.remove("left-side-pane-open");
+                props.backgroundRef.current.style.display = "none"
+            }
+        }
+        document.addEventListener("keyup", escPress, false)
+        return () => {
+            document.removeEventListener("keyup", escPress, false)
+        }
+    }, [props.backgroundRef, ref])
     return (
         <div ref={ref} className="left-side-pane">
             <div>

@@ -19,6 +19,7 @@ const BudgetReport = () => {
         }
     }, [fetchPost]);
     const exportToExcel = () => {
+        const month = rows.length !== 0 ? months.find(month => Number(month.value) === rows[0].month) : ""
         const tableBody = rows.map(row =>
             `<tr>
                 <td>${row.in}</td>
@@ -56,7 +57,7 @@ const BudgetReport = () => {
             <tr>
                 <th style="width: 50px; color: white; background-color: tomato">#</th>
                 <th style="width: 120px; color: white; background-color: tomato">Kod</th>
-                <th style="width: 120px; color: white; background-color: tomato" colSpan="2">Mart</th>
+                <th style="width: 120px; color: white; background-color: tomato" colSpan="2">${month}</th>
             </tr>
         </thead>
         <tbody>

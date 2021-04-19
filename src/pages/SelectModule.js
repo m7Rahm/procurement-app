@@ -152,6 +152,7 @@ const SelectModule = () => {
 											url={menuData.url}
 											links={menuData.routes}
 											ref={leftPaneRef}
+											backgroundRef={backgroundRef}
 											handleNavClick={handleNavClick}
 										/>
 										<Suspense fallback={<Loading />} >
