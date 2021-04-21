@@ -11,33 +11,38 @@ const TableContent = (props) => {
       const activeOptions = (!target.classList.contains('options-button') || activeLinkIndex === parseInt(target.id))
         ? null
         : parseInt(target.id);
-        setActiveLinkIndex(_ => activeOptions);
+      setActiveLinkIndex(_ => activeOptions);
     }
-}, [activeLinkIndex])
-useEffect(() => {
+  }, [activeLinkIndex])
+  useEffect(() => {
     document.addEventListener('click', handleOnOuterClick, false);
     return () => document.removeEventListener('click', handleOnOuterClick, false)
   }
-  , [handleOnOuterClick]
-)
-return (
-  orders.map((order, index) => {
-    const active = index === activeLinkIndex ? true : false;
-    return (
-      <ListItem
-        wrapperRef={props.wrapperRef}
-        setModalContent={props.setModalContent}
-        setModalVisibility={props.setModalVisibility}
-        index={index}
-        key={order.id}
-        order={order}
-        activeLinkIndex={active}
-        setActiveLink={setActiveLinkIndex}
-        referer={referer}
-        setOrders={setOrders}
-      />
-    )
-  })
-)
+    , [handleOnOuterClick]
+  )
+  return (
+    orders.map((order, index) => {
+      const active = index === activeLinkIndex ? true : false;
+      return (
+        <ListItem
+          wrapperRef={props.wrapperRef}
+          setModalContent={props.setModalContent}
+          setModalVisibility={props.setModalVisibility}
+          index={index}
+          key={order.id}
+          order={order}
+          activeLinkIndex={active}
+          setActiveLink={setActiveLinkIndex}
+          referer={referer}
+          setOrders={setOrders}
+          status={order.status}
+          participants={order.participants}
+          date={order.create_date_time}
+          id={order.id}
+          number={order.ord_numb}
+        />
+      )
+    })
+  )
 }
 export default TableContent

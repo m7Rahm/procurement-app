@@ -24,6 +24,7 @@ const NewAgreement = () => {
                         <AgreementMaterials
                             fetchFunction={fetchFunction}
                             editable={true}
+                            setIsEmpty={setIsEmpty}
                         />
                         <AgreementVendors
                             setIsEmpty={setIsEmpty}

@@ -18,8 +18,9 @@ const init = {
     from: 0,
     until: 20
 }
+const activeInit = { id: null, basedOn: "", ordNumb: "", departmentName: "" }
 const Orders = () => {
-    const [active, setActive] = useState({ id: null, basedOn: "", ordNumb: "", departmentName: "" });
+    const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
     const [initData, setInitData] = useState(init);
     const fetchPost = useFetch("POST");
@@ -36,6 +37,8 @@ const Orders = () => {
                 active={active.id}
                 searchStateRef={searchStateRef}
                 setInitData={setInitData}
+                setActive={setActive}
+                activeInit={activeInit}
                 ordNumb={active.ordNumb}
                 basedOn={active.basedOn}
                 departmentName={active.departmentName}

@@ -109,12 +109,7 @@ const routes = [
                 next: 20
             },
             params: {
-                active: "message_id",
-                userResult: "user_result",
-                agreementResult: "agreement_result",
-                tranid: "id",
-                number: "number",
-                actionDate: "action_date_time"
+                active: "message_id"
             },
             docType: 3,
             newDocNotifName: "nP"

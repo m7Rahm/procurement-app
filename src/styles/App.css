@@ -2042,7 +2042,17 @@ span.reviewers-header {
     color: #F4B400
   }
 }
-
+@keyframes anim-blinking {
+  0% {
+    background-color: rgba(15, 157, 88, 0.3);
+  }
+  50% {
+    background-color: rgb(15, 157, 88)
+  }
+  100% {
+    background-color: rgba(15, 157, 88, 0.3)
+  }
+}
 .search-container .next-row {
   margin-top: 10px;
   width: 100%;

@@ -28,6 +28,9 @@ const AgreementContent = (props) => {
                 .catch(ex => console.log(ex))
         }
     }, [active, fetchGet]);
+    const setEmpty = () => {
+        props.setActive(props.activeInit)
+    }
     return (
         <div className="visa-content-container" style={{ maxWidth: "1256px", margin: "auto", paddingTop: "76px" }}>
             {
@@ -63,6 +66,7 @@ const AgreementContent = (props) => {
                                         setRightBarState={setRightBarState}
                                         setInitData={props.setInitData}
                                         setOperationResult={setOperationResult}
+                                        setEmpty={setEmpty}
                                     />
                                 )
                             }
@@ -90,6 +94,10 @@ const getMaterialState = (result) => {
         return "Razılaşmada"
     else if (result === 31)
         return "Razılaşdırılıb"
+    else if (result === 20)
+        return "Təhvil verilib"
+    else if (result === 77)
+        return "Ödəniş razılaşdırılıb"
     else
         return ""
 }
@@ -109,8 +117,10 @@ const AgreementMaterial = (props) => {
                 if (!respJ.length || !respJ[0].error) {
                     setMaterialState(prev => ({ ...prev, result: 30 }))
                     props.setOperationResult(prev => ({ ...prev, ...{ visible: true, desc: "Əməliyyat uğurla tamamlandı" } }));
-                    if (respJ.length !== 0 && respJ[0].order_status)
+                    if (respJ.length !== 0 && respJ[0].order_status) {
                         props.setInitData(prev => ({ ...prev }))
+                        props.setEmpty()
+                    }
                 }
                 else if (respJ.length > 2 || respJ[0].error)
                     props.setOperationResult({ visible: true, desc: respJ[0].error })
@@ -125,7 +135,7 @@ const AgreementMaterial = (props) => {
             <div>{materialState.comment}</div>
             <div>
                 {
-                    materialState.result !== 31 &&
+                    materialState.result !== 31 && materialState.result !== 77 && materialState.result !== 20 && materialState.result !== 25 &&
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-evenly", width: "100%" }} >
                         <div
                             style={{ backgroundColor: "#f8942a", color: "white", padding: "10px 20px", cursor: "pointer" }}

@@ -18,7 +18,7 @@ const DecommissionContent = (props) => {
             fetchDecommissionedContent("http://192.168.0.182:54321/api/decommisioned-doc-content?did=" + props.docid, abortController)
                 .then(respJ => {
                     if (mounted && respJ.length) {
-                        const active = respJ[0].user_result === 0 && respJ[0].doc_result === 0;
+                        const active = respJ[0].user_result === 0 && respJ[0].doc_result === 2;
                         setDecommissioned({ content: respJ, active: active })
                     }
                 })
@@ -48,7 +48,7 @@ const DecommissionContent = (props) => {
         fetchAcceptDecline("http://192.168.0.182:54321/api/accept-decline-decommission", data)
             .then(respJ => {
                 if (respJ) {
-                    setDecommissioned(prev => ({ ...prev, active: false }))
+                    setDecommissioned(prev => ({ ...prev, active: false, content: prev.content.map(material => ({...material, user_result: action })) }))
                     props.setInitData(prev => ({ ...prev }))
                 }
             })

@@ -1,98 +1,79 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FaSearch,
-  FaBoxOpen,
+  FaBox,
   FaCheck,
+  FaBoxOpen,
   FaShoppingCart,
   FaTruck,
-  FaCircle
 } from 'react-icons/fa'
-const Status = () => {
+import useFetch from '../../hooks/useFetch'
+const getStyle = (active, current) => {
+  const blinkingAnim = {
+    animation: "anim-blinking 1.2s",
+    animationIterationCount: "infinite"
+  }
+  const style = { backgroundColor: active ? "#0F9D58" : "gainsboro" }
+  if (current)
+    return { ...style, ...blinkingAnim }
+  else
+    return style
+}
+
+const Status = (props) => {
+  const [stage, setStage] = useState(1)
+  const fetchGet = useFetch("GET")
+  useEffect(() => {
+    fetchGet("http://192.168.0.182:54321/api/order-state/" + props.id)
+      .then(resp => {
+        let stage = 1
+        if (resp) {
+          const { result, parent_result: parentResult } = resp[0];
+          if (resp[0].is_confirmed)
+            stage = 2
+          if (parentResult !== null && parentResult >= 0)
+            stage = 3
+          if (result === 77)
+            stage = 4
+          if (parentResult === 25)
+            stage = 5
+          if (result === 20)
+            stage = 6
+          if (result === 99)
+            stage = 7
+          setStage(stage)
+        }
+      })
+      .catch(ex => console.log(ex))
+  }, [fetchGet, props.id])
   return (
     <>
       <div className='status-container'>
-        <div className='icon-container'>
-          <FaSearch size='30' color='white' />
+        <div className='icon-container' style={getStyle(true, stage === 1)}>
+          <FaSearch size='30' title="Baxılır" color='white' />
         </div>
-        <div></div>
-        <div className='icon-container'>
-          <FaShoppingCart size='30' color='white' />
+        <div style={getStyle(stage > 1, false)}></div>
+        <div className='icon-container' style={getStyle(stage > 1, stage === 2)}>
+          <FaBoxOpen size='30' title="Anbarda" color='white' />
         </div>
-        <div></div>
-        <div className='icon-container'>
-          <FaTruck size='30' color='white' />
+        <div style={getStyle(stage > 2, false)}></div>
+        <div className='icon-container' style={getStyle(stage > 2, stage === 3)}>
+          <FaShoppingCart size='30' title="Qiymət Araşdırması" color='white' />
         </div>
-        <div></div>
-        <div className='icon-container'>
-          <FaBoxOpen size='30' color='white' />
+        <div style={getStyle(stage > 3, false)}></div>
+        <div className='icon-container' style={getStyle(stage > 3, stage === 4)}>
+          <FaTruck size='30' title="Yolda" color='white' />
         </div>
-        <div></div>
-        <div className='icon-container'>
-          <FaCheck size='30' color='white' />
+        <div style={getStyle(stage > 4, false)}></div>
+        <div className='icon-container' style={getStyle(stage > 4, stage === 5)}>
+          <FaBox size='30' title="Anbarda" color='white' />
+        </div>
+        <div style={getStyle(stage > 5, false)}></div>
+        <div className='icon-container' style={getStyle(stage > 5, stage === 6)}>
+          <FaCheck size='30' title="Təhvil verilmişdir" color='white' />
         </div>
       </div>
-      <span style={{ fontWeight: 'bold', marginBottom: '10px', float: 'left', clear: 'right', fontSize: '14px', marginLeft: '20px' }}>Tarixçə</span>
-      <ul className='history'>
-        <li style={{ backgroundColor: '#eeeeee', fontWeight: 'bold', padding: '2px', paddingLeft: '20px', marginRight: '20px', textAlign: 'left' }}>
-          {new Date().toDateString()}
-        </li>
-        <li>
-          <div className='blinking' style={{ width: '40px' }}>
-            <FaCircle size='10' />
-          </div>
-          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
-            {
-              new Date().toLocaleTimeString()
-            }
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            Asif Bağırov tərəfindən sifarişə baxılır
-          </div>
-        </li>
-        <li>
-          <div style={{ width: '40px' }}>
-            <FaCircle color='green' size='10' />
-          </div>
-          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
-            {
-              new Date().toLocaleTimeString()
-            }
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            Antonio sifarişi təsdiq etdi
-          </div>
-        </li>
-        <li>
-          <div style={{ width: '40px' }}>
-            <FaCircle color='green' size='10' />
-          </div>
-          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
-            {
-              new Date().toLocaleTimeString()
-            }
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            Sənəd yaradıldı
-          </div>
-        </li>
-        <li style={{ backgroundColor: '#eeeeee', fontWeight: 'bold', padding: '2px', paddingLeft: '20px', marginRight: '20px', textAlign: 'left' }}>
-          {'Fri May 29 2020'}
-        </li>
-        <li>
-          <div style={{ width: '40px' }}>
-            <FaCircle color='green' size='10' />
-          </div>
-          <div style={{ width: '20%', textAlign: 'left', marginLeft: '15%' }}>
-            {
-              new Date().toLocaleTimeString()
-            }
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            Pellegrini sifarişi təsdiq etdi
-          </div>
-        </li>
-      </ul>
-      </>
+    </>
   )
 }
 export default Status

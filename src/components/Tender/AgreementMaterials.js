@@ -2,20 +2,24 @@ import React, { useState, useEffect, useRef } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 import useFetch from '../../hooks/useFetch';
 const AgreementMaterials = (props) => {
-    const [agreementMaterials, setAgreementMaterials] = useState([]);
+    const [agreementMaterials, setAgreementMaterials] = useState(undefined);
     const fetchFunction = props.fetchFunction;
+    const setIsEmpty = props.setIsEmpty
     useEffect(() => {
         fetchFunction()
             .then(respJ => {
-                // console.log(respJ)
                 if (respJ.length !== 0) {
                     setAgreementMaterials(respJ)
                 }
             })
             .catch(ex => console.log(ex))
     }, [fetchFunction])
+    useEffect(() => {
+        if (agreementMaterials && agreementMaterials.length === 0)
+            setIsEmpty(true)
+    }, [agreementMaterials, setIsEmpty])
     return (
-        agreementMaterials.length !== 0
+        agreementMaterials !== undefined
             ? <div style={{ maxWidth: '550px', margin: 'auto', overflow: 'visible' }}>
                 <h1>Məhsul siyahısı</h1>
                 <ul className="new-order-table">

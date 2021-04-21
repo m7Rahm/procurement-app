@@ -5,7 +5,6 @@ import SideBarContainer from "../HOC/SideBarContainer"
 import CardsList from "../HOC/CardsList"
 import { FaPlus } from "react-icons/fa"
 import { optionsAgreements } from "../../data/data"
-import { useParams } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 const Modal = lazy(() => import("..//Misc/Modal"))
 const NewContract = lazy(() => import("../Contracts/NewContract"))
@@ -27,14 +26,12 @@ const ContractsHOC = (Content) => function Payments(props) {
         else
             return fetchPost(link, apiData)
     }, [fetchPost, link, fetchGet, method, transformData])
-    const { docid } = useParams()
-    const [active, setActive] = useState({
-        active: docid
-    });
+    const docid = window.location.pathname.match(/(\d)$/g) ? window.location.pathname.match(/(\d)$/g)[0] : undefined
+    const [active, setActive] = useState({ active: docid });
     useEffect(() => {
         let mounted = true;
         if (mounted && docid) {
-            setActive(prev => ({ ...prev, active: docid }))
+            setActive(prev => ({ ...prev, active: prev.active !== docid ? docid : prev.active }))
         }
         return () => {
             mounted = false

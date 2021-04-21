@@ -20,11 +20,10 @@ const Search = (props) => {
 						<select name='status' onChange={handleChange} value={searchData.status} style={{ height: '35px', float: 'left' }}>
 							<option value='-3'>-</option>
 							<option value='-1'>Etiraz</option>
-							<option value='50'>Gözlənilir</option>
-							<option value='1'>Təsdiq</option>
+							<option value='1'>Təsdiq edilmiş</option>
+							<option value='77'>Gözlənilir</option>
 							<option value='0'>Baxılır</option>
-							<option value='30'>Anbarda</option>
-							<option value='50'>Tamamlanmışdır</option>
+							<option value='99'>Tamamlanmış</option>
 						</select>
 					</div>
 					<div>

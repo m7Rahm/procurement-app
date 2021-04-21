@@ -32,14 +32,14 @@ const FinishOrder = (props) => {
     const confirmSelection = () => {
         const materials = accepted.map(material => [material.id, material.amount - material.handed_amount === 0 ? 99 : material.handed_amount !== 0 ? 55 : 0]);
         const data = {
-            ordNumb: props.ordNumb,
-            empVersion: props.version,
+            orderid: props.id,
             materials: materials
         };
         fetchPost('http://192.168.0.182:54321/api/confirm-accepted', data)
             .then(respJ => {
-                if (respJ.length === 0)
-                    props.closeModal()
+                if (respJ[0].status !== props.status)
+                    props.setOrders(prev => ({ ...prev, orders: prev.orders.map(order => ({ ...order, status: respJ[0].status })) }))
+                props.closeModal()
             })
             .catch(ex => console.log(ex))
     }

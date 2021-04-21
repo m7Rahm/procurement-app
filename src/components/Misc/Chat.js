@@ -12,7 +12,7 @@ const Chat = (props) => {
     const active = useRef(0);
     const chatContainerRef = useRef(null);
     const delimeterRef = useRef(null);
-    const scrollContainerRef = useRef(null)
+    const scrollContainerRef = useRef(null);
     const [messages, setMessages] = useState({ all: [], visible: [], height: '250px', count: 0, start: 0, end: 0, lastKnownIndex: 0 });
     const handleScroll = (e) => {
         const offsetTop = e.target.scrollTop;
@@ -29,7 +29,8 @@ const Chat = (props) => {
     useEffect(() => {
         const addNewMessage = (event) => {
             const { data } = event.detail;
-            if (props.documentType === data.docType && props.documentid === data.docid)
+            // eslint-disable-next-line
+            if (props.documentType == data.docType && Number(props.documentid) == data.docid)
                 setMessages(prev => {
                     const newMessage = {
                         user_id: data.senderid,
@@ -186,9 +187,10 @@ const Chat = (props) => {
                 .catch(ex => console.log(ex))
     }
     const handleTextAreaKeyUp = (e) => {
-        e.preventDefault()
-        if (e.keyCode === 13)
+        if (e.keyCode === 13) {
+            e.preventDefault()
             sendMessage(0)
+        }
     }
     return (
         <>
@@ -221,7 +223,7 @@ const Chat = (props) => {
                 </div>
             </div>
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
-                <textarea ref={messageBoxRef} onKeyUp={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
+                <textarea ref={messageBoxRef} onKeyDown={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
                 <span style={{ width: '60px' }}>
                     <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
                 </span>

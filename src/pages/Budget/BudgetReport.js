@@ -19,7 +19,7 @@ const BudgetReport = () => {
         }
     }, [fetchPost]);
     const exportToExcel = () => {
-        const month = rows.length !== 0 ? months.find(month => Number(month.value) === rows[0].month) : ""
+        const month = rows.length !== 0 ? months.find(month => Number(month.value) === rows[0].month).name : ""
         const tableBody = rows.map(row =>
             `<tr>
                 <td>${row.in}</td>
@@ -30,45 +30,47 @@ const BudgetReport = () => {
             </tr>
             `
         ).reduce((con, curr) => con += curr, "")
-        const excelTableData = `<html xmlns:x="urn:schemas-microsoft-com:office:excel">
-        <head>
-            <xml>
-                <x:ExcelWorkbook>
-                    <x:ExcelWorksheets>
-                        <x:ExcelWorksheet>
-                            <x:WorksheetOptions>
-                                <x:Panes></x:Panes>
-                            </x:WorksheetOptions>
-                        </x:ExcelWorksheet>
-                    </x:ExcelWorksheets>
-                </x:ExcelWorkbook>
-            </xml>
-        </head>
+        const excelTableData = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+                <xml>
+                    <x:ExcelWorkbook>
+                        <x:ExcelWorksheets>
+                            <x:ExcelWorksheet>
+                            <x:Name>${month}</x:Name>
+                                <x:WorksheetOptions>
+                                    <x:DisplayGridlines/>
+                                </x:WorksheetOptions>
+                            </x:ExcelWorksheet>
+                        </x:ExcelWorksheets>
+                    </x:ExcelWorkbook>
+                </xml>
+            </head>
             <body>
-        <table>
-        <thead>
-            <tr >
-                <th style="background-color: tomato"></th>
-                <th style="background-color: tomato"></th>
-                <th style="font-size: 20px; color: white; background-color: tomato" rowSpan="2">Inzibati xərclər</th>
-                <th style="width: 120px; color: white; background-color: tomato">Plan</th>
-                <th style="width: 120px; color: white; background-color: tomato">Fakt</th>
-            </tr>
-            <tr>
-                <th style="width: 50px; color: white; background-color: tomato">#</th>
-                <th style="width: 120px; color: white; background-color: tomato">Kod</th>
-                <th style="width: 120px; color: white; background-color: tomato" colSpan="2">${month}</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${tableBody}
-        </tbody>
-    </table>
-    </body>
-    </html>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="background-color: tomato"></th>
+                            <th style="background-color: tomato"></th>
+                            <th style="font-size: 20px; color: white; background-color: tomato" rowSpan="2">Inzibati xərclər</th>
+                            <th style="width: 120px; color: white; background-color: tomato">Plan</th>
+                            <th style="width: 120px; color: white; background-color: tomato">Fakt</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 50px; color: white; background-color: tomato">#</th>
+                            <th style="width: 120px; color: white; background-color: tomato">Kod</th>
+                            <th style="width: 120px; color: white; background-color: tomato" colSpan="2">${month}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableBody}
+                    </tbody>
+                </table>
+            </body>
+        </html>
     `
         const url = "data:application/vnd.ms-excel;charset=utf-8,\uFEFF" + encodeURIComponent(excelTableData);
-        window.open(url)
+        window.open(btoa(unescape(url)));
     }
     return (
         <>
