@@ -30,7 +30,7 @@ const Chat = (props) => {
         const addNewMessage = (event) => {
             const { data } = event.detail;
             // eslint-disable-next-line
-            if (props.documentType == data.docType && Number(props.documentid) == data.docid)
+            if (props.documentType == data.docType && props.documentid == data.docid)
                 setMessages(prev => {
                     const newMessage = {
                         user_id: data.senderid,
@@ -210,7 +210,6 @@ const Chat = (props) => {
                                         setMessages={setMessages}
                                         same={message.same}
                                         message={message}
-                                        sendMessage={sendMessage}
                                         self={message.self}
                                         added={message.added}
                                         updated={message.updated}

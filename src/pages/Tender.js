@@ -41,8 +41,10 @@ const routes = [
         props: {
             params: {
                 active: "id",
-                number: "number"
+                number: "number",
             },
+            method: "GET",
+            link: "http://192.168.0.182:54321/api/tender-docs?doctype=1&",
             referer: "procurement"
         }
     },
@@ -54,7 +56,7 @@ const routes = [
     }
 ]
 const Tender = (props) => {
-    const { setMenuData, loadingIndicatorRef}  = props;
+    const { setMenuData, loadingIndicatorRef } = props;
     const { path, url } = useRouteMatch();
     useEffect(() => {
         setMenuData({ url: url, routes: routes });

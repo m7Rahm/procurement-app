@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { FaTrashAlt } from 'react-icons/fa'
-import useFetch from '../../hooks/useFetch';
+import React, { useState, useEffect, useRef } from "react"
+import { FaTrashAlt } from "react-icons/fa"
+import useFetch from "../../hooks/useFetch";
 const AgreementMaterials = (props) => {
     const [agreementMaterials, setAgreementMaterials] = useState(undefined);
     const fetchFunction = props.fetchFunction;
@@ -20,10 +20,9 @@ const AgreementMaterials = (props) => {
     }, [agreementMaterials, setIsEmpty])
     return (
         agreementMaterials !== undefined
-            ? <div style={{ maxWidth: '550px', margin: 'auto', overflow: 'visible' }}>
-                <h1>Məhsul siyahısı</h1>
+            ? <div style={{ maxWidth: "550px", margin: "auto", overflow: "visible" }}>
                 <ul className="new-order-table">
-                    <li style={{ width: '100%', background: "gainsboro" }}>
+                    <li style={{ width: "100%", background: "gainsboro" }}>
                         <div>#</div>
                         <div>Ad</div>
                         <div>Say</div>
@@ -57,18 +56,18 @@ const AgreementMaterialsSum = (props) => {
         const data = {
             materialid: props.material.id
         };
-        fetchPost('http://192.168.0.182:54321/api/remove-material-from-staging-area', data)
+        fetchPost("http://192.168.0.182:54321/api/remove-material-from-staging-area", data)
             .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
-                    rowRef.current.classList.add('delete-row');
-                    rowRef.current.addEventListener('animationend', () => {
+                if (respJ[0].operation_result === "success") {
+                    rowRef.current.classList.add("delete-row");
+                    rowRef.current.addEventListener("animationend", () => {
                         props.setAgreementMaterials(prev => prev.filter(material => material.id !== props.material.id))
                     })
                 }
             })
     }
     return (
-        <li ref={rowRef} style={{ cursor: 'default' }}>
+        <li ref={rowRef} style={{ cursor: "default" }}>
             <div>{props.index + 1}</div>
             <div>{props.material.title}</div>
             <div>{props.material.amount}</div>

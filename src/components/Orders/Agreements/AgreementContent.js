@@ -46,7 +46,7 @@ const AgreementContent = (props) => {
         return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
     }, [fetchPost, documentType]);
     return (
-        <div className="visa-content-container" style={{ padding: '88px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
+        <div className="visa-content-container" style={{ padding: '68px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
             {
                 docid ?
                     <>
@@ -73,14 +73,16 @@ const AgreementContent = (props) => {
                                 <h1 style={{ float: 'right', fontSize: '24px' }}>{docState.actionDate}</h1>
                             </div>
                         }
-                        <AgreementVendorFiles
-                            agreementid={docid}
-                            vendorid={0}
-                        />
-                        <AgreementMaterials
-                            editable={false}
-                            fetchFunction={fetchMaterials}
-                        />
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-evenly" }}>
+                            <AgreementMaterials
+                                editable={false}
+                                fetchFunction={fetchMaterials}
+                            />
+                            <AgreementVendorFiles
+                                agreementid={docid}
+                                vendorid={0}
+                            />
+                        </div>
                         <AgreementVendors
                             active={docid}
                             tranid={docState.tranid}

@@ -10,6 +10,7 @@ const SideBarContent = CardsList(AgreementCard);
 const Search = React.memo(OrdersSearchHOC(optionsAgreements));
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const Agreements = (props) => {
+    const { link, method } = props
     const [active, setActive] = useState({
         active: undefined,
         number: ""
@@ -20,11 +21,17 @@ const Agreements = (props) => {
         next: 20
     });
     const fetchGet = useFetch("GET")
+    const fetchPost = useFetch("POST")
     const updateListContent = useCallback((data) => {
-        let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
-        query = query.substring(0, query.length - 1);
-        return fetchGet("http://192.168.0.182:54321/api/tender-docs?doctype=1&" + query)
-    }, [fetchGet]);
+        if (method === "POST")
+            return fetchPost(link, data)
+        else if (method === "GET") {
+            let query = Object.keys(data).reduce((sum, key) => sum += `${key}=${data[key]}&`, "");
+            query = query.substring(0, query.length - 1);
+            return fetchGet(link + query)
+        }
+    }, [link, method, fetchGet, fetchPost])
+
     return (
         <div className="agreements-container">
             <SideBar

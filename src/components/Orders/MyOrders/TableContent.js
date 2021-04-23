@@ -39,6 +39,7 @@ const TableContent = (props) => {
           participants={order.participants}
           date={order.create_date_time}
           id={order.id}
+          empid={order.emp_id}
           number={order.ord_numb}
         />
       )

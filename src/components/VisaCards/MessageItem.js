@@ -75,12 +75,6 @@ const MessageItem = (props) => {
                     <div style={{ textAlign: 'left', padding: '5px', minWidth: '120px' }}>{props.message.review}</div>
                     <span style={{ fontSize: '10px', float: 'right', padding: '2px 5px', width: '100px' }}>{props.message.date_time}</span>
                 </div>
-                {
-                    props.message.count !== 0 &&
-                    <span style={{ clear: 'both', float: props.self ? 'right' : 'left', paddingBottom: '5px', marginRight: '10px', cursor: 'pointer' }}>
-                        {props.message.count} Cavab
-                    </span>
-                }
             </div>
         </li>
     )

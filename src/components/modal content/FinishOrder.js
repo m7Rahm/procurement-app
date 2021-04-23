@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { FaCheck } from 'react-icons/fa'
+import { TokenContext } from "../../App"
 import { IoMdDoneAll } from 'react-icons/io'
 import useFetch from '../../hooks/useFetch';
 const FinishOrder = (props) => {
@@ -7,27 +8,15 @@ const FinishOrder = (props) => {
     const [accepted, setAccepted] = useState([]);
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
+    const tokenContext = useContext(TokenContext);
+    const userid = tokenContext[0].userData.id;
     useEffect(() => {
         fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`)
             .then(respJ => setMaterials(respJ))
             .catch(ex => console.log(ex))
     }, [fetchGet, props.ordNumb, props.version]);
     const handleAcceptedClick = (material) => {
-        setAccepted(prev => {
-            let unique = true;
-            for (let i = 0; i < prev.length; i++) {
-                if (prev[i].id === material.id) {
-                    unique = false;
-                    break;
-                }
-                if (unique)
-                    return [...prev, material]
-            }
-            if (prev.length === 0)
-                return [material]
-            else
-                return prev
-        })
+        setAccepted(prev => prev.find(mat => mat.id === material.id) ? prev : [...prev, material])
     }
     const confirmSelection = () => {
         const materials = accepted.map(material => [material.id, material.amount - material.handed_amount === 0 ? 99 : material.handed_amount !== 0 ? 55 : 0]);
@@ -38,7 +27,7 @@ const FinishOrder = (props) => {
         fetchPost('http://192.168.0.182:54321/api/confirm-accepted', data)
             .then(respJ => {
                 if (respJ[0].status !== props.status)
-                    props.setOrders(prev => ({ ...prev, orders: prev.orders.map(order => ({ ...order, status: respJ[0].status })) }))
+                    props.setOrders(prev => ({ ...prev, orders: prev.orders.map(order => order.id === props.id ? ({ ...order, status: respJ[0].status }) : order) }))
                 props.closeModal()
             })
             .catch(ex => console.log(ex))
@@ -75,7 +64,7 @@ const FinishOrder = (props) => {
                             <div>{material.material_comment}</div>
                             <div>
                                 {
-                                    material.result !== 99 &&
+                                    material.result !== 99 && userid === props.version &&
                                     <div style={{ color: 'white', backgroundColor: '#0F9D58', borderRadius: '3px', padding: '2px 4px', cursor: 'pointer' }} onClick={() => handleAcceptedClick(material)}>Təhvil aldım</div>
                                 }
                             </div>

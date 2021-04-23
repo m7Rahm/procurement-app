@@ -12,6 +12,7 @@ const initData = {
   from: 0,
   until: 20
 }
+const documentType = 10
 const Visas = () => {
   const { docid: orderid } = useParams();
   const [active, setActive] = useState(orderid);
@@ -26,6 +27,7 @@ const Visas = () => {
       />
       <VisaContent
         tranid={active}
+        documentType={documentType}
       />
     </div>
   )

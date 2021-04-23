@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import OrderContentProtected from './OrderContentProtected'
 import Participants from '../../modal content/Participants'
 import VisaContentFooter from './VisaContentFooter'
@@ -6,10 +6,11 @@ import EmptyContent from '../../Misc/EmptyContent'
 import { FaAngleDown } from 'react-icons/fa'
 import { useLocation } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
+import Chat from '../../Misc/Chat'
 
 const VisaContent = (props) => {
     const location = useLocation();
-    const { tranid } = props;
+    const { tranid, documentType } = props;
     const [visa, setVisa] = useState(undefined);
     const locationTranid = location.state ? location.state.tranid : undefined
     const canProceed = useRef({});
@@ -18,6 +19,14 @@ const VisaContent = (props) => {
     //     fetch
     // }
     const fetchGet = useFetch("GET");
+    const fetchPost = useFetch("POST")
+    const fetchMessages = useCallback((from = 0) =>
+        fetchGet(`http://192.168.0.182:54321/api/messages/${tranid}?from=${from}&replyto=0&doctype=${documentType}`)
+        , [tranid, fetchGet, documentType]);
+    const sendMessage = useCallback((data) => {
+        const apiData = { ...data, docType: documentType };
+        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
+    }, [fetchPost, documentType]);
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;
@@ -79,6 +88,14 @@ const VisaContent = (props) => {
                             canProceed={canProceed}
                             current={visa}
                         />
+                        <div style={{ margin: "10px 20px" }}>
+                            <Chat
+                                loadMessages={fetchMessages}
+                                documentid={tranid}
+                                documentType={documentType}
+                                sendMessage={sendMessage}
+                            />
+                        </div>
                         <div className="toggle-participants" onClick={handleParticipantsTransition}>
                             Tarixçəni göstər
                         <FaAngleDown size="36" color="royalblue" />

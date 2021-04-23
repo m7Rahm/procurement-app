@@ -25,7 +25,8 @@ const routes = [
                 dateTill: '',
                 status: -3,
                 date: '',
-                ordNumb: ""
+                ordNumb: "",
+                departments: []
             },
             method: "POST",
             link: "http://192.168.0.182:54321/api/orders",
@@ -66,8 +67,9 @@ const routes = [
             link: "http://192.168.0.182:54321/api/get-user-agreements",
             params: {
                 active: "message_id",
-                number: "number"
+                number: "number",
             },
+            method: "POST",
             newDocNotifName: "nA"
         }
     },

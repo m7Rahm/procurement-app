@@ -241,7 +241,9 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 				/>
 			</div>
 			<div>
-				<FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
+				{view === "returned" &&
+					<FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
+				}
 			</div>
 		</li>
 	)

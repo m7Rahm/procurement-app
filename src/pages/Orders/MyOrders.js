@@ -16,15 +16,16 @@ const MyOrders = (props) => {
   const tokenContext = useContext(TokenContext);
   const userData = tokenContext[0].userData;
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
+  const canSeeOtherOrders = userData.previliges.includes("Digər sifarişləri görmək")
   const { docid: orderid } = useParams();
   const fetchPost = useFetch("POST");
   const fetchGet = useFetch("GET");
   const fetchFunc = useCallback((data) => method === "GET" ? fetchGet(data) : fetchPost(link, data), [link, method, fetchGet, fetchPost])
-  const [searchData, setSearchData] = useState(inParams);
+  const searchRefData = useRef(inParams)
   const initLink = method === "GET" ? inLink(0) : ""
   const [loading, setLoading] = useState(true);
   const updateList = (from) => {
-    const data = method === "GET" ? inLink(from) : { ...searchData, from: from, until: 20 };
+    const data = method === "GET" ? inLink(from) : { ...searchRefData.current, from: from, until: 20, canSeeOtherOrders };
     fetchFunc(data)
       .then(respJ => {
         const totalCount = respJ[0] ? respJ[0].total_count : 0;
@@ -41,7 +42,9 @@ const MyOrders = (props) => {
       dateFrom: '',
       dateTill: '',
       ordNumb: "",
-      id: orderid
+      id: orderid,
+      canSeeOtherOrders,
+      departments: []
     };
     fetchFunc(data)
       .then(respJ => {
@@ -50,14 +53,14 @@ const MyOrders = (props) => {
         setLoading(false)
       })
       .catch(err => console.log(err))
-  }, [fetchFunc, orderid, link, method, initLink])
+  }, [fetchFunc, orderid, link, method, initLink, canSeeOtherOrders])
   return (
     <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
       {
         referer === "protected" &&
         <Search
-          searchData={searchData}
-          setSearchData={setSearchData}
+          canSeeOtherOrders={canSeeOtherOrders}
+          searchRefData={searchRefData}
           updateList={updateList}
           setLoading={setLoading}
         />

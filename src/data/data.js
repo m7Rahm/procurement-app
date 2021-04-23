@@ -94,7 +94,8 @@ export const availableOperations = [
     'Sifarişi redaktəyə qaytarmaq',
     'Sifarişi redaktə etmək',
     'Büccə daxil etmək',
-    'Yeni məhsul əlavə etmək'
+    'Yeni məhsul əlavə etmək',
+    "Digər sifarişləri görmək"
 ];
 
 export const miscDocTypes = [
