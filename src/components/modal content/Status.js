@@ -37,7 +37,7 @@ const Status = (props) => {
             stage = 4
           if (parentResult === 25 || result === 25)
             stage = 5
-          if (result === 20)
+          if (result === 20 || result === 44)
             stage = 6
           if (result === 99)
             stage = 7

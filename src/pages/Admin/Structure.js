@@ -41,6 +41,7 @@ const Structure = () => {
                         <th>Ad</th>
                         <th>Tabe olduğu struktur</th>
                         <th>Tip</th>
+                        <th>Anbar</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -82,7 +83,7 @@ export default Structure
 const NewStructureRow = (props) => {
     const { activeDepartments, setActiveDepartments, updateList, activePageRef, fetchPost } = props;
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
-    const [newStructureData, setNewStructureData] = useState({ name: '', parent_id: -1, type: 0 });
+    const [newStructureData, setNewStructureData] = useState({ name: '', parent_id: -1, type: 0, f_warehouse_id: 0 });
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -135,6 +136,19 @@ const NewStructureRow = (props) => {
                     <option value="3">STTŞ</option>
                 </select>
             </td>
+            <td>
+                <select style={{ minWidth: '130px' }} name="f_warehouse_id" value={newStructureData.f_warehouse_id} onChange={handleChange}>
+                    <option value="0">-</option>
+                    {
+                        // eslint-disable-next-line
+                        activeDepartments.filter(department => department.type == 2).map(department =>
+                            <option value={department.id} key={department.id}>
+                                {department.name}
+                            </option>
+                        )
+                    }
+                </select>
+            </td>
             <td></td>
             <td><IoMdAdd title="yeni struktur əlavə et" onClick={addStructure} color="#f8942a" /></td>
         </tr>
@@ -167,13 +181,13 @@ const TableRow = (props) => {
             .catch(ex => console.log(ex));
     }
     const updateFunc = (id, stat) => {
-        const data = { ...structureData, id, active: stat };
+        const data = { ...structureData, id, active_passive: stat === 1 };
         fetchPost('http://192.168.0.182:54321/api/update-structure', data)
-            .then(respJ => {
+            .then(_ => {
                 setActiveDepartments(prev =>
-                    !respJ[0].active_passive
+                    stat === 0
                         ? prev.filter(department => department.id !== id)
-                        : [...prev, ...respJ]
+                        : [...prev, data]
                 )
             })
             .catch(ex => console.log(ex))
@@ -200,6 +214,17 @@ const TableRow = (props) => {
                     <option value="1">Struktur Vahidi</option>
                     <option value="2">Anbar</option>
                     <option value="3">STTŞ</option>
+                </select>
+            </td>
+            <td>
+                <select name="f_warehouse_id" onChange={handleChange} disabled={disabled} value={structureData.f_warehouse_id}>
+                    <option value="0">-</option>
+                    {
+                        // eslint-disable-next-line
+                        activeDepartments.filter(department => department.type == 2).map(department =>
+                            <option value={department.id} key={department.id}>{department.name}</option>
+                        )
+                    }
                 </select>
             </td>
             <td>

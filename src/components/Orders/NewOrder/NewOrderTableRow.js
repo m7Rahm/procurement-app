@@ -4,13 +4,14 @@ import useFetch from '../../../hooks/useFetch';
 
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
-  const { orderType, structure, material, subGlCategories, setMaterials } = props;
+  const { orderType, structure, subGlCategories, setMaterials } = props;
   const modelListRef = useRef(null);
   const [models, setModels] = useState([]);
   const modelsRef = useRef([]);
   const modelInputRef = useRef(null);
-  const materialid = material.id;
+  const { materialid, subGlCategory, className, count, department, additionalInfo } = props
   const [budget, setBudget] = useState(0);
+  const [quantity, setQuantity] = useState(0)
   const timeoutRef = useRef(null);
   const codeRef = useRef(null);
   const fetchGet = useFetch("GET");
@@ -23,7 +24,7 @@ const NewOrderTableRow = (props) => {
     }
   }
   useEffect(() => {
-    const data = { subGlCategoryId: material.subGlCategory, structureid: structure, orderType: orderType };
+    const data = { subGlCategoryId: subGlCategory, structureid: structure, orderType: orderType };
     fetchPost('http://192.168.0.182:54321/api/strucutre-budget-info', data)
       .then(respJ => {
         modelsRef.current = respJ;
@@ -33,7 +34,7 @@ const NewOrderTableRow = (props) => {
         setBudget(budget);
       })
       .catch(ex => console.log(ex))
-  }, [material.subGlCategory, fetchPost, orderType, structure])
+  }, [subGlCategory, fetchPost, orderType, structure])
   const handleAmountFocusLose = (e) => {
     const value = e.target.value;
     const name = e.target.name
@@ -64,6 +65,11 @@ const NewOrderTableRow = (props) => {
     rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
   }
   const setModel = (model) => {
+    fetchGet("http://192.168.0.182:54321/api/material-quantity?pid" + model.product_id)
+      .then(resp => {
+        setQuantity(resp[0].quantity)
+      })
+      .catch(ex => console.log(ex))
     setMaterials(prev => prev.map(material => material.id === materialid
       ? {
         ...material,
@@ -83,7 +89,7 @@ const NewOrderTableRow = (props) => {
   }
   const handleInputSearch = (e) => {
     const value = e.target.value;
-    if (material.subGlCategory !== "-1" && material.subGlCategory !== undefined && material.subGlCategory !== "") {
+    if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
       const charArray = value.split("")
       const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
       const regExp = new RegExp(`${reg}`, "i");
@@ -123,7 +129,8 @@ const NewOrderTableRow = (props) => {
               }
               : prevMaterial
             ));
-            setBudget(_ => material.budget || 0);
+            setQuantity(material.quantity)
+            setBudget(material.budget || 0);
             modelListRef.current.style.display = "none";
           } else {
             modelListRef.current.style.display = "block";
@@ -158,10 +165,10 @@ const NewOrderTableRow = (props) => {
       .catch(ex => console.log(ex))
   }
   return (
-    <li ref={rowRef} className={material.class}>
+    <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
       <div>
-        <select onChange={handleSubCategoryChange} name="subGlCategory" value={material.subGlCategory}>
+        <select onChange={handleSubCategoryChange} name="subGlCategory" value={subGlCategory}>
           <option value="-1">-</option>
           {
             subGlCategories.map(category =>
@@ -189,9 +196,9 @@ const NewOrderTableRow = (props) => {
                 const inputVal = modelInputRef.current.value;
                 const title = <>{titleArr.map((char, index) => {
                   const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-                  if (strRegExp.test(char))
+                  if (strRegExp.test(char)) {
                     return <i key={index}>{char}</i>
-                  else {
+                  } else {
                     return char
                   }
                 })
@@ -202,6 +209,7 @@ const NewOrderTableRow = (props) => {
           </ul>
         }
       </div>
+      <div style={{ maxWidth: " 60px" }}>{quantity}</div>
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
           onChange={searchByCode}
@@ -213,20 +221,20 @@ const NewOrderTableRow = (props) => {
       </div>
       <div style={{ maxWidth: '140px' }}>
         <div style={{ backgroundColor: 'transparent', padding: '0px 15px' }}>
-          <FaMinus cursor="pointer" onClick={() => { if (material.count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />
+          <FaMinus cursor="pointer" onClick={() => { if (count > 1) handleAmountChangeButtons('dec') }} color="#ffae00" style={{ margin: '0px 3px' }} />
           <input
             name="count"
             style={{ width: '40px', textAlign: 'center', padding: '0px 2px', margin: '0px 5px', flex: 1 }}
             type="text"
             onBlur={handleAmountFocusLose}
             onChange={handleAmountChange}
-            value={material.count}
+            value={count}
           />
           <FaPlus cursor="pointer" onClick={() => handleAmountChangeButtons('inc')} color="#3cba54" style={{ margin: '0px 3px' }} />
         </div>
       </div>
       <div>
-        <div>{material.department}</div>
+        <div>{department}</div>
       </div>
       <div>
         <div style={{ height: '100%' }}>{budget}</div>
@@ -236,7 +244,7 @@ const NewOrderTableRow = (props) => {
           style={{ width: '100%' }}
           placeholder="Link və ya əlavə məlumat"
           name="additionalInfo"
-          value={material.additionalInfo}
+          value={additionalInfo}
           type="text"
           onChange={handleChange}
         />

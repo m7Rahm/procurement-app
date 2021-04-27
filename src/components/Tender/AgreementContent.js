@@ -5,12 +5,15 @@ import OperationResult from "../Misc/OperationResult"
 import EmptyContent from "../Misc/EmptyContent"
 import { useLocation } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
+import Modal from "../Misc/Modal"
+import ProductHistory from "../modal content/ProductHistory"
 const RightInfoBar = lazy(() => import("../Misc/RightInfoBar"))
 const AgreementsList = lazy(() => import("../Misc/AgreementsList"));
 const AgreementContent = (props) => {
     const [orderContent, setOrderContent] = useState([]);
     const location = useLocation();
     const locationState = location.state ? location.state : undefined
+    const [modal, setModal] = useState({ visible: false, title: "" })
     const [rightBarState, setRightBarState] = useState({ visible: false, id: null });
     const [operationResult, setOperationResult] = useState({
         visible: false,
@@ -31,6 +34,7 @@ const AgreementContent = (props) => {
     const setEmpty = () => {
         props.setActive(props.activeInit)
     }
+    console.log(orderContent)
     return (
         <div className="visa-content-container" style={{ maxWidth: "1256px", margin: "auto", paddingTop: "76px" }}>
             {
@@ -45,6 +49,12 @@ const AgreementContent = (props) => {
             {
                 active ?
                     <>
+                        {
+                            modal.visible &&
+                            <Modal title={modal.title} style={{ minHeight: "60%" }}>
+                                {ProductHistory}
+                            </Modal>
+                        }
                         <h1>{props.ordNumb}</h1>
                         <h1>{props.basedOn}</h1>
                         <h1>{props.departmentName}</h1>
@@ -62,6 +72,7 @@ const AgreementContent = (props) => {
                                     <AgreementMaterial
                                         key={material.id}
                                         index={index}
+                                        setModal={setModal}
                                         material={material}
                                         setRightBarState={setRightBarState}
                                         setInitData={props.setInitData}
@@ -108,6 +119,9 @@ const AgreementMaterial = (props) => {
     const handleInfoClick = () => {
         props.setRightBarState({ visible: true, id: materialState.id })
     }
+    const showHistory = () => {
+        props.setModal({ visible: true, title: materialState.title })
+    }
     const sendToAgreement = () => {
         const data = {
             id: materialState.id
@@ -121,8 +135,7 @@ const AgreementMaterial = (props) => {
                         props.setInitData(prev => ({ ...prev }))
                         props.setEmpty()
                     }
-                }
-                else if (respJ.length > 2 || respJ[0].error)
+                } else if (respJ.length > 2 || respJ[0].error)
                     props.setOperationResult({ visible: true, desc: respJ[0].error })
             })
             .catch(ex => console.log(ex))
@@ -130,7 +143,7 @@ const AgreementMaterial = (props) => {
     return (
         <li>
             <div>{props.index + 1}</div>
-            <div>{materialState.title}</div>
+            <div onClick={showHistory} style={{ cursor: "pointer" }}>{materialState.title}</div>
             <div style={{ maxWidth: "140px" }}>{materialState.amount}</div>
             <div>{materialState.comment}</div>
             <div>

@@ -3,7 +3,7 @@ import {
   FaSortDown,
   FaSortUp
 } from 'react-icons/fa'
-import TableContent from './TableContent';
+import ListItem from './ListItem'
 const Table = (props) => {
   const [sortDateUp, setSortDateUp] = useState(undefined)
   // const [deadlineFilter, setDeadlineFilter] = useState(false)
@@ -47,26 +47,37 @@ const Table = (props) => {
   const sortIcon = !sortStatusUp
     ? <FaSortDown style={{ float: 'right', marginRight: '10px' }} onClick={() => setSortStatusUp(prev => !prev)} />
     : <FaSortUp onClick={() => setSortStatusUp(prev => !prev)} style={{ float: 'right', marginRight: '10px' }} />
-return (
-  <ul className='table'>
-    <li style={{ justifyContent: "space-between" }}>
-      <div style={{ width: '30px', textAlign: "center" }}> #</div>
-      <div style={{ minWidth: '80px', textAlign: "center" }}> Status {sortIcon}</div>
-      <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
-      <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
-      <div style={{ width: '40%', textAlign: 'left' }}> İştirakçılar</div>
-      <div style={{ minWidth: '5%', width: "60px" }}> Qeyd</div>
-      {/* <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div> */}
-      <div style={{ width: "20px" }}></div>
-    </li>
-    <TableContent
-      referer={referer}
-      orders={props.orders}
-      wrapperRef={props.wrapperRef}
-      setOrders={setOrders}
-    />
-  </ul>
-)
+  return (
+    <ul className='table'>
+      <li style={{ justifyContent: "space-between" }}>
+        <div style={{ width: '30px', textAlign: "center" }}> #</div>
+        <div style={{ minWidth: '80px', textAlign: "center" }}> Status {sortIcon}</div>
+        <div style={{ minWidth: '80px', width: '15%', textAlign: 'left' }}> Tarix {createDateFilterIcon}</div>
+        <div style={{ minWidth: '60px', width: '15%', textAlign: 'left' }}> Nömrə {numberIcon}</div>
+        <div style={{ width: '40%', textAlign: 'left' }}> İştirakçılar</div>
+        <div style={{ minWidth: '5%', width: "60px" }}> Qeyd</div>
+        {/* <div style={{ minWidth: '40px', overflow: 'visible', display: 'inline-block', width: 'auto' }}> </div> */}
+        <div style={{ width: "20px" }}></div>
+      </li>
+      {
+        props.orders.orders.map((order, index) =>
+          <ListItem
+            index={index}
+            key={order.id}
+            order={order}
+            referer={referer}
+            setOrders={setOrders}
+            status={order.status}
+            participants={order.participants}
+            date={order.create_date_time}
+            id={order.id}
+            empid={order.emp_id}
+            number={order.ord_numb}
+          />
+        )
+      }
+    </ul>
+  )
 }
 
 export default Table

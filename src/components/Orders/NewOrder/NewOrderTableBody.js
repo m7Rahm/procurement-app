@@ -31,6 +31,7 @@ const NewOrderTableBody = (props) => {
           <div>#</div>
           <div>Sub-Gl Kateqoriya</div>
           <div>Məhsul</div>
+          <div style={{ maxWidth: " 60px" }}>Qalıq</div>
           <div style={{ width: '170px', maxWidth: '200px' }}>Kod</div>
           <div style={{ maxWidth: '140px' }}>Say</div>
           <div>Kurasiya</div>
@@ -47,9 +48,15 @@ const NewOrderTableBody = (props) => {
                 orderType={orderType}
                 material={material}
                 key={material.id}
+                materialid={material.id}
+                className={material.class}
+                subGlCategory={material.subGlCategory}
                 structure={structure}
+                count={material.count}
                 subGlCategories={glCategories.sub}
                 modelsListRef={modelsListRef}
+                additionalInfo={material.additionalInfo}
+                department={material.department}
               />
             )
           })

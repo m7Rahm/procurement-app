@@ -70,6 +70,7 @@ const OrderMaterials = () => {
                             <th>Kurasiya</th>
                             <th>Növ</th>
                             <th style={{ maxWidth: '100px' }}>Qiymət</th>
+                            <th style={{ maxWidth: '100px' }}>Kod</th>
                             <th>Ölçü vahidi</th>
                             <th>Inventardır</th>
                             <th>Əsas Vəsaitdir</th>
@@ -114,10 +115,12 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
     const fetchPost = useFetch("POST");
     const [materialData, setMaterialData] = useState({ ...material, type: material.is_service ? "1" : "0" });
     const [disabled, setDisabled] = useState(true);
-    const subGlCategoryRef = useRef(null);
     const inventoryRef = useRef(null);
     const esasVesaitRef = useRef(null);
-    const subCategories = glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(materialData.gl_category_id));
+    const titleRef = useRef(null);
+    const codeRef = useRef(null);
+    // eslint-disable-next-line
+    const subCategories = glCategoriesRef.current.filter(glCategory => glCategory.dependent_id == materialData.gl_category_id);
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
@@ -133,7 +136,8 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
     const handleUpdate = () => {
         const data = {
             ...materialData,
-            sub_gl_category_id: subGlCategoryRef.current.value,
+            title: titleRef.current.value,
+            sub_gl_category_id: materialData.sub_gl_category_id,
             isInv: inventoryRef.current.checked,
             isEsasVesait: esasVesaitRef.current.checked
         };
@@ -149,10 +153,11 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
         <tr>
             <th>{index}</th>
             <td>
-                <input value={materialData.title} name="title" disabled={disabled} onChange={handleChange} />
+                <input defaultValue={materialData.title} name="title" disabled={disabled} ref={titleRef} />
             </td>
             <td>
                 <select disabled={disabled} onChange={handleChange} name="gl_category_id" value={materialData.gl_category_id}>
+                    <option value="-1">-</option>
                     {
                         glCategories.map(cat =>
                             <option key={cat.id} value={cat.id}>{`${cat.code} ${cat.name}`}</option>
@@ -161,7 +166,8 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
                 </select>
             </td>
             <td>
-                <select disabled={disabled} name="sub_gl_category_id" ref={subGlCategoryRef} defaultValue={materialData.sub_gl_category_id}>
+                <select disabled={disabled} name="sub_gl_category_id" onChange={handleChange}  value={materialData.sub_gl_category_id}>
+                    <option value="-1">-</option>
                     {
                         subCategories.map(subCat =>
                             <option key={subCat.id} value={subCat.id}>{`${subCat.code} ${subCat.name}`}</option>
@@ -170,7 +176,8 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
                 </select>
             </td>
             <td style={{ width: '250px' }}>
-                <select disabled={disabled} name="department_id" onChange={handleChange} value={materialData.department_id || 3}>
+                <select disabled={disabled} name="department_id" onChange={handleChange} value={materialData.department_id}>
+                    <option value="-1">-</option>
                     {
                         departments.map(department =>
                             <option key={department.id} value={department.id}>{department.name}</option>
@@ -186,6 +193,9 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
             </td>
             <td style={{ maxWidth: '100px' }}>
                 <input value={materialData.approx_price} name="approx_price" disabled={disabled} onChange={handlePriceChange} />
+            </td>
+            <td>
+                <input disabled={true} defaultValue={materialData.product_id} name="product_id" ref={codeRef} />
             </td>
             <td>
                 <select name="cluster" disabled={disabled} onChange={handleChange} value={materialData.cluster}>
@@ -227,7 +237,7 @@ const NewMaterial = React.memo((props) => {
         title: '',
         department: 1,
         procurement: '',
-        approxPrice: '',
+        approx_price: '',
         cluster: '',
         gl_category_id: '-1',
         sub_gl_category_id: '-1',
@@ -240,19 +250,20 @@ const NewMaterial = React.memo((props) => {
             ...newCatState,
             department: curatoridRef.current.value,
             gl_category_id,
+            approxPrice: newCatState.approx_price,
             cluster: unitsRef.current.value,
-            isInv: inventoryRef.current.checked,
-            isEsasVesait: esasVesaitRef.current.checked
+            is_inventory: inventoryRef.current.checked,
+            is_esas_vesait: esasVesaitRef.current.checked
         };
-        if (data.title !== "" && gl_category_id !== "-1" && data.sub_gl_category_id !== "")
+        if (data.title !== "" && gl_category_id !== "-1" && data.sub_gl_category_id !== "-1")
             fetchPost('http://192.168.0.182:54321/api/add-new-cat', data)
                 .then(respJ => {
                     if (respJ[0].result === 'success') {
-                        const id = respJ[0].row_id;
+                        const { row_id: id, product_id } = respJ[0];
                         setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', backgroundColor: "white", iconColor: "rgb(15, 157, 88)", icon: AiFillCheckCircle })
-                        setTableData(prev => ({ content: [...prev.content, { ...data, id }], count: prev.count + 1 }));
+                        setTableData(prev => ({ content: [...prev.content, { ...data, id, product_id, is_service: data.type === "1" }], count: prev.count + 1 }));
                         inventoryRef.current.checked = false;
-                        setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approxPrice: "" });
+                        setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approx_price: "" });
                         curatoridRef.current.value = "-1"
                     } else {
                         setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
@@ -267,7 +278,7 @@ const NewMaterial = React.memo((props) => {
     }
     const handlePriceChange = (e) => {
         const value = e.target.value;
-        setNewCatState(prev => ({ ...prev, approxPrice: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approxPrice }))
+        setNewCatState(prev => ({ ...prev, approx_price: /^\d*(\.)?\d{0,2}$/.test(value) ? value : prev.approx_price }))
     }
     const handleChange = (e) => {
         const value = e.target.value;
@@ -304,7 +315,6 @@ const NewMaterial = React.memo((props) => {
             <td>
                 <select onChange={handleChange} name="sub_gl_category_id" value={newCatState.sub_gl_category_id}>
                     <option value="-1">-</option>
-
                     {
                         glCategoriesRef.current.filter(glCategory => glCategory.dependent_id === Number(newCatState.gl_category_id))
                             .map(subGlCategory =>
@@ -330,7 +340,9 @@ const NewMaterial = React.memo((props) => {
                 </select>
             </td>
             <td style={{ maxWidth: '100px' }}>
-                <input name="approxPrice" value={newCatState.approxPrice} onChange={handlePriceChange} />
+                <input name="approx_price" value={newCatState.approx_price} onChange={handlePriceChange} />
+            </td>
+            <td style={{ maxWidth: '100px' }}>
             </td>
             <td>
                 <select ref={unitsRef}>

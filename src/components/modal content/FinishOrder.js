@@ -9,7 +9,7 @@ const FinishOrder = (props) => {
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
     const tokenContext = useContext(TokenContext);
-    const userid = tokenContext[0].userData.id;
+    const userid = tokenContext[0].userData.userInfo.id;
     useEffect(() => {
         fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${props.ordNumb}&vers=${props.version}&confirmed=1`)
             .then(respJ => setMaterials(respJ))

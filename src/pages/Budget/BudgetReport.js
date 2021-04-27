@@ -1,23 +1,31 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import useFetch from "../../hooks/useFetch";
 import { months } from "../../data/data"
 import { FaFileExcel } from "react-icons/fa";
+import { TokenContext } from "../../App";
 const date = new Date()
 const month = months.find(month => Number(month.value) === date.getMonth() + 1);
-const year = date.getFullYear()
+const year = date.getFullYear();
 const BudgetReport = () => {
     const [rows, setRows] = useState([]);
+    const userData = useContext(TokenContext)[0].userData;
+    const { structureid } = userData.userInfo
     const fetchPost = useFetch("POST");
     useEffect(() => {
-        const data = { period: `${year}${month.value}` }
-        fetchPost("http://192.168.0.182:54321/api/budget-report", data)
-            .then(resp => {
-                setRows(resp)
-            })
-            .catch(ex => console.log(ex))
+        let mounted = true;
+        const abortController = new AbortController();
+        const data = { period: `${year}${month.value}`, structureid }
+        if (mounted)
+            fetchPost("http://192.168.0.182:54321/api/budget-report", data, abortController)
+                .then(resp => {
+                    setRows(resp)
+                })
+                .catch(ex => console.log(ex))
         return () => {
+            abortController.abort();
+            mounted = false
         }
-    }, [fetchPost]);
+    }, [fetchPost, structureid]);
     const exportToExcel = () => {
         const month = rows.length !== 0 ? months.find(month => Number(month.value) === rows[0].month).name : ""
         const tableBody = rows.map(row =>
@@ -75,10 +83,10 @@ const BudgetReport = () => {
     return (
         <>
             <div className="dashboard app">
-                <ReportSearch setRows={setRows} fetchPost={fetchPost} />
+                <ReportSearch setRows={setRows} structureid={structureid} fetchPost={fetchPost} />
                 <div className="budget-report-container">
                     <div>
-                        <ul className="budget-report" >
+                        <ul className="budget-report" style={{ margin: "0px" }}>
                             <li style={{ backgroundColor: "tomato", padding: "6px 0px" }}>
                                 <div>#</div>
                                 <div>Kod</div>
@@ -132,14 +140,20 @@ const BudgetReportRow = (props) => {
 }
 
 const ReportSearch = (props) => {
-    const { fetchPost, setRows } = props
-    const [searchSate, setSearchState] = useState({ period: `${year}${month.value}`, month: month.value, year })
+    const { fetchPost, setRows, structureid } = props;
+    const fetchGet = useFetch("GET");
+    const [searchSate, setSearchState] = useState({ period: `${year}${month.value}`, month: month.value, year, structureid })
+    const [departments, setDepartments] = useState([]);
+    useEffect(() => {
+        fetchGet('http://192.168.0.182:54321/api/departments')
+            .then(respJ => setDepartments(respJ))
+            .catch(ex => console.log(ex));
+    }, [fetchGet])
     const handleMonthSelect = (value) => {
         setSearchState(prev => {
-            const data = { period: `${prev.year}${value}` }
+            const data = { period: `${prev.year}${value}`, structureid: prev.structureid }
             fetchPost("http://192.168.0.182:54321/api/budget-report", data)
                 .then(resp => {
-                    console.log(resp)
                     setRows(resp)
                 })
                 .catch(ex => console.log(ex))
@@ -148,18 +162,21 @@ const ReportSearch = (props) => {
     }
     const handleChange = (e) => {
         const value = e.target.value;
+        const name = e.target.name;
         setSearchState(prev => {
-            const data = { period: `${value}${prev.month}` }
+            const newState = name === "year" ? { ...prev, period: `${value}${prev.month}`, year: value } : { ...prev, structureid: value }
+            const data = { period: newState.period, structureid: newState.structureid }
             fetchPost("http://192.168.0.182:54321/api/budget-report", data)
                 .then(resp => {
                     setRows(resp)
                 })
                 .catch(ex => console.log(ex))
-            return ({ ...prev, period: `${value}${prev.month}`, year: value })
+            return newState
         })
     }
+    
     return (
-        <div style={{ maxWidth: "1156px", margin: "auto" }}>
+        <div style={{ maxWidth: "1156px", margin: "auto", marginBottom: "10px", overflow: "hidden" }}>
             <div className="months">
                 {
                     months.map(month =>
@@ -173,9 +190,16 @@ const ReportSearch = (props) => {
                     )
                 }
             </div>
-            <select style={{ float: "right", padding: "6px" }} value={searchSate.year} onChange={handleChange}>
+            <select style={{ float: "right", padding: "6px" }} name="year" value={searchSate.year} onChange={handleChange}>
                 <option value={year} >{year}</option>
                 <option value={year - 1} >{year - 1}</option>
+            </select>
+            <select style={{ float: "right", padding: "6px", marginRight: "10px" }} name="department" value={searchSate.structureid} onChange={handleChange}>
+                {
+                    departments.map(department =>
+                        <option value={department.id} key={department.id}>{department.name}</option>
+                    )
+                }
             </select>
         </div>
     )

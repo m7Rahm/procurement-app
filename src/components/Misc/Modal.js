@@ -30,7 +30,7 @@ const Modal = (props) => {
       <div className="modal" onClick={closeModal}></div>
       <div ref={modalWrapperRef} className='modal-content wrapper' style={style}>
         <div style={{ marginBottom: '20px' }}>
-          {title || '_'} {number}
+          {title || ""} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
         <ModalContent

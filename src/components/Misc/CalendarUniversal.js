@@ -5,6 +5,7 @@ const CalendarUniversal = (props) => {
         date: new Date(),
         days: getDays(props.year, props.month + 1)
     });
+    const containerRef = useRef(null);
     const ref = useRef(null);
     const handleDateInc = () => {
         setDate(prev => {
@@ -17,6 +18,16 @@ const CalendarUniversal = (props) => {
             }
         })
     }
+    // useEffect(() => {
+    //     const handleClick = (e) => {
+    //         console.log(e.target)
+    //     }
+    //     const container = containerRef.current
+    //     .addEventListener("click", handleClick, false )
+    //     return () => {
+    //         container.removeEventListener("click", handleClick , false)
+    //     }
+    // }, [])
     const handleDateDec = () => {
         setDate(prev => {
             const month = prev.date.getMonth() <= 0 ? 12 : prev.date.getMonth();
@@ -51,7 +62,7 @@ const CalendarUniversal = (props) => {
         props.handleInputChange(props.name, '')
     }
     return (
-        <div className="calendar-container">
+        <div className="calendar-container" ref={containerRef}>
             <div className="calendar-head">
                 <span>
                     <input
@@ -59,6 +70,7 @@ const CalendarUniversal = (props) => {
                         type="text"
                         autoComplete="off"
                         ref={ref}
+                        defaultValue=""
                         onChange={handleDatePickerChange}
                         onBlur={handleFocusLose}
                         className={"date-picker " + props.name}
@@ -75,11 +87,11 @@ const CalendarUniversal = (props) => {
                                 {`${months[date.date.getMonth()]} ${date.date.getFullYear()}`}
                             </td>
                             <td>
-                                <button id="left" className={`arrows ${props.name}`} onClick={handleDateDec}>
+                                <button id="left" onBlur={handleFocusLose} className={`arrows ${props.name}`} onClick={handleDateDec}>
                                 </button>
                             </td>
                             <td>
-                                <button id="right" className={`arrows ${props.name}`} onClick={handleDateInc}>
+                                <button id="right" onBlur={handleFocusLose} className={`arrows ${props.name}`} onClick={handleDateInc}>
                                 </button>
                             </td>
                         </tr>

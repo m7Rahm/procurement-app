@@ -120,7 +120,7 @@ const ListItem = (props) => {
             ? <FaBoxOpen title="Anbardan göndərildi" size="20" color="#aaaaaa" />
             : status === 1
               ? <IoMdCheckmark color="#0F9D58" title="Təsdiq" size="20" />
-              : status === 25
+              : status === 25 || status === 44
                 ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20"/>
                 : ""
   return (
@@ -147,7 +147,7 @@ const ListItem = (props) => {
         <div style={{ width: "60px" }}>
           <IoMdChatbubbles size="20" color="#4285F4" cursor="pointer" onClick={onInfoClick} />
         </div>
-        <div style={{ width: "20px" }}>{referer === "protected" && (status === 20 || status === 99) && <IoMdMore pointer="cursor" onClick={handleFinishClick} />}</div>
+        <div style={{ width: "20px" }}>{referer === "protected" && (status === 20 || status === 99 || status === 44) && <IoMdMore pointer="cursor" onClick={handleFinishClick} />}</div>
       </li>
     </>
   )
