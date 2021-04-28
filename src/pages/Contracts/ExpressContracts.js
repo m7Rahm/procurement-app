@@ -8,20 +8,10 @@ const Modal = lazy(() => import('../../components/Misc/Modal'));
 
 const ExpressContracts = () => {
     const [contracts, setContracts] = useState({ count: 0, content: [] });
-    const [modalState, setModalState] = useState({ visible: false, content: ExpressContractBody })
     const numberRef = useRef(null);
     const vendorsListRef = useRef([]);
     const activePageRef = useRef(0);
     const fetchPost = useFetch("POST");
-    const fetchGet = useFetch("GET");
-    useEffect(() => {
-        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', {})
-            .then(respJ => {
-                const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                setContracts({ count: totalCount, content: respJ });
-            })
-            .catch(ex => console.log(ex))
-    }, [fetchPost]);
     const updateContent = () => {
         const data = {
             vendors: vendorsListRef.current.length !== 0 ? vendorsListRef.current.map(vendor => [vendor.id]) : null,
@@ -36,26 +26,52 @@ const ExpressContracts = () => {
             .catch(ex => console.log(ex))
 
     }
-    const handleMoreClick = (id) => {
-        setModalState({
+    const [modalState, setModalState] = useState({
+        visible: false,
+        content: ExpressContractBody,
+        updateContent,
+        setContracts
+    })
+    useEffect(() => {
+        const idStartIndex = window.location.search.indexOf("i=")
+        const defaultid = idStartIndex !== -1 ? window.location.search.substring(idStartIndex + 2) : 0
+        const apiData = defaultid ? { id: defaultid } : {}
+        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', apiData)
+            .then(respJ => {
+                if (respJ) {
+                    const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                    setContracts({ count: totalCount, content: respJ });
+                    if (defaultid)
+                        setModalState(prev => ({ ...prev, visible: true, id: defaultid, number: respJ[0].number }))
+                }
+            })
+            .catch(ex => console.log(ex))
+    }, [fetchPost]);
+    const handleMoreClick = (contract) => {
+        window.history.replaceState(null, "", window.location.pathname + `?i=${contract.id}`)
+        setModalState(prev => ({
+            ...prev,
             visible: true,
-            content: ExpressContractBody,
-            id,
-            fetchGet,
-            updateContent,
-            setContracts
-        })
+            id: contract.id,
+            number: contract.number,
+        }))
     }
     const closeModal = () => {
-        setModalState({ visible: false, content: null })
+        setModalState(prev => ({ ...prev, visible: false }))
     }
     return (
         <div style={{ paddingTop: '56px' }}>
             <div>
                 {
                     modalState.visible &&
-                    <Modal changeModalState={closeModal} width="400px" childProps={modalState}>
-                        {modalState.content}
+                    <Modal
+                        changeModalState={closeModal}
+                        title="Müqavilə № "
+                        number={modalState.number}
+                        style={{ width: "400px" }}
+                        childProps={modalState}
+                    >
+                        {ExpressContractBody}
                     </Modal>
                 }
                 <SearchExpressContracts
@@ -63,7 +79,6 @@ const ExpressContracts = () => {
                     vendorsListRef={vendorsListRef}
                     numberRef={numberRef}
                     count={contracts.count}
-                    fetchPost={fetchGet}
                     setContracts={setContracts}
                 />
                 <div style={{ position: "fixed", right: '50px', bottom: "86px", }}>
@@ -72,7 +87,7 @@ const ExpressContracts = () => {
                 <ul className="potential-vendors">
                     <li>
                         <div style={{ textAlign: 'center' }}>#</div>
-                        <div>Müqavilə Nömrəsi</div>
+                        <div>Müqavilə №</div>
                         <div>Vendor</div>
                         <div style={{ width: '100px' }}>Xidmət sahəsi</div>
                         <div style={{ width: '100px', textAlign: 'center' }}>Tarix</div>
@@ -90,7 +105,7 @@ const ExpressContracts = () => {
                                     <div>{contract.vendor_name}</div>
                                     <div style={{ width: '100px' }}>{workSector}</div>
                                     <div style={{ width: '100px', textAlign: 'center' }}>{contract.contract_date}</div>
-                                    <div><IoIosMore onClick={() => handleMoreClick(contract.id)} /></div>
+                                    <div><IoIosMore onClick={() => handleMoreClick(contract)} /></div>
                                 </li>
                             )
                         })

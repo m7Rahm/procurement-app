@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { FaTimes } from 'react-icons/fa';
+import useFetch from '../../hooks/useFetch';
 import Pagination from '../Misc/Pagination'
 import { VendorsList } from '../Tender/AgreementVendors'
 const SearchExpressContracts = (props) => {
     const [vendorsList, setVendorsList] = useState([]);
+    const fetchPost = useFetch("POST")
     const onVendorSelect = (vendor) => {
         setVendorsList(prev => {
             const newState = prev.find(ven => ven.id === vendor.id) ? prev : [...prev, vendor]
@@ -23,10 +25,12 @@ const SearchExpressContracts = (props) => {
             from: from,
             number: props.numberRef.current.value
         };
-        props.fetchGet('http://192.168.0.182:54321/api/get-express-contracts', data)
+        fetchPost('http://192.168.0.182:54321/api/get-express-contracts', data)
             .then(respJ => {
-                const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                props.setContracts({ count: totalCount, content: respJ });
+                if (respJ) {
+                    const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                    props.setContracts({ count: totalCount, content: respJ });
+                }
             })
             .catch(ex => console.log(ex))
     }

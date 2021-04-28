@@ -18,7 +18,9 @@ const init = {
     from: 0,
     until: 20
 }
-const activeInit = { id: null, basedOn: "", ordNumb: "", departmentName: "" }
+const startIndex = window.location.search.indexOf("i=")
+const id = startIndex !== -1 ? window.location.search.substring(startIndex + 2) : null
+const activeInit = { id: id, basedOn: "", ordNumb: "", departmentName: "" }
 const Orders = () => {
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });

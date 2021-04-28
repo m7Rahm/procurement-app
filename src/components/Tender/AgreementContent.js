@@ -9,11 +9,13 @@ import Modal from "../Misc/Modal"
 import ProductHistory from "../modal content/ProductHistory"
 const RightInfoBar = lazy(() => import("../Misc/RightInfoBar"))
 const AgreementsList = lazy(() => import("../Misc/AgreementsList"));
+const state = window.history.state
+const modalInitState = state ? { visible: true, title: state.t, subGlCategory: state.sid, productid: state.pid } : { visible: false }
 const AgreementContent = (props) => {
     const [orderContent, setOrderContent] = useState([]);
     const location = useLocation();
     const locationState = location.state ? location.state : undefined
-    const [modal, setModal] = useState({ visible: false, title: "" })
+    const [modal, setModal] = useState(modalInitState)
     const [rightBarState, setRightBarState] = useState({ visible: false, id: null });
     const [operationResult, setOperationResult] = useState({
         visible: false,
@@ -27,14 +29,20 @@ const AgreementContent = (props) => {
     useEffect(() => {
         if (active) {
             fetchGet(`http://192.168.0.182:54321/api/get-tender-order-content/${active}`)
-                .then(respJ => setOrderContent(respJ))
+                .then(respJ => {
+                    if (respJ)
+                        setOrderContent(respJ)
+                })
                 .catch(ex => console.log(ex))
         }
     }, [active, fetchGet]);
     const setEmpty = () => {
         props.setActive(props.activeInit)
     }
-    console.log(orderContent)
+    const closeModal = () => {
+        window.history.replaceState(null, "", window.location.href)
+        setModal(prev => ({ ...prev, visible: false }))
+    }
     return (
         <div className="visa-content-container" style={{ maxWidth: "1256px", margin: "auto", paddingTop: "76px" }}>
             {
@@ -47,11 +55,11 @@ const AgreementContent = (props) => {
                 />
             }
             {
-                active ?
+                active && orderContent.length !== 0 ?
                     <>
                         {
                             modal.visible &&
-                            <Modal title={modal.title} style={{ minHeight: "60%" }}>
+                            <Modal title={modal.title} style={{ minHeight: "450px" }} childProps={modal} changeModalState={closeModal}>
                                 {ProductHistory}
                             </Modal>
                         }
@@ -120,7 +128,14 @@ const AgreementMaterial = (props) => {
         props.setRightBarState({ visible: true, id: materialState.id })
     }
     const showHistory = () => {
-        props.setModal({ visible: true, title: materialState.title })
+        const data = { pid: materialState.product_id, sid: materialState.sub_gl_category_id, t: materialState.title }
+        window.history.replaceState(data, "", window.location.href)
+        props.setModal({
+            visible: true,
+            title: materialState.title,
+            productid: materialState.product_id,
+            subGlCategory: materialState.sub_gl_category_id
+        })
     }
     const sendToAgreement = () => {
         const data = {

@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { TokenContext } from '../../App'
 import useFetch from '../../hooks/useFetch'
 import { VendorsList } from '../Tender/AgreementVendors'
@@ -92,13 +92,17 @@ const ExpressContractBody = (props) => {
     }
     const buttonText = props.id === 0 ? "Müqavilə yarat" : "Yadda saxla";
     const action = props.id === 0 ? createContract : updateContract
-    useLayoutEffect(() => {
-        if (props.id !== 0)
+    useEffect(() => {
+        if (props.id !== 0) {
             fetchGet(`http://192.168.0.182:54321/api/express-contract/${props.id}`)
                 .then(respJ => {
                     setContractState(respJ)
                 })
                 .catch(ex => console.log(ex))
+        }
+        return () => {
+            window.history.replaceState(null, "", window.location.pathname)
+        }
     }, [fetchGet, props.id])
     const onVendorSelect = (vendor) => {
         setContractState(prev => {

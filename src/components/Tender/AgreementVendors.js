@@ -179,7 +179,7 @@ const AgreementVendors = (props) => {
 }
 export default AgreementVendors
 
-export const VendorsList = (props) => {
+export const VendorsList = React.memo((props) => {
     const [vendors, setVendors] = useState({ all: [], available: [], visible: [], offset: 2 });
     const { headerVisible = true, uid = "0" } = props
     const vendorsListRef = useRef(null);
@@ -262,4 +262,4 @@ export const VendorsList = (props) => {
             </div>
         </>
     )
-}
+})

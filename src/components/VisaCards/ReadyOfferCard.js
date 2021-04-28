@@ -3,6 +3,7 @@ import React, { useRef } from 'react'
 const ReadyOfferCard = (props) => {
     const stateRef = useRef(null);
     const handleClick = () => {
+        window.history.replaceState(null, "", window.location.pathname + "?i=" + props.card.id)
         props.setActive({
             id: props.card.id,
             basedOn: props.card.based_od,

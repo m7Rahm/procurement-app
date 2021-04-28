@@ -12,13 +12,57 @@ ul.potential-vendors select, ul.potential-vendors input {
     display: inline-block;
     height: 100%;
 }
-
+div.product-history-search-container{
+    display: flex;
+    padding: 30px;
+}
+div.product-history-search-container>div:last-of-type{
+    flex: 1;
+}
+div.product-history-search-container>div:last-of-type>div{
+    background-color: #ffae00;
+    color: white;
+    padding: 6px 20px;
+    cursor: pointer;
+    border-radius: 3px;
+    float: right;
+}
+ul.product-history{
+    list-style-type: none;
+    margin: 30px 30px 30px;
+    padding-left: 0px;
+    padding-bottom: 20px;
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.2);
+}
+ul.product-history>li:first-of-type{
+    background-color: #195db6;
+    padding: 6px;
+    color: ghostwhite;
+}
+ul.product-history>li{
+    display: flex;
+    padding: 6px;
+}
+ul.product-history>li>div:not(:first-of-type){
+    flex: 1;
+}
+ul.product-history>li:not(:first-of-type):nth-of-type(2n+1){
+    background-color: rgba(0, 0, 0, 0.2);
+}
+ul.product-history>li:not(:first-of-type):nth-of-type(2n){
+    background-color: white;
+}
+ul.product-history>li>div:first-of-type{
+    width: 50px;
+}
+ul.product-history>li:not(:first-of-type)>div:last-of-type {
+    cursor: pointer;
+}
 ul.potential-vendors>li:first-of-type {
     background-color: #D93404;
     color: white;
     text-align: left;
 }
-
 ul.potential-vendors>li {
     display: flex;
     align-items: center;
@@ -101,8 +145,8 @@ div.express-vendors-search-ribbon>div{
     height: 50px;
 }
 div.express-vendors-search-ribbon>div:last-of-type {
-    height: 40px;
-    padding: 12px 30px;
+    height: 35px;
+    padding: 6px 30px;
     color: white;
     font-weight: 600;
     cursor: pointer;
