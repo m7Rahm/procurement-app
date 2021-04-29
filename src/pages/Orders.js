@@ -134,12 +134,12 @@ const Orders = (props) => {
             <Switch>
                 {
                     routes.map(route =>
-                        <Route key={route.link} path={`${path}${route.link}/:docid?`}>
+                        <Route key={route.link} path={`${path}${route.link}`}>
                             <route.component {...route.props} />
                         </Route>
                     )
                 }
-                <Redirect to={`${path}/my-orders/:docid?`} />
+                <Redirect to={`${path}/my-orders`} />
             </Switch>
         </div>
     )

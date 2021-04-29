@@ -30,7 +30,8 @@ const ExpressContracts = () => {
         visible: false,
         content: ExpressContractBody,
         updateContent,
-        setContracts
+        setContracts,
+        title: "",
     })
     useEffect(() => {
         const idStartIndex = window.location.search.indexOf("i=")
@@ -41,19 +42,21 @@ const ExpressContracts = () => {
                 if (respJ) {
                     const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
                     setContracts({ count: totalCount, content: respJ });
-                    if (defaultid)
+                    if (Number(defaultid))
                         setModalState(prev => ({ ...prev, visible: true, id: defaultid, number: respJ[0].number }))
                 }
             })
             .catch(ex => console.log(ex))
     }, [fetchPost]);
     const handleMoreClick = (contract) => {
-        window.history.replaceState(null, "", window.location.pathname + `?i=${contract.id}`)
+        if (contract.id !== 0)
+            window.history.replaceState(null, "", window.location.pathname + `?i=${contract.id}`)
         setModalState(prev => ({
             ...prev,
             visible: true,
             id: contract.id,
             number: contract.number,
+            title: contract.id === 0 ? "Yeni Müqavilə" : "Müqavilə № "
         }))
     }
     const closeModal = () => {
@@ -66,7 +69,7 @@ const ExpressContracts = () => {
                     modalState.visible &&
                     <Modal
                         changeModalState={closeModal}
-                        title="Müqavilə № "
+                        title={modalState.title}
                         number={modalState.number}
                         style={{ width: "400px" }}
                         childProps={modalState}
@@ -82,7 +85,7 @@ const ExpressContracts = () => {
                     setContracts={setContracts}
                 />
                 <div style={{ position: "fixed", right: '50px', bottom: "86px", }}>
-                    <IoIosAddCircle size="50" cursor="pointer" color="#D93404" onClick={() => handleMoreClick(0)} />
+                    <IoIosAddCircle size="50" cursor="pointer" color="#D93404" onClick={() => handleMoreClick({ id: 0, number: "" })} />
                 </div>
                 <ul className="potential-vendors">
                     <li>

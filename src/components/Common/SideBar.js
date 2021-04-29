@@ -20,11 +20,11 @@ const SideBar = (props) => {
 	const searchParamsRef = useRef({ userName: '', startDate: null, endDate: null, deadline: '', docType: -3 })
 	const updateSideBarContent = (data) => {
 		updateList(data)
-		.then(respJ => {
-			const totalCount = respJ[0] ? respJ[0].total_count : 0;
-			setVisas({ count: totalCount, visas: respJ });
-		})
-		.catch(ex => console.log(ex))
+			.then(respJ => {
+				const totalCount = respJ[0] ? respJ[0].total_count : 0;
+				setVisas({ count: totalCount, visas: respJ });
+			})
+			.catch(ex => console.log(ex))
 	}
 	const refreshVisas = (from) => {
 		const searchRefData = {
@@ -77,13 +77,14 @@ const SideBar = (props) => {
 			</div>
 			<div onClick={onNotifIconClick} ref={notifIcon} style={{ display: "none" }} className="new-visa-notification">
 				<span style={{ verticalAlign: "middle" }}>
-					<BsArrowUpShort color="#00acee" size="24" style={{  color: "white" }} />
+					<BsArrowUpShort color="#00acee" size="24" style={{ color: "white" }} />
 				</span>
 				Yeni bildiriş
 			</div>
 			<ul>
 				{
 					visas.visas.map((visa) => {
+						// eslint-disable-next-line
 						return (
 							<VisaCard
 								key={visa.id}

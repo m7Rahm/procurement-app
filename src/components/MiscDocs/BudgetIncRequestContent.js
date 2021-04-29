@@ -67,7 +67,7 @@ const BudgetIncRequestContent = (props) => {
     return (
         docState.content.length &&
         <div className="visa-content-container">
-            <div style={{ maxWidth: "1024px", margin: "auto" }}>
+            <div style={{ maxWidth: "1024px", margin: "auto", padding: "0px 10px" }}>
                 <h1>
                     {
                         result !== undefined &&

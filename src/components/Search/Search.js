@@ -35,7 +35,7 @@ const Search = (props) => {
 	const removeFromSelected = (department) => {
 		setSelectedDepartments(prev => {
 			const newState = prev.filter(dep => dep.id !== department.id)
-			searchRefData.current.departements = newState;
+			searchRefData.current.departments = newState;
 			return newState
 		})
 	}
@@ -44,7 +44,7 @@ const Search = (props) => {
 		const charArray = value.split("")
 		const reg = charArray.reduce((conc, curr) => conc += curr !== "\\" ? curr + "(.*)" : curr + "\\(.*)", "")
 		const regExp = new RegExp(reg, "i")
-		setDepartments(departmentRef.current.filter(departement => regExp.test(departement.name)))
+		setDepartments(departmentRef.current.filter(department => regExp.test(department.name)))
 	}
 	const handleSearch = () => {
 		updateList(0)
@@ -106,6 +106,7 @@ const Search = (props) => {
 									onChange={handleStructureChange}
 									placeholder="Struktur"
 									name="structure"
+									autoComplete="off"
 									onBlur={handleStructureInputBlur}
 									type="text"
 									ref={structuresInputRef}

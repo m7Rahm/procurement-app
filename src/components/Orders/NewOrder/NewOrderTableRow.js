@@ -42,7 +42,7 @@ const NewOrderTableRow = (props) => {
       setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, [name]: 0 } : material))
   }
   const handleAmountChangeButtons = (action) => {
-    setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? material.count + 1 : material.count - 1 } : material))
+    setMaterials(prev => prev.map(material => material.id === materialid ? { ...material, count: action === 'inc' ? Number(material.count) + 1 : material.count - 1 } : material))
   }
   const handleFocus = () => {
     if (props.modelsListRef.current)

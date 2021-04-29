@@ -18,10 +18,15 @@ const init = {
     from: 0,
     until: 20
 }
-const startIndex = window.location.search.indexOf("i=")
-const id = startIndex !== -1 ? window.location.search.substring(startIndex + 2) : null
-const activeInit = { id: id, basedOn: "", ordNumb: "", departmentName: "" }
 const Orders = () => {
+    const startIndex = window.location.search.indexOf("i=")
+    const id = startIndex !== -1 ? window.location.search.substring(startIndex + 2) : null
+    const state = window.history.state;
+    const activeInit = { id: Number(id), ordNumb: "", departmentName: "" }
+    if (state && state.on) {
+        activeInit.ordNumb = state.on;
+        activeInit.departmentName = state.dn
+    }
     const [active, setActive] = useState(activeInit);
     const searchStateRef = useRef({ result: 0 });
     const [initData, setInitData] = useState(init);

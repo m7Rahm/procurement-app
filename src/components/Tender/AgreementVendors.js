@@ -71,37 +71,38 @@ const AgreementVendors = (props) => {
         setAgreementVendors(prev => [...prev, { ...vendor, key: Date.now(), className: 'new-row', files: [], comment: '' }])
     }
     const addCommonFiles = useCallback((e) => {
-        const files = e.target.files;
-        if (files)
-            setCommonFiles(prev => {
-                const newFiles = [];
-                let unique = true;
-                if (prev.length !== 0) {
-                    for (let j = 0; j < files.length; j++) {
-                        for (let i = 0; i < prev.length; i++) {
-                            if (files[j].name === prev[i].name) {
-                                unique = false;
-                                break;
-                            }
+        const files = { ...e.target.files };
+        files.length = e.target.files.length
+        e.target.value = null
+        setCommonFiles(prev => {
+            const newFiles = [];
+            let unique = true;
+            if (prev.length !== 0) {
+                for (let j = 0; j < files.length; j++) {
+                    for (let i = 0; i < prev.length; i++) {
+                        if (files[j].name === prev[i].name) {
+                            unique = false;
+                            break;
                         }
-                        if (unique) {
-                            const ext = files[j].name.split('.').pop();
-                            files[j].ext = ext;
-                            newFiles.push(files[j]);
-                        }
-                        unique = true;
                     }
-                    return [...prev, ...newFiles]
-                }
-                else {
-                    for (let i = 0; i < files.length; i++) {
-                        const ext = files[i].name.split('.').pop();
-                        files[i].ext = ext;
-                        newFiles.push(files[i]);
+                    if (unique) {
+                        const ext = files[j].name.split('.').pop();
+                        files[j].ext = ext;
+                        newFiles.push(files[j]);
                     }
-                    return newFiles
+                    unique = true;
                 }
-            })
+                return [...prev, ...newFiles]
+            }
+            else {
+                for (let i = 0; i < files.length; i++) {
+                    const ext = files[i].name.split('.').pop();
+                    files[i].ext = ext;
+                    newFiles.push(files[i]);
+                }
+                return newFiles
+            }
+        })
     }, []);
     const removeFile = useCallback((file) => {
         setCommonFiles(prev => prev.filter(doc => doc.name !== file.name))

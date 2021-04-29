@@ -10,9 +10,11 @@ const SideBarContent = CardsList(AgreementCard);
 const Search = React.memo(OrdersSearchHOC(optionsAgreements));
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
 const Agreements = (props) => {
-    const { link, method } = props
+    const { link, method } = props;
+    const index = window.location.search.indexOf("i=")
+    const orderid = index !== -1 ? window.location.search.substring(index + 2) : undefined
     const [active, setActive] = useState({
-        active: undefined,
+        active: Number(orderid),
         number: ""
     });
     const [initData, setInitData] = useState({

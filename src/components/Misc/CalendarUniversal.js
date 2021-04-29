@@ -1,12 +1,55 @@
 import React, { useState, useRef } from 'react'
 const CalendarUniversal = (props) => {
     const calendarRef = useRef(null);
+    const ref = useRef(null);
+    const [value, setValue] = useState("")
+    const handleFocusLose = (e) => {
+        if (!e.relatedTarget || !e.relatedTarget.classList.contains(props.name))
+            calendarRef.current.style.display = 'none'
+    }
+    const handleInputFocus = () => {
+        calendarRef.current.style.display = 'block';
+    }
+    const handleDatePickerChange = (e) => {
+        let value = e.target.value;
+        setValue(value)
+        props.handleInputChange(props.name, value)
+    }
+    return (
+        <div className="calendar-container">
+            <div className="calendar-head">
+                <span>
+                    <input
+                        name={props.name}
+                        type="text"
+                        autoComplete="off"
+                        ref={ref}
+                        value={value}
+                        onChange={handleDatePickerChange}
+                        onBlur={handleFocusLose}
+                        className={"date-picker " + props.name}
+                        onFocus={handleInputFocus}
+                    />
+                    <label htmlFor={"date-picker " + props.name}>{props.placeholder}</label>
+                </span>
+            </div>
+            <Calendar
+                calendarRef={calendarRef}
+                name={props.name}
+                handleInputChange={props.handleInputChange}
+                setValue={setValue}
+                year={props.year}
+                month={props.month}
+            />
+        </div>
+    )
+}
+export default React.memo(CalendarUniversal);
+const Calendar = React.memo((props) => {
     const [date, setDate] = useState({
         date: new Date(),
         days: getDays(props.year, props.month + 1)
     });
-    const containerRef = useRef(null);
-    const ref = useRef(null);
     const handleDateInc = () => {
         setDate(prev => {
             const month = prev.date.getMonth() + 2 > 12 ? 1 : prev.date.getMonth() + 2;
@@ -18,16 +61,6 @@ const CalendarUniversal = (props) => {
             }
         })
     }
-    // useEffect(() => {
-    //     const handleClick = (e) => {
-    //         console.log(e.target)
-    //     }
-    //     const container = containerRef.current
-    //     .addEventListener("click", handleClick, false )
-    //     return () => {
-    //         container.removeEventListener("click", handleClick , false)
-    //     }
-    // }, [])
     const handleDateDec = () => {
         setDate(prev => {
             const month = prev.date.getMonth() <= 0 ? 12 : prev.date.getMonth();
@@ -39,100 +72,68 @@ const CalendarUniversal = (props) => {
             }
         })
     }
-    const handleFocusLose = (e) => {
-        if(!e.relatedTarget || !e.relatedTarget.classList.contains(props.name))
-            calendarRef.current.style.display = 'none'
-    }
-    const handleInputFocus = () => {
-        calendarRef.current.style.display = 'block';
-    }
-    const handleDatePickerChange = e => {
-        const value = e.target.value;
-        ref.current.value = value;
-        props.handleInputChange(props.name, value)
-    }
     const handleClick = (value) => {
-        calendarRef.current.style.display = 'none';
-        ref.current.value = value;
+        props.calendarRef.current.style.display = 'none';
+        props.setValue(value)
         props.handleInputChange(props.name, value)
     }
     const clearDate = () => {
-        calendarRef.current.style.display = 'none'
-        ref.current.value = '';
+        props.calendarRef.current.style.display = 'none'
+        props.setValue("")
         props.handleInputChange(props.name, '')
     }
     return (
-        <div className="calendar-container" ref={containerRef}>
-            <div className="calendar-head">
-                <span>
-                    <input
-                        name={props.name}
-                        type="text"
-                        autoComplete="off"
-                        ref={ref}
-                        defaultValue=""
-                        onChange={handleDatePickerChange}
-                        onBlur={handleFocusLose}
-                        className={"date-picker " + props.name}
-                        onFocus={handleInputFocus}
-                    />
-                    <label htmlFor={"date-picker " + props.name}>{props.placeholder}</label>
-                </span>
-            </div>
-            <div ref={calendarRef} tabIndex="1" className={"calendar " + props.name} style={{ left: '50%', transform: 'translate(-50%, 0)' }}>
-                <table>
-                    <thead>
-                        <tr>
-                            <td colSpan={5}>
-                                {`${months[date.date.getMonth()]} ${date.date.getFullYear()}`}
-                            </td>
-                            <td>
-                                <button id="left" onBlur={handleFocusLose} className={`arrows ${props.name}`} onClick={handleDateDec}>
-                                </button>
-                            </td>
-                            <td>
-                                <button id="right" onBlur={handleFocusLose} className={`arrows ${props.name}`} onClick={handleDateInc}>
-                                </button>
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th>B</th>
-                            <th>B.E</th>
-                            <th>Ç.A</th>
-                            <th>Ç</th>
-                            <th>C.A</th>
-                            <th>C</th>
-                            <th>Ş</th>
-                        </tr>
-                        {
-                            date.days.map((week, index) =>
-                                <tr key={index}>
-                                    {
-                                        week.map((day, index) =>
-                                            <td onClick={() => handleClick(day.val)} className={props.value === day.val ? 'active' : day.className} key={index}>
-                                                {day.date}
-                                            </td>
-                                        )
-                                    }
-                                </tr>
-                            )
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="5"></td>
-                            <td colSpan="2"><div onClick={clearDate}>Sıfırla</div></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+        <div ref={props.calendarRef} tabIndex="1" className={"calendar " + props.name} style={{ left: '50%', transform: 'translate(-50%, 0)' }}>
+            <table>
+                <thead>
+                    <tr>
+                        <td colSpan={5}>
+                            {`${months[date.date.getMonth()]} ${date.date.getFullYear()}`}
+                        </td>
+                        <td>
+                            <button id="left" onBlur={props.handleFocusLose} className={`arrows ${props.name}`} onClick={handleDateDec}>
+                            </button>
+                        </td>
+                        <td>
+                            <button id="right" onBlur={props.handleFocusLose} className={`arrows ${props.name}`} onClick={handleDateInc}>
+                            </button>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>B</th>
+                        <th>B.E</th>
+                        <th>Ç.A</th>
+                        <th>Ç</th>
+                        <th>C.A</th>
+                        <th>C</th>
+                        <th>Ş</th>
+                    </tr>
+                    {
+                        date.days.map((week, index) =>
+                            <tr key={index}>
+                                {
+                                    week.map((day, index) =>
+                                        <td onClick={() => handleClick(day.val)} className={day.className} key={index}>
+                                            {day.date}
+                                        </td>
+                                    )
+                                }
+                            </tr>
+                        )
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan="5"></td>
+                        <td colSpan="2"><div onClick={clearDate}>Sıfırla</div></td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     )
-}
-export default React.memo(CalendarUniversal);
-
+})
 const getDays = (year, month) => {
     const dayOfWeek = new Date(year, month - 1, 1).getDay();
     const currentDate = new Date(year, month, 0);

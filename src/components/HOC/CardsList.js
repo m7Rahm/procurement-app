@@ -13,7 +13,8 @@ const CardsList = (Card) => function SideBarContent(props) {
                         card={card}
                         setActive={setActive}
                         activeRef={activeRef}
-                    />)
+                    />
+                )
             }
         </ul>
 

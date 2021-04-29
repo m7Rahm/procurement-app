@@ -1,12 +1,11 @@
-import React, { useContext, useState, lazy, useEffect } from 'react'
+import React, { useContext, useState, lazy, useEffect } from "react"
 
-import { TokenContext } from '../../App';
-import { FaPlus } from 'react-icons/fa';
+import { TokenContext } from "../../App";
+import { FaPlus } from "react-icons/fa";
 import MiscDocContainer from "../Common/MiscDocContainer";
 import EmptyContent from "../Misc/EmptyContent";
-import { useParams, useLocation } from "react-router-dom"
-const Modal = lazy(() => import('../Misc/Modal'));
-const NewBudgetRequest = lazy(() => import('../../pages/Budget/NewBudgetRequest'));
+const Modal = lazy(() => import("../Misc/Modal"));
+const NewBudgetRequest = lazy(() => import("../../pages/Budget/NewBudgetRequest"));
 const miscDocNotifName = "nO";
 
 const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
@@ -15,12 +14,13 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     const token = tokenContext[0].token;
     const [modalState, setModalState] = useState({ visible: false, content: null });
     const [initData, setInitData] = useState(inData);
-    const { docid } = useParams();
-    const docType = useLocation().search.match(/dt=(\d{1,3})/);
+    const docidURL = window.location.search.match(/i=(\d{1,6})/)
+    const docType = window.location.search.match(/dt=(\d{1,3})/);
+    const docid = docidURL ? docidURL[1] : undefined
     const dType = docType ? Number(docType[1]) : 0
     const [active, setActive] = useState({
         active: Number(docid),
-        number: '',
+        number: "",
         docType: dType
     });
     const closeModal = () => {
@@ -32,13 +32,13 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     useEffect(() => {
         setActive({
             active: Number(docid),
-            number: '',
+            number: "",
             docType: dType
         })
     }, [docid, dType])
     return (
         <div>
-            <div style={{ display: 'flex', position: 'relative' }}>
+            <div style={{ display: "flex", position: "relative" }}>
                 <SideBar
                     initData={initData}
                     setActive={setActive}
@@ -61,7 +61,7 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
             </div>
             {
                 referer !== "receiver" &&
-                <div onClick={handleNewContractClick} style={{ position: 'fixed', bottom: '50px', right: '50px' }}>
+                <div onClick={handleNewContractClick} style={{ position: "fixed", bottom: "50px", right: "50px" }}>
                     <FaPlus size="28" color="#FFAE00" cursor="pointer" />
                 </div>
             }

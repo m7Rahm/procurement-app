@@ -1,6 +1,6 @@
-import React from 'react'
-import { FaPlus, FaFilePdf, FaFileExcel, FaFileWord, FaTimesCircle } from 'react-icons/fa';
-import { AiFillFileUnknown } from 'react-icons/ai'
+import React from "react"
+import { FaPlus, FaFilePdf, FaFileExcel, FaFileWord, FaTimesCircle } from "react-icons/fa";
+import { AiFillFileUnknown } from "react-icons/ai"
 
 const ContractFiles = ({ files = [], addFiles, removeFile }) => {
     return (
@@ -15,43 +15,41 @@ const ContractFiles = ({ files = [], addFiles, removeFile }) => {
                             return (
                                 <div key={file.name}>
                                     <FaFilePdf title={file.name} onClick={onClick} color="#F40F02" size="36" />
-                                    <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: 'absolute', top: '-2px', right: '0px', zIndex: 1 }} />
+                                    <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: "absolute", top: "-2px", right: "0px", zIndex: 1 }} />
                                 </div>
                             )
                         case /(doc(.*))/.test(ext):
                             return (
                                 <div key={file.name}>
-                                    <a href={uri} rel="noopener noreferrer" target="_blank" download>
-                                        <FaFileWord title={file.name} color="#0078d7" size="36" />
-                                        <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: 'absolute', top: '-2px', right: '0px', zIndex: 1 }} />
-                                    </a>
+                                    <FaFileWord title={file.name} color="#0078d7" size="36" />
+                                    <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: "absolute", top: "-2px", right: "0px", zIndex: 1 }} />
                                 </div>
                             )
                         case /(xls(.*))/.test(ext):
                             return (
                                 <div key={file.name}>
-                                    <a href={uri} rel="noopener noreferrer" target="_blank" download>
-                                        <FaFileExcel title={file.name} onClick={onClick} color="#1D6F42" size="36" />
-                                        <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: 'absolute', top: '-2px', right: '0px', zIndex: 1 }} />
-                                    </a>
+                                    <span>
+                                        <FaFileExcel title={file.name} color="#1D6F42" size="36" />
+                                        <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: "absolute", top: "-2px", right: "0px", zIndex: 1 }} />
+                                    </span>
                                 </div>
                             )
                         default:
                             return (
                                 <div key={file.name}>
-                                    <a href={uri} rel="noopener noreferrer" target="_blank" download>
+                                    <span>
                                         <AiFillFileUnknown title={file.name} size="36" />
-                                        <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: 'absolute', top: '-2px', right: '0px', zIndex: 1 }} />
-                                    </a>
+                                        <FaTimesCircle size="12" onClick={() => removeFile(file)} style={{ position: "absolute", top: "-2px", right: "0px", zIndex: 1 }} />
+                                    </span>
                                 </div>
                             )
                     }
                 }
                 )
             }
-            <div style={{ lineHeight: '36px' }}>
-                <label htmlFor="add" style={{ cursor: 'pointer' }} title="Fayl əlavə et">
-                    <span style={{ verticalAlign: 'middle' }}>
+            <div style={{ lineHeight: "36px" }}>
+                <label htmlFor="add" style={{ cursor: "pointer" }} title="Fayl əlavə et">
+                    <span style={{ verticalAlign: "middle" }}>
                         <FaPlus />
                     </span>
                 </label>
@@ -60,7 +58,7 @@ const ContractFiles = ({ files = [], addFiles, removeFile }) => {
                     id="add"
                     name="add"
                     multiple
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                     onChange={addFiles}
                 />
             </div>

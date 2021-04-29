@@ -381,7 +381,8 @@ div.adv-search-box {
   padding-bottom: 20px;
 }
 
-.calendar-head input:focus+label, .calendar-head input:not([value=""])+label {
+.calendar-head input:focus+label,
+.calendar-head input:not([value=""])+label {
   font-size: 12px;
   background-color: white;
   top: -10px;

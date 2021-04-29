@@ -3,18 +3,15 @@ import { AiFillCheckCircle } from "react-icons/ai"
 import { FaInfoCircle } from "react-icons/fa"
 import OperationResult from "../Misc/OperationResult"
 import EmptyContent from "../Misc/EmptyContent"
-import { useLocation } from "react-router-dom"
 import useFetch from "../../hooks/useFetch"
 import Modal from "../Misc/Modal"
 import ProductHistory from "../modal content/ProductHistory"
 const RightInfoBar = lazy(() => import("../Misc/RightInfoBar"))
 const AgreementsList = lazy(() => import("../Misc/AgreementsList"));
-const state = window.history.state
-const modalInitState = state ? { visible: true, title: state.t, subGlCategory: state.sid, productid: state.pid } : { visible: false }
 const AgreementContent = (props) => {
+    const state = window.history.state
+    const modalInitState = state && state.sid ? { visible: true, title: state.t, subGlCategory: state.sid, productid: state.pid } : { visible: false }
     const [orderContent, setOrderContent] = useState([]);
-    const location = useLocation();
-    const locationState = location.state ? location.state : undefined
     const [modal, setModal] = useState(modalInitState)
     const [rightBarState, setRightBarState] = useState({ visible: false, id: null });
     const [operationResult, setOperationResult] = useState({
@@ -24,7 +21,7 @@ const AgreementContent = (props) => {
         iconColor: "rgb(15, 157, 88)",
         icon: AiFillCheckCircle
     });
-    const active = props.active ? props.active : locationState ? locationState.active : null
+    const active = props.active
     const fetchGet = useFetch("GET")
     useEffect(() => {
         if (active) {
@@ -63,9 +60,10 @@ const AgreementContent = (props) => {
                                 {ProductHistory}
                             </Modal>
                         }
-                        <h1>{props.ordNumb}</h1>
-                        <h1>{props.basedOn}</h1>
-                        <h1>{props.departmentName}</h1>
+                        <div className="ready-order-header">
+                            <h1>Sifariş № {props.ordNumb}</h1>
+                            <h1>{props.departmentName}</h1>
+                        </div>
                         <ul className="new-order-table order-table-protex">
                             <li>
                                 <div>#</div>

@@ -115,7 +115,7 @@ const PaymentContent = (props) => {
             {
                 paymentDetails.content.length !== 0
                     ? <>
-                        <div>
+                        <div style={{ overflowY: "visible" }}>
                             <h1 style={{ fontSize: "24px", color: "gray", overflow: "hidden" }}>
                                 <span style={{ float: "left" }}>
                                     {

@@ -1,4 +1,4 @@
-import React, { useState, lazy, useEffect, useCallback } from "react"
+import React, { useState, lazy, useCallback } from "react"
 import OrdersSearchHOC from "..//Search/OrdersSearchHOC"
 import AgreementCard from "../VisaCards/AgreementCard"
 import SideBarContainer from "../HOC/SideBarContainer"
@@ -26,24 +26,16 @@ const ContractsHOC = (Content) => function Payments(props) {
         else
             return fetchPost(link, apiData)
     }, [fetchPost, link, fetchGet, method, transformData])
-    const docid = window.location.pathname.match(/(\d)$/g) ? window.location.pathname.match(/(\d)$/g)[0] : undefined
-    const [active, setActive] = useState({ active: docid });
-    useEffect(() => {
-        let mounted = true;
-        if (mounted && docid) {
-            setActive(prev => ({ ...prev, active: prev.active !== docid ? docid : prev.active }))
-        }
-        return () => {
-            mounted = false
-        }
-    }, [docid])
+    const index = window.location.search.indexOf("i=")
+    const docid = index !== -1 ? window.location.search.substring(index + 2) : undefined
+    const [active, setActive] = useState({ active: Number(docid) });
     const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=${props.docType}&docid=${active.active}` : ""
     const closeModal = () => {
         setModalState({ visible: false, content: null })
     }
     const handleNewContractClick = () => {
         const component = props.docType === 3 ? NewPayment : NewContract
-        setModalState({ visible: true, content: component, setInitData: setInitData })
+        setModalState({ visible: true, content: component, setInitData: setInitData, title: props.docType === 3 ? "Ödəniş Razılaşması" : "Müqavilə Razılaşması" })
     }
     return (
         <div className="agreements-container" style={{ overflow: "auto" }}>
@@ -68,7 +60,7 @@ const ContractsHOC = (Content) => function Payments(props) {
             }
             {
                 modalState.visible &&
-                <Modal childProps={modalState} changeModalState={closeModal}>
+                <Modal title={"Yeni " + modalState.title} childProps={modalState} changeModalState={closeModal}>
                     {modalState.content}
                 </Modal>
             }

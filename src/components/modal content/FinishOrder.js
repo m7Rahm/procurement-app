@@ -65,7 +65,12 @@ const FinishOrder = (props) => {
                             <div>
                                 {
                                     material.result !== 99 && userid === props.version &&
-                                    <div style={{ color: 'white', backgroundColor: '#0F9D58', borderRadius: '3px', padding: '2px 4px', cursor: 'pointer' }} onClick={() => handleAcceptedClick(material)}>Təhvil aldım</div>
+                                    <div
+                                        style={{ color: 'white', backgroundColor: '#0F9D58', borderRadius: '3px', padding: '2px 4px', cursor: 'pointer' }}
+                                        onClick={() => handleAcceptedClick(material)}
+                                    >
+                                        Təhvil aldım
+                                    </div>
                                 }
                             </div>
                             <div>

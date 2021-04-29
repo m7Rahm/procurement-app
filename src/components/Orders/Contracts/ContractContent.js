@@ -235,7 +235,7 @@ export const ContractFiles = React.memo((props) => {
                         case /xls./.test(ext):
                             return (
                                 <div key={file.name}>
-                                    <a href={src} rel="noopener noreferrer" target="_blank">
+                                    <a href={src} rel="noopener noreferrer" target="_blank" download>
                                         <FaFileExcel title={file.name} color="#1D6F42" size="36" />
                                     </a>
                                 </div>

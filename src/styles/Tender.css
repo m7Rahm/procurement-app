@@ -27,6 +27,22 @@ div.product-history-search-container>div:last-of-type>div{
     border-radius: 3px;
     float: right;
 }
+div.ready-order-header{
+    padding: 20px;
+}
+div.ready-order-header>h1:last-of-type{
+    float: right;
+    color: #195db6;
+}
+div.ready-order-header>h1:first-of-type{
+    float: left;
+    color: rgb(168, 167, 167);
+}
+div.ready-order-header>h1{
+    font-size: 24px;
+    font-weight: bold;
+}
+
 ul.product-history{
     list-style-type: none;
     margin: 30px 30px 30px;

@@ -4,7 +4,6 @@ import Search from '../../components/Search/Search'
 import NewOrderButton from '../../components/Orders/NewOrder/NewOrderButton';
 import Pagination from '../../components/Misc/Pagination';
 import { TokenContext } from '../../App'
-import { useParams } from 'react-router';
 import useFetch from '../../hooks/useFetch';
 import ResultEmpty from '../../components/Common/ResultEmpty';
 import ContentLoading from '../../components/Misc/ContentLoading';
@@ -17,7 +16,6 @@ const MyOrders = (props) => {
   const userData = tokenContext[0].userData;
   const canCreateNewOrder = userData.previliges.includes('Sifariş yaratmaq');
   const canSeeOtherOrders = userData.previliges.includes("Digər sifarişləri görmək")
-  const { docid: orderid } = useParams();
   const fetchPost = useFetch("POST");
   const fetchGet = useFetch("GET");
   const fetchFunc = useCallback((data) => method === "GET" ? fetchGet(data) : fetchPost(link, data), [link, method, fetchGet, fetchPost])
@@ -35,6 +33,8 @@ const MyOrders = (props) => {
       .catch(err => console.log(err))
   }
   useEffect(() => {
+    const index = window.location.search.indexOf("i=")
+    const orderid = index !== -1 ? window.location.search.substring(index + 2) : undefined
     const data = method === "GET" ? initLink : {
       from: 0,
       until: 20,
@@ -42,7 +42,7 @@ const MyOrders = (props) => {
       dateFrom: '',
       dateTill: '',
       ordNumb: "",
-      id: orderid,
+      id: Number(orderid),
       canSeeOtherOrders,
       departments: []
     };
@@ -53,7 +53,7 @@ const MyOrders = (props) => {
         setLoading(false)
       })
       .catch(err => console.log(err))
-  }, [fetchFunc, orderid, link, method, initLink, canSeeOtherOrders])
+  }, [fetchFunc, link, method, initLink, canSeeOtherOrders])
   return (
     <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
       {

@@ -31,7 +31,7 @@ const NewOrder = (props) => {
       {
         isModalVisible &&
         <Suspense fallback="">
-          <Modal changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
+          <Modal title="Yeni Sifariş" changeModalState={() => handleClick(false)} wrapperRef={props.wrapperRef}>
             {(props) => <NewOrderContent handleModalClose={handleClose} {...props} />}
           </Modal>
         </Suspense>

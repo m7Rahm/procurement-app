@@ -22,7 +22,7 @@ const VisaCard = (props) => {
 		iconsPanelRef,
 		setIconsVisible,
 		setActive,
-		orderid
+		orderid,
 	} = props;
 	const stateRef = useRef(null);
 	const checkBoxRef = useRef(null)
@@ -51,6 +51,7 @@ const VisaCard = (props) => {
 		}
 	}
 	const handleClick = () => {
+		window.history.replaceState(null, "", window.location.pathname + "?i=" + orderid)
 		setActive(orderid)
 		activeRef.current.style.background = activeRef.current.prevBackColor;
 		stateRef.current.style.background = 'skyblue'
@@ -64,13 +65,13 @@ const VisaCard = (props) => {
 				<div ref={isReadDivRef} style={{ width: '3px', float: 'right', height: '100%', background: 'steelblue', display: !isOpened ? 'block' : 'none' }}></div>
 				<div style={{ padding: '5px', height: '100%' }}>
 					<div style={{ height: '100%', float: 'left', padding: '15px 15px 0px 10px' }}>
-						<input ref={checkBoxRef}  type="checkbox" onChange={handleCheck} style={{ padding: '3px' }} ></input>
+						<input ref={checkBoxRef} type="checkbox" onChange={handleCheck} style={{ padding: '3px' }} ></input>
 					</div>
 					<div style={{ height: '29px', paddingTop: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-						<span style={{ fontSize: '17px', fontWeight: 200, color: backgroundColor !== '' ? 'white' : '#545454'  }}>
+						<span style={{ fontSize: '17px', fontWeight: 200, color: backgroundColor !== '' ? 'white' : '#545454' }}>
 							{from}
 						</span>
-						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !=='' ? 'white' : 'gray' }}>
+						<span style={{ fontSize: '12px', fontWeight: 200, verticalAlign: 'baseline', color: backgroundColor !== '' ? 'white' : 'gray' }}>
 							{date}
 						</span>
 					</div>

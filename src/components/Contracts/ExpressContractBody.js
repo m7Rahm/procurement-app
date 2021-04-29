@@ -104,7 +104,9 @@ const ExpressContractBody = (props) => {
             window.history.replaceState(null, "", window.location.pathname)
         }
     }, [fetchGet, props.id])
-    const onVendorSelect = (vendor) => {
+    const onVendorSelect = (vendor, inputRef, vendorsListRef) => {
+        inputRef.current.value = vendor.name;
+        vendorsListRef.current.style.display = "none";
         setContractState(prev => {
             stateRef.current.vendorid = vendor.id;
             if (prev.length !== 0)
@@ -142,7 +144,6 @@ const ExpressContractBody = (props) => {
                         <span style={{ fontWeight: '550', color: 'slategray' }}>{contractState[0].voen}</span>
                     </>
                 }
-
             </div>
             <div style={{ float: 'right', marginTop: '10px' }}>
                 <ContractRelatedDocs

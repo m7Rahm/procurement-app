@@ -12,7 +12,7 @@ const Profile = (props) => {
     const [changePassword, setChangePassword] = useState(false);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
     const setProfileData = props.setProfileData;
-    const tokenContext = useContext(TokenContext)[1];
+    const tokenContext = useContext(TokenContext);
     const setTokenContext = tokenContext[1];
     const logout = tokenContext[2];
     const fetchUserData = useFetch("GET")

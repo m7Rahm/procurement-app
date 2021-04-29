@@ -142,20 +142,20 @@ const Navigation = (props, ref) => {
                 : "/contracts";
         }
         const subModule = notification.doc_type === 0 && notification.category_id === 1
-            ? "/visas/"
+            ? "/visas?"
             : notification.doc_type === 0 && notification.category_id === 2 && notification.action !== 2
-                ? "/my-orders/"
+                ? "/my-orders?"
                 : notification.doc_type === 0 && notification.category_id === 2 && notification.action === 2
-                    ? "/returned/"
+                    ? "/returned?"
                     : notification.doc_type === 1
-                        ? "/agreements/"
+                        ? "/agreements?"
                         : notification.doc_type === 2
-                            ? "/contracts/"
-                            : "/payments/"
+                            ? "/contracts?"
+                            : "/payments?"
         const { tran_id: tranid, doc_number: docNumber } = notification;
-        let link = module + subModule + tranid
+        let link = module + subModule + `i=${tranid}`
         if (notification.category_id === 10) {
-            link = "/other/" + tranid + "?dt=" + notification.doc_type
+            link = "/other?i=" + tranid + "&dt=" + notification.doc_type
         }
         history.push(link, { tranid, docNumber: docNumber });
     }

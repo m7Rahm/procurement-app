@@ -65,7 +65,9 @@ const NewContract = (props) => {
         setFiles(prev => prev.filter(doc => doc.name !== files.name))
     }, [])
     const handleChange = useCallback((e) => {
-        const files = e.target.files;
+        const files = { ...e.target.files };
+        files.length = e.target.files.length
+        e.target.value = null
         setFiles(prev => {
             const newFiles = [];
             let unique = true;
@@ -96,8 +98,9 @@ const NewContract = (props) => {
             }
         })
     }, []);
-    const addVendor = (vendor) => {
+    const addVendor = (vendor, _, vendorsListRef) => {
         setVendor(vendor)
+        vendorsListRef.current.style.display = "none"
     }
     return (
         <div>
@@ -148,7 +151,7 @@ const AgreementsList = (props) => {
     const fetchGet = useFetch("GET");
     useEffect(() => {
         const controller = new AbortController();
-        fetchGet('http://192.168.0.182:54321/api/agreements?result=1',controller)
+        fetchGet('http://192.168.0.182:54321/api/agreements?result=1', controller)
             .then(respJ => setAgreements({ all: respJ, available: respJ, visible: respJ.slice(0, Math.round(200 / 36)), offset: 2 }))
             .catch(ex => console.log(ex))
         return () => controller.abort();

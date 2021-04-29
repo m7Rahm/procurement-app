@@ -30,6 +30,16 @@ const ProductHistory = (props) => {
     const navigateToContract = (id) => {
         window.location.href = "/contracts/express-contracts?i=" + id
     }
+    const handleSearch = () => {
+        if ((/^\d{4}([-])\d{2}\1\d{2}$/gi.test(searchStateRef.current.dateTo) || searchStateRef.current.dateTo === "")
+            &&
+            (/^\d{4}([-])\d{2}\1\d{2}$/gi.test(searchStateRef.current.dateFrom) || searchStateRef.current.dateFrom === "")) {
+            const data = { productid: productid, subGlCategoryid: subGlCategory, ...searchStateRef.current }
+            fetchPost("http://192.168.0.182:54321/api/get-product-history", data)
+                .then(resp => setHistory(resp))
+                .catch(ex => console.log(ex))
+        }
+    }
     return (
         <div style={{ backgroundColor: "white", paddingBottom: "30px" }}>
             <div className="product-history-search-container">
@@ -39,6 +49,7 @@ const ProductHistory = (props) => {
                         month={month}
                         placeholder="Tarixdən"
                         name="dateFrom"
+                        searchStateRef={searchStateRef}
                         handleInputChange={handleInputChange}
                     />
                 </div>
@@ -48,11 +59,12 @@ const ProductHistory = (props) => {
                         month={month}
                         placeholder="Tarixədək"
                         name="dateTo"
+                        searchStateRef={searchStateRef}
                         handleInputChange={handleInputChange}
                     />
                 </div>
                 <div>
-                    <div>AXTAR</div>
+                    <div onClick={handleSearch}>AXTAR</div>
                 </div>
             </div>
             <ul className="product-history">

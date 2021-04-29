@@ -1,21 +1,16 @@
 import React, { useRef } from 'react'
-import { useLocation } from 'react-router';
 const isReadDivDisplay = (value) => !value ? 'block' : 'none'
 const AgreementCard = (props) => {
     const stateRef = useRef(null);
     const display = isReadDivDisplay(props.card.is_read);
-    const location = useLocation()
     const handleClick = () => {
         const params = props.params;
-        if(props.activeRef.current)
+        if (props.activeRef.current)
             props.activeRef.current.style.backgroundColor = "transparent";
         stateRef.current.style.backgroundColor = "skyblue";
         props.activeRef.current = stateRef.current;
         const active = Object.keys(params).reduce((prev, current) => prev = { ...prev, [current]: props.card[params[current]] }, { manual: true });
-        if (window.location.pathname.match(/(\/\d)$/)) {
-            const charIndex = location.pathname.lastIndexOf("/")
-            window.history.replaceState(null, "", location.pathname.substring(0, charIndex + 1))
-        }
+        window.history.replaceState(null, "", window.location.pathname + `?i=${props.card[params.active]}${params.docType ? `&dt=${props.card[params.docType]}` : ""}`)
         props.setActive(active)
     }
     return (
