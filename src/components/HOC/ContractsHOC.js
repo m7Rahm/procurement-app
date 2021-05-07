@@ -1,4 +1,4 @@
-import React, { useState, lazy, useCallback } from "react"
+import React, { useState, lazy, useCallback, useEffect } from "react"
 import OrdersSearchHOC from "..//Search/OrdersSearchHOC"
 import AgreementCard from "../VisaCards/AgreementCard"
 import SideBarContainer from "../HOC/SideBarContainer"
@@ -28,6 +28,10 @@ const ContractsHOC = (Content) => function Payments(props) {
     }, [fetchPost, link, fetchGet, method, transformData])
     const index = window.location.search.indexOf("i=")
     const docid = index !== -1 ? window.location.search.substring(index + 2) : undefined
+    useEffect(() => {
+        if (Number(docid) && window.history.state)
+            setActive({ active: docid })
+    }, [docid])
     const [active, setActive] = useState({ active: Number(docid) });
     const apiString = active.active ? `http://192.168.0.182:54321/api/doc-content?doctype=${props.docType}&docid=${active.active}` : ""
     const closeModal = () => {

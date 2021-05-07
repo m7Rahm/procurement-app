@@ -1,15 +1,12 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import VisaCard from './VisaCard'
 
 import { BsArrowUpShort } from 'react-icons/bs'
 import IconsPanel from '../Search/IconsPanel';
 import Pagination from '../Misc/Pagination';
-import { TokenContext } from '../../App'
 
 const SideBar = (props) => {
 	const { updateList, setActive, initData } = props;
-	const tokenContext = useContext(TokenContext);
-	const token = tokenContext[0].token;
 	const notifIcon = useRef(null);
 	const activePageRef = useRef(0);
 	const activeRef = useRef({ style: { background: '' } });
@@ -67,7 +64,6 @@ const SideBar = (props) => {
 			<div ref={iconsPanelRef}>
 				<IconsPanel
 					searchParamsRef={searchParamsRef}
-					token={token}
 					iconsVisible={iconsVisible}
 					checkedAmountRef={checkedAmountRef}
 					setVisas={setVisas}
@@ -88,13 +84,13 @@ const SideBar = (props) => {
 						return (
 							<VisaCard
 								key={visa.id}
-								token={token}
 								setActive={setActive}
 								iconsPanelRef={iconsPanelRef}
 								checkedAmount={checkedAmountRef}
 								setIconsVisible={setIconsVisible}
 								activeRef={activeRef}
 								id={visa.id}
+								senderid={visa.sender_id}
 								isOpened={visa.is_read}
 								orderid={visa.order_id}
 								from={visa.sender_full_name}

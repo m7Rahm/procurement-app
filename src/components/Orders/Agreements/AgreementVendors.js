@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import UserAgreementVendorRow from './UserAgreementVendorRow'
 import AgreementVendorInfo from '../../modal content/AgreementVendorInfo'
 import OperationResult from '../../Misc/OperationResult'
 import useFetch from '../../../hooks/useFetch';
+import { WebSocketContext } from '../../../pages/SelectModule';
 const Modal = React.lazy(() => import('../../Misc/Modal'));
 
 const AgreementVendors = (props) => {
@@ -10,6 +11,7 @@ const AgreementVendors = (props) => {
     const [modalState, setModalState] = useState({ visible: false, content: null });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '', icon: null })
     const textAreaRef = useRef(null);
+    const webSocket = useContext(WebSocketContext)
     const active = props.agreementResult === 0 && props.userResult === 0;
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
@@ -18,7 +20,7 @@ const AgreementVendors = (props) => {
         if (props.active) {
             fetchGet(`http://192.168.0.182:54321/api/agreement-vendors/${props.active}`)
                 .then(respJ => {
-                    if(mounted)
+                    if (mounted)
                         setAgreementVendors(respJ)
                 })
                 .catch(ex => console.log(ex))
@@ -27,8 +29,8 @@ const AgreementVendors = (props) => {
             mounted = false
         }
     }, [props.active, fetchGet]);
-    const handleDetailsClick = (messageid, vendorid) => {
-        setModalState({ visible: true, messageid: messageid, vendorid: vendorid, content: AgreementVendorInfo })
+    const handleDetailsClick = (messageid, vendor) => {
+        setModalState({ visible: true, messageid: messageid, vendorid: vendor.id, title: vendor.name, content: AgreementVendorInfo })
     }
     const closeModal = () => setModalState({ visible: false });
     const declineAgreement = () => {
@@ -43,13 +45,19 @@ const AgreementVendors = (props) => {
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();
-                        props.setDocState(prev => ({ ...prev, userResult: -1, actionDate: 'Just now' }));
-                            props.setInitData(prev => ({ ...prev }))
+                        props.setDocState(prev => ({ ...prev, userResult: -1, actionDate: 'İndicə' }));
+                        props.setInitData(prev => ({ ...prev }))
+                        const message = {
+                            message: "notification",
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.not_type === 0 ? "" : "nA" })),
+                            data: undefined
+                        }
+                        webSocket.send(JSON.stringify(message))
                     }
                 })
                 .catch(ex => console.log(ex))
         }
-        setModalState({ visible: true, handleSend: handleDecline, content: DeclineReason })
+        setModalState({ visible: true, handleSend: handleDecline, content: DeclineReason, title: "Y/N" })
     }
     const confirmSelections = () => {
         const selected = agreementVendors.filter(vendor => vendor.result === 1).map(vendor => [vendor.id, vendor.review]);
@@ -63,9 +71,15 @@ const AgreementVendors = (props) => {
             };
             fetchPost('http://192.168.0.182:54321/api/accept-decline-agreement', data)
                 .then(respJ => {
-                    if (respJ.length === 0) {
-                        props.setDocState(prev => ({ ...prev, userResult: 1, actionDate: 'Just now' }))
-                            props.setInitData(prev => ({ ...prev }))
+                    if (respJ.length !== 0) {
+                        props.setDocState(prev => ({ ...prev, userResult: 1, actionDate: 'İndicə' }))
+                        props.setInitData(prev => ({ ...prev }))
+                        const message = {
+                            message: "notification",
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: receiver.not_type === 0 ? "" : "nA" })),
+                            data: undefined
+                        }
+                        webSocket.send(JSON.stringify(message))
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -74,22 +88,27 @@ const AgreementVendors = (props) => {
             setOperationResult({ visible: true, desc: 'Seçim etməmisiniz', backgroundColor: 'white' })
     }
     const cancelAgreement = () => {
-
-        const handleCnacel = (comment) => {
+        const handleCancel = (comment) => {
             const data = {
-                agreementid: '',
+                agreementid: props.active,
                 comment: comment
             }
             fetchPost('http://192.168.0.182:54321/api/cancel-agreement', data)
                 .then(respJ => {
                     if (respJ.length === 0) {
                         closeModal();
-                        props.setDocState(prev => ({ ...prev, agreementResult: -1, actionDate: 'Just now' }))
+                        props.setDocState(prev => ({ ...prev, agreementResult: -1, actionDate: 'İndicə' }))
+                        const message = {
+                            message: "notification",
+                            receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "" })),
+                            data: undefined
+                        }
+                        webSocket.send(JSON.stringify(message))
                     }
                 })
                 .catch(ex => console.log(ex))
         }
-        setModalState({ visible: true, handleSend: handleCnacel, content: DeclineReason })
+        setModalState({ visible: true, handleSend: handleCancel, content: DeclineReason })
     }
     return (
         <>
@@ -130,7 +149,6 @@ const AgreementVendors = (props) => {
                                 referer={props.referer}
                                 agreementid={props.active}
                                 handleDetailsClick={handleDetailsClick}
-                                setModalState={props.setModalState}
                                 setAgreementVendors={setAgreementVendors}
                             />
                         )
@@ -140,6 +158,7 @@ const AgreementVendors = (props) => {
                     modalState.visible &&
                     <Modal
                         childProps={modalState}
+                        title={modalState.title}
                         changeModalState={closeModal}
                     >
                         {modalState.content}

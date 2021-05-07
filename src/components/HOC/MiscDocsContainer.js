@@ -18,6 +18,14 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
     const docType = window.location.search.match(/dt=(\d{1,3})/);
     const docid = docidURL ? docidURL[1] : undefined
     const dType = docType ? Number(docType[1]) : 0
+    useEffect(() => {
+        if (Number(docid))
+            setActive({
+                active: docid,
+                number: "",
+                docType: dType
+            })
+    }, [docid, dType])
     const [active, setActive] = useState({
         active: Number(docid),
         number: "",
@@ -30,11 +38,13 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
         setModalState({ visible: true, content: NewBudgetRequest, setInitData: setInitData, token: token })
     }
     useEffect(() => {
-        setActive({
-            active: Number(docid),
-            number: "",
-            docType: dType
-        })
+        if (Number(docid) && window.history.state) {
+            setActive({
+                active: docid,
+                number: "",
+                docType: dType
+            })
+        }
     }, [docid, dType])
     return (
         <div>
@@ -67,7 +77,7 @@ const MiscDocsContainer = SideBar => function MiscDocsContainer(props) {
             }
             {
                 modalState.visible &&
-                <Modal childProps={modalState} changeModalState={closeModal}>
+                <Modal title="Büdcə Artımı razılaşması" childProps={modalState} changeModalState={closeModal}>
                     {modalState.content}
                 </Modal>
             }

@@ -17,7 +17,7 @@ const PotentialVendors = (props) => {
         sphere: ''
     });
     const fetchGet = useFetch("GET");
-    const makeExpressVendor = useCallback((id) => {
+    const makeExpressVendor = useCallback((id, name) => {
         const onFinish = () => {
             fetchGet('http://192.168.0.182:54321/api/potential-vendors?from=0')
                 .then(respJ => {
@@ -29,6 +29,7 @@ const PotentialVendors = (props) => {
         }
         setModalState({
             visible: true,
+            title: name,
             content: (props) =>
                 <ExpressVendorInfo
                     vendorid={id}
@@ -64,7 +65,7 @@ const PotentialVendors = (props) => {
         <div className="dashboard" style={{ paddingTop: '56px' }}>
             {
                 modalState.visible &&
-                <Modal title="Express Vendor" changeModalState={closeModal}>
+                <Modal title={modalState.title} changeModalState={closeModal}>
                     {modalState.content}
                 </Modal>
             }

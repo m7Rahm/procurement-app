@@ -57,7 +57,7 @@ const PotentialVendor = (props) => {
             <div style={{ textAlign: 'center' }}>
                 {
                     props.can_be_express &&
-                    <FaEdge onClick={() => props.makeExpressVendor(props.id)} color="rgb(255, 174, 0)" cursor="pointer" />
+                    <FaEdge onClick={() => props.makeExpressVendor(props.id, props.name)} color="rgb(255, 174, 0)" cursor="pointer" />
                 }
             </div>
             <div style={{ textAlign: 'center' }}>

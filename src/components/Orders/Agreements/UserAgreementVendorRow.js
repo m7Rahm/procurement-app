@@ -15,7 +15,7 @@ const AgreementVendorRow = (props) => {
         setAgreementVendors(prev => prev.map(row => row.id !== vendor.id ? row : { ...row, [name]: value }))
     }
     const onBulbClick = () => {
-        props.handleDetailsClick(props.agreementid, vendor.id)
+        props.handleDetailsClick(props.agreementid, vendor)
     }
     const approveVendor = () => {
         const value = vendor.result === 1 ? 0 : 1

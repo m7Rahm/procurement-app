@@ -23,7 +23,7 @@ const DecomInventoryNumbers = (props) => {
 
     return (
         props.visible &&
-        <Modal style={{ width: "200px", minWidth: "auto" }} childProps={{ nums: invenNums }} changeModalState={props.closeModal}>
+        <Modal title="İnventar Nömrələri" style={{ width: "200px", minWidth: "auto" }} childProps={{ nums: invenNums }} changeModalState={props.closeModal}>
             {Nums}
         </Modal>
     )

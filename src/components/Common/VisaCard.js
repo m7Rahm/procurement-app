@@ -17,6 +17,7 @@ const VisaCard = (props) => {
 		from,
 		priority,
 		remark,
+		senderid,
 		date,
 		checkedAmount,
 		iconsPanelRef,
@@ -51,8 +52,8 @@ const VisaCard = (props) => {
 		}
 	}
 	const handleClick = () => {
-		window.history.replaceState(null, "", window.location.pathname + "?i=" + orderid)
-		setActive(orderid)
+		window.history.replaceState(null, "", window.location.pathname + "?i=" + orderid + "&r=" + senderid)
+		setActive({ orderid: orderid, initid: senderid })
 		activeRef.current.style.background = activeRef.current.prevBackColor;
 		stateRef.current.style.background = 'skyblue'
 		activeRef.current = stateRef.current;

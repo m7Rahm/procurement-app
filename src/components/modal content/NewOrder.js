@@ -28,14 +28,13 @@ const NewOrderContent = (props) => {
       })
       .catch(ex => console.log(ex))
   }, [fetchGet]);
-
   const createApproveNewOrder = (materials, url, onSuccess) => {
     let canProceed = true;
     const parsedMaterials = materials.map(material =>
       [
         material.materialId,
         material.count,
-        material.approx_price * material.count,
+        material.approx_price * material.count * (material.isAmortisized ? material.percentage / 100 : 1),
         material.additionalInfo,
         material.subGlCategory
       ]
@@ -89,7 +88,7 @@ const NewOrderContent = (props) => {
           })
           .catch(err => console.log(err))
       }
-      if(active)
+      if (active)
         createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
     }
   }

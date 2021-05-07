@@ -60,6 +60,7 @@ const ContractContent = (props) => {
                 width: "600px",
                 minWidth: "auto"
             },
+            title: "Y/N",
             content: AreYouSure,
             text: "Razılaşmanı imtina etməyə",
             onCancel: closeModal,
@@ -90,7 +91,7 @@ const ContractContent = (props) => {
             .catch(ex => console.log(ex))
     }
     const showHistory = () => {
-        setModalState({ visible: true, fetchParticipants: fetchParticipants, content: Participants })
+        setModalState({ visible: true, fetchParticipants: fetchParticipants, content: Participants, title: "İştirakçılar" })
     }
     const closeModal = () => {
         setModalState({ visible: false })
@@ -100,7 +101,7 @@ const ContractContent = (props) => {
         <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px', paddingTop: '76px' }}>
             {
                 modalState.visible &&
-                <Modal changeModalState={closeModal} childProps={modalState}>
+                <Modal changeModalState={closeModal} title={modalState.title} childProps={modalState}>
                     {modalState.content}
                 </Modal>
             }

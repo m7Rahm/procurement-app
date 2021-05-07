@@ -10,9 +10,10 @@ import Chat from '../../Misc/Chat'
 
 const VisaContent = (props) => {
     const location = useLocation();
-    const { tranid, documentType } = props;
+    const { tranid, documentType, initid } = props;
     const [visa, setVisa] = useState(undefined);
     const locationTranid = location.state ? location.state.tranid : undefined
+    const inid = location.state ? location.state.initid : undefined
     const canProceed = useRef({});
     // const otherProcurementUsers = useRef([]);
     // const getOtherProcUsers = (abortController) => {
@@ -30,8 +31,8 @@ const VisaContent = (props) => {
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;
-        if (tranid && mounted) {
-            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}`, abortController)
+        if (tranid && mounted && initid) {
+            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}&init=${initid}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
@@ -44,12 +45,12 @@ const VisaContent = (props) => {
                 abortController.abort()
             }
         }
-    }, [tranid, fetchGet]);
+    }, [tranid, fetchGet, initid]);
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;
         if (locationTranid && mounted) {
-            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}`, abortController)
+            fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}&init=${inid}`, abortController)
                 .then(respJ => {
                     if (respJ.length !== 0 && mounted) {
                         canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
@@ -62,7 +63,7 @@ const VisaContent = (props) => {
                 abortController.abort()
             }
         }
-    }, [locationTranid, fetchGet]);
+    }, [locationTranid, fetchGet, inid]);
 
     const participantsRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);

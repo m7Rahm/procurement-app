@@ -39,45 +39,51 @@ const ExpressVendorInfo = (props) => {
         const formData = new FormData();
         const phoneNumbs = vendorData.phone_numbers.reduce((sum, current) => sum += `${current.val},`, '');
         const emails = vendorData.emails.reduce((sum, current) => sum += `${current.val},`, '')
-        formData.append('name', namRef.current.value);
-        formData.append('voen', voenRef.current.value);
-        formData.append('saa', saaRef.current.value);
-        formData.append('residency', residencyRef.current.value);
-        formData.append('tax_type', taxTypeRef.current.value);
-        formData.append('legal_address', legalAddressRef.current.value);
-        formData.append('actual_address', actualAddressRef.current.value);
-        formData.append('risk_zone', riskZoneRef.current.value);
-        formData.append('reg_date', regDateRef.current.value);
-        formData.append('phone_numbers', phoneNumbs.substring(0, phoneNumbs.length - 1));
-        formData.append('sphere', workSectorRef.current.value);
-        formData.append('emails', emails.substring(0, emails.length - 1));
-        formData.append('tax_percentage', taxPercentageRef.current.value);
-        formData.append('vendor_type', vendorTypeRef.current.value);
-        formData.append('is_closed', vendorData.is_closed);
-        const closeDate = closeDateRef.current ? closeDateRef.current.value : vendorData.close_date
-        if(closeDate)
-            formData.append('close_date', closeDate);
-        formData.append('close_reason', closeReasonRef.current ? closeReasonRef.current.value : vendorData.close_reason);
-        formData.append('id', vendorData.id);
-        const newFiles = attachmentsRef.current.new;
-        const oldFiles = attachmentsRef.current.fetched.reduce((sum, current) => sum += `${current.val},`, '');
-        formData.append('filesMetaData', oldFiles.substring(0, oldFiles.length - 1))
-        for (let i = 0; i < newFiles.length; i++)
-            formData.append('files', newFiles[i].val);
-        fetch(`http://192.168.0.182:54321/api${url}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            body: formData
-        })
-            .then(resp => resp.json())
-            .then(respJ => {
-                if (!respJ.length) {
-                    onFinish();
-                }
+        if (!/\d+\.?\d{0,2}/.test(taxPercentageRef.current.value)) {
+            taxPercentageRef.current.style.boxShadow = "0px 0px 3px 1px red"
+        } else if (!/\d{4}-\d{2}-\d{2}/.test(regDateRef.current.value)) {
+            regDateRef.current.style.boxShadow = "0px 0px 3px 1px red"
+        } else {
+            formData.append('name', namRef.current.value);
+            formData.append('voen', voenRef.current.value);
+            formData.append('saa', saaRef.current.value);
+            formData.append('residency', residencyRef.current.value);
+            formData.append('tax_type', taxTypeRef.current.value);
+            formData.append('legal_address', legalAddressRef.current.value);
+            formData.append('actual_address', actualAddressRef.current.value);
+            formData.append('risk_zone', riskZoneRef.current.value);
+            formData.append('reg_date', regDateRef.current.value);
+            formData.append('phone_numbers', phoneNumbs.substring(0, phoneNumbs.length - 1));
+            formData.append('sphere', workSectorRef.current.value);
+            formData.append('emails', emails.substring(0, emails.length - 1));
+            formData.append('tax_percentage', taxPercentageRef.current.value);
+            formData.append('vendor_type', vendorTypeRef.current.value);
+            formData.append('is_closed', vendorData.is_closed);
+            const closeDate = closeDateRef.current ? closeDateRef.current.value : vendorData.close_date
+            if (closeDate)
+                formData.append('close_date', closeDate);
+            formData.append('close_reason', closeReasonRef.current ? closeReasonRef.current.value : vendorData.close_reason);
+            formData.append('id', vendorData.id);
+            const newFiles = attachmentsRef.current.new;
+            const oldFiles = attachmentsRef.current.fetched.reduce((sum, current) => sum += `${current.val},`, '');
+            formData.append('filesMetaData', oldFiles.substring(0, oldFiles.length - 1))
+            for (let i = 0; i < newFiles.length; i++)
+                formData.append('files', newFiles[i].val);
+            fetch(`http://192.168.0.182:54321/api${url}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
             })
-            .catch(ex => console.log(ex))
+                .then(resp => resp.json())
+                .then(respJ => {
+                    if (!respJ.length) {
+                        onFinish();
+                    }
+                })
+                .catch(ex => console.log(ex))
+        }
     }
     const fetchGet = useFetch("GET");
     useEffect(() => {
@@ -200,11 +206,13 @@ const ExpressVendorInfo = (props) => {
                     </select>
                 </div>
                 <div className="form-card">
-                    <label>Faiz dərəcəsi</label>
+                    <label>Faiz dərəcəsi*</label>
                     <input
                         disabled={disabled}
                         name="tax_percentage"
                         placeholder="%"
+                        required
+                        title="Xahiş olunur xananı düzgün formatda doldurun"
                         ref={taxPercentageRef}
                         style={{ width: '50px' }}
                     />
@@ -212,22 +220,22 @@ const ExpressVendorInfo = (props) => {
             </div>
             <div style={{ paddingLeft: '20px' }}>
                 <div className="form-card">
-                    <label>Hüquqi Address</label>
+                    <label>Hüquqi Ünvan</label>
                     <input
                         disabled={disabled}
                         name="legal_address"
                         ref={legalAddressRef}
-                        placeholder="Legal Address"
+                        placeholder="Hüquqi Ünvan"
                         defaultValue={vendorData.legal_address}
                         style={{ width: '400px' }}
                     />
                 </div>
                 <div className="form-card">
-                    <label>Faktiki Address</label>
+                    <label>Faktiki Ünvan</label>
                     <input
                         disabled={disabled}
                         name="actual_address"
-                        placeholder="Actual Address"
+                        placeholder="Faktiki Ünvan"
                         ref={actualAddressRef}
                         defaultValue={vendorData.actual_address}
                         style={{ width: '400px' }}
@@ -267,6 +275,7 @@ const ExpressVendorInfo = (props) => {
                                         disabled={disabled}
                                         key={phoneNumber.key}
                                         value={phoneNumber}
+                                        placeholder="əlaqə nömrəsi"
                                         handleChange={handleChange}
                                         handleDelete={() => handlePhoneDel(phoneNumber.key)}
                                     />
@@ -293,6 +302,7 @@ const ExpressVendorInfo = (props) => {
                                         key={email.key}
                                         disabled={disabled}
                                         value={email}
+                                        placeholder="email ünvanı"
                                         handleChange={handleChange}
                                         handleDelete={() => handleEmailDel(email.key)}
                                     />
@@ -314,8 +324,8 @@ const ExpressVendorInfo = (props) => {
                     </select>
                 </div>
                 <div className="form-card">
-                    <label>Qeydiyyat tarixi</label>
-                    <input type="date" disabled={disabled} name="reg_date" ref={regDateRef} defaultValue={vendorData.reg_date} />
+                    <label>Qeydiyyat tarixi*</label>
+                    <input type="date" disabled={disabled} required name="reg_date" ref={regDateRef} defaultValue={vendorData.reg_date} />
                 </div>
             </div>
             <div style={{ paddingLeft: '20px' }}>
@@ -351,7 +361,7 @@ const ExpressVendorInfo = (props) => {
 export default ExpressVendorInfo
 
 const ContactCard = (props) => {
-    const { value, handleDelete, disabled, handleChange } = props;
+    const { value, handleDelete, disabled, handleChange, placeholder } = props;
     const rowRef = useRef(null);
     const handleDel = () => {
         if (!disabled) {
@@ -368,7 +378,7 @@ const ContactCard = (props) => {
     return (
         <div ref={rowRef} className="contact-card" >
             <input
-                placeholder="phone number"
+                placeholder={placeholder}
                 name="phone"
                 onChange={handleInputChange}
                 disabled={disabled}

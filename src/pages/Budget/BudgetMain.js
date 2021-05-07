@@ -169,7 +169,7 @@ const Budget = () => {
                 />
                 {
                     modalState.visibility &&
-                    <Modal changeModalState={closeModal}>
+                    <Modal title="Büdcə artımı" changeModalState={closeModal}>
                         {modalState.content}
                     </Modal>
                 }

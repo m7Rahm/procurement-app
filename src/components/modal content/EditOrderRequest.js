@@ -29,6 +29,7 @@ const EditOrderRequest = (props) => {
         fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
                 const orderRows = respJ.map(row => ({ ...row, id: Math.random().toString(), models: [], className: '' }));
+                console.log(respJ)
                 initialValuesRef.current = respJ;
                 setOrderState(orderRows);
             })
@@ -43,7 +44,7 @@ const EditOrderRequest = (props) => {
                     material.id,
                     material.material_id,
                     material.amount,
-                    material.approx_price * material.amount,
+                    material.approx_price * material.amount * (material.isAmortisized ? material.perc / 100 : 1),
                     material.material_comment,
                     material.sub_gl_category_id
                 ]
@@ -61,6 +62,7 @@ const EditOrderRequest = (props) => {
         else
             setOperationResult({ visible: true, desc: "Məhsul seçimi düzgün deyil" })
     }
+
     const handleSendClick = () => {
         const error = orderState.find(material => isNaN(material.material_id * material.amount * material.approx_price * material.sub_gl_category_id))
         if (!error) {
@@ -68,7 +70,7 @@ const EditOrderRequest = (props) => {
                 [
                     material.material_id,
                     material.amount,
-                    material.approx_price * material.amount,
+                    material.approx_price * material.amount * (material.isAmortisized ? material.perc / 100 : 1),
                     material.material_comment,
                     material.sub_gl_category_id
                 ]);

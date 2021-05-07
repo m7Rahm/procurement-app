@@ -71,6 +71,7 @@ const OrderMaterials = () => {
                             <th>Növ</th>
                             <th style={{ maxWidth: '100px' }}>Qiymət</th>
                             <th style={{ maxWidth: '100px' }}>Kod</th>
+                            <th>Optimal miqdar</th>
                             <th>Ölçü vahidi</th>
                             <th>Inventardır</th>
                             <th>Əsas Vəsaitdir</th>
@@ -119,6 +120,7 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
     const esasVesaitRef = useRef(null);
     const titleRef = useRef(null);
     const codeRef = useRef(null);
+    const optimalQuantity = useRef(null);
     // eslint-disable-next-line
     const subCategories = glCategoriesRef.current.filter(glCategory => glCategory.dependent_id == materialData.gl_category_id);
     const handleChange = (e) => {
@@ -139,7 +141,8 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
             title: titleRef.current.value,
             sub_gl_category_id: materialData.sub_gl_category_id,
             isInv: inventoryRef.current.checked,
-            isEsasVesait: esasVesaitRef.current.checked
+            isEsasVesait: esasVesaitRef.current.checked,
+            optimal_quantity: optimalQuantity.current.value
         };
         fetchPost('http://192.168.0.182:54321/api/update-material', data)
             .then(() => setDisabled(true))
@@ -198,6 +201,9 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
                 <input disabled={true} defaultValue={materialData.product_id} name="product_id" ref={codeRef} />
             </td>
             <td>
+                <input  disabled={disabled} defaultValue={materialData.optimal_quantity} ref={optimalQuantity} />
+            </td>
+            <td>
                 <select name="cluster" disabled={disabled} onChange={handleChange} value={materialData.cluster}>
                     {
                         units.map(unit =>
@@ -232,6 +238,7 @@ const NewMaterial = React.memo((props) => {
     const curatoridRef = useRef(null);
     const inventoryRef = useRef(null);
     const esasVesaitRef = useRef(null);
+    const optimalQuantity = useRef(null);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newCatState, setNewCatState] = useState({
         title: '',
@@ -253,7 +260,8 @@ const NewMaterial = React.memo((props) => {
             approxPrice: newCatState.approx_price,
             cluster: unitsRef.current.value,
             is_inventory: inventoryRef.current.checked,
-            is_esas_vesait: esasVesaitRef.current.checked
+            is_esas_vesait: esasVesaitRef.current.checked,
+            optimal_quantity: optimalQuantity.current.value
         };
         if (data.title !== "" && gl_category_id !== "-1" && data.sub_gl_category_id !== "-1")
             fetchPost('http://192.168.0.182:54321/api/add-new-cat', data)
@@ -261,10 +269,11 @@ const NewMaterial = React.memo((props) => {
                     if (respJ[0].result === 'success') {
                         const { row_id: id, product_id } = respJ[0];
                         setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', backgroundColor: "white", iconColor: "rgb(15, 157, 88)", icon: AiFillCheckCircle })
-                        setTableData(prev => ({ content: [...prev.content, { ...data, id, product_id, is_service: data.type === "1" }], count: prev.count + 1 }));
+                        setTableData(prev => ({ content: [...prev.content, { ...data, id, product_id, is_service: data.type === "1", optimal_quantity: optimalQuantity.current.value }], count: prev.count + 1 }));
                         inventoryRef.current.checked = false;
                         setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approx_price: "" });
                         curatoridRef.current.value = "-1"
+                        optimalQuantity.current.value = 0
                     } else {
                         setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı' })
                     }
@@ -343,6 +352,9 @@ const NewMaterial = React.memo((props) => {
                 <input name="approx_price" value={newCatState.approx_price} onChange={handlePriceChange} />
             </td>
             <td style={{ maxWidth: '100px' }}>
+            </td>
+            <td>
+                <input defaultValue="0" ref={optimalQuantity} />
             </td>
             <td>
                 <select ref={unitsRef}>

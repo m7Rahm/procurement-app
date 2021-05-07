@@ -14,7 +14,7 @@ const Roles = () => {
             ? roles.find(role => role.id === id)
             : { id: -1, name: '', modules: '', previliges: '', active_passive: 1 };
         const updateRole = (props) => <UpdateRole closeModal={changeModalState} setRoles={setRoles} {...props} role={role} />
-        setModal({ content: updateRole, state: true })
+        setModal({ content: updateRole, state: true, title: role.name })
     }
     useEffect(() => {
         fetchGet('http://192.168.0.182:54321/api/roles')
@@ -32,7 +32,7 @@ const Roles = () => {
             <div>
                 {
                     modal.state &&
-                    <Modal changeModalState={changeModalState} width="300px">
+                    <Modal title={modal.title} changeModalState={changeModalState} style={{ width: "300px" }}>
                         {modal.content}
                     </Modal>
                 }
@@ -82,7 +82,7 @@ const Roles = () => {
                                             updateFunc={updateFunc}
                                         />
                                     </td>
-                                    <td><MdEdit title="redaktə et" onClick={(e) => handleRoleUpdate(role.id)} /></td>
+                                    <td><MdEdit title="redaktə et" onClick={() => handleRoleUpdate(role.id)} /></td>
                                 </tr>
                             )
                         }

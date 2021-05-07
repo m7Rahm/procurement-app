@@ -82,7 +82,14 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 					timeoutRef.current = null;
 					if (respJ.length !== 0) {
 						const updatedRow = respJ.length === 1
-							? { sub_gl_category_id: respJ[0].subGlCategory, models: respJ, budget: respJ[0].budget, title: respJ[0].title, material_id: respJ[0].id, department_name: respJ[0].department_name }
+							? {
+								sub_gl_category_id: respJ[0].subGlCategory,
+								models: respJ,
+								budget: respJ[0].budget,
+								title: respJ[0].title,
+								material_id: respJ[0].id,
+								department_name: respJ[0].department_name
+							}
 							: { models: respJ, title: "", material_id: "NaN" }
 						if (respJ.length === 1) {
 							modelListRef.current.style.display = "none";
@@ -138,7 +145,9 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 			title: model.title,
 			department_name: model.department_name,
 			budget: model.budget,
-			sub_gl_category_id: model.sub_gl_category_id
+			sub_gl_category_id: model.sub_gl_category_id,
+			isAmortisized: model.is_amortisized,
+			perc: model.perc
 		})))
 		codeRef.current.value = model.product_id;
 		modelListRef.current.style.display = "none";

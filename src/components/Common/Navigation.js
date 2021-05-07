@@ -41,7 +41,7 @@ const Navigation = (props, ref) => {
                                         .sort((a, b) => a.id < b.id)
                                         .map((notification, index) => ({ ...notification, offset: index * 62 }));
                                     const height = all.length * 62;
-                                    return { ...prev, all: all, visible: all.slice(prev.offsetStart, prev.offsetEnd), height: height, count: prev.count + 1 }
+                                    return { ...prev, all: all, visible: all.slice(prev.offsetStart, prev.offsetEnd), height: height, count: newNotifications[0].total_count }
                                 })
                             }
 
@@ -80,9 +80,6 @@ const Navigation = (props, ref) => {
                                         }));
                                     const newState = [...prev.all, ...fetched];
                                     const visible = newState.filter(notif => notif.offset < 604);
-                                    if (prev.count <= newState.filter(notif => !notif.is_read).length) {
-                                        observer.unobserve(delimterRef.current)
-                                    }
                                     return ({
                                         ...prev,
                                         all: newState,
@@ -91,6 +88,8 @@ const Navigation = (props, ref) => {
                                         height: newState.length * 62
                                     })
                                 });
+                            } else {
+                                observer.unobserve(delimterRef.current)
                             }
                         })
                 }
@@ -125,7 +124,7 @@ const Navigation = (props, ref) => {
                                 .map((notification, index) => ({ ...notification, offset: index * 62 }));
                             const height = all.length * 62;
                             const end = prev.offsetEnd === 0 ? all.length - 1 : prev.offsetEnd
-                            return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, end), offsetEnd: end }
+                            return { ...prev, all: all, height: height, visible: all.slice(prev.offsetStart, end), offsetEnd: end, count: respJ[0].total_count }
                         })
                     }
 
@@ -157,7 +156,7 @@ const Navigation = (props, ref) => {
         if (notification.category_id === 10) {
             link = "/other?i=" + tranid + "&dt=" + notification.doc_type
         }
-        history.push(link, { tranid, docNumber: docNumber });
+        history.push(link, { tranid, initid: notification.init_id, docNumber: docNumber });
     }
     const handleScroll = (e) => {
         const scrollTop = e.target.scrollTop;
@@ -305,7 +304,9 @@ const getNotifText = (notif) => {
                             ? "redaktəyə qaytarıldı"
                             : notif.action === 3
                                 ? "redaktə edildi"
-                                : "etiraz edildi"
+                                : notif.action === -1
+                                    ? "etiraz edildi"
+                                    : "ləğv edildi"
                 }
             </>
         )

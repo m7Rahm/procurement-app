@@ -12,7 +12,7 @@ const OrderContentProtected = (props) => {
 		setModalContent(prev => ({ ...prev, visible: false }));
 	}
 	const handleEditClick = (content) => {
-		setModalContent({ visible: true, content });
+		setModalContent({ visible: true, content, title: "Sifariş № ", number: current[0].ord_numb });
 	}
 	const updateContent = (updatedCtnt, receivers, originid) => {
 		const message = JSON.stringify({
@@ -39,7 +39,7 @@ const OrderContentProtected = (props) => {
 			<>
 				{
 					modalContent.visible &&
-					<Modal canBeClosed={true} number={current[0].ord_numb} changeModalState={handleModalClose}>
+					<Modal canBeClosed={true} title="Sifariş № " number={current[0].ord_numb} changeModalState={handleModalClose}>
 						{modalContent.content}
 					</Modal>
 				}

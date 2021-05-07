@@ -24,6 +24,7 @@ const EditUser = (props) => {
     const [showAlertModal, setShowAlertModal] = useState(false);
     const repeatPass = useRef(null);
     const positionRef = useRef(null);
+    const statusRef = useRef(null)
     const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET");
     const updateUserData = () => {
@@ -36,6 +37,7 @@ const EditUser = (props) => {
             structureid: userData.structure_dependency_id,
             role: userData.role_id,
             id: id,
+            position_id: statusRef.current.value,
             vezifeN: positionRef.current.value
         };
         fetchPost("http://192.168.0.182:54321/api/update-user-data", data)
@@ -46,7 +48,7 @@ const EditUser = (props) => {
             .catch(ex => console.log(ex))
     }
     const addNewUser = () => {
-        const data = { ...userData, vezifeN: positionRef.current.value };
+        const data = { ...userData, vezifeN: positionRef.current.value, position_id: statusRef.current.value };
         fetchPost('http://192.168.0.182:54321/api/add-new-user', data)
             .then(respJ => {
                 if (respJ[0].result === 'success') {
@@ -65,6 +67,7 @@ const EditUser = (props) => {
                         setUserData(respJ[0]);
                         const vezife = respJ[0].vezife_n;
                         positionRef.current.value = vezife || ""
+                        statusRef.current.value = respJ[0].position_id
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -105,7 +108,7 @@ const EditUser = (props) => {
                 .catch(ex => console.log(ex))
         }
         else
-            alert("Şifrəni təkrar yığan zaman səhvə yol vermisiniz")
+            alert("Şifrəni təkrar yığan zaman səhvə yol verilib")
     }
     return (
         <div className="edit-user">
@@ -146,9 +149,16 @@ const EditUser = (props) => {
                             <label>Email</label>
                             <input disabled={isProtected} value={userData.email} name="email" onChange={handleChange} />
                         </div>
-                        <div>
+                        <div style={{ margin: "0px 20px" }}>
                             <label>Vəzifə</label>
                             <input disabled={isProtected} ref={positionRef} name="vezife" />
+                        </div>
+                        <div style={{ margin: "0px 20px" }}>
+                            <label>Status</label>
+                            <select disabled={isProtected} ref={statusRef}>
+                                <option value="0" >İşçi</option>
+                                <option value="1" >Rəis</option>
+                            </select>
                         </div>
                         <StructureInfo
                             isProtected={isProtected}
@@ -243,7 +253,7 @@ const Roles = (props) => {
             <h1>Yetkilər</h1>
             <div>
                 <div>
-                    <label>Status</label>
+                    <label>Rol</label>
                     <select
                         value={userData.role_id}
                         onChange={handleRoleChange}

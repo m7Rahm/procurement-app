@@ -32,9 +32,9 @@ const Users = () => {
 	const closeModal = () => {
 		setModal({ visible: false, content: undefined })
 	}
-	const editUserData = (id) => {
-		const editUser = (props) => <EditUser updateList={updateList} closeModal={closeModal} id={id} {...props} />
-		setModal({ visible: true, content: editUser })
+	const editUserData = (user = { id: undefined, full_name: "Yeni istifadəçi" }) => {
+		const editUser = (props) => <EditUser updateList={updateList} closeModal={closeModal} id={user.id} {...props} />
+		setModal({ visible: true, content: editUser, title: user.full_name })
 	}
 	const updateFunc = (id, state) => fetchGet(`http://192.168.0.182:54321/api/change-user-status?userid=${id}&status=${state}`)
 		.catch(ex => console.log(ex))
@@ -75,7 +75,7 @@ const Users = () => {
 									</td>
 									<td>
 										<MdEdit
-											onClick={() => editUserData(user.id)}
+											onClick={() => editUserData(user)}
 											title="düzəliş et"
 										/>
 									</td>
@@ -94,7 +94,7 @@ const Users = () => {
 				/>
 				{
 					modal.visible &&
-					<Modal title="Edit" changeModalState={closeModal}>
+					<Modal title={modal.title} changeModalState={closeModal}>
 						{modal.content}
 					</Modal>
 				}

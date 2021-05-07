@@ -29,9 +29,11 @@ const NewOrderTableRow = (props) => {
       .then(respJ => {
         modelsRef.current = respJ;
         const budget = respJ.length !== 0 ? respJ[0].budget : 0;
-        const modelInput = modelInputRef.current.value.toLowerCase();
-        setModels(respJ.filter(model => model.title.toLowerCase().includes(modelInput)));
-        setBudget(budget);
+        if (modelInputRef.current) {
+          const modelInput = modelInputRef.current.value.toLowerCase();
+          setModels(respJ.filter(model => model.title.toLowerCase().includes(modelInput)));
+          setBudget(budget);
+        }
       })
       .catch(ex => console.log(ex))
   }, [subGlCategory, fetchPost, orderType, structure])
@@ -65,7 +67,7 @@ const NewOrderTableRow = (props) => {
     rowRef.current.addEventListener('animationend', () => setMaterials(prev => prev.filter(material => material.id !== materialid)))
   }
   const setModel = (model) => {
-    fetchGet("http://192.168.0.182:54321/api/material-quantity?pid" + model.product_id)
+    fetchGet(`http://192.168.0.182:54321/api/material-quantity/${structure}?pid=` + model.product_id)
       .then(resp => {
         setQuantity(resp[0].quantity)
       })
@@ -78,7 +80,9 @@ const NewOrderTableRow = (props) => {
         approx_price: model.approx_price,
         code: model.product_id,
         department: model.department_name,
-        isService: model.is_service
+        isService: model.is_service,
+        isAmortisized: model.is_amortisized,
+        percentage: model.perc
       }
       : material
     ));

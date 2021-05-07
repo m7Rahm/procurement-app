@@ -1,19 +1,17 @@
-import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react'
+import React, { useCallback, useState, useLayoutEffect } from 'react'
 import AgreementVendors from './AgreementVendors'
 import AgreementMaterials from '../../Tender/AgreementMaterials'
 import EmptyContent from '../../Misc/EmptyContent'
 import Chat from '../../Misc/Chat'
 import { FaCheck, FaTimes } from 'react-icons/fa'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import AgreementVendorFiles from './AgreementVendorFiles'
 import useFetch from '../../../hooks/useFetch'
 const AgreementContent = (props) => {
     const location = useLocation();
-    const history = useHistory();
     const locationState = location.state ? location.state : undefined;
-    const referer = locationState ? locationState.orderState : null
-    const docid = props.docid ? props.docid : locationState ? locationState.agreement.id : undefined;
-    const number = props.number ? props.number : locationState ? locationState.agreement.number : null;
+    const docid = props.docid ? props.docid : locationState ? locationState.tranid : undefined;
+    const number = props.number ? props.number : locationState ? locationState.docNumber : null;
     const [docState, setDocState] = useState({ tranid: undefined, docid: docid });
     const documentType = 1;
     const fetchGet = useFetch("GET");
@@ -36,10 +34,6 @@ const AgreementContent = (props) => {
         return () => mounted = false
     }, [docid, fetchGet]);
     const fetchMaterials = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/agreement-materials/${docid}`), [docid, fetchGet]);
-    useEffect(() => () => {
-        if (history.action === "POP" && history.location.pathname === '/tender/orders')
-            history.push('/tender/orders', referer)
-    }, [history, referer])
     const fetchMessages = useCallback((from = 0) => fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`), [docid, fetchGet, documentType]);
     const sendMessage = useCallback((data) => {
         const apiData = { ...data, docType: documentType };

@@ -34,6 +34,26 @@ div.ready-order-header>h1:last-of-type{
     float: right;
     color: #195db6;
 }
+.form-card>input, .form-card>select {
+    margin-top: 10px;
+    display: block;
+    height: 30px;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0px 0px 3px 1px #ffae00;
+  }
+  
+  .express-vendor-info {
+    padding: 10px 20px;
+  }
+  
+  .express-vendor-info>div {
+    margin: 20px 0px;
+    display: flex;
+    flex-flow: wrap row;
+    justify-content: space-between;
+  }
+  
 div.ready-order-header>h1:first-of-type{
     float: left;
     color: rgb(168, 167, 167);

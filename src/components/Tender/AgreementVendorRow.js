@@ -1,8 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 import { IoIosAttach, } from 'react-icons/io'
 import { AiOutlinePicture } from 'react-icons/ai'
-import Modal from '../Misc/Modal'
 import { workSectors } from '../../data/data'
 const AgreementVendorRow = (props) => {
     const {
@@ -12,7 +11,6 @@ const AgreementVendorRow = (props) => {
         setModalState,
     } = props;
     const rowRef = useRef(null);
-    const [modal, setModal] = useState({ content: null, visible: false });
     const filesRef = useRef(null);
     useEffect(() => {
         if (vendor.files.length === 0)
@@ -47,10 +45,7 @@ const AgreementVendorRow = (props) => {
             () => setAgreementVendors(prev => prev.filter(row => row.key !== vendor.key))
         )
     }
-    const closeModal = () => {
-        setModal({ visible: false, content: null })
-    }
-    const workSector = workSectors.find(sector => sector.val === vendor.sphere) ? workSectors.find(sector => sector.val === vendor.sphere).text: '';
+    const workSector = workSectors.find(sector => sector.val === vendor.sphere) ? workSectors.find(sector => sector.val === vendor.sphere).text : '';
     return (
         <>
             <li ref={rowRef} className={vendor.className}>
@@ -89,12 +84,6 @@ const AgreementVendorRow = (props) => {
                     <FaTrashAlt cursor="pointer" onClick={handleRowDelete} title="Sil" color="#ff4a4a" />
                 </div>
             </li>
-            {
-                modal.visible &&
-                <Modal changeModalState={closeModal}>
-                    {modal.content}
-                </Modal>
-            }
         </>
     )
 }

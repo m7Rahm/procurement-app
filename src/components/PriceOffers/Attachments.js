@@ -12,6 +12,7 @@ const Attachments = (props, attachmentsRef) => {
     }, [vendorFiles])
     const handleChange = (e) => {
         const filesArray = Object.values(e.target.files);
+        e.target.value = null
         setFiles(prev => {
             const newFilesState = [...prev.new]
             for (let i = 0; i < filesArray.length; i++) {
@@ -60,7 +61,6 @@ const Attachments = (props, attachmentsRef) => {
                                     style={{ display: 'inline-block' }}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    download
                                 >
                                     <AiOutlineFilePdf size="40" />
                                 </a>

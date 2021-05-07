@@ -32,9 +32,9 @@ const MyOrders = (props) => {
       })
       .catch(err => console.log(err))
   }
+  const index = window.location.search.indexOf("i=")
+  const orderid = index !== -1 ? window.location.search.substring(index + 2) : undefined
   useEffect(() => {
-    const index = window.location.search.indexOf("i=")
-    const orderid = index !== -1 ? window.location.search.substring(index + 2) : undefined
     const data = method === "GET" ? initLink : {
       from: 0,
       until: 20,
@@ -53,7 +53,7 @@ const MyOrders = (props) => {
         setLoading(false)
       })
       .catch(err => console.log(err))
-  }, [fetchFunc, link, method, initLink, canSeeOtherOrders])
+  }, [fetchFunc, link, method, initLink, canSeeOtherOrders, orderid])
   return (
     <div style={{ paddingBottom: '66px', paddingTop: "56px" }}>
       {

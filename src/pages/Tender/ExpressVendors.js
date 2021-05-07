@@ -74,7 +74,7 @@ const ExpressVendors = () => {
                 setExpressVendors({ count: totalCount, vendors: respJ });
             })
     }
-    const handleClick = (id) => {
+    const handleClick = (vendor) => {
         const onFinish = () => {
             const data = {
                 reg_date: searchDataRef.current.reg_date.value,
@@ -98,9 +98,10 @@ const ExpressVendors = () => {
         }
         setModalState({
             visible: true,
+            title: vendor.name,
             content: (props) =>
                 <ExpressVendorInfo
-                    vendorid={id}
+                    vendorid={vendor.id}
                     onFinish={onFinish}
                     setExpressVendors={setExpressVendors}
                     disabled={true}
@@ -163,7 +164,7 @@ const ExpressVendors = () => {
                                         {vendor.reg_date}
                                     </td>
                                     <td>
-                                        <MdDetails onClick={() => handleClick(vendor.id)} />
+                                        <MdDetails onClick={() => handleClick(vendor)} />
                                     </td>
                                 </tr>
                             )
@@ -172,12 +173,12 @@ const ExpressVendors = () => {
                 </table>
                 {
                     modalState.visible &&
-                    <Modal title="Express Vendor" changeModalState={closeModal}>
+                    <Modal title={modalState.title} changeModalState={closeModal}>
                         {modalState.content}
                     </Modal>
                 }
                 <div style={{ position: 'fixed', bottom: '100px', right: '50px' }}>
-                    <AiOutlinePlusCircle color="rgb(255, 174, 0)" cursor="pointer" onClick={() => handleClick(null)} size="40" />
+                    <AiOutlinePlusCircle color="rgb(255, 174, 0)" cursor="pointer" onClick={() => handleClick({ title: "Yeni Express Venodr", id: null })} size="40" />
                 </div>
                 <div className="my-orders-footer">
                     <Pagination

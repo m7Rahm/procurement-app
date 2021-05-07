@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import AgreementCard from "../../components/VisaCards/AgreementCard"
 import SideBarContainer from "../../components/HOC/SideBarContainer"
 import OrdersSearchHOC from "../../components/Search/OrdersSearchHOC"
@@ -17,6 +17,13 @@ const Agreements = (props) => {
         active: Number(orderid),
         number: ""
     });
+    useEffect(() => {
+        if (Number(orderid) && window.history.state)
+            setActive({
+                active: orderid,
+                number: ""
+            })
+    }, [orderid])
     const [initData, setInitData] = useState({
         result: 0,
         from: 0,
