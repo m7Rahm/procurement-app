@@ -45,7 +45,7 @@ const VisaVersionsContainer = (props) => {
 }
 const VisaVersion = (props) => {
     const { version, fetchPost, closeModal, actionsAvailableRef, tranid, fetchGet } = props;
-    const { emp_id, ord_numb, is_confirmed, conf_date, override } = version;
+    const { emp_id, ord_numb, is_confirmed, conf_date, override, id } = version;
     const [visaContent, setVisaContent] = useState([]);
     const participantsRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
@@ -79,8 +79,7 @@ const VisaVersion = (props) => {
     const acceptEditedVersion = () => {
         if (visaContent[0].override) {
             const data = {
-                ordNumb: ord_numb,
-                empVersion: emp_id
+                orderid: id
             }
             fetchPost('http://192.168.0.182:54321/api/accept-edited-version', data)
                 .then(respJ => {
@@ -143,8 +142,7 @@ const VisaVersion = (props) => {
                         participantsVisiblity &&
                         <div ref={participantsRef} className="visa-content-participants-show">
                             <Participants
-                                empVersion={emp_id}
-                                number={ord_numb}
+                                id={id}
                             />
                         </div>
                     }

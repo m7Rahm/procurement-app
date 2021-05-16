@@ -9,8 +9,10 @@ const PaymentMaterials = (props) => {
         if (mounted && props.pid) {
             fetchGet(`http://192.168.0.182:54321/api/payment-materials?pid=${props.pid}`)
                 .then(respJ => {
-                    if (mounted)
+                    if (mounted){
+                        props.materialsRef.current = respJ
                         setMaterials(respJ)
+                    }
                 })
                 .catch(ex => console.log(ex))
         }
@@ -18,7 +20,7 @@ const PaymentMaterials = (props) => {
             mounted = false;
             abortController.abort();
         }
-    }, [fetchGet, props.pid])
+    }, [fetchGet, props.pid, props.materialsRef])
     return (
         <table className="users-table">
             <thead>

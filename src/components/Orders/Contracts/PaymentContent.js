@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, lazy, useContext } from "react"
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck,
+    // FaFilePdf,
+    FaTimes } from "react-icons/fa";
 import Chat from "../../Misc/Chat"
 import EmptyContent from "../../Misc/EmptyContent"
 import { MdDetails } from "react-icons/md"
@@ -9,6 +11,7 @@ import AgreementGeneralInfo from "./AgreementGeneralInfo"
 import PaymentMaterials from "./PaymentMaterials"
 import { WebSocketContext } from "../../../pages/SelectModule";
 import useFetch from "../../../hooks/useFetch";
+// import { Link } from "react-router-dom";
 
 const Modal = lazy(() => import("../../Misc/Modal"));
 const AreYouSure = lazy(() => import("../../modal content/AreYouSure"))
@@ -16,8 +19,9 @@ const Participants = lazy(() => import("../../Common/ParticipantsUniversal"));
 const PaymentContent = (props) => {
     const [paymentDetails, setPaymentDetails] = useState({ content: [], active: false });
     const [rightPanel, setRightPanel] = useState({ visible: false, id: null });
-    const [modalState, setModalState] = useState({ visible: false })
+    const [modalState, setModalState] = useState({ visible: false, title: "Ödəniş Razılaşması № " })
     const textareaRef = useRef(null);
+    const materialsRef = useRef(null);
     const webSocket = useContext(WebSocketContext);
     const docid = props.docid;
     const documentType = 3;
@@ -58,17 +62,19 @@ const PaymentContent = (props) => {
                 })
                 .catch(ex => console.log(ex))
         }
-        setModalState({
+        setModalState(prev => ({
+            ...prev,
             visible: true,
             style: {
                 width: "600px",
                 minWidth: "auto"
             },
+            number: paymentDetails.content[0].number,
             content: AreYouSure,
             text: "Razılaşmanı imtina etməyə",
             onCancel: closeModal,
             onAccept: cancelPayment
-        })
+        }))
     }
     const acceptDeclince = (action) => {
         const data = {
@@ -94,17 +100,28 @@ const PaymentContent = (props) => {
             .catch(ex => console.log(ex))
     }
     const showHistory = () => {
-        setModalState({ visible: true, fetchParticipants: fetchParticipants, content: Participants })
+        setModalState(prev => ({
+            ...prev,
+            visible: true,
+            number: paymentDetails.content[0].number,
+            fetchParticipants: fetchParticipants,
+            content: Participants
+        }))
     }
     const closeModal = () => {
-        setModalState({ visible: false })
+        setModalState(prev => ({ ...prev, visible: false }))
     }
+    // const exporToPdf = () => {
+        
+    // }
     const fetchFiles = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`), [docid, fetchGet])
     return (
         <div className="visa-content-container" style={{ maxWidth: "1256px", margin: "auto", padding: "20px", paddingTop: "76px" }}>
             {
                 modalState.visible &&
                 <Modal
+                    title={modalState.title}
+                    number={modalState.number}
                     style={modalState.style}
                     changeModalState={closeModal}
                     childProps={modalState}
@@ -138,11 +155,25 @@ const PaymentContent = (props) => {
                                 <span style={{ float: "right", cursor: "pointer", color: "rgb(255, 174, 0)" }}>
                                     <MdDetails size="30" onClick={showHistory} />
                                 </span>
+                                {/* <span title="PDF çap et" style={{ float: "right", cursor: "pointer", color: "rgb(255, 0, 0)" }}>
+                                    <Link to={{
+                                        state: {
+                                            materials: materialsRef,
+                                            number: paymentDetails.content[0].number,
+                                            docid: docid,
+                                            docType: documentType
+                                        },
+                                        pathname: "/exports"
+                                    }}>
+                                        <FaFilePdf size="30" onClick={exporToPdf} />
+                                    </Link>
+                                </span> */}
                                 <span style={{ float: "right", cursor: "pointer", color: "rgb(255, 174, 0)", fontSize: "20px" }}>{paymentDetails.content[0].action_date_time}</span>
                             </h1>
                             <div style={{ maxWidth: "1024px", margin: "auto", marginBottom: "10px" }}>
                                 <PaymentMaterials
                                     pid={docid}
+                                    materialsRef={materialsRef}
                                 />
                             </div>
                         </div>
@@ -203,7 +234,6 @@ const PaymentContent = (props) => {
                     </>
                     :
                     <EmptyContent />
-
             }
         </div>
     )

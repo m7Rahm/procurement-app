@@ -28,8 +28,7 @@ const EditOrderRequest = (props) => {
     useEffect(() => {
         fetchGet(`http://192.168.0.182:54321/api/order-req-data?numb=${ordNumb}&vers=${version}`)
             .then(respJ => {
-                const orderRows = respJ.map(row => ({ ...row, id: Math.random().toString(), models: [], className: '' }));
-                console.log(respJ)
+                const orderRows = respJ.map(row => ({ ...row, models: [], className: '' }));
                 initialValuesRef.current = respJ;
                 setOrderState(orderRows);
             })

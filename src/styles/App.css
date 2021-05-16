@@ -1427,13 +1427,16 @@ ul.employees-list::-webkit-scrollbar-thumb {
 ul.employees-list>li {
   padding-left: 20px;
   font-size: 16px;
-  height: 40px;
+  height: 50px;
   padding: 5px;
   border: 1px white solid;
 }
 
 ul.employees-list>li:hover {
   background-color: rgb(24, 139, 192);
+  color: white;
+}
+ul.employees-list>li:hover>span {
   color: white;
 }
 

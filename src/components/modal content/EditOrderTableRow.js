@@ -88,6 +88,7 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 								budget: respJ[0].budget,
 								title: respJ[0].title,
 								material_id: respJ[0].id,
+								isAmortisized: respJ[0].is_amortisized,
 								department_name: respJ[0].department_name
 							}
 							: { models: respJ, title: "", material_id: "NaN" }

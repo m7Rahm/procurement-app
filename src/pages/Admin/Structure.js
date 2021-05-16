@@ -42,6 +42,7 @@ const Structure = () => {
                         <th>Tabe olduğu struktur</th>
                         <th>Tip</th>
                         <th>Anbar</th>
+                        <th>Büdcə</th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -149,6 +150,19 @@ const NewStructureRow = (props) => {
                     }
                 </select>
             </td>
+            <td>
+                <select style={{ minWidth: '130px' }} name="f_budget_id" value={newStructureData.f_budget_id} onChange={handleChange}>
+                    <option value="0">-</option>
+                    {
+                        // eslint-disable-next-line
+                        activeDepartments.filter(department => department.type == 0).map(department =>
+                            <option value={department.id} key={department.id}>
+                                {department.name}
+                            </option>
+                        )
+                    }
+                </select>
+            </td>
             <td></td>
             <td><IoMdAdd title="yeni struktur əlavə et" onClick={addStructure} color="#f8942a" /></td>
         </tr>
@@ -223,6 +237,19 @@ const TableRow = (props) => {
                         // eslint-disable-next-line
                         activeDepartments.filter(department => department.type == 2).map(department =>
                             <option value={department.id} key={department.id}>{department.name}</option>
+                        )
+                    }
+                </select>
+            </td>
+            <td>
+                <select style={{ minWidth: '130px' }} name="f_budget_id" disabled={disabled} value={structureData.f_budget_id || ""} onChange={handleChange}>
+                    <option value="0">-</option>
+                    {
+                        // eslint-disable-next-line
+                        activeDepartments.filter(department => department.type == 0).map(department =>
+                            <option value={department.id} key={department.id}>
+                                {department.name}
+                            </option>
                         )
                     }
                 </select>

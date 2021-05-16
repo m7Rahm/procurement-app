@@ -3,6 +3,7 @@ import { Link, Switch, Route, Redirect } from "react-router-dom";
 import { TokenContext } from "../App";
 import LeftSidePane from "../components/Common/LeftSidePane"
 import Navigation from "../components/Common/Navigation";
+// import PaymentLayout from "../components/Exports/PaymentLayout";
 import Loading from "../components/Misc/Loading"
 const Contracts = lazy(() => import("./Contracts"));
 const Budget = lazy(() => import("./Budget"))
@@ -167,6 +168,17 @@ const SelectModule = () => {
 									</Route>
 								)
 							}
+							{/* <Suspense fallback={<Loading />} >
+								<Route key="exports" path="/exports" >
+									<PaymentLayout
+										handleNavClick={handleNavClick}
+										menuData={menuData}
+										loadingIndicatorRef={loadingIndicatorRef}
+										leftNavRef={leftNavIconRef}
+										setMenuData={setMenuData}
+									/>
+								</Route>
+							</Suspense> */}
 							<Redirect to="/" />
 						</Switch>
 					</>

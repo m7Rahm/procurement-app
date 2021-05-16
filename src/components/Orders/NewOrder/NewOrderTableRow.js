@@ -127,6 +127,7 @@ const NewOrderTableRow = (props) => {
                 code: material.product_id,
                 approx_price: material.approx_price,
                 department: material.department_name,
+                isAmortisized: material.is_amortisized,
                 materialId: material.id,
                 models: modelsRef.current.filter(model => model.sub_gl_category_id === material.subGlCategory),
                 isService: material.is_service

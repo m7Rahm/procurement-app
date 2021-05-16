@@ -81,9 +81,11 @@ const GlCategories = () => {
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>CAP</th>
                                 <th>Kod</th>
                                 <th>Ad</th>
                                 <th>Tabe</th>
+                                <th>Illik %</th>
                                 <th>Anbar</th>
                                 <th>Təchizat</th>
                                 <th></th>
@@ -113,6 +115,9 @@ const GlCategories = () => {
                                         procurement={structures.procurement}
                                         self={glCategories.all}
                                         token={token}
+                                        isAmortisized={category.is_amortisized}
+                                        period={category.period}
+                                        perc={category.perc}
                                         setGlCategories={setGlCategories}
                                         setOperationResult={setOperationResult}
                                         id={category.id}
@@ -138,12 +143,14 @@ const GlCategoryRow = (props) => {
         name: props.name,
         dependentid: props.dependentid,
         warehouseid: props.warehouseid,
-        procurementid: props.procurementid
+        procurementid: props.procurementid,
+        perc: props.perc,
+        is_amortisized: props.isAmortisized
     });
     const [disabled, setDisabled] = useState(true);
     const handleChange = (e) => {
         const name = e.target.name;
-        const value = e.target.value;
+        const value = name !== "is_amortisized" ? e.target.value : e.target.checked;
         setRowData(prev => ({ ...prev, [name]: value }))
     }
     const handleCancel = () => {
@@ -152,7 +159,9 @@ const GlCategoryRow = (props) => {
             name: props.name,
             dependentid: props.dependentid,
             warehouseid: props.warehouseid,
-            procurementid: props.procurementid
+            procurementid: props.procurementid,
+            perc: props.perc,
+            is_amortisized: props.isAmortisized
         })
         setDisabled(true)
     }
@@ -178,6 +187,7 @@ const GlCategoryRow = (props) => {
     return (
         <tr>
             <td>{props.rn}</td>
+            <td><input checked={rowData.is_amortisized} type="checkbox" disabled={disabled} name="is_amortisized" onChange={handleChange} /></td>
             <td><input value={rowData.code} disabled={disabled} name="code" onChange={handleChange} /></td>
             <td><input value={rowData.name} disabled={disabled} name="name" onChange={handleChange} /></td>
             <td>
@@ -190,6 +200,7 @@ const GlCategoryRow = (props) => {
                     }
                 </select>
             </td>
+            <td><input value={rowData.perc || ''} disabled={disabled} name="perc" onChange={handleChange} /></td>
             <td>
                 <select value={rowData.warehouseid} disabled={disabled} name="warehouseid" onChange={handleChange}>
                     <option value="0">-</option>
@@ -226,8 +237,10 @@ const GlCategoryRow = (props) => {
 const NewGlCategory = (props) => {
     const codeRef = useRef(null);
     const nameRef = useRef(null);
+    const percentageRef = useRef(null)
     const dependentRef = useRef(null);
     const warehouseRef = useRef(null);
+    const capexRef = useRef(null)
     const procurementRef = useRef(null);
     const fetchAddCategory = useFetch("POST");
     const addNewCategory = () => {
@@ -236,7 +249,9 @@ const NewGlCategory = (props) => {
             name: nameRef.current.value,
             dependentid: dependentRef.current.value,
             procurementid: procurementRef.current.value,
-            warehouseid: warehouseRef.current.value
+            warehouseid: warehouseRef.current.value,
+            isAmortisized: capexRef.current.checked,
+            perc: percentageRef.current.value
         }
         fetchAddCategory("http://192.168.0.182:54321/api/new-gl-category", data)
             .then(respJ => {
@@ -244,6 +259,10 @@ const NewGlCategory = (props) => {
                     const all = [...prev.all, { ...data, id: respJ[0].id }];
                     return { ...prev, count: prev.count + 1, all, current: prev.count > 20 ? prev.current : [...prev.current, { ...data, id: respJ[0].id }] }
                 })
+                capexRef.current.checked = false;
+                codeRef.current.value = '';
+                nameRef.current.value = ''
+                percentageRef.current.value = ''
                 props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck, iconColor: "green" })
             })
             .catch(ex => {
@@ -254,6 +273,7 @@ const NewGlCategory = (props) => {
     return (
         <tr>
             <td> </td>
+            <td> <input type="checkbox" ref={capexRef} /></td>
             <td> <input ref={codeRef} /></td>
             <td> <input ref={nameRef} /></td>
             <td>
@@ -266,6 +286,7 @@ const NewGlCategory = (props) => {
                     }
                 </select>
             </td>
+            <td> <input ref={percentageRef} /></td>
             <td>
                 <select ref={warehouseRef}>
                     <option value="0">-</option>

@@ -125,19 +125,10 @@ table.gl-categories select{
 }
 
 ul.sub-gl-category-budget {
-    margin: 0px;
-    animation: slide-down 0.5s ease-in-out 0s both;
-}
-
-ul.sub-gl-category-budget {
     opacity: 0;
+    max-height: 100%;
     animation: scale-up-budget 200ms ease-in-out both, show-up 400ms ease-in-out both;
 }
-
-ul.sub-gl-category-budget-close {
-    animation: visibility-hide 200ms ease-in-out both, scale-down 200ms 200ms ease-in-out both;
-}
-
 ul.sub-gl-category-budget>li:hover {
     background-color: #123456;
 }

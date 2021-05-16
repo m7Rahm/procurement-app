@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { FaEdit } from 'react-icons/fa';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
-const CardContent = React.forwardRef(({ budget, category, period }, ref) => {
+const CardContent = ({ budget, category, period }) => {
     const [subGlBudgets, setSubGlBudgets] = useState([]);
     const fetchPost = useFetch("POST");
     const handleClick = () => {
@@ -21,12 +21,15 @@ const CardContent = React.forwardRef(({ budget, category, period }, ref) => {
             .catch(ex => console.log(ex))
     }, [fetchPost, category, budget, period]);
     return (
-        <div style={{ padding: '20px 0px' }}>
+        <div style={{ padding: "20px 0px" }}>
             <ul className="sub-gl-category-budget">
                 {
                     subGlBudgets.map((subGlCategory, index) =>
                         <li onClick={handleClick} key={index}>
-                            <div>{subGlCategory.sub_gl_category_name}</div>
+                            <div>
+                                <span style={{ paddingRight: "10px" }}>{subGlCategory.sub_code}</span>
+                                {subGlCategory.sub_gl_category_name}
+                            </div>
                             <div>{subGlCategory.budget}</div>
                         </li>
                     )
@@ -34,7 +37,7 @@ const CardContent = React.forwardRef(({ budget, category, period }, ref) => {
             </ul>
         </div>
     )
-})
+}
 const StructureBudgetCard = (props) => {
     const [expanded, setExpanded] = useState(false);
     const budget = props.budget;
@@ -42,17 +45,18 @@ const StructureBudgetCard = (props) => {
     const period = props.period;
     const history = useHistory();
     const { url } = useRouteMatch();
-    const cardRef = useRef();
+    const cardRef = useRef(null);
     const handleClick = () => {
         setExpanded(prev => !prev)
     }
     const handleEditClick = (glCategoryid) => {
-        const newState = {...state, glCategoryid }
+        const newState = { ...state, glCategoryid }
         history.push(`${url}/info`, newState)
     }
     return (
         <li ref={cardRef} onClick={handleClick}>
-            <div>
+            <h1 style={{ position: "absolute", left: "20px", color: "white" }}>{budget.parent_code}</h1>
+            <div style={{ height: "2.5rem" }}>
                 <span onClick={() => handleEditClick(budget.gl_category_id)}>
                     <FaEdit />
                 </span>
