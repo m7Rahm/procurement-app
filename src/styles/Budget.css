@@ -132,7 +132,19 @@ ul.sub-gl-category-budget {
 ul.sub-gl-category-budget>li:hover {
     background-color: #123456;
 }
-
+div.gl-category-code {
+    position: relative;
+}
+div.gl-category-code ul.structures-list{
+    top: 30px;
+    max-height: 140px
+}
+div.gl-category-code ul.structures-list>li{
+    text-align: left;
+}
+div.gl-category-code>input{
+    width: 80%;
+}
 ul.sub-gl-category-budget>li {
     padding: 4px 10px;
     display: flex;

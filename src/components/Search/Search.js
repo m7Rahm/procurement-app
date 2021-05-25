@@ -115,20 +115,10 @@ const Search = (props) => {
 								<ul className="structures-list">
 									{
 										departments.map(department => {
-											const titleArr = department.name.split("");
 											const inputVal = structuresInputRef.current.value;
-											const title = <>{
-												titleArr.map((char, index) => {
-													const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-													if (strRegExp.test(char))
-														return <i key={index}>{char}</i>
-													else {
-														return char
-													}
-												})
-											}
-											</>
-											return <li tabIndex="3" className="structure-dep" key={department.id} onClick={() => handleStructureSelect(department)}>{title}</li>
+											const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+											const title = department.name.replace(strRegExp, (text) => `<i>${text}</i>`);
+											return <li tabIndex="3" dangerouslySetInnerHTML={{ __html: title }} className="structure-dep" key={department.id} onClick={() => handleStructureSelect(department)}></li>
 										})
 									}
 								</ul>

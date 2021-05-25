@@ -1498,7 +1498,11 @@ ul.modified>li:first-of-type {
   padding: 10px 0px;
   background-image: linear-gradient(to bottom, royalblue, #195db6);
 }
-
+i{
+  color: #ffaa00;
+  font-weight: bold;
+  font-size: inherit;
+}
 ul.modified>li {
   max-height: 125px;
   padding: 3px 0px;
@@ -2098,7 +2102,7 @@ span.reviewers-header {
   outline-offset: 0px;
   outline: 3px #ffae00 solid;
 }
-.search-container ul.structures-list {
+ul.structures-list {
   position: absolute;
   margin: 0px;
   display: none;
@@ -2112,32 +2116,35 @@ span.reviewers-header {
   box-shadow: 0px 1px 10px 5px rgba(0, 0, 0, 0.25);
   background-color: rgb(241, 240, 240);
 }
-.search-container ul.structures-list>li {
+ul.structures-list>li {
   max-height: 60px;
   overflow: hidden;
   font-size: 12px;
   padding: 10px;
 }
-.search-container ul.structures-list>li:not(:last-of-type) {
+ul.structures-list>li:not(:last-of-type) {
   border-bottom: 1.5px white solid;
 }
-.search-container ul.structures-list>li:hover {
+ul.structures-list>li:hover {
   color: white;
   background-color: #00a3e4;
   border-bottom-color: white;
 }
-.search-container ul.structures-list::-webkit-scrollbar-thumb {
+ul.structures-list::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border: 2px solid transparent;
   border-radius: 20px;
   background-clip: padding-box;
 }
-.search-container ul.structures-list::-webkit-scrollbar {
+ul.structures-list::-webkit-scrollbar {
   width: 8px;
 }
-.search-container input:focus + ul{
+.search-container input:focus + ul,
+.new-budget input:focus + ul
+{
   display: block;
 }
+
 svg.pictures-thumb {
   float: right;
   color: #1a73e8;

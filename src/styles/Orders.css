@@ -12,11 +12,7 @@
 .table>li:nth-of-type(2n) {
     background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);
 }
-i{
-    color: #ffaa00;
-    font-weight: bold;
-  font-size: inherit;
-}
+
 div.sel-dep-list{
     float: left;
     margin-left: 10px;

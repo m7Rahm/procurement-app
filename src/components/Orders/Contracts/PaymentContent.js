@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef, lazy, useContext } from "react"
-import { FaCheck,
+import {
+    FaCheck,
     // FaFilePdf,
-    FaTimes } from "react-icons/fa";
+    FaTimes
+} from "react-icons/fa";
 import Chat from "../../Misc/Chat"
 import EmptyContent from "../../Misc/EmptyContent"
 import { MdDetails } from "react-icons/md"
@@ -112,7 +114,7 @@ const PaymentContent = (props) => {
         setModalState(prev => ({ ...prev, visible: false }))
     }
     // const exporToPdf = () => {
-        
+
     // }
     const fetchFiles = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`), [docid, fetchGet])
     return (

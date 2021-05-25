@@ -9,8 +9,9 @@ const NewBudget = (props) => {
     const { departments } = props;
     const categories = props.categories.current;
     const commentRef = useRef(null);
-    const glCategories = useRef(categories.filter(category => category.dependent_id === 0));
+    const glCategoryRef = useRef(null);
     const subGlCategoryidRef = useRef(null);
+    const [glCategories, setGlCategories] = useState({ all: categories.filter(category => category.dependent_id === 0), current: categories.filter(category => category.dependent_id === 0) })
     const [newBudgetData, setNewBudgetData] = useState({
         year: date.getFullYear(),
         month: month < 10 ? `0${month}` : `${month}`,
@@ -43,6 +44,23 @@ const NewBudget = (props) => {
                     props.closeModal()
             })
     }
+    const handleGlCategoryChange = (e) => {
+        const value = e.target.value;
+        const charArray = value.split("")
+        const reg = charArray.reduce((conc, curr) => conc += curr !== "\\" ? curr + "(.*)" : curr + "\\(.*)", "")
+        const regExp = new RegExp(reg, "i")
+        setGlCategories(prev => ({ ...prev, current: prev.all.filter(category => regExp.test(category.name) || regExp.test(category.code)) }))
+    }
+    const handleGlCategoryBlur = (e) => {
+        const relatedTarget = e.relatedTarget
+        if (relatedTarget && relatedTarget.classList.contains("category-dep")) {
+            relatedTarget.click()
+        }
+    }
+    const handleGlCategorySelect = (category) => {
+        glCategoryRef.current.value = category.name
+        setNewBudgetData(prev => ({ ...prev, glCategoryid: category.id }))
+    }
     return (
         <div className="new-budget-modal">
             <div>
@@ -73,14 +91,27 @@ const NewBudget = (props) => {
                     <tbody>
                         <tr>
                             <td>
-                                <select value={newBudgetData.glCategoryid} name="glCategoryid" onChange={handleChange}>
-                                    <option>-</option>
-                                    {
-                                        glCategories.current.map(category =>
-                                            <option key={category.id} value={category.id}>{category.name}</option>
-                                        )
-                                    }
-                                </select>
+                                <div className="gl-category-code" >
+                                    <input
+                                        onChange={handleGlCategoryChange}
+                                        placeholder="Kod və ya ad"
+                                        name="glCategoryid"
+                                        autoComplete="off"
+                                        onBlur={handleGlCategoryBlur}
+                                        type="text"
+                                        ref={glCategoryRef}
+                                    />
+                                    <ul className="structures-list">
+                                        {
+                                            glCategories.current.map(category => {
+                                                const inputVal = glCategoryRef.current ? glCategoryRef.current.value : "";
+                                                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                                                const title = `${category.code} ${category.name}`.replace(strRegExp, (text) => `<i>${text}</i>`)
+                                                return <li tabIndex="1" dangerouslySetInnerHTML={{ __html: title }} className="category-dep" key={category.id} onClick={() => handleGlCategorySelect(category)} ></li>
+                                            })
+                                        }
+                                    </ul>
+                                </div>
                             </td>
                             <td>
                                 <select name="subGlCategoryid" ref={subGlCategoryidRef}>

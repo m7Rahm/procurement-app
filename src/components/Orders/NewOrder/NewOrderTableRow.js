@@ -197,18 +197,10 @@ const NewOrderTableRow = (props) => {
           <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
               models.map(model => {
-                const titleArr = model.title.split("");
                 const inputVal = modelInputRef.current.value;
-                const title = <>{titleArr.map((char, index) => {
-                  const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-                  if (strRegExp.test(char)) {
-                    return <i key={index}>{char}</i>
-                  } else {
-                    return char
-                  }
-                })
-                }</>
-                return <li key={model.id} onClick={() => setModel(model)}>{title}</li>
+                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
+                return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
               })
             }
           </ul>

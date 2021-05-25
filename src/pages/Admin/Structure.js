@@ -38,6 +38,7 @@ const Structure = () => {
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Kod</th>
                         <th>Ad</th>
                         <th>Tabe olduğu struktur</th>
                         <th>Tip</th>
@@ -85,19 +86,21 @@ const NewStructureRow = (props) => {
     const { activeDepartments, setActiveDepartments, updateList, activePageRef, fetchPost } = props;
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
     const [newStructureData, setNewStructureData] = useState({ name: '', parent_id: -1, type: 0, f_warehouse_id: 0 });
+    const codeRef = useRef(null);
     const handleChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
         setNewStructureData(prev => ({ ...prev, [name]: value }))
     }
     const addStructure = () => {
-        const data = newStructureData;
+        const data = { ...newStructureData, code: codeRef.current.value };
         fetchPost('http://192.168.0.182:54321/api/new-structure', data)
             .then(respJ => {
                 const id = respJ[0].id;
-                setNewStructureData({ name: '', parent_id: -1 });
+                setNewStructureData({ name: '' , parent_id: -1 });
+                codeRef.current.value = "";
                 setOperationResult({ visible: true, desc: "Əməliyyat uğurla nəticələndi", icon: FaCheck, iconColor: "rgb(15, 157, 88)", backgroundColor: "white" })
-                setActiveDepartments(prev => [...prev, { ...newStructureData, id }]);
+                setActiveDepartments(prev => [...prev, { ...data, id }]);
                 updateList(20 * activePageRef.current)
             })
             .catch(ex => console.log(ex))
@@ -116,6 +119,7 @@ const NewStructureRow = (props) => {
                     />
                 }
             </td>
+            <td><input ref={codeRef} name="code" /></td>
             <td><input value={newStructureData.name} name="name" onChange={handleChange} /></td>
             <td>
                 <select style={{ minWidth: '130px' }} name="parent_id" value={newStructureData.parent_id} onChange={handleChange}>
@@ -209,6 +213,9 @@ const TableRow = (props) => {
     return (
         <tr className="structure-row" key={structure.id}>
             <td>{props.index}</td>
+            <td>
+                <input disabled={disabled} name="code" value={structureData.code || ""} onChange={handleChange} />
+            </td>
             <td>
                 <input disabled={disabled} name="name" value={structureData.name} onChange={handleChange} />
             </td>
