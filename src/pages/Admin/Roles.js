@@ -14,7 +14,7 @@ const Roles = () => {
             ? roles.find(role => role.id === id)
             : { id: -1, name: '', modules: '', previliges: '', active_passive: 1 };
         const updateRole = (props) => <UpdateRole closeModal={changeModalState} setRoles={setRoles} {...props} role={role} />
-        setModal({ content: updateRole, state: true, title: role.name })
+        setModal({ content: updateRole, state: true, title: role.name || "Yeni Rol" })
     }
     useEffect(() => {
         fetchGet('http://192.168.0.182:54321/api/roles')
