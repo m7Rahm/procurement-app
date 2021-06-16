@@ -79,7 +79,6 @@ const ContractsModule = (props) => {
         props.leftNavRef.current.style.display = "block";
     }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef])
     return (
-        <div className="dashboard">
             <Switch>
                 {
                     routes.map(route =>
@@ -90,7 +89,6 @@ const ContractsModule = (props) => {
                 }
                 <Redirect to={`${path}/contracts/:docid?`} />
             </Switch>
-        </div>
     )
 }
 

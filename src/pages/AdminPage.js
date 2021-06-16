@@ -54,7 +54,6 @@ const AdminPage = (props) => {
 		props.leftNavRef.current.style.display = "block";
 	}, [url, setMenuData, props.leftNavRef, loadingIndicatorRef])
 	return (
-		<div className="dashboard" style={{ paddingTop: '76px' }}>
 			<Switch>
 				{
 					routes.map(route =>
@@ -65,7 +64,6 @@ const AdminPage = (props) => {
 				}
 				<Redirect to={`${path}/roles/:docid?`} />
 			</Switch>
-		</div>
 	)
 }
 export default AdminPage

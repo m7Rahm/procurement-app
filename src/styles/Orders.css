@@ -267,7 +267,9 @@ div.header-container>div:last-of-type>div:not(:first-of-type) {
     margin: 20px 0px;
     padding: 20px
 }
-
+.order-table-protex>li{
+    max-height: none;
+}
 .order-table-protex+div.review-container>textarea {
     display: block;
     border-color: gray;

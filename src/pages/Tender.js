@@ -66,16 +66,18 @@ const Tender = (props) => {
         props.leftNavRef.current.style.display = "block";
     }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef])
     return (
-        <Switch>
-            {
-                routes.map(route =>
-                    <Route key={route.link} path={`${path}${route.link}/:docid?`}>
-                        <route.component {...route.props} />
-                    </Route>
-                )
-            }
-            <Redirect to={`${path}/orders/:docid?`} />
-        </Switch>
+        <div className="dashboard">
+            <Switch>
+                {
+                    routes.map(route =>
+                        <Route key={route.link} path={`${path}${route.link}/:docid?`}>
+                            <route.component {...route.props} />
+                        </Route>
+                    )
+                }
+                <Redirect to={`${path}/orders/:docid?`} />
+            </Switch>
+        </div>
     )
 }
 

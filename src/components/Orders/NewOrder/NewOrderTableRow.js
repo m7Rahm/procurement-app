@@ -206,7 +206,7 @@ const NewOrderTableRow = (props) => {
           </ul>
         }
       </div>
-      <div style={{ maxWidth: " 60px" }}>{quantity}</div>
+      <div style={{ maxWidth: "60px" }}>{quantity}</div>
       <div style={{ position: 'relative', width: '170px', maxWidth: '200px' }}>
         <input
           onChange={searchByCode}

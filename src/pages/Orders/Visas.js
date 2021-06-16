@@ -21,7 +21,7 @@ const Visas = () => {
   const fetchPost = useFetch("POST");
   const updateList = useCallback((data) => fetchPost('http://192.168.0.182:54321/api/visas', data), [fetchPost]);
   return (
-    <div style={{ display: 'flex', position: 'relative' }}>
+    <>
       <SideBar
         updateList={updateList}
         setActive={setActive}
@@ -32,7 +32,7 @@ const Visas = () => {
         initid={active.initid}
         documentType={documentType}
       />
-    </div>
+    </>
   )
 }
 export default Visas

@@ -82,7 +82,7 @@ const BudgetReport = () => {
     }
     return (
         <>
-            <div className="dashboard app">
+            <div className="app">
                 <ReportSearch setRows={setRows} structureid={structureid} fetchPost={fetchPost} />
                 <div className="budget-report-container">
                     <div>

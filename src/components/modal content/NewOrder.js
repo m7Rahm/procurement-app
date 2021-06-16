@@ -79,7 +79,8 @@ const NewOrderContent = (props) => {
           status: -3,
           dateFrom: '',
           dateTill: '',
-          ordNumb: ''
+          ordNumb: '',
+          canSeeOtherOrders: props.canSeeOtherOrders
         };
         //todo: create socket and connect
         fetchPost('http://192.168.0.182:54321/api/orders', apiData)

@@ -77,28 +77,26 @@ const Budget = (props) => {
     const fetchSenderMiscDocs = useFetch("POST");
     const updateListContent = (data) => fetchSenderMiscDocs('http://192.168.0.182:54321/api/get-sender-misc-docs', data)
     return (
-        <div className="dashboard">
-            <Switch>
-                <Route path={`${path}/gl-categories`}>
-                    <GlCategories />
-                </Route>
-                <Route path={`${path}/budget-docs`}>
-                    <BudgetDocuments
-                        inData={inData}
-                        params={params}
-                        updateListContent={updateListContent}
-                    />
-                </Route>
-                <Route path={`${path}/reports`}>
-                    <BudgetReport />
-                </Route>
-                <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
-                </Route>
-                <Route path={`${path}`}>
-                    <BudgetMain />
-                </Route>
-            </Switch>
-        </div>
+        <Switch>
+            <Route path={`${path}/gl-categories`}>
+                <GlCategories />
+            </Route>
+            <Route path={`${path}/budget-docs`}>
+                <BudgetDocuments
+                    inData={inData}
+                    params={params}
+                    updateListContent={updateListContent}
+                />
+            </Route>
+            <Route path={`${path}/reports`}>
+                <BudgetReport />
+            </Route>
+            <Route path={`${path}/:structureid`} render={(props) => <StructureBudget {...props} />}>
+            </Route>
+            <Route path={`${path}`}>
+                <BudgetMain />
+            </Route>
+        </Switch>
     )
 }
 

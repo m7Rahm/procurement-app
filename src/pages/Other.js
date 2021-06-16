@@ -41,15 +41,13 @@ const Other = (props) => {
     const updateListContent = useCallback((data) => fetchPost("http://192.168.0.182:54321/api/get-receiver-misc-docs", data), [fetchPost])
     return (
         <Route path={`${path}`}>
-            <div className="dashboard">
-                <Inbox
-                    inData={inData}
-                    params={params}
-                    referer="receiver"
-                    docType={inData.docType}
-                    updateListContent={updateListContent}
-                />
-            </div>
+            <Inbox
+                inData={inData}
+                params={params}
+                referer="receiver"
+                docType={inData.docType}
+                updateListContent={updateListContent}
+            />
         </Route>
     )
 }

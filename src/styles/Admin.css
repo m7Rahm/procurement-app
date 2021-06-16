@@ -21,7 +21,37 @@ div.sys-params>div:first-of-type {
     max-width: 1256px;
     margin: 50px auto;
 }
+div.materials-search-ribbon{
+    padding: 1rem 0px;
+    z-index: 2;
+    height: 6rem;
+}
+div.materials-search-ribbon>input{
+    float: left;
+}
 
+div.materials-search-ribbon>div{
+    position: relative;
+    float: left;
+    z-index: inherit;
+    height: 3rem;
+
+}
+div.materials-search-ribbon>*{
+    height: 3rem;
+    margin-left: 1rem;
+    display: block;
+}
+div.materials-search-ribbon>div>input,
+div.materials-search-ribbon>div>select
+{
+    height: 100%;
+    display: inherit;
+}
+div.materials-search-ribbon>div>ul{
+    /* display: block; */
+    top: 4rem;
+}
 div.users-page {
     padding-top: 40px;
     max-width: 1156px;

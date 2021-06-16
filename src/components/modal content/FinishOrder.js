@@ -91,7 +91,7 @@ const FinishOrder = (props) => {
             </ul>
             {
                 accepted.length !== 0 &&
-                <div onClick={confirmSelection} style={{ backgroundColor: 'rgb(255, 174, 0)', color: 'white', padding: '6px' }}>
+                <div onClick={confirmSelection} style={{ backgroundColor: 'rgb(255, 174, 0)', color: 'white', padding: '6px', cursor: "pointer" }}>
                     Seçimləri təsdiq et
                 </div>
             }

@@ -16,7 +16,7 @@ const NewAgreement = () => {
             .catch(ex => console.log(ex))
     }, [fetchFunction])
     return (
-        <div style={{ maxWidth: '1256px', margin: '100px auto' }}>
+        <div style={{ maxWidth: '1256px', margin: '40px auto' }}>
             {
                 !isEmpty
                     ?

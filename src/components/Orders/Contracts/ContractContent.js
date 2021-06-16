@@ -98,7 +98,7 @@ const ContractContent = (props) => {
     }
     const fetchFiles = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/contract-files/${docid}?type=${documentType}`), [docid, fetchGet, documentType]);
     return (
-        <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px', paddingTop: '76px' }}>
+        <div className="visa-content-container" style={{ maxWidth: '1256px', margin: 'auto', padding: '20px' }}>
             {
                 modalState.visible &&
                 <Modal changeModalState={closeModal} title={modalState.title} childProps={modalState}>

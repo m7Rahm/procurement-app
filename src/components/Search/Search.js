@@ -109,6 +109,7 @@ const Search = (props) => {
 									autoComplete="off"
 									onBlur={handleStructureInputBlur}
 									type="text"
+									className="structures-list"
 									ref={structuresInputRef}
 									style={{ height: "35px", float: "left" }}
 								/>

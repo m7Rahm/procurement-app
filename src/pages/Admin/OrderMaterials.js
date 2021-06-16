@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { MdModeEdit, MdDone, MdClose } from 'react-icons/md'
 import { FaPlus } from 'react-icons/fa'
+import MaterialsSearch from "../../components/Search/MaterialsSearch"
 import { AiFillCheckCircle } from 'react-icons/ai'
 import OperationResult from '../../components/Misc/OperationResult'
 import Pagination from '../../components/Misc/Pagination'
@@ -58,6 +59,11 @@ const OrderMaterials = () => {
             .catch(ex => console.log(ex))
     }, [fetchPost])
     return (
+        <>
+        <MaterialsSearch
+            glCategoriesRef={glCategoriesRef}
+            setTableData={setTableData}
+        />
         <div className="sys-param-modal">
             <div >
                 <table style={{ marginTop: '30px' }}>
@@ -108,6 +114,7 @@ const OrderMaterials = () => {
                 updateList={refreshContent}
             />
         </div>
+        </>
     )
 }
 export default OrderMaterials
@@ -169,7 +176,7 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
                 </select>
             </td>
             <td>
-                <select disabled={disabled} name="sub_gl_category_id" onChange={handleChange}  value={materialData.sub_gl_category_id}>
+                <select disabled={disabled} name="sub_gl_category_id" onChange={handleChange} value={materialData.sub_gl_category_id}>
                     <option value="-1">-</option>
                     {
                         subCategories.map(subCat =>
@@ -201,7 +208,7 @@ const TableRow = ({ index, material, departments, units, glCategories, glCategor
                 <input disabled={true} defaultValue={materialData.product_id} name="product_id" ref={codeRef} />
             </td>
             <td>
-                <input  disabled={disabled} defaultValue={materialData.optimal_quantity} ref={optimalQuantity} />
+                <input disabled={disabled} defaultValue={materialData.optimal_quantity} ref={optimalQuantity} />
             </td>
             <td>
                 <select name="cluster" disabled={disabled} onChange={handleChange} value={materialData.cluster}>

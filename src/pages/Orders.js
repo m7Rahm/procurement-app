@@ -130,7 +130,6 @@ const Orders = (props) => {
         props.leftNavRef.current.style.display = "block";
     }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef]);
     return (
-        <div className="dashboard">
             <Switch>
                 {
                     routes.map(route =>
@@ -141,7 +140,6 @@ const Orders = (props) => {
                 }
                 <Redirect to={`${path}/my-orders`} />
             </Switch>
-        </div>
     )
 }
 export default Orders

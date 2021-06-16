@@ -62,7 +62,7 @@ const PotentialVendors = (props) => {
             .catch(ex => console.log(ex))
     }, [fetchGet]);
     return (
-        <div className="dashboard" style={{ paddingTop: '56px' }}>
+        <>
             {
                 modalState.visible &&
                 <Modal title={modalState.title} changeModalState={closeModal}>
@@ -121,7 +121,7 @@ const PotentialVendors = (props) => {
                     updateList={updateList}
                 />
             </div>
-        </div >
+        </>
     )
 }
 export default PotentialVendors

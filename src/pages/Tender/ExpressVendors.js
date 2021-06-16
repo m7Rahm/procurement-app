@@ -110,7 +110,7 @@ const ExpressVendors = () => {
         })
     }
     return (
-        < div style={{ marginTop: '56px' }} >
+        <div >
             <ExpressVendorsSearch
                 ref={searchDataRef}
                 updateList={updateList}

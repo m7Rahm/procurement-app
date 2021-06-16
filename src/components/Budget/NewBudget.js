@@ -99,6 +99,7 @@ const NewBudget = (props) => {
                                         autoComplete="off"
                                         onBlur={handleGlCategoryBlur}
                                         type="text"
+                                        className="structures-list"
                                         ref={glCategoryRef}
                                     />
                                     <ul className="structures-list">

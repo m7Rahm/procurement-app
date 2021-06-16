@@ -34,6 +34,13 @@ div.ready-order-header>h1:last-of-type{
     float: right;
     color: #195db6;
 }
+.dashboard {
+    position: fixed;
+    top: 56px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+}
 .form-card>input, .form-card>select {
     margin-top: 10px;
     display: block;

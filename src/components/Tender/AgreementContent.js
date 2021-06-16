@@ -41,7 +41,7 @@ const AgreementContent = (props) => {
         setModal(prev => ({ ...prev, visible: false }))
     }
     return (
-        <div className="visa-content-container" style={{ maxWidth: "1256px", margin: "auto", paddingTop: "76px" }}>
+        <div className="visa-content-container" style={{ maxWidth: "1256px", margin: "auto" }}>
             {
                 operationResult.visible &&
                 <OperationResult

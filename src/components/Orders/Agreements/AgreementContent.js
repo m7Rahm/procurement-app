@@ -40,7 +40,7 @@ const AgreementContent = (props) => {
         return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
     }, [fetchPost, documentType]);
     return (
-        <div className="visa-content-container" style={{ padding: '68px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
+        <div className="visa-content-container" style={{ padding: '0px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
             {
                 docid ?
                     <>
