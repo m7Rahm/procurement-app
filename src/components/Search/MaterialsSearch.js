@@ -10,10 +10,10 @@ const apiData = {
     next: 20,
     type: -1
 }
+const windowState = {}
 const MaterialsSearch = (props) => {
     const [visibleCategories, setVisibleCategories] = useState(props.glCategoriesRef.current)
-    const timeoutRef = useRef(null)
-
+    const timeoutRef = useRef(null);
     const handleGlCategoryChange = (e) => {
         if(e.target.value === "")
             apiData.subGlCategoryId = 0
@@ -32,6 +32,10 @@ const MaterialsSearch = (props) => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
+        const prevState = window.history.state;
+        windowState[name] = value
+        prevState.state = windowState
+        window.history.replaceState(prevState, "")
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
             timeoutRef.current = null;
@@ -66,7 +70,7 @@ const MaterialsSearch = (props) => {
     return (
         <div className="materials-search-ribbon">
             <div>
-                <input name="name" placeholder="Məhsulun adı" onChange={handleInputChange} />
+                <input name="name" defaultValue={props.defaults.name} placeholder="Məhsulun adı" onChange={handleInputChange} />
             </div>
             <div>
                 <input
@@ -94,7 +98,7 @@ const MaterialsSearch = (props) => {
                 </ul>
             </div>
             <div>
-                <input name="code" placeholder="Məhsulun kodu" onChange={handleInputChange} />
+                <input name="code"  defaultValue={props.defaults.code} placeholder="Məhsulun kodu" onChange={handleInputChange} />
             </div>
             <div>
                 <select name="type" onChange={handleInputChange}>

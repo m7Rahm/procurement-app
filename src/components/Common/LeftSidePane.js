@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import {
-    IoMdMenu,
-} from 'react-icons/io'
+import { useHistory } from 'react-router-dom'
+import { IoMdMenu } from 'react-icons/io'
 const icon = (Icon, active) => ({ ...props }) =>
     <Icon color={active ? "red" : '#808080'} {...props} />
 
@@ -16,8 +14,9 @@ const setStyle = (active) => {
     return style
 }
 const LeftSidePane = (props, ref) => {
-    const [activeLink, setActiveLink] = useState(0);
+    const [activeLink, setActiveLink] = useState(props.active);
     const handleNavClick = props.handleNavClick;
+    const history = useHistory();
     useEffect(() => {
         const escPress = (e) => {
             if (e.keyCode === 27 && ref.current.classList.contains("left-side-pane-open")) {
@@ -29,7 +28,8 @@ const LeftSidePane = (props, ref) => {
         return () => {
             document.removeEventListener("keyup", escPress, false)
         }
-    }, [props.backgroundRef, ref])
+    }, [props.backgroundRef, ref]);
+    const onRouteClick = props.onNavClick ? props.onNavClick : (route) => history.push(`${props.url}${route.link}`)
     return (
         <div ref={ref} className="left-side-pane">
             <div>
@@ -41,19 +41,20 @@ const LeftSidePane = (props, ref) => {
                 <div>
                     {
                         props.links.map((link, index) => {
-                            const active = index === activeLink ? true : false
+                            const active = link.link === activeLink
                             const Icon = icon(link.icon, active)
                             return <div key={index} style={setStyle(active)} >
-                                <Link
+                                <span
                                     onClick={() => {
-                                        setActiveLink(index);
+                                        setActiveLink(link.link);
                                         handleNavClick();
+                                        onRouteClick(link);
                                     }}
                                     style={{ color: active ? '#222222' : '', fontWeight: active ? 600 : '', display: 'flex', width: '100%', alignItems: 'flex-end' }}
-                                    to={`${props.url}${link.link}`}>
+                                >
                                     <Icon size="24" style={{ marginRight: '5px' }} />
                                     {link.text}
-                                </Link>
+                                </span>
                             </div>
                         })
                     }

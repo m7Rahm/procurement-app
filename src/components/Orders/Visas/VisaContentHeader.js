@@ -33,6 +33,8 @@ const VisaContentHeader = (props) => {
 			.then(respJ => {
 				if (respJ[0].result === 'success')
 					closeModal(respJ, receivers.map(receiver => receiver.id))
+				else if (respJ[0].error === "bO")
+					setOperationResult({ visible: true, desc: "Büdcə aşılmışdır", errorDetails: respJ.reduce((acc, curr) => acc += curr.name + curr.overload_amount + "<br/>") })
 				else if (respJ[0].error)
 					setOperationResult({ visible: true, desc: respJ[0].error })
 				else

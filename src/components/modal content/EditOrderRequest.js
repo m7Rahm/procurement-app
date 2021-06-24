@@ -108,6 +108,7 @@ const EditOrderRequest = (props) => {
                 <OperationResult
                     setOperationResult={setOperationResult}
                     operationDesc={operationResult.desc}
+                    errorDetails={operationResult.errorDetails}
                 />
             }
             {

@@ -82,10 +82,10 @@ const NewBudget = (props) => {
                 <table className="new-budget users-table">
                     <thead>
                         <tr>
-                            <th>Gl Category</th>
-                            <th>Sub-Gl Category</th>
-                            <th>Department</th>
-                            <th>Budget</th>
+                            <th>Gl Kateqoriya</th>
+                            <th>Sub-Gl Kateqoriya</th>
+                            <th>Departament</th>
+                            <th>Büdcə</th>
                         </tr>
                     </thead>
                     <tbody>

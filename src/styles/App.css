@@ -3,7 +3,10 @@
   position: relative;
   padding-top: 56px;
 }
-
+:root{
+  --color-agree: rgb(15, 157, 88);
+  --color-decline: #D93404
+}
 * {
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -49,7 +52,7 @@ div.result-empty>h1 {
   top: 0px;
   left: 0px;
   width: 240px;
-  z-index: 2;
+  z-index: 3;
   height: 100vh;
   transform: translateX(-240px);
   background-color: white;
@@ -105,7 +108,7 @@ div.result-empty>h1 {
   cursor: pointer;
 }
 
-.left-side-pane>div:not(:first-of-type)>div>div>a {
+.left-side-pane>div:not(:first-of-type)>div>div>span {
   text-decoration: none;
   display: block;
   padding: 10px;
@@ -151,7 +154,7 @@ div.result-empty>h1 {
 nav {
   position: fixed;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   left: 0px;
   width: 100%;
   height: 56px;
@@ -229,9 +232,30 @@ nav>ul>li {
   height: 80px;
   outline: white 1px solid;
 }
-
+div.navigation-button-container{
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+}
+div.navigation-button{
+  padding: 1rem 1rem;
+  cursor: pointer;
+  margin-left: 20px;
+  text-align: center;
+  width: 8rem;
+  border-radius: 3px;
+  color: white;
+  float: left;
+}
+div.navigation-button[name="forward"]{
+  background-color: var(--color-agree);
+}
+div.navigation-button[name="back"]{
+  background-color: var(--color-decline);
+}
 .side-bar>ul>li:hover {
   background-color: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 div.agreements-container {
@@ -895,7 +919,6 @@ div.icons-panel-hide {
 .wrapper {
   min-width: 1024px;
   margin: auto;
-  transition: all 0.5s;
 }
 
 .reviewed-comment>span {
@@ -963,7 +986,7 @@ div.icons-panel-hide {
   top: 0px;
   left: 0px;
   height: 100%;
-  z-index: 1;
+  z-index: 3;
   animation: blur-in 0.2s ease-in-out both;
 }
 
@@ -975,30 +998,56 @@ div.icons-panel-hide {
     background-color: rgba(0, 0, 0, 0.6);
   }
 }
-
+div.new-material-modal-container{
+  padding: 20px;
+}
+div.row>div:not(:last-of-type):not(:first-of-type) input,
+div.row>div:not(:last-of-type):not(:first-of-type) select{
+  width: 80%;
+  margin: auto;
+}
+div.row label{
+  font-weight: 600;
+  font-size: 16px;
+  color: #123456;
+}
+div.row input,
+div.row select{
+  display: block;
+  padding: 4px;
+}
+div.row{
+  display: flex;
+  margin: 20px 0px;
+  justify-content: space-between;
+}
+div.row>div{
+  flex: 1;
+}
+div.row>div:last-of-type *{
+  float: right;
+  clear: both;
+}
 .modal-content {
   border: 1px solid #1f1f1f;
   border-top-width: 0px;
   width: 60%;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0px;
+  left: 50%;
   overflow-x: hidden;
-  margin: auto;
-  margin-bottom: 100px;
   position: absolute;
   background-color: #f5f5f5;
   padding: 0px;
-  z-index: 2;
+  z-index: 3;
   animation: modal-show 0.5s ease-in-out both;
 }
 
 @keyframes modal-show {
   from {
-    transform: none;
+    transform: translateX(-50%);
   }
   to {
-    transform: translate3d(0px, 50px, 0);
+    transform: translate3d(-50%, 66px, 0);
   }
 }
 
@@ -1204,7 +1253,7 @@ div.profile-info-container{
   bottom: 0px;
   right: 0px;
   padding-top: 5%;
-  z-index: 2;
+  z-index: 35;
   background-color: rgba(255, 255, 255, .8);
 }
 div.profile-info-content{
@@ -1848,6 +1897,7 @@ div.login input:-webkit-autofill+label{
   top: 56px;
   left: 350px;
   right: 0px;
+  z-index: 2;
   bottom: 0px;
   overflow: auto;
 }

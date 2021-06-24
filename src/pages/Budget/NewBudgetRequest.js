@@ -10,6 +10,7 @@ const year = date.getFullYear();
 
 const NewBudgetRequest = (props) => {
     const [glCategories, setGlCategories] = useState({ parent: [], sub: [], all: [] });
+    const glCategoryRef = useRef(null);
     const subGlCategoryidRef = useRef(null);
     const [departments, setDepartments] = useState([]);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
@@ -25,10 +26,11 @@ const NewBudgetRequest = (props) => {
     })
     const subGlCategories = glCategories.all.filter(category => category.dependent_id === newBudgetData.glCategoryid);
     useEffect(() => {
+        props.modalWrapperRef.current.style.width = "70rem";
         fetchGet('http://192.168.0.182:54321/api/departments')
             .then(respJ => setDepartments(respJ))
             .catch(ex => console.log(ex));
-    }, [fetchGet]);
+    }, [fetchGet, props.modalWrapperRef]);
     useEffect(() => {
         fetchGet('http://192.168.0.182:54321/api/gl-categories')
             .then(respJ => {
@@ -81,6 +83,23 @@ const NewBudgetRequest = (props) => {
         const value = name !== 'month' ? Number(e.target.value) : e.target.value;
         setNewBudgetData(prev => ({ ...prev, [name]: value }))
     }
+    const handleGlCategoryChange = (e) => {
+        const value = e.target.value;
+        const charArray = value.split("")
+        const reg = charArray.reduce((conc, curr) => conc += curr !== "\\" ? curr + "+" : curr + "\\+", "")
+        const regExp = new RegExp(reg, "gi")
+        setGlCategories(prev => ({ ...prev, parent: prev.all.filter(category => regExp.test(category.name) || regExp.test(category.code)) }))
+    }
+    const handleGlCategoryBlur = (e) => {
+        const relatedTarget = e.relatedTarget
+        if (relatedTarget && relatedTarget.classList.contains("category-dep")) {
+            relatedTarget.click()
+        }
+    }
+    const handleGlCategorySelect = (category) => {
+        glCategoryRef.current.value = category.name
+        setNewBudgetData(prev => ({ ...prev, glCategoryid: category.id }))
+    }
     return (
         <div>
             {
@@ -107,26 +126,40 @@ const NewBudgetRequest = (props) => {
                 <table className="new-budget users-table">
                     <thead>
                         <tr>
-                            <th>Gl Category</th>
-                            <th>Sub-Gl Category</th>
-                            <th>Department</th>
-                            <th>Budget</th>
+                            <th>Gl Kateqoriya</th>
+                            <th>Sub-Gl Kateqoriya</th>
+                            <th>Departament</th>
+                            <th>Büdcə</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>
-                                <select value={newBudgetData.glCategoryid} name="glCategoryid" onChange={handleChange}>
-                                    <option>-</option>
-                                    {
-                                        glCategories.parent.map(category =>
-                                            <option key={category.id} value={category.id}>{category.name}</option>
-                                        )
-                                    }
-                                </select>
+                            <div className="gl-category-code" style={{ position: "relative" }} >
+                                    <input
+                                        onChange={handleGlCategoryChange}
+                                        placeholder="Kod və ya ad"
+                                        name="glCategoryid"
+                                        autoComplete="off"
+                                        onBlur={handleGlCategoryBlur}
+                                        type="text"
+                                        className="structures-list"
+                                        ref={glCategoryRef}
+                                    />
+                                    <ul className="structures-list" style={{ top: "2rem" }}>
+                                        {
+                                            glCategories.parent.map(category => {
+                                                const inputVal = glCategoryRef.current ? glCategoryRef.current.value : "";
+                                                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
+                                                const title = `${category.code} ${category.name}`.replace(strRegExp, (text) => `<i>${text}</i>`)
+                                                return <li tabIndex="1" dangerouslySetInnerHTML={{ __html: title }} className="category-dep" key={category.id} onClick={() => handleGlCategorySelect(category)} ></li>
+                                            })
+                                        }
+                                    </ul>
+                                </div>
                             </td>
                             <td>
-                                <select name="subGlCategoryid" ref={subGlCategoryidRef} style={{ width: "100%" }}>
+                                <select name="subGlCategoryid" style={{ width: "90%" }} ref={subGlCategoryidRef}>
                                     <option>-</option>
                                     {
                                         subGlCategories.map(category =>

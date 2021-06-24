@@ -6,7 +6,7 @@ import { BsArrowUpShort } from 'react-icons/bs'
 const date = new Date();
 const year = date.getFullYear();
 const month = date.getMonth();
-const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(props) {
+const OrdersSearchHOC = (options = []) => function SearchBar(props) {
     const activePageRef = useRef(0);
     const advSearchRef = useRef(null);
     const iconRef = useRef(null);
@@ -109,10 +109,10 @@ const OrdersSearchHOC = (options = [], docTypes = []) => function SearchBar(prop
                                 </select>
                             }
                             {
-                                docTypes.length !== 0 &&
+                                props.docTypes && props.docTypes.length !== 0 &&
                                 <select defaultValue="0" style={{ padding: '6px 0px', float: 'right', margin: "0px 5px" }} ref={docTypesRef}>
                                     {
-                                        docTypes.map(option =>
+                                        props.docTypes.map(option =>
                                             <option key={option.val} value={option.val}>{option.text}</option>
                                         )
                                     }

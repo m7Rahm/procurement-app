@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react'
-
-import {
-    Switch,
-    Route,
-    useRouteMatch
-} from 'react-router-dom'
-
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 import BudgetMain from './Budget/BudgetMain'
 import StructureBudget from './Budget/StructureBudget'
 import { GiReceiveMoney } from 'react-icons/gi'
@@ -15,7 +9,7 @@ import '../styles/Budget.css'
 import GlCategories from './Budget/GlCategories'
 import MiscDocsContainer from '../components/HOC/MiscDocsContainer'
 
-import { optionsAgreements } from '../data/data'
+import { optionsAgreements, miscDocTypes } from '../data/data'
 import CardsList from '../components/HOC/CardsList'
 import OrdersSearchHOC from '../components/Search/OrdersSearchHOC'
 import SideBarContainer from '../components/HOC/SideBarContainer'
@@ -85,6 +79,8 @@ const Budget = (props) => {
                 <BudgetDocuments
                     inData={inData}
                     params={params}
+                    docTypes={miscDocTypes.filter(doc => doc.val === "1")}
+                    referer="outbox"
                     updateListContent={updateListContent}
                 />
             </Route>

@@ -6,10 +6,16 @@ import { AiFillCheckCircle } from 'react-icons/ai'
 import OperationResult from '../../components/Misc/OperationResult'
 import Pagination from '../../components/Misc/Pagination'
 import useFetch from '../../hooks/useFetch';
+const defaults = {}
 const OrderMaterials = () => {
     const [departments, setDepartments] = useState([]);
     const [units, setUnits] = useState([]);
     const glCategoriesRef = useRef([]);
+    const windowState = window.history.state;
+    if (windowState.state) {
+        defaults.name = windowState.state.name;
+        defaults.code = windowState.state.code;
+    }
     const [glCategories, setGlCategories] = useState([]);
     const activePageRef = useRef(0);
     const [tableData, setTableData] = useState({ content: [], count: 0 });
@@ -51,6 +57,11 @@ const OrderMaterials = () => {
             from: 0,
             next: 20
         }
+        const state = window.history.state
+        if (state.state) {
+            data.name = state.state.name;
+            data.code = state.state.code;
+        }
         fetchPost('http://192.168.0.182:54321/api/get-models', data)
             .then(respJ => {
                 const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
@@ -60,60 +71,61 @@ const OrderMaterials = () => {
     }, [fetchPost])
     return (
         <>
-        <MaterialsSearch
-            glCategoriesRef={glCategoriesRef}
-            setTableData={setTableData}
-        />
-        <div className="sys-param-modal">
-            <div >
-                <table style={{ marginTop: '30px' }}>
-                    <thead>
-                        <tr>
-                            <th style={{ width: '40px' }}>#</th>
-                            <th>Ad</th>
-                            <th>GL Kateqoriya</th>
-                            <th>Sub-Gl Kateqoriya</th>
-                            <th>Kurasiya</th>
-                            <th>Növ</th>
-                            <th style={{ maxWidth: '100px' }}>Qiymət</th>
-                            <th style={{ maxWidth: '100px' }}>Kod</th>
-                            <th>Optimal miqdar</th>
-                            <th>Ölçü vahidi</th>
-                            <th>Inventardır</th>
-                            <th>Əsas Vəsaitdir</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <NewMaterial
-                            glCategoriesRef={glCategoriesRef}
-                            glCategories={glCategories}
-                            units={units}
-                            departments={departments}
-                            setTableData={setTableData}
-                        />
-                        {
-                            tableData.content.map((material, index) =>
-                                <TableRow
-                                    index={activePageRef.current * 20 + index + 1}
-                                    material={material}
-                                    glCategoriesRef={glCategoriesRef}
-                                    glCategories={glCategories}
-                                    departments={departments}
-                                    key={material.id}
-                                    units={units}
-                                />
-                            )
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <Pagination
-                count={tableData.count}
-                activePageRef={activePageRef}
-                updateList={refreshContent}
+            <MaterialsSearch
+                glCategoriesRef={glCategoriesRef}
+                setTableData={setTableData}
+                defaults={defaults}
             />
-        </div>
+            <div className="sys-param-modal">
+                <div >
+                    <table style={{ marginTop: '30px' }}>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '40px' }}>#</th>
+                                <th>Ad</th>
+                                <th>GL Kateqoriya</th>
+                                <th>Sub-Gl Kateqoriya</th>
+                                <th>Kurasiya</th>
+                                <th>Növ</th>
+                                <th style={{ maxWidth: '100px' }}>Qiymət</th>
+                                <th style={{ maxWidth: '100px' }}>Kod</th>
+                                <th>Optimal miqdar</th>
+                                <th>Ölçü vahidi</th>
+                                <th>Inventardır</th>
+                                <th>Əsas Vəsaitdir</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <NewMaterial
+                                glCategoriesRef={glCategoriesRef}
+                                glCategories={glCategories}
+                                units={units}
+                                departments={departments}
+                                setTableData={setTableData}
+                            />
+                            {
+                                tableData.content.map((material, index) =>
+                                    <TableRow
+                                        index={activePageRef.current * 20 + index + 1}
+                                        material={material}
+                                        glCategoriesRef={glCategoriesRef}
+                                        glCategories={glCategories}
+                                        departments={departments}
+                                        key={material.id}
+                                        units={units}
+                                    />
+                                )
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination
+                    count={tableData.count}
+                    activePageRef={activePageRef}
+                    updateList={refreshContent}
+                />
+            </div>
         </>
     )
 }
@@ -381,5 +393,4 @@ const NewMaterial = React.memo((props) => {
             <td><FaPlus onClick={handleAddNewCategory} cursor="pointer" /></td>
         </tr>
     )
-}
-)
+})

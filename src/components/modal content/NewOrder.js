@@ -59,7 +59,9 @@ const NewOrderContent = (props) => {
             setActive(false)
             onSuccess(respJ)
           }
-          else if (respJ[0].error)
+          else if (respJ[0].error === "bO")
+            setOperationResult({ visible: true, errorDetails: respJ.reduce((sum, curr) => sum += curr.name + curr.overload_amount + "<br/>", ""),  desc: "Büdcə Aşılmışdır" })
+          else
             setOperationResult({ visible: true, desc: respJ[0].error })
         })
         .catch(err => console.log(err))
@@ -102,6 +104,7 @@ const NewOrderContent = (props) => {
         <OperationResult
           setOperationResult={setOperationResult}
           operationDesc={operationResult.desc}
+          errorDetails={operationResult.errorDetails}
           backgroundColor="whitesmoke"
           icon={IoIosCloseCircle}
         />

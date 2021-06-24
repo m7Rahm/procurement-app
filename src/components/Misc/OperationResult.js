@@ -6,8 +6,10 @@ const OperationResult = (props) => {
         setOperationResult,
         icon: Icon = IoIosCloseCircle,
         iconColor = "#D93404",
-        backgroundColor = 'transparent'
+        backgroundColor = 'transparent',
+        errorDetails
     } = props;
+    console.log(operationDesc, errorDetails)
     const count = useRef(0);
     const setOperationResultCallback = useCallback(setOperationResult, []);
     const operationResultRef = useRef(null);
@@ -27,6 +29,7 @@ const OperationResult = (props) => {
                 <Icon color={iconColor} size="88" />
             </div>
             <h1 style={{ color: '#343a40', fontSize: '24px' }}>{operationDesc}</h1>
+            { errorDetails && <div style={{ color: "red" }} dangerouslySetInnerHTML={{ __html: errorDetails }}></div>}
         </div>
     )
 }

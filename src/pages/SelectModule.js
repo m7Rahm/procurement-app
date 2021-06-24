@@ -141,7 +141,7 @@ const SelectModule = () => {
 									left: 0,
 									display: "none",
 									background: "rgba(0, 0, 0, 0.6)",
-									zIndex: 2
+									zIndex: 3
 								}}>
 							</div>
 						</>
@@ -153,6 +153,8 @@ const SelectModule = () => {
 											url={menuData.url}
 											links={menuData.routes}
 											ref={leftPaneRef}
+											active={menuData.active}
+											onNavClick={menuData.onNavClick}
 											backgroundRef={backgroundRef}
 											handleNavClick={handleNavClick}
 										/>

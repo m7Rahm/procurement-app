@@ -2,11 +2,11 @@ import React, { lazy, Suspense } from "react"
 import useFetch from "../../hooks/useFetch.js";
 const DecommissionContent = lazy(() => import("../MiscDocs/DecommissionContent"));
 const BudgetIncRequestContent = lazy(() => import("../MiscDocs/BudgetIncRequestContent"))
+const NewMaterialRequestContent = lazy(() => import("../MiscDocs/NewMaterialRequestContent"))
 const MiscDocContainer = (props) => {
     const { docid, docType } = props;
     const fetchParticipantsFunc = useFetch("GET")
     const fetchParticipants = () => fetchParticipantsFunc(`http://192.168.0.182:54321/api/misc-doc-participants?docid=${docid}&docType=${docType}`)
-
     return (
         <>
             <Suspense fallback="">
@@ -25,8 +25,16 @@ const MiscDocContainer = (props) => {
                                 fetchParticipants={fetchParticipants}
                                 setInitData={props.setInitData}
                             />
-                            : <>
-                            </>
+                            : docType === 3
+                                ? <NewMaterialRequestContent
+                                    docid={docid}
+                                    docType={docType}
+                                    referer={props.referer}
+                                    fetchParticipants={fetchParticipants}
+                                    setInitData={props.setInitData}
+                                />
+                                : <>
+                                </>
                 }
             </Suspense>
         </>

@@ -71,29 +71,13 @@ export const months = [
         value: '12'
     }
 ]
-
-
-export const availableLinks = [
-    'Sifarişlərim',
-    'Vizalarım',
-    'Drafts',
-    'Arxiv',
-    'Gələnlər',
-    'Qiymət təklifləri',
-    'Anbar',
-    'Users',
-    'System Params',
-    'Structure',
-    'Dashboard',
-    'Büccə'
-];
 export const availableOperations = [
     'Sifariş yaratmaq',
     'Sifarişi təsdiq etmək',
     'Sifarişə etiraz etmək',
     'Sifarişi redaktəyə qaytarmaq',
     'Sifarişi redaktə etmək',
-    'Büccə daxil etmək',
+    'Büdcə daxil etmək',
     'Yeni məhsul əlavə etmək',
     "Digər sifarişləri görmək"
 ];
@@ -105,12 +89,16 @@ export const miscDocTypes = [
     },
     {
         val: "1",
-        text: "Büdcə artırılması"
+        text: "Büdcə artımı"
     },
     {
         val: "2",
         text: "Silinmə"
     },
+    {
+        val: "3",
+        text: "Yeni Məhsul Müraciəti"
+    }
 ]
 export const modules = [
     {
