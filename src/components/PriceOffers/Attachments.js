@@ -11,8 +11,8 @@ const Attachments = (props, attachmentsRef) => {
         setFiles(prev => ({ ...prev, fetched: vendorFiles, all: [...prev.new, ...vendorFiles] }))
     }, [vendorFiles])
     const handleChange = (e) => {
-        const filesArray = Object.values(e.target.files);
-        e.target.value = null
+        const filesArray = e.target.files;
+        // e.target.value = null
         setFiles(prev => {
             const newFilesState = [...prev.new]
             for (let i = 0; i < filesArray.length; i++) {

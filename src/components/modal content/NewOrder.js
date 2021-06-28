@@ -3,22 +3,23 @@ import NewOrderTableBody from '../Orders/NewOrder/NewOrderTableBody'
 import NewOrderHeader from '../Orders/NewOrder/NewOrderHeader'
 import OperationResult from '../../components/Misc/OperationResult'
 import { IoIosCloseCircle } from 'react-icons/io'
+import { FcFile } from "react-icons/fc"
 import useFetch from '../../hooks/useFetch'
+import { FaTimes } from 'react-icons/fa'
 
 
 const NewOrderContent = (props) => {
-  const { handleModalClose: closeModal, current, isDraft } = props;
+  const { closeModal, current, isDraft, setSending, token } = props;
   const [operationResult, setOperationResult] = useState({ visible: false, desc: '' })
   const [glCategories, setGlCategories] = useState({ all: [], parent: [], sub: [] });
-  const [active, setActive] = useState(true);
   const [orderInfo, setOrderInfo] = useState({
     glCategory: '-1',
     structure: '-1',
     ordNumb: '',
     orderType: 0
   });
+  const [files, setFiles] = useState([]);
   const fetchGet = useFetch("GET");
-  const fetchPost = useFetch("POST");
   useEffect(() => {
     fetchGet('http://192.168.0.182:54321/api/gl-categories')
       .then(respJ => {
@@ -46,25 +47,37 @@ const NewOrderContent = (props) => {
       }
     }
     if (canProceed) {
-      const data = {
-        mats: parsedMaterials,
-        receivers: [], // receiversRef.current.map(emp => emp.id),
-        structureid: orderInfo.structure,
-        ordNumb: current ? current : '',
-        orderType: orderInfo.orderType
+      setSending(true);
+      const formData = new FormData();
+      formData.append("mats", JSON.stringify(parsedMaterials))
+      formData.append("structureid", orderInfo.structure)
+      formData.append("ordNumb", current ? current : "")
+      formData.append("orderType", orderInfo.orderType)
+      for (let index = 0; index < files.length; index++) {
+        formData.append("files", files[index])
       }
-      fetchPost(url, data)
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        },
+        body: formData
+      })
+        .then(resp => resp.json())
         .then(respJ => {
           if (respJ[0].result === 'success') {
-            setActive(false)
             onSuccess(respJ)
           }
           else if (respJ[0].error === "bO")
-            setOperationResult({ visible: true, errorDetails: respJ.reduce((sum, curr) => sum += curr.name + curr.overload_amount + "<br/>", ""),  desc: "Büdcə Aşılmışdır" })
+            setOperationResult({ visible: true, errorDetails: respJ.reduce((sum, curr) => sum += curr.name + curr.overload_amount + "<br/>", ""), desc: "Büdcə Aşılmışdır" })
           else
             setOperationResult({ visible: true, desc: respJ[0].error })
+          setSending(false);
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err);
+          setSending(false);
+        })
     }
     else
       setOperationResult({ visible: true, desc: 'Error Parsing Materials' })
@@ -72,31 +85,50 @@ const NewOrderContent = (props) => {
   const handleSendClick = (materials) => {
     if (!current && !isDraft) {
       const onSuccess = (respJ) => {
-        const recs = respJ.map(resultRow =>
-          resultRow.receiver
-        );
-        const apiData = {
-          from: 0,
-          until: 20,
-          status: -3,
-          dateFrom: '',
-          dateTill: '',
-          ordNumb: '',
-          canSeeOtherOrders: props.canSeeOtherOrders
-        };
-        //todo: create socket and connect
-        fetchPost('http://192.168.0.182:54321/api/orders', apiData)
-          .then(respJ => {
-            closeModal(respJ, recs);
-          })
-          .catch(err => console.log(err))
+        const recs = respJ.map(resultRow => resultRow.receiver);
+        closeModal(recs);
       }
-      if (active)
-        createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
+      createApproveNewOrder(materials, 'http://192.168.0.182:54321/api/new-order', onSuccess)
     }
   }
-  const handleSendClickCallback = useCallback(handleSendClick, [orderInfo]);
-
+  const handleSendClickCallback = useCallback(handleSendClick, [orderInfo, files]);
+  const onDragOver = (e) => {
+    preventDefault(e)
+    e.target.style.border = "dotted 1px red"
+  }
+  const preventDefault = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const handleDrop = (e) => {
+    preventDefault(e);
+    const files = e.dataTransfer.files;
+    e.target.style.borderColor = "transparent"
+    setFiles(prev => {
+      const newState = [...prev];
+      for (let i = 0; i < files.length; i++)
+        if (!newState.find(prevFile => prevFile.name === files[i].name))
+          newState.push(files[i])
+      return newState
+    })
+  }
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    setFiles(prev => {
+      const newState = [...prev];
+      for (let i = 0; i < files.length; i++)
+        if (!newState.find(prevFile => prevFile.name === files[i].name))
+          newState.push(files[i]);
+      return newState
+    })
+  }
+  const onDragLeave = (e) => {
+    preventDefault(e);
+    e.target.style.borderColor = "transparent"
+  }
+  const handleDelete = (file) => {
+    setFiles(prev => prev.filter(prevFile => prevFile.name !== file.name))
+  }
   return (
     <div className="modal-content-new-order">
       {
@@ -109,13 +141,32 @@ const NewOrderContent = (props) => {
           icon={IoIosCloseCircle}
         />
       }
+      <div style={{ marginBottom: "0px" }}>
+        {
+          files.map(file =>
+            <div key={file.name} title={file.name} style={{ float: "left", cursor: "pointer", position: "relative" }}>
+              <FcFile size="2.5rem" color="#FFAA00" />
+              <FaTimes onClick={() => handleDelete(file)} color="#D93404" style={{ position: "absolute", top: "-0.5rem", right: 0 }} />
+            </div>
+          )
+        }
+      </div>
       <NewOrderHeader
         orderInfo={orderInfo}
         setOrderInfo={setOrderInfo}
       />
+      <input type="file" id="files" onChange={handleFileChange} multiple style={{ display: "none" }} />
+      <label
+        htmlFor="files"
+        className="drop-area"
+        onDragLeave={onDragLeave}
+        onDragOver={onDragOver}
+        onDrop={handleDrop}
+      >
+        Fayl əlavə et
+      </label>
       <NewOrderTableBody
         orderInfo={orderInfo}
-        active={active}
         glCategories={glCategories}
         handleSendClick={handleSendClickCallback}
       />

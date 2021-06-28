@@ -12,9 +12,8 @@ const ExpressContractFiles = (props) => {
         })
     }, [props.stateRef]);
     const addFiles = useCallback((e) => {
-        const files = { ...e.target.files };
-        files.length = e.target.files.length
-        e.target.value = null
+        const files = e.target.files;
+        // e.target.value = null
         setFiles(prev => {
             const newFiles = [];
             let unique = true;

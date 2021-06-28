@@ -11,7 +11,7 @@ import Chat from '../../Misc/Chat'
 const VisaContent = (props) => {
     const location = useLocation();
     const { tranid, documentType, initid } = props;
-    const [visa, setVisa] = useState(undefined);
+    const [visa, setVisa] = useState({ content: undefined, files: [] });
     const locationTranid = location.state ? location.state.tranid : undefined
     const inid = location.state ? location.state.initid : undefined
     const canProceed = useRef({});
@@ -34,10 +34,12 @@ const VisaContent = (props) => {
         if (tranid && mounted && initid) {
             fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}&init=${initid}`, abortController)
                 .then(respJ => {
-                    if (respJ.length !== 0 && mounted) {
-                        canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
-                        setVisa(respJ);
-                    }
+                    if (mounted)
+                        if (respJ.length !== 0) {
+                            canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
+                            setVisa({ content: respJ, files: respJ[0].related_files.split(',').filter(file => file !== "") });
+                        }
+                        else setVisa({ content: undefined, files: [] })
                 })
                 .catch(error => console.log(error));
             return () => {
@@ -52,10 +54,12 @@ const VisaContent = (props) => {
         if (locationTranid && mounted) {
             fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${locationTranid}&init=${inid}`, abortController)
                 .then(respJ => {
-                    if (respJ.length !== 0 && mounted) {
-                        canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
-                        setVisa(respJ);
-                    }
+                    if (mounted)
+                        if (respJ.length !== 0) {
+                            canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
+                            setVisa({ content: respJ, files: respJ[0].related_files.split(',').filter(file => file !== "") });
+                        }
+                        else setVisa({ content: undefined, files: [] })
                 })
                 .catch(error => console.log(error));
             return () => {
@@ -81,13 +85,14 @@ const VisaContent = (props) => {
     return (
         <div className="visa-content-container">
             {
-                visa ?
+                visa.content ?
                     <div>
                         <OrderContentProtected
                             footerComponent={VisaContentFooter}
                             setVisa={setVisa}
                             canProceed={canProceed}
-                            current={visa}
+                            current={visa.content}
+                            files={visa.files}
                         />
                         <div style={{ margin: "10px 20px" }}>
                             <Chat
@@ -105,7 +110,7 @@ const VisaContent = (props) => {
                             participantsVisiblity &&
                             <div ref={participantsRef} className="visa-content-participants-show">
                                 <Participants
-                                    id={visa[0].order_id}
+                                    id={visa.content[0].order_id}
                                 />
                             </div>
                         }

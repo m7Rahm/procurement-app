@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react"
+import React, { useCallback, useEffect, useState, useMemo, useContext } from "react"
 import { Route, useLocation, useRouteMatch } from "react-router-dom"
 import { optionsAgreements, miscDocTypes } from "../data/data"
 import CardsList from "../components/HOC/CardsList"
@@ -9,6 +9,7 @@ import MiscDocsContainer from "../components/HOC/MiscDocsContainer"
 import useFetch from "../hooks/useFetch"
 import { IoIosMail } from "react-icons/io"
 import { SiMinutemailer } from "react-icons/si"
+import { TokenContext } from "../App"
 const SideBarContent = CardsList(AgreementCard);
 const Search = OrdersSearchHOC(optionsAgreements);
 const SideBar = React.memo(SideBarContainer(Search, SideBarContent));
@@ -52,7 +53,7 @@ const routes = [
         inData: {
             result: 0,
             from: 0,
-            docType: 1
+            docType: miscDocTypes[0].val
         },
         docTypes: miscDocTypes.filter(type => type.val !== "0" && type.val !== "2"),
         params: {
@@ -84,16 +85,22 @@ const Other = (props) => {
     }, [url, setMenuData, props.leftNavRef, loadingIndicatorRef, setCategory, pathname]);
     const fetchPost = useFetch("POST");
     // eslint-disable-next-line
-    const Inbox = useMemo(() => MiscDocsContainer(SideBar), [category.name])
+    const Inbox = useMemo(() => MiscDocsContainer(SideBar), [category.name]);
+    const userData = useContext(TokenContext)[0].userData;
+    let docTypesFiltered = category.docTypes
+    if (category.name === "outbox" && userData.modules.find(module => module.text === "Budget") === undefined) {
+        docTypesFiltered = docTypesFiltered.filter(type => type.val !== "1")
+    }
     const updateListContent = useCallback((data) => fetchPost(category.link, data), [fetchPost, category.link]);
+    const initData = { ...category.inData, docType: docTypesFiltered[0].val }
     return (
         <Route path={`${path}`}>
             <Inbox
-                inData={category.inData}
+                inData={initData}
                 params={category.params}
                 referer={category.name}
                 docType={inData.docType}
-                docTypes={category.docTypes}
+                docTypes={docTypesFiltered}
                 updateListContent={updateListContent}
             />
         </Route>

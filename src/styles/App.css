@@ -5,7 +5,8 @@
 }
 :root{
   --color-agree: rgb(15, 157, 88);
-  --color-decline: #D93404
+  --color-decline: #D93404;
+  --color-express: #FFAA00;
 }
 * {
   box-sizing: border-box;
@@ -1011,6 +1012,36 @@ div.row label{
   font-size: 16px;
   color: #123456;
 }
+div.operation-result-lite {
+  position: fixed;
+  top: 20px;
+  right: 0px;
+  left: 0px;
+  z-index: 3;
+  margin: auto;
+  padding: 1rem;
+  border-radius: 3px;
+  width: fit-content;
+  color: white;
+  background-color: #123456;
+  transition: all 800ms;
+  cursor: default;
+  animation: show-up 800ms ease-in-out both;
+}
+div.operation-result-lite-closing{
+  opacity: 0;
+}
+.drop-area{
+  padding: 1rem;
+  display: block;
+  cursor: pointer;
+  margin: 0px 20px !important;
+  border: dotted 1px transparent; 
+  border-radius: 3px;
+  font-size: 1.5rem;
+  color: rgb(107, 99, 99);
+  background-image: linear-gradient(150deg, rgb(233, 230, 230), rgb(223, 217, 217));
+}
 div.row input,
 div.row select{
   display: block;
@@ -1052,16 +1083,14 @@ div.row>div:last-of-type *{
 }
 
 .modal-content-new-order {
-  /* max-height: 500px; */
   width: 100%;
-  padding: 15px 0px;
   background-color: white;
   display: flex;
   flex-flow: wrap column;
 }
 
 .modal-content-new-order>div:not(.operation-result) {
-  margin: 20px;
+  margin: 0px 20px 20px 20px;
 }
 
 .modal-content-new-order>div:not(.operation-result)>select {
@@ -1111,7 +1140,6 @@ div.row>div:last-of-type *{
 
 .new-order-header {
   margin-top: 10px;
-  padding-bottom: 30px;
   overflow: hidden;
 }
 

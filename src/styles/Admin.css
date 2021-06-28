@@ -23,6 +23,7 @@ div.sys-params>div:first-of-type {
 }
 div.materials-search-ribbon{
     padding: 1rem 0px;
+    margin-top: 56px;
     z-index: 2;
     height: 6rem;
 }
@@ -53,7 +54,7 @@ div.materials-search-ribbon>div>ul{
     top: 4rem;
 }
 div.users-page {
-    padding-top: 40px;
+    padding-top: 5.5rem;
     max-width: 1156px;
     margin: auto
 }

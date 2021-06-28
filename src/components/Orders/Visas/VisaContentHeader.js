@@ -4,12 +4,11 @@ import {
 	FaCheck,
 	FaTimes
 } from 'react-icons/fa'
-import {
-	IoIosWarning
-} from 'react-icons/io'
+import { IoIosWarning } from 'react-icons/io'
 import VisaVersionsContainer from './VisaVersionsContainer'
 import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch'
+import { FcFile } from "react-icons/fc"
 const EditOrderRequest = React.lazy(() => import('../../modal content/EditOrderRequest'));
 
 const VisaContentHeader = (props) => {
@@ -20,6 +19,7 @@ const VisaContentHeader = (props) => {
 	const userData = tokenContext[0].userData;
 	const fetchPost = useFetch("POST");
 	const canEditRequest = userData.previliges.find(prev => prev === 'Sifarişi redaktə etmək');
+	// const files = useRef()
 	const closeModal = (respJ, receivers) => {
 		updateContent({
 			id: respJ[1].id,
@@ -76,6 +76,17 @@ const VisaContentHeader = (props) => {
 						/>
 					}
 				</h1>
+				<div>
+					{
+						props.files.map(file =>
+							<div title={file} style={{ float: "left", cursor: "pointer" }} key={file}>
+								<a style={{ display: "block" }} href={"http://192.168.0.182:54321/original/" + file}>
+									<FcFile size="2.5rem" />
+								</a>
+							</div>
+						)
+					}
+				</div>
 				{
 					visaGenInfo.result === 1
 						? <span>

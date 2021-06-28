@@ -23,7 +23,7 @@ const NewOrderTableBody = (props) => {
   }
   useEffect(() => {
     setMaterials(prev => prev.filter(material => material.isService === orderType))
-  }, [orderType])
+  }, [orderType]);
   return (
     <>
       <ul className="new-order-table">
@@ -63,7 +63,7 @@ const NewOrderTableBody = (props) => {
         }
         <NewOrderTableRowAdd setMaterials={setMaterials} />
       </ul>
-      <div className="send-order" style={{ cursor: props.active ? 'pointer' : 'not-allowed' }} onClick={onSendClick}>
+      <div className="send-order" style={{ cursor: "pointer" }} onClick={onSendClick}>
         Göndər
       </div>
     </>

@@ -9,7 +9,6 @@ const OperationResult = (props) => {
         backgroundColor = 'transparent',
         errorDetails
     } = props;
-    console.log(operationDesc, errorDetails)
     const count = useRef(0);
     const setOperationResultCallback = useCallback(setOperationResult, []);
     const operationResultRef = useRef(null);

@@ -48,17 +48,19 @@ const Modal = (props) => {
     <div style={{ position: "fixed", zIndex: "2", top: 0, right: 0, left: 0, bottom: 0, overflow: "auto" }}>
       <div className="modal" onClick={closeModal}></div>
       <div ref={modalWrapperRef} className='modal-content wrapper' style={style}>
-        <div style={{ marginBottom: '20px' }} onMouseDown={handleDragStart}>
+        <div onMouseDown={handleDragStart}>
           {title || ""} {number}
           <IoMdClose className="modal-close-button" onClick={closeModal} size='18' style={{ verticalAlign: 'baseline', float: 'right' }} />
         </div>
-        <ModalContent
-          closeModal={changeModalState}
-          modalWrapperRef={modalWrapperRef}
-          current={number}
-          stateRef={stateRef}
-          {...props.childProps}
-        />
+        <div style={{ padding: "20px 0px" }}>
+          <ModalContent
+            closeModal={changeModalState}
+            modalWrapperRef={modalWrapperRef}
+            current={number}
+            stateRef={stateRef}
+            {...props.childProps}
+          />
+        </div>
       </div>
     </div>
   )

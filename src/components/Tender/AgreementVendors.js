@@ -71,9 +71,8 @@ const AgreementVendors = (props) => {
         setAgreementVendors(prev => [...prev, { ...vendor, key: Date.now(), className: 'new-row', files: [], comment: '' }])
     }
     const addCommonFiles = useCallback((e) => {
-        const files = { ...e.target.files };
-        files.length = e.target.files.length
-        e.target.value = null
+        const files = e.target.files;
+        // e.target.value = null
         setCommonFiles(prev => {
             const newFiles = [];
             let unique = true;

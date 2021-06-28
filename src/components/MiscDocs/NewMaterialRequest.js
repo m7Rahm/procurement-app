@@ -47,6 +47,8 @@ const NewMaterialRequest = (props) => {
                     receivers: respJ.map(receiver => ({ id: receiver.receiver_id, notif: "nO" })),
                     data: undefined
                 }
+                props.closeModal();
+                props.setInitData(prev => ({ ...prev }))
                 webSocket.send(JSON.stringify(message))
             })
             .catch(ex => console.log(ex))

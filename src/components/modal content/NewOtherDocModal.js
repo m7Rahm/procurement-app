@@ -31,10 +31,18 @@ const NewOtherDocModal = (props) => {
             }
             {// eslint-disable-next-line
                 docType == 1 && pageVisible ?
-                    <NewBudgetRequest modalWrapperRef={props.modalWrapperRef} setInitData={props.setInitData} />
+                    <NewBudgetRequest
+                        modalWrapperRef={props.modalWrapperRef}
+                        setInitData={props.setInitData}
+                        closeModal={props.closeModal}
+                    />
                     // eslint-disable-next-line
                     : docType == 3 && pageVisible ?
-                        <NewMaterialRequest modalWrapperRef={props.modalWrapperRef} />
+                        <NewMaterialRequest
+                            modalWrapperRef={props.modalWrapperRef}
+                            setInitData={props.setInitData}
+                            closeModal={props.closeModal}
+                        />
                         : !pageVisible ?
                             <div style={{ display: "flex", justifyContent: "center", marginTop: "100px" }}>
                                 {

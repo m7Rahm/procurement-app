@@ -22,7 +22,7 @@ const OrderContentProtected = (props) => {
 		})
 		webSocket.send(message)
 		setModalContent(prev => ({ ...prev, visible: false }))
-		setVisa(prev => prev.map((row, index) => index === 0 ? ({ ...row, ...updatedCtnt }) : row));
+		setVisa(prev => ({ ...prev, content: prev.content.map((row, index) => index === 0 ? ({ ...row, ...updatedCtnt }) : row) }));
 	}
 	const forwardDoc = (receivers) => {
 		setModalContent({ visible: false, content: null })
@@ -34,7 +34,6 @@ const OrderContentProtected = (props) => {
 		webSocket.send(message)
 	}
 	return (
-		current &&
 		<>
 			<>
 				{
@@ -46,6 +45,7 @@ const OrderContentProtected = (props) => {
 				<VisaContentHeader
 					updateContent={updateContent}
 					current={current}
+					files={props.files}
 					version={current[0].emp_version_id}
 					handleEditClick={handleEditClick}
 					intention={current[0].intention}

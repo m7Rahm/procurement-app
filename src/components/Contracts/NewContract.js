@@ -65,9 +65,8 @@ const NewContract = (props) => {
         setFiles(prev => prev.filter(doc => doc.name !== files.name))
     }, [])
     const handleChange = useCallback((e) => {
-        const files = { ...e.target.files };
-        files.length = e.target.files.length
-        e.target.value = null
+        const files = e.target.files;
+        // e.target.value = null
         setFiles(prev => {
             const newFiles = [];
             let unique = true;
