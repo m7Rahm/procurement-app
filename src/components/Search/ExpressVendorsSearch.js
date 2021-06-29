@@ -78,60 +78,60 @@ const ExpressVendorsSearch = (props, ref) => {
                             }
                         </select>
                     </div>
-                    <div className="next-row">
-                        <div>
-                            <label htmlFor='risk_zone'>Risk Zonası</label>
-                            <br />
-                            <select name="risk_zone" ref={(pointer) => ref.current.risk_zone = pointer} style={{ height: '35px', float: 'left' }}>
-                                <option value="0">-</option>
-                                {
-                                    riskZones.map(riskZone =>
-                                        <option key={riskZone.val} value={riskZone.val}>{riskZone.text}</option>
-                                    )
-                                }
-                            </select>
-                        </div>
-                        <div>
-                            <label htmlFor='residency'>Rezidentlik</label>
-                            <br />
-                            <select name="residency" ref={(pointer) => ref.current.residency = pointer} style={{ height: '35px', float: 'left' }}>
-                                <option value="0">-</option>
-                                {
-                                    riskZones.map(riskZone =>
-                                        <option key={riskZone.val} value={riskZone.val}>{riskZone.text}</option>
-                                    )
-                                }
-                            </select>
-                        </div>
-                        <div>
-                            <label htmlFor='status'>Status</label>
-                            <br />
-                            <select name="status" ref={(pointer) => ref.current.is_closed = pointer} style={{ height: '35px', float: 'left' }}>
-                                <option value="0">-</option>
-                                <option value="0">Açıq</option>
-                                <option value="1">Qapalı</option>
-                            </select>
-                        </div>
-                        <div style={{ textAlign: 'left', height: '55px', display: 'flex', minWidth: '180px', flexDirection: 'column-reverse' }}>
-                            <button
-                                onClick={handleSearch}
-                                style={{
-                                    height: '35px',
-                                    marginBottom: '1.5px',
-                                    cursor: 'pointer',
-                                    color: 'white',
-                                    fontWeight: '600',
-                                    padding: '3px 6px',
-                                    float: 'left',
-                                    minWidth: '180px',
-                                    fontFamily: 'sans-serif',
-                                    border: 'none',
-                                    backgroundColor: '#ffae00'
-                                }}>
-                                AXTAR
-                            </button>
-                        </div>
+                    {/* <div className="next-row"> */}
+                    <div>
+                        <label htmlFor='risk_zone'>Risk Zonası</label>
+                        <br />
+                        <select name="risk_zone" ref={(pointer) => ref.current.risk_zone = pointer} style={{ height: '35px', float: 'left' }}>
+                            <option value="0">-</option>
+                            {
+                                riskZones.map(riskZone =>
+                                    <option key={riskZone.val} value={riskZone.val}>{riskZone.text}</option>
+                                )
+                            }
+                        </select>
                     </div>
+                    <div>
+                        <label htmlFor='residency'>Rezidentlik</label>
+                        <br />
+                        <select name="residency" ref={(pointer) => ref.current.residency = pointer} style={{ height: '35px', float: 'left' }}>
+                            <option value="0">-</option>
+                            {
+                                riskZones.map(riskZone =>
+                                    <option key={riskZone.val} value={riskZone.val}>{riskZone.text}</option>
+                                )
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor='status'>Status</label>
+                        <br />
+                        <select name="status" ref={(pointer) => ref.current.is_closed = pointer} style={{ height: '35px', float: 'left' }}>
+                            <option value="0">-</option>
+                            <option value="0">Açıq</option>
+                            <option value="1">Qapalı</option>
+                        </select>
+                    </div>
+                    <div style={{ flex: 1, justifySelf: "stretch", height: '58px', display: 'flex', justifyContent: "flex-end", alignItems: "flex-end" }}>
+                        <button
+                            onClick={handleSearch}
+                            style={{
+                                height: '35px',
+                                marginBottom: '1.5px',
+                                cursor: 'pointer',
+                                color: 'white',
+                                fontWeight: '600',
+                                padding: '3px 6px',
+                                float: 'left',
+                                minWidth: '180px',
+                                fontFamily: 'sans-serif',
+                                border: 'none',
+                                backgroundColor: '#ffae00'
+                            }}>
+                            AXTAR
+                            </button>
+                    </div>
+                    {/* </div> */}
                 </div>
             </div>
         </div>

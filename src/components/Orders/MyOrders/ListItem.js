@@ -25,14 +25,28 @@ const Hybrid = (props) => <>
 </>
 const OrderContentWithChat = (props) => {
   const fetchGet = useFetch("GET");
-  const fetchPost = useFetch("POST")
+  const token = useContext(TokenContext)[0].token;
   const fetchMessages = useCallback((from = 0) =>
     fetchGet(`http://192.168.0.182:54321/api/messages/${props.id}?from=${from}&replyto=0&doctype=${10}`)
     , [props.id, fetchGet]);
-  const sendMessage = useCallback((data) => {
-    const apiData = { ...data, docType: 10 };
-    return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
-  }, [fetchPost]);
+  const sendMessage = useCallback(async data => {
+    const formData = new FormData();
+    formData.append("replyto", data.replyto);
+    formData.append("docid", data.docid);
+    formData.append("message", data.message);
+    formData.append("docType", 10);
+    for (let i = 0; i < data.files.length; i++) {
+      formData.append("files", data.files[i]);
+    }
+    const resp = await fetch(`http://192.168.0.182:54321/api/send-message`, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + token
+      },
+      body: formData
+    })
+    return await resp.json()
+  }, [token]);
   return (
     <>
       <EditOrderRequest {...props} />
@@ -121,7 +135,7 @@ const ListItem = (props) => {
             : status === 1
               ? <IoMdCheckmark color="#0F9D58" title="Təsdiq" size="20" />
               : status === 25 || status === 44
-                ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20"/>
+                ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20" />
                 : ""
   return (
     <>

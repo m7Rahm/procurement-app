@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useLayoutEffect } from 'react'
+import React, { useCallback, useState, useLayoutEffect, useContext } from 'react'
 import AgreementVendors from './AgreementVendors'
 import AgreementMaterials from '../../Tender/AgreementMaterials'
 import EmptyContent from '../../Misc/EmptyContent'
@@ -7,6 +7,7 @@ import { FaCheck, FaTimes } from 'react-icons/fa'
 import { useLocation } from 'react-router-dom'
 import AgreementVendorFiles from './AgreementVendorFiles'
 import useFetch from '../../../hooks/useFetch'
+import { TokenContext } from '../../../App'
 const AgreementContent = (props) => {
     const location = useLocation();
     const locationState = location.state ? location.state : undefined;
@@ -15,14 +16,15 @@ const AgreementContent = (props) => {
     const [docState, setDocState] = useState({ tranid: undefined, docid: docid });
     const documentType = 1;
     const fetchGet = useFetch("GET");
-    const fetchPost = useFetch("POST");
+    const token = useContext(TokenContext)[0].token;
     useLayoutEffect(() => {
         let mounted = true;
         if (docid && mounted)
             fetchGet(`http://192.168.0.182:54321/api/agreement-content?docid=${docid}`)
                 .then(respJ => {
                     if (mounted && respJ.length !== 0)
-                        setDocState(prev => ({ ...prev,
+                        setDocState(prev => ({
+                            ...prev,
                             agreementResult: respJ[0].agreement_result,
                             userResult: respJ[0].result,
                             comment: respJ[0].comment,
@@ -35,10 +37,24 @@ const AgreementContent = (props) => {
     }, [docid, fetchGet]);
     const fetchMaterials = useCallback(() => fetchGet(`http://192.168.0.182:54321/api/agreement-materials/${docid}`), [docid, fetchGet]);
     const fetchMessages = useCallback((from = 0) => fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`), [docid, fetchGet, documentType]);
-    const sendMessage = useCallback((data) => {
-        const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
-    }, [fetchPost, documentType]);
+    const sendMessage = useCallback(async data => {
+        const formData = new FormData();
+        formData.append("replyto", data.replyto);
+        formData.append("docid", data.docid);
+        formData.append("message", data.message);
+        formData.append("docType", documentType);
+        for (let i = 0; i < data.files.length; i++) {
+            formData.append("files", data.files[i]);
+        }
+        const resp = await fetch(`http://192.168.0.182:54321/api/send-message`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        })
+        return await resp.json()
+    }, [token, documentType]);
     return (
         <div className="visa-content-container" style={{ padding: '0px 20px 20px 20px', maxWidth: '1256px', margin: 'auto' }}>
             {

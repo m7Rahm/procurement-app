@@ -35,11 +35,7 @@ div.ready-order-header>h1:last-of-type{
     color: #195db6;
 }
 .dashboard {
-    position: fixed;
-    top: 56px;
-    right: 0px;
-    left: 0px;
-    bottom: 0px;
+    padding-top: 56px;
 }
 .form-card>input, .form-card>select {
     margin-top: 10px;

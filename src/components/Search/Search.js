@@ -136,7 +136,16 @@ const Search = (props) => {
 								style={{ height: "35px", float: "left" }}
 							/>
 						</div>
-						<div style={{ textAlign: "left", height: "55px", display: "flex", minWidth: "180px", flexDirection: "column-reverse" }}>
+						<div style={{
+							height: "58px",
+							display: "flex",
+							minWidth: "180px",
+							flex: 1,
+							justifyContent: "flex-end",
+							alignItems: "flex-end",
+							margin: "0px"
+							// flexDirection: "column-reverse"
+						}}>
 							<button
 								onClick={handleSearch}
 								style={{

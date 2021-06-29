@@ -1,9 +1,11 @@
 import React, { useLayoutEffect, useRef } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
+import { IoMdImage } from "react-icons/io"
 const MessageItem = (props) => {
     const ref = useRef(null);
     const calcHeight = props.getHeight;
     const setMessages = props.setMessages;
+    const type = props.message.review.slice(0, 3) === ":f:" ? 1 : 0;
     useLayoutEffect(() => {
         if (calcHeight && !props.added) {
             setMessages(prev => {
@@ -72,7 +74,13 @@ const MessageItem = (props) => {
                     <h1 style={{ textAlign: props.self ? 'right' : 'left', margin: '10px' }}>{props.message.full_name}</h1>
                 }
                 <div>
-                    <div style={{ textAlign: 'left', padding: '5px', minWidth: '120px' }}>{props.message.review}</div>
+                    <div style={{ textAlign: 'left', padding: '5px', minWidth: '120px' }}>
+                        {
+                            type !== 0
+                                ? <Files fileString={props.message.review} />
+                                : props.message.review
+                        }
+                    </div>
                     <span style={{ fontSize: '10px', float: 'right', padding: '2px 5px', width: '100px' }}>{props.message.date_time}</span>
                 </div>
             </div>
@@ -80,3 +88,22 @@ const MessageItem = (props) => {
     )
 }
 export default MessageItem
+
+const Files = (props) => {
+    const textStart = props.fileString.indexOf(":t:");
+    const files = props.fileString.slice(3, textStart).split(",");
+    const text = textStart !== -1 ? props.fileString.substring(textStart + 3) : props.fileString;
+    return (
+        <div>
+            {
+                files.map(file =>
+                    <a target="blank" className="chat-file" key={file} title={file} href={`http://192.168.0.182:54321/original/${file}`}>
+                        <IoMdImage cursor="pointer" size="2.5rem" />
+                    </a>
+                )
+            }
+            <br />
+            {text}
+        </div>
+    )
+}

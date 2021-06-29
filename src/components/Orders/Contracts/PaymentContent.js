@@ -13,6 +13,7 @@ import AgreementGeneralInfo from "./AgreementGeneralInfo"
 import PaymentMaterials from "./PaymentMaterials"
 import { WebSocketContext } from "../../../pages/SelectModule";
 import useFetch from "../../../hooks/useFetch";
+import { TokenContext } from "../../../App";
 // import { Link } from "react-router-dom";
 
 const Modal = lazy(() => import("../../Misc/Modal"));
@@ -26,6 +27,7 @@ const PaymentContent = (props) => {
     const materialsRef = useRef(null);
     const webSocket = useContext(WebSocketContext);
     const docid = props.docid;
+    const token = useContext(TokenContext)[0].token;
     const documentType = 3;
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
@@ -45,10 +47,24 @@ const PaymentContent = (props) => {
             mounted = false
         };
     }, [props.apiString, fetchGet]);
-    const sendMessage = useCallback((data) => {
-        const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
-    }, [fetchPost, documentType]);
+    const sendMessage = useCallback(async data => {
+        const formData = new FormData();
+        formData.append("replyto", data.replyto);
+        formData.append("docid", data.docid);
+        formData.append("message", data.message);
+        formData.append("docType", documentType);
+        for (let i = 0; i < data.files.length; i++) {
+            formData.append("files", data.files[i]);
+        }
+        const resp = await fetch(`http://192.168.0.182:54321/api/send-message`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        })
+        return await resp.json()
+    }, [token, documentType]);
     const fetchMessages = useCallback((from = 0) =>
         fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`)
         , [docid, fetchGet, documentType]);

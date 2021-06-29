@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback, useContext } from 'react'
 import OrderContentProtected from './OrderContentProtected'
 import Participants from '../../modal content/Participants'
 import VisaContentFooter from './VisaContentFooter'
@@ -7,6 +7,7 @@ import { FaAngleDown } from 'react-icons/fa'
 import { useLocation } from 'react-router-dom'
 import useFetch from '../../../hooks/useFetch'
 import Chat from '../../Misc/Chat'
+import { TokenContext } from '../../../App'
 
 const VisaContent = (props) => {
     const location = useLocation();
@@ -20,14 +21,28 @@ const VisaContent = (props) => {
     //     fetch
     // }
     const fetchGet = useFetch("GET");
-    const fetchPost = useFetch("POST")
+    const token = useContext(TokenContext)[0].token;
     const fetchMessages = useCallback((from = 0) =>
         fetchGet(`http://192.168.0.182:54321/api/messages/${tranid}?from=${from}&replyto=0&doctype=${documentType}`)
         , [tranid, fetchGet, documentType]);
-    const sendMessage = useCallback((data) => {
-        const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
-    }, [fetchPost, documentType]);
+    const sendMessage = useCallback(async data => {
+        const formData = new FormData();
+        formData.append("replyto", data.replyto);
+        formData.append("docid", data.docid);
+        formData.append("message", data.message);
+        formData.append("docType", documentType);
+        for (let i = 0; i < data.files.length; i++) {
+            formData.append("files", data.files[i]);
+        }
+        const resp = await fetch(`http://192.168.0.182:54321/api/send-message`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        })
+        return await resp.json()
+    }, [token, documentType]);
     useEffect(() => {
         const abortController = new AbortController();
         let mounted = true;

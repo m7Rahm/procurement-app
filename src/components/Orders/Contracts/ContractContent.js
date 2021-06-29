@@ -8,6 +8,7 @@ import RightInfoBar from '../../Misc/RightInfoBar';
 import AgreementGeneralInfo from './AgreementGeneralInfo'
 import { WebSocketContext } from "../../../pages/SelectModule";
 import useFetch from '../../../hooks/useFetch';
+import { TokenContext } from '../../../App';
 
 const AreYouSure = lazy(() => import("../../modal content/AreYouSure"))
 const Modal = lazy(() => import('../../Misc/Modal'));
@@ -19,6 +20,7 @@ const ContractContent = (props) => {
     const textareaRef = useRef(null);
     const docid = props.docid;
     const webSocket = useContext(WebSocketContext);
+    const token = useContext(TokenContext)[0].token;
     const documentType = 2;
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
@@ -38,10 +40,24 @@ const ContractContent = (props) => {
             mounted = false
         }
     }, [props.apiString, fetchGet]);
-    const sendMessage = useCallback((data) => {
-        const apiData = { ...data, docType: documentType };
-        return fetchPost(`http://192.168.0.182:54321/api/send-message`, apiData)
-    }, [fetchPost, documentType]);
+    const sendMessage = useCallback(async data => {
+        const formData = new FormData();
+        formData.append("replyto", data.replyto);
+        formData.append("docid", data.docid);
+        formData.append("message", data.message);
+        formData.append("docType", documentType);
+        for (let i = 0; i < data.files.length; i++) {
+            formData.append("files", data.files[i]);
+        }
+        const resp = await fetch(`http://192.168.0.182:54321/api/send-message`, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
+            body: formData
+        })
+        return await resp.json()
+    }, [token, documentType]);
     const fetchMessages = useCallback((from = 0) =>
         fetchGet(`http://192.168.0.182:54321/api/messages/${docid}?from=${from}&replyto=0&doctype=${documentType}`)
         , [docid, fetchGet, documentType]);

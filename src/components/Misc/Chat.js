@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import MessageItem from '../VisaCards/MessageItem'
 import { TokenContext } from '../../App'
-import { IoMdSend } from 'react-icons/io'
+import { IoMdSend, IoMdImage, IoMdClose } from 'react-icons/io'
 import { WebSocketContext } from '../../pages/SelectModule'
 const Chat = (props) => {
     const { loadMessages } = props;
     const tokenContext = useContext(TokenContext);
     const webSocket = useContext(WebSocketContext);
+    const [files, setFiles] = useState([]);
     const userInfo = tokenContext[0].userData.userInfo;
     const messageBoxRef = useRef(null);
     const active = useRef(0);
@@ -23,7 +24,10 @@ const Chat = (props) => {
             const indexEnd = indexTop !== -1 ? indexTop + 1 : prev.all.length;
             const renderedIndexStart = indexStart - 2 < 0 ? 0 : indexStart - 2;
             const visible = prev.all.slice(indexStart === - 1 ? indexEnd - 6 : renderedIndexStart, indexEnd);
-            return ({ ...prev, visible, start: indexStart === - 1 ? indexEnd - 6 : renderedIndexStart, end: indexEnd })
+            const start = indexStart === - 1 ? indexEnd - 6 : renderedIndexStart
+            if (prev.start !== start || prev.end !== indexEnd)
+                return ({ ...prev, visible, start: start, end: indexEnd })
+            else return prev
         })
     }
     useEffect(() => {
@@ -91,7 +95,7 @@ const Chat = (props) => {
                                 const firstFromBottom = all.findIndex(message => message.approxOffset >= 250);
                                 const indexEnd = firstFromBottom !== -1 ? firstFromBottom + 1 : all.length
                                 const visible = all.slice(0, indexEnd);
-                                if (all.length >= totalCount){
+                                if (all.length >= totalCount) {
                                     observer.unobserve(entry.target)
                                 }
                                 setMessages({ count: totalCount, all, visible, height: all.length * 50, start: 0, end: indexEnd, lastKnownIndex: 0 });
@@ -110,7 +114,7 @@ const Chat = (props) => {
                                                 : messages[index].user_id === prev.all[prev.all.length - 1].user_id
                                         }));
                                     const newState = [...prev.all, ...all];
-                                    if (newState.length >= totalCount){
+                                    if (newState.length >= totalCount) {
                                         observer.unobserve(entry.target)
                                     }
                                     return { ...prev, count: totalCount, all: newState, height: prev.height + all.length * 50 }
@@ -137,14 +141,14 @@ const Chat = (props) => {
         const data = {
             replyto: replyto,
             message: messageBoxRef.current.value,
-            docid: props.documentid
+            docid: props.documentid,
+            files: files
         }
-        if (messageBoxRef.current.value !== "")
+        if (messageBoxRef.current.value.trim() !== "" || files.length !== 0)
             props.sendMessage(data)
                 .then(respJ => {
                     if (respJ) {
-                        const { id, date_time: dateTime, participants } = respJ;
-                        const text = messageBoxRef.current.value;
+                        const { id, date_time: dateTime, participants, text } = respJ;
                         const message = {
                             message: "newMessage",
                             receivers: participants.map(participant => ({ id: participant })),
@@ -163,7 +167,7 @@ const Chat = (props) => {
                             const newMessage = {
                                 user_id: userInfo.id,
                                 self: true,
-                                review: messageBoxRef.current.value,
+                                review: text,
                                 date_time: dateTime,
                                 count: 0,
                                 id: id,
@@ -181,7 +185,8 @@ const Chat = (props) => {
                                 count: prev.count + 1
                             })
                         })
-                        messageBoxRef.current.value = '';
+                        messageBoxRef.current.value = "";
+                        setFiles([]);
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -191,6 +196,23 @@ const Chat = (props) => {
             e.preventDefault()
             sendMessage(0)
         }
+    }
+    const removeFile = (e) => {
+        const id = e.target.closest("span").id;
+        setFiles(files => files.filter(file => file.name !== id))
+    }
+    const handleFileChange = (e) => {
+        const files = e.target.files;
+        setFiles(prev => {
+            const newState = [...prev];
+            for (let i = 0; i < files.length; i++) {
+                if (newState.find(file => file.name === files[i].name))
+                    break;
+                else
+                    newState.push(files[i])
+            }
+            return newState
+        })
     }
     return (
         <>
@@ -221,10 +243,24 @@ const Chat = (props) => {
                     </ul>
                 </div>
             </div>
+            <div className="chat-files-container">
+                {
+                    files.map(file =>
+                        <span id={file.name} title={file.name} key={file.name}>
+                            <IoMdImage size="3rem" />
+                            <IoMdClose className="close" onClick={removeFile} />
+                        </span>
+                    )
+                }
+            </div>
             <div className="chat-footer" style={{ maxWidth: '1206px' }} >
-                <textarea ref={messageBoxRef} onKeyDown={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
-                <span style={{ width: '60px' }}>
-                    <IoMdSend size="30" cursor="pointer" onClick={() => sendMessage(0)} />
+                <input onChange={handleFileChange} multiple type="file" id="files" />
+                <label htmlFor="files" >
+                    <img src="/attachment.svg" alt="attachment" size="30" />
+                </label>
+                <textarea placeholder="Mesaj daxil edin" ref={messageBoxRef} onKeyDown={handleTextAreaKeyUp} style={{ flex: 1, resize: 'none', borderRadius: '20px' }} />
+                <span>
+                    <IoMdSend size="30" color="#919191" cursor="pointer" onClick={() => sendMessage(0)} />
                 </span>
             </div>
         </>

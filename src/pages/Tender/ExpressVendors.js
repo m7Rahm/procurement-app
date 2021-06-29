@@ -110,7 +110,7 @@ const ExpressVendors = () => {
         })
     }
     return (
-        <div >
+        <>
             <ExpressVendorsSearch
                 ref={searchDataRef}
                 updateList={updateList}
@@ -129,7 +129,6 @@ const ExpressVendors = () => {
                             <th>Risk zonası</th>
                             <th>Müqavilə tarixi</th>
                             <th>Status</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -137,7 +136,7 @@ const ExpressVendors = () => {
                             expressVendors.vendors.map((vendor, index) =>
                                 <tr key={vendor.id}>
                                     <td>
-                                        {index + 1}
+                                        {(activePageRef.current * 20) + index + 1}
                                     </td>
                                     <td>
                                         {vendor.name}
@@ -188,7 +187,7 @@ const ExpressVendors = () => {
                     />
                 </div>
             </div>
-        </ div>
+        </>
     )
 }
 export default ExpressVendors
