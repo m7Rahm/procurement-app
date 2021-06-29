@@ -47,7 +47,7 @@ const OrderMaterials = () => {
             .then(respJ => setUnits(respJ))
             .catch(ex => console.log(ex))
         fetchGet('http://192.168.0.182:54321/api/departments')
-            .then(respJ => setDepartments(respJ))
+            .then(respJ => setDepartments(respJ.filter(dep => dep.id == 255 || dep.id === 254)))
             .catch(ex => console.log(ex));
     }, [fetchGet])
     useLayoutEffect(() => {
