@@ -238,7 +238,7 @@ const TableRow = (props) => {
                 </select>
             </td>
             <td>
-                <select name="f_warehouse_id" onChange={handleChange} disabled={disabled} value={structureData.f_warehouse_id}>
+                <select name="f_warehouse_id" onChange={handleChange} disabled={disabled} value={structureData.f_warehouse_id || '-1'}>
                     <option value="0">-</option>
                     {
                         // eslint-disable-next-line

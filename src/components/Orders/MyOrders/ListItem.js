@@ -86,18 +86,30 @@ const ListItem = (props) => {
     }
     setModalState(prev => ({ ...prev, visible: true, content: FinishOrder, childProps: childProps, number: number }))
   }
-  const fetchPost = useFetch("POST");
   const onInfoClick = () => {
     const onSendClick = (data, setOperationResult) => {
-      const reqData = data;
-      fetchPost("http://192.168.0.182:54321/api/new-order", reqData)
+      const formData = new FormData();
+      formData.append("orderType", data.orderType)
+      formData.append("mats", JSON.stringify(data.mats))
+      formData.append("receivers", JSON.stringify(data.receivers))
+      formData.append("ordNumb", data.ordNumb)
+      formData.append("structureid", data.structureid)
+      formData.append("returned", data.returned);
+      fetch("http://192.168.0.182:54321/api/new-order", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token
+        },
+        body: formData
+      })
+        .then(resp => resp.json())
         .then(respJ => {
           if (respJ[0].result === "success") {
             const message = {
               message: "notification",
               receivers: respJ
-                .filter(receiver => receiver.receiver_id)
-                .map(receiver => ({ id: receiver.receiver_id, notif: "newOrder" })),
+                .filter(receiver => receiver.receiver)
+                .map(receiver => ({ id: receiver.receiver, notif: "newOrder" })),
               data: undefined
             }
             webSocket.send(JSON.stringify(message))
@@ -154,9 +166,9 @@ const ListItem = (props) => {
         </div>
         <div style={{ minWidth: "80px", width: "15%", textAlign: "left" }}>{date}</div>
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
-        <div style={{ width: "40%", textAlign: "left" }}>
-          {participants}
-          <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ float: "left", marginRight: "10px" }} color="gray" />
+        <div className="participants-list-container">
+          <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
+          <input className="participants-list" defaultValue={participants.slice(0, -2)} disabled={true} />
         </div>
         <div style={{ width: "60px" }}>
           <IoMdChatbubbles size="20" color="#4285F4" cursor="pointer" onClick={onInfoClick} />

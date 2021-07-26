@@ -8,11 +8,36 @@
 .table>li {
     display: flex;
 }
-
-.table>li:nth-of-type(2n) {
+div.participants-list-container{
+    width: 40%;
+    position: relative;
+}
+div.participants-list-container::after{
+    position: absolute;
+    display: block;
+    content: "";
+    width: 40px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    mask-image: linear-gradient(to right, transparent, #000);
+}
+input.participants-list:disabled{
+    background-color: transparent;
+    border: none;
+    display: block;
+    padding-left: 25px;
+    width: 100%;
+}
+.table>li:nth-of-type(2n),
+.table>li:nth-of-type(2n) div.participants-list-container::after
+ {
     background-image: linear-gradient(to bottom, #f1f1f1, #e1e1e1);
 }
-
+ap{
+    text-decoration: underline;
+    color: var(--color-decline)
+}
 div.sel-dep-list{
     float: left;
     margin-left: 10px;

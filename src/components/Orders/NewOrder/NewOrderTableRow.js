@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch';
-
+const replaceFunc = (match) => `<i>${match}</i>`;
 const NewOrderTableRow = (props) => {
   const rowRef = useRef(null);
   const { orderType, structure, subGlCategories, setMaterials } = props;
@@ -92,15 +92,29 @@ const NewOrderTableRow = (props) => {
     modelListRef.current.style.display = "none";
   }
   const handleInputSearch = (e) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
-      const charArray = value.split("")
+      const localVal = value.replace(/e/gi, "eə")
+        .replace(/u/gi, "uü")
+        .replace(/sh?/gi, "sş")
+        .replace(/o/gi, "oö")
+        .replace(/gh?/gi, "gğ")
+        .replace(/ch?/gi, "cç")
+        .replace(/i/gi, "iı")
+      const charArray = localVal.split("")
       const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
       const regExp = new RegExp(`${reg}`, "i");
       const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
       setModels(searchResult);
     } else {
-      fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${value}&orderType=${orderType}&structure=${structure}`)
+      const apiValue = value.replace(/e/gi, "[eə]")
+        .replace(/u/gi, "[uü]")
+        .replace(/sh?/gi, "[sş]")
+        .replace(/o/gi, "[oö]")
+        .replace(/gh?/gi, "[gğ]")
+        .replace(/ch?/gi, "[cç]")
+        .replace(/i/gi, "[iı]")
+      fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${apiValue}&orderType=${orderType}&structure=${structure}`)
         .then(respJ => {
           setModels(respJ)
         })
@@ -169,6 +183,7 @@ const NewOrderTableRow = (props) => {
       })
       .catch(ex => console.log(ex))
   }
+
   return (
     <li ref={rowRef} className={className}>
       <div>{props.index + 1}</div>
@@ -197,9 +212,18 @@ const NewOrderTableRow = (props) => {
           <ul id="modelListRef" tabIndex="0" ref={modelListRef} style={{ outline: models.length === 0 ? '' : 'rgb(255, 174, 0) 2px solid' }} className="material-model-list">
             {
               models.map(model => {
-                const inputVal = modelInputRef.current.value.replace("-","\\-");
-                const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-                const title = model.title.replace(strRegExp, (text) => `<i>${text}</i>`);
+                const inputVal = modelInputRef.current.value
+                  .replace(/-/gi, "\\-")
+                  .replace(/e/gi, "eə")
+                  .replace(/u/gi, "uü")
+                  .replace(/s/gi, "sş")
+                  .replace(/o/gi, "oö")
+                  .replace(/g/gi, "gğ")
+                  .replace(/c/gi, "cç")
+                  .replace(/i/gi, "iı")
+                let regex = `[${inputVal}]`
+                const strRegExp = new RegExp(regex, 'gi');
+                const title = model.title.replace(strRegExp, replaceFunc, 'gi');
                 return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
               })
             }
