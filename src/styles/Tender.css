@@ -201,3 +201,88 @@ div.express-vendors-search-ribbon label {
     font-weight: 550;
 }
 
+.offer-pictures {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding-top: 200px;
+    z-index: 2;
+    background-color: transparent;
+  }
+  
+  .offer-pictures>div {
+    min-width: 400px;
+    max-width: 512px;
+    margin: auto;
+    height: 330px;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: whitesmoke;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  .offer-pictures>div>div:first-of-type {
+    padding: 6px;
+    border-radius: 3px 3px 0px 0px;
+    overflow: hidden;
+    height: 30px;
+    color: whitesmoke;
+    background-image: linear-gradient(to bottom, #646464, rgb(27, 27, 27));
+  }
+  
+  .offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type) {
+    padding: 0px 20px;
+    height: 260px;
+    overflow: auto;
+  }
+  
+  .offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type)::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .offer-pictures>div>div:not(.big-picture-ref):not(:first-of-type)::-webkit-scrollbar-thumb {
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background-clip: padding-box;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .offer-pictures>div>div>table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+  }
+  
+  .offer-pictures>div>div>table>thead td {
+    padding: 10px;
+    font-weight: 600;
+  }
+
+  .offer-pictures>div>div>table td {
+    font-size: 14px;
+    padding: 10px;
+    overflow: hidden;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    border: 1px solid gray;
+  }
+  
+  .offer-pictures>div>div>table td:first-of-type {
+    width: 40px;
+  }
+  
+  .offer-pictures>div>div>table td:last-of-type {
+    width: 20px;
+    padding: 0px !important;
+  }
+  
+  .offer-pictures>div>div>table td:nth-of-type(2) {
+    width: 130px;
+  }
+  
+  .offer-pictures>div>div>table>tbody>tr>td>img {
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+  }
+  

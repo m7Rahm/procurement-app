@@ -39,11 +39,14 @@ const ExpressVendorInfo = (props) => {
         const formData = new FormData();
         const phoneNumbs = vendorData.phone_numbers.reduce((sum, current) => sum += `${current.val},`, '');
         const emails = vendorData.emails.reduce((sum, current) => sum += `${current.val},`, '')
-        if (!/\d+\.?\d{0,2}/.test(taxPercentageRef.current.value)) {
+        if (voenRef.current.value.length !== 10) {
+            voenRef.current.style.boxShadow = "0px 0px 3px 1px red"
+        } else if (!/\d+\.?\d{0,2}/.test(taxPercentageRef.current.value)) {
             taxPercentageRef.current.style.boxShadow = "0px 0px 3px 1px red"
         } else if (!/\d{4}-\d{2}-\d{2}/.test(regDateRef.current.value)) {
             regDateRef.current.style.boxShadow = "0px 0px 3px 1px red"
-        } else {
+        }
+        else {
             formData.append('name', namRef.current.value);
             formData.append('voen', voenRef.current.value);
             formData.append('saa', saaRef.current.value);

@@ -6,6 +6,7 @@ import {
 import { TokenContext } from '../../../App'
 import useFetch from '../../../hooks/useFetch'
 import { WebSocketContext } from '../../../pages/SelectModule'
+import Loading from '../../Misc/Loading'
 import Modal from '../../Misc/Modal'
 import OperationResultLite from "../../Misc/OperationResultLite"
 const NewOrderContent = React.lazy(() => import('../../modal content/NewOrder'))
@@ -57,7 +58,7 @@ const NewOrder = (props) => {
       }
       {
         isModalVisible &&
-        <Suspense fallback="">
+        <Suspense fallback={<Loading />}>
           <Modal
             title="Yeni Sifariş"
             childProps={{ closeModal: closeModal, setSending: setSending, token: tokenContext[0].token }}

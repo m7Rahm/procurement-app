@@ -7,7 +7,7 @@ import ExpressVendorInfo from '../../components/modal content/ExpressVendorInfo'
 import PotentialVendor from './PotentialVendor'
 import Modal from '../../components/Misc/Modal'
 import useFetch from '../../hooks/useFetch';
-const PotentialVendors = (props) => {
+const PotentialVendors = () => {
     const [potentialVendors, setPotentialVendors] = useState({ count: 0, content: [] });
     const activePageRef = useRef(0);
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '', icon: null })
@@ -148,7 +148,6 @@ const Search = (props) => {
                     <label htmlFor="name">Fəaliyyət sahəsi</label>
                     <br></br>
                     <select onChange={handleChange} name="sphere" id="sphere">
-                        <option value=""> - </option>
                         {
                             workSectors.map(sector =>
                                 <option key={sector.val} value={sector.val}>{sector.text}</option>
@@ -181,34 +180,33 @@ const NewVendor = (props) => {
     const sphereRef = useRef(null);
     const fetchPost = useFetch("POST");
     const addNewPotentialVendor = () => {
-        const data = {
-            name: nameRef.current.value,
-            voen: voenRef.current.value,
-            sphere: sphereRef.current.value
+        if (voenRef.current.value === 10) {
+            const data = {
+                name: nameRef.current.value,
+                voen: voenRef.current.value,
+                sphere: sphereRef.current.value
+            }
+            fetchPost('http://192.168.0.182:54321/api/new-potential-vendor', data)
+                .then(respJ => {
+                    const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
+                    props.setPotentialVendors({ count: totalCount, content: respJ });
+                    nameRef.current.value = '';
+                    sphereRef.current.value = '';
+                    voenRef.current.value = '';
+                    props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })
+                })
+                .catch(ex => console.log(ex))
+        } else {
+            voenRef.current.style.boxShadow = "0px 0px 3px 1px red"
         }
-        fetchPost('http://192.168.0.182:54321/api/new-potential-vendor', data)
-            .then(respJ => {
-                const totalCount = respJ.length !== 0 ? respJ[0].total_count : 0;
-                props.setPotentialVendors({ count: totalCount, content: respJ });
-                nameRef.current.value = '';
-                sphereRef.current.value = '';
-                voenRef.current.value = '';
-                props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })
-
-            })
-            .catch(ex => console.log(ex))
     }
     return (
         <>
             <li>
                 <div>
                 </div>
-                <div>
-                    <input ref={nameRef} />
-                </div>
-                <div>
-                    <input ref={voenRef} />
-                </div>
+                <div><input ref={nameRef} /></div>
+                <div><input ref={voenRef} /></div>
                 <div>
                     <select ref={sphereRef}>
                         {
@@ -220,7 +218,7 @@ const NewVendor = (props) => {
                 </div>
                 <div >
                 </div>
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', cursor: "pointer" }}>
                     <FaPlus onClick={addNewPotentialVendor} />
                 </div>
             </li>

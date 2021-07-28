@@ -3,6 +3,7 @@ import { vendorTypes, riskZones, taxTypes, workSectors } from '../../data/data'
 const ExpressVendorsSearch = (props, ref) => {
     const { updateList } = props;
     const handleSearch = () => {
+        props.activePageRef.current = 0;
         updateList(0)
     }
     return (

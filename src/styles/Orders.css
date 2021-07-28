@@ -21,6 +21,7 @@ div.participants-list-container::after{
     right: 0;
     bottom: 0;
     mask-image: linear-gradient(to right, transparent, #000);
+    background-color: white;
 }
 input.participants-list:disabled{
     background-color: transparent;

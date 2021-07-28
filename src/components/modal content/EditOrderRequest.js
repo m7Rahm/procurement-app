@@ -15,7 +15,7 @@ const EditOrderRequest = (props) => {
     const [orderState, setOrderState] = useState([]);
     const [glCategories, setGlCategories] = useState({ all: [], main: [] });
     const [operationResult, setOperationResult] = useState({ visible: false, desc: '' });
-    const glCatid = orderState.length !== 0 ? orderState[0].gl_category_id : ''
+    const glCatids = orderState.map(row => row.gl_category_id);
     const fetchGet = useFetch("GET");
     useEffect(() => {
         fetchGet('http://192.168.0.182:54321/api/gl-categories')
@@ -136,9 +136,9 @@ const EditOrderRequest = (props) => {
                             index={index}
                             setOrderState={setOrderState}
                             glCategories={glCategories}
-                            orderType={row.order_type}
-                            glCatid={glCatid}
-                            structure={row.structure_id}
+                            orderType={orderState[0].order_type}
+                            glCatids={glCatids}
+                            structure={orderState[0].structure_id}
                             ordNumb={ordNumb}
                             version={version}
                         />

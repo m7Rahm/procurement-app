@@ -5,7 +5,9 @@ import {
 	FaMinus
 } from "react-icons/fa"
 import useFetch from "../../hooks/useFetch";
-const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, version, view, glCatid, orderType, structure }) => {
+const replaceFunc = (match) => `<i>${match}</i>`;
+
+const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, version, view, glCatids, orderType, structure }) => {
 	const { sub_gl_category_id: subCategoryid } = row;
 	const rowid = row.id;
 	const modelsRef = useRef([]);
@@ -25,8 +27,8 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 					setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, budget: budget, models: respJ })))
 				})
 		}
-	}, [subCategoryid, fetchPost, ordNumb, version, rowid, setOrderState, view])
-	const subCategories = glCategories.all.filter(category => category.dependent_id === Number(glCatid));
+	}, [subCategoryid, fetchPost, ordNumb, version, rowid, setOrderState, view]);
+	const subCategories = glCategories.all.filter(category => glCatids.indexOf(category.dependent_id) !== -1);
 	useEffect(() => {
 		if (view === "returned") {
 			const data = { subGlCategoryId: subCategoryid, structureid: structure, orderType: orderType };
@@ -154,10 +156,17 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 		modelListRef.current.style.display = "none";
 	}
 	const handleInputSearch = (e) => {
-		const value = e.target.value;
+		const value = e.target.value.replace(/-/gi, "\\-")
 		const name = e.target.name;
-		const charArray = value.split("")
-		const reg = charArray.reduce((conc, curr) => conc += `${curr}(.*)`, "")
+		const charArray = value
+			.replace(/e/gi, "eə")
+			.replace(/u/gi, "uü")
+			.replace(/sh?/gi, "sş")
+			.replace(/o/gi, "oö")
+			.replace(/gh?/gi, "gğ")
+			.replace(/ch?/gi, "cç")
+			.replace(/i/gi, "iı").split("")
+		const reg = charArray.reduce((conc, curr) => conc += `${curr}{0,1}`, "")
 		const regExp = new RegExp(`${reg}`, "i");
 		const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
 		setOrderState(prev => prev.map(row => row.id !== rowid ? row : ({ ...row, [name]: value, models: searchResult })))
@@ -191,18 +200,19 @@ const EditOrderTableRow = ({ glCategories, index, row, setOrderState, ordNumb, v
 				<ul id={`${rowid}-modelListRef`} tabIndex="0" ref={modelListRef} className="material-model-list">
 					{
 						row.models.map(model => {
-							const titleArr = model.title.split("");
-							const inputVal = modelInputRef.current.value;
-							const title = <>{titleArr.map((char, index) => {
-								const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
-								if (strRegExp.test(char))
-									return <i key={index}>{char}</i>
-								else {
-									return char
-								}
-							})
-							}</>
-							return <li key={model.id} onClick={() => setModel(model)}>{title}</li>
+							const inputVal = modelInputRef.current.value
+								.replace(/-/gi, "\\-")
+								.replace(/e/gi, "eə")
+								.replace(/u/gi, "uü")
+								.replace(/s/gi, "sş")
+								.replace(/o/gi, "oö")
+								.replace(/g/gi, "gğ")
+								.replace(/c/gi, "cç")
+								.replace(/i/gi, "iı")
+							let regex = `[${inputVal}]`
+							const strRegExp = new RegExp(regex, 'gi');
+							const title = model.title.replace(strRegExp, replaceFunc, 'gi');
+							return <li key={model.id} dangerouslySetInnerHTML={{ __html: title }} onClick={() => setModel(model)}></li>
 						})
 					}
 				</ul>

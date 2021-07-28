@@ -48,6 +48,7 @@ const NewOrderContent = (props) => {
     }
     if (canProceed) {
       setSending(true);
+      props.modalContainerRef.current.style.visibility = "hidden";
       const formData = new FormData();
       formData.append("mats", JSON.stringify(parsedMaterials))
       formData.append("structureid", orderInfo.structure)
@@ -68,14 +69,16 @@ const NewOrderContent = (props) => {
           if (respJ[0].result === 'success') {
             onSuccess(respJ)
           }
-          else if (respJ[0].error === "bO")
+          else if (respJ[0].error === "bO") {
             setOperationResult({ visible: true, errorDetails: respJ.reduce((sum, curr) => sum += curr.name + curr.overload_amount + "<br/>", ""), desc: "Büdcə Aşılmışdır" })
+            props.modalContainerRef.current.style.visibility = "visible";
+          }
           else
             setOperationResult({ visible: true, desc: respJ[0].error })
           setSending(false);
         })
         .catch(err => {
-          console.log(err);
+          props.modalContainerRef.current.style.visibility = "visible";
           setSending(false);
         })
     }

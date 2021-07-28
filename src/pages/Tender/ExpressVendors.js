@@ -113,6 +113,7 @@ const ExpressVendors = () => {
         <>
             <ExpressVendorsSearch
                 ref={searchDataRef}
+                activePageRef={activePageRef}
                 updateList={updateList}
             />
             <div className="exp-vendor wrapper">
@@ -138,12 +139,8 @@ const ExpressVendors = () => {
                                     <td>
                                         {(activePageRef.current * 20) + index + 1}
                                     </td>
-                                    <td>
-                                        {vendor.name}
-                                    </td>
-                                    <td>
-                                        {vendor.voen}
-                                    </td>
+                                    <td>{vendor.name}</td>
+                                    <td>{vendor.voen}</td>
                                     <td>
                                         {vendorTypes.find(vendorType => vendorType.val === vendor.vendor_type) ? vendorTypes.find(vendorType => vendorType.val === vendor.vendor_type).text : ''}
                                     </td>
@@ -151,7 +148,7 @@ const ExpressVendors = () => {
                                         {vendor.residency}
                                     </td>
                                     <td>
-                                        {workSectors.find(workSector => workSector.val === vendor.sphere).text}
+                                        {workSectors.find(workSector => workSector.val === vendor.sphere) ? workSectors.find(workSector => workSector.val === vendor.sphere).text : ""}
                                     </td>
                                     <td>
                                         {taxTypes.find(taxType => taxType.val === vendor.tax_type) ? taxTypes.find(taxType => taxType.val === vendor.tax_type).text : ''}
@@ -177,7 +174,7 @@ const ExpressVendors = () => {
                     </Modal>
                 }
                 <div style={{ position: 'fixed', bottom: '100px', right: '50px' }}>
-                    <AiOutlinePlusCircle color="rgb(255, 174, 0)" cursor="pointer" onClick={() => handleClick({ title: "Yeni Express Venodr", id: null })} size="40" />
+                    <AiOutlinePlusCircle color="rgb(255, 174, 0)" cursor="pointer" onClick={() => handleClick({ name: "Yeni Express Vendor", id: null })} size="40" />
                 </div>
                 <div className="my-orders-footer">
                     <Pagination

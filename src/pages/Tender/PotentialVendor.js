@@ -19,20 +19,25 @@ const PotentialVendor = (props) => {
         setDisabled(prev => !prev)
     }
     const updateVendor = () => {
-        const data = {
-            id: props.id,
-            name: nameRef.current.value,
-            voen: voenRef.current.value,
-            sphere: sphereRef.current.value
-        };
-        fetchPost('http://192.168.0.182:54321/api/update-potential-vendor', data)
-            .then(respJ => {
-                if (respJ[0].operation_result === 'success') {
-                    props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })
-                    setDisabled(true)
-                }
-            })
-            .catch(ex => console.log(ex))
+        if (voenRef.current.value.length === 10) {
+            const data = {
+                id: props.id,
+                name: nameRef.current.value,
+                voen: voenRef.current.value,
+                sphere: sphereRef.current.value
+            };
+            fetchPost('http://192.168.0.182:54321/api/update-potential-vendor', data)
+                .then(respJ => {
+                    if (respJ[0].operation_result === 'success') {
+                        props.setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', icon: FaCheck })
+                        setDisabled(true)
+                    }
+                })
+                .catch(ex => console.log(ex))
+        }
+        else {
+            voenRef.current.style.boxShadow = "0px 0px 3px 1px red"
+        }
     }
     return (
         <li>

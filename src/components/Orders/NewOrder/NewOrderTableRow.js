@@ -92,8 +92,8 @@ const NewOrderTableRow = (props) => {
     modelListRef.current.style.display = "none";
   }
   const handleInputSearch = (e) => {
-    const value = e.target.value
-    if (subGlCategory !== "-1" && subGlCategory !== undefined && subGlCategory !== "") {
+    const value = e.target.value;
+    if (subGlCategory !== "-1" && subGlCategory) {
       const localVal = value.replace(/e/gi, "eə")
         .replace(/u/gi, "uü")
         .replace(/sh?/gi, "sş")
@@ -107,18 +107,27 @@ const NewOrderTableRow = (props) => {
       const searchResult = modelsRef.current.filter(model => regExp.test(model.title))
       setModels(searchResult);
     } else {
-      const apiValue = value.replace(/e/gi, "[eə]")
+      const apiValue =  encodeURIComponent(value.replace(/e/gi, "[eə]")
         .replace(/u/gi, "[uü]")
         .replace(/sh?/gi, "[sş]")
         .replace(/o/gi, "[oö]")
         .replace(/gh?/gi, "[gğ]")
         .replace(/ch?/gi, "[cç]")
-        .replace(/i/gi, "[iı]")
-      fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${apiValue}&orderType=${orderType}&structure=${structure}`)
-        .then(respJ => {
-          setModels(respJ)
-        })
-        .catch(ex => console.log(ex))
+        .replace(/i/gi, "[iı]"))
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+      timeoutRef.current = setTimeout(() => {
+        fetchGet(`http://192.168.0.182:54321/api/material-by-title?title=${apiValue}&orderType=${orderType}&structure=${structure}`)
+          .then(respJ => {
+            setModels(respJ)
+          })
+          .catch(ex => {
+            timeoutRef.current = null;
+            console.log(ex)
+          })
+      }, 500)
     }
   }
   const searchByCode = (e) => {
@@ -276,4 +285,5 @@ const NewOrderTableRow = (props) => {
     </li>
   )
 }
+
 export default React.memo(NewOrderTableRow)

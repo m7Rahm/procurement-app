@@ -74,6 +74,7 @@ const MyOrders = (props) => {
                 wrapperRef={wrapperRef}
                 orders={orders}
                 referer={referer}
+                activePageRef={activePageRef}
                 setOrders={setOrders}
               />
               : <ResultEmpty />

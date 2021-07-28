@@ -58,7 +58,7 @@ const ContractsHOC = (Content) => function Payments(props) {
             />
             {
                 props.referer === "procurement" &&
-                <div onClick={handleNewContractClick} style={{ position: "fixed", bottom: "50px", right: "50px" }}>
+                <div onClick={handleNewContractClick} style={{ position: "fixed", bottom: "50px", right: "50px", zIndex: 2 }}>
                     <FaPlus size="28" color="#FFAE00" cursor="pointer" />
                 </div>
             }

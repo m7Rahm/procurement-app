@@ -181,9 +181,10 @@ export default AgreementVendors
 
 export const VendorsList = React.memo((props) => {
     const [vendors, setVendors] = useState({ all: [], available: [], visible: [], offset: 2 });
-    const { headerVisible = true, uid = "0" } = props
+    const { headerVisible = true, uid = "0" } = props;
     const vendorsListRef = useRef(null);
     const inputRef = useRef(null);
+    const next = Math.round(200 / 36);
     const fetchGet = useFetch("GET");
     useEffect(() => {
         const controller = new AbortController();
@@ -201,7 +202,6 @@ export const VendorsList = React.memo((props) => {
     }
     const handleScroll = (e) => {
         const offsetTop = e.target.scrollTop;
-        const next = Math.round(200 / 36);
         setVendors(prev => {
             const offset = Math.round(offsetTop / 36);
             const start = offset > 2 ? offset - 2 : 0;
@@ -229,7 +229,7 @@ export const VendorsList = React.memo((props) => {
     return (
         <>
             {headerVisible && <h1 style={{ textAlign: 'center', fontSize: '22px' }}>Vendorlar</h1>}
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative', width: "200px" }}>
                 <input
                     ref={inputRef}
                     style={{ display: 'block', width: "100%", padding: '3px' }}
@@ -243,16 +243,17 @@ export const VendorsList = React.memo((props) => {
                     id={"windowed-vendors-list" + uid}
                     style={{ position: 'absolute', zIndex: 2, display: 'none', top: "30px", left: 0, right: 0 }}
                 >
-                    <div style={{ maxHeight: '200px', position: 'relative', overflow: 'auto', backdropFilter: "blur(3px)", backgroundColor: 'slategray' }} onScroll={handleScroll}>
+                    <div className="windowed-vendors-list" style={{ maxHeight: '200px', position: 'relative', overflow: 'auto', backdropFilter: "blur(3px)", backgroundColor: 'slategray' }} onScroll={handleScroll}>
                         <ul style={{ height: 36 * vendors.available.length, width: "100%" }} className="vendors-list">
                             {
                                 vendors.visible.map((vendor, index) =>
                                     <li
+                                        title={vendor.name}
                                         key={vendor.id}
                                         onClick={() => handleVendorClick(vendor, inputRef, vendorsListRef)}
-                                        style={{ top: (vendors.offset + index - 2) * 36 + 'px', overflow: "hidden" }}
+                                        style={{ top: (vendors.offset + index - 2) * 36 + 'px', overflow: "hidden", backgroundColor: vendor.is_express_vendor ? "rgb(255 209 116)" : "" }}
                                     >
-                                        {vendor.name}
+                                        <input disabled={true} style={{ border: "none", backgroundColor: "transparent" }} defaultValue={vendor.name} />
                                     </li>
                                 )
                             }

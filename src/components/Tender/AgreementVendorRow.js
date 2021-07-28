@@ -41,11 +41,38 @@ const AgreementVendorRow = (props) => {
     }
     const handleRowDelete = () => {
         rowRef.current.classList.add('delete-row');
-        rowRef.current.addEventListener('animationend',
-            () => setAgreementVendors(prev => prev.filter(row => row.key !== vendor.key))
-        )
+        rowRef.current.addEventListener('animationend', () => setAgreementVendors(prev => prev.filter(row => row.key !== vendor.key)))
     }
     const workSector = workSectors.find(sector => sector.val === vendor.sphere) ? workSectors.find(sector => sector.val === vendor.sphere).text : '';
+    const onDragOver = (e) => {
+        console.log(e)
+        preventDefault(e)
+        e.target.style.border = "dotted 1px red"
+    }
+    const preventDefault = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const onDragLeave = (e) => {
+        preventDefault(e);
+        e.target.style.borderColor = "transparent"
+    }
+    const handleDrop = (e) => {
+        preventDefault(e);
+        const files = e.dataTransfer.files;
+        e.target.style.borderColor = "transparent"
+        setAgreementVendors(prev => {
+            const newState = [...prev.find(prevVendor => prevVendor.key === vendor.key).files];
+            for (let i = 0; i < files.length; i++)
+                if (!newState.find(prevFile => prevFile.name === files[i].name))
+                    newState.push(files[i])
+            return prev.map(
+                prevVendor => prevVendor.key !== vendor.key
+                    ? prevVendor
+                    : { ...prevVendor, files: newState }
+            );
+        })
+    }
     return (
         <>
             <li ref={rowRef} className={vendor.className}>
@@ -62,7 +89,12 @@ const AgreementVendorRow = (props) => {
                 <div>
                     <input type="text" name="comment" placeholder="Comment" value={vendor.comment} onChange={handleChange} />
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                    onDragLeave={onDragLeave}
+                    onDragOver={onDragOver}
+                    onDrop={handleDrop}
+                    style={{ display: 'flex', alignItems: 'center' }}
+                >
                     <label htmlFor={`file-upload ${vendor.key}`}>
                         <IoIosAttach cursor="pointer" color="#ff4a4a" onClick={handleFileUpload} title="şəkil əlavə et" size="20" />
                     </label>

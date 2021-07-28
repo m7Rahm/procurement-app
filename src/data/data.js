@@ -196,8 +196,8 @@ export const optionsReadyOrders = [
 ]
 export const workSectors = [
     {
-        val: 0,
-        text: ''
+        val: "",
+        text: '-'
     },
     {
         val: 1,

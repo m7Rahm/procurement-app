@@ -62,7 +62,7 @@ const Table = (props) => {
       {
         props.orders.orders.map((order, index) =>
           <ListItem
-            index={index}
+            index={props.activePageRef.current * 20 + index}
             key={order.id}
             order={order}
             referer={referer}

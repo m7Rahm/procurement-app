@@ -8,7 +8,8 @@ const modalContent = (Content) => ({ ...props }) =>
 
 const Modal = (props) => {
   const { style, canBeClosed = true, number, title, changeModalState } = props;
-  const modalWrapperRef = useRef(null)
+  const modalWrapperRef = useRef(null);
+  const modalContainerRef = useRef(null);
   const ModalContent = useMemo(() => modalContent(props.children), [props.children]);
   const stateRef = useRef({});
   const closeModal = () => {
@@ -45,7 +46,7 @@ const Modal = (props) => {
     return () => document.removeEventListener('keyup', onEscPress, false)
   }, [changeModalState, canBeClosed]);
   return (
-    <div style={{ position: "fixed", zIndex: "2", top: 0, right: 0, left: 0, bottom: 0, overflow: "auto" }}>
+    <div ref={modalContainerRef} style={{ position: "fixed", zIndex: "2", top: 0, right: 0, left: 0, bottom: 0, overflow: "auto" }}>
       <div className="modal" onClick={closeModal}></div>
       <div ref={modalWrapperRef} className='modal-content wrapper' style={style}>
         <div onMouseDown={handleDragStart}>
@@ -57,6 +58,7 @@ const Modal = (props) => {
             closeModal={changeModalState}
             modalWrapperRef={modalWrapperRef}
             current={number}
+            modalContainerRef={modalContainerRef}
             stateRef={stateRef}
             {...props.childProps}
           />
