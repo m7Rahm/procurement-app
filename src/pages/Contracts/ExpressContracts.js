@@ -63,7 +63,7 @@ const ExpressContracts = () => {
         setModalState(prev => ({ ...prev, visible: false }))
     }
     return (
-        <div style={{ paddingTop: '56px' }}>
+        <div style={{ padding: '56px 0px' }}>
             <div>
                 {
                     modalState.visible &&

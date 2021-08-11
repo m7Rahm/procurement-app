@@ -1,5 +1,5 @@
 import React, { lazy, useState, useContext, useCallback } from "react"
-import { FaBoxOpen, FaBox } from "react-icons/fa"
+import { FaBoxOpen, FaBox, FaShoppingCart } from "react-icons/fa"
 import {
   IoMdCheckmark,
   IoMdClose,
@@ -24,8 +24,8 @@ const Hybrid = (props) => <>
   <ParticipantsModal id={props.id} />
 </>
 const OrderContentWithChat = (props) => {
+  const token = props.token;
   const fetchGet = useFetch("GET");
-  const token = useContext(TokenContext)[0].token;
   const fetchMessages = useCallback((from = 0) =>
     fetchGet(`http://192.168.0.182:54321/api/messages/${props.id}?from=${from}&replyto=0&doctype=${10}`)
     , [props.id, fetchGet]);
@@ -65,6 +65,7 @@ const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const webSocket = useContext(WebSocketContext);
   const token = tokenContext[0].token;
+  const structureType = tokenContext[0].userData.userInfo.sType;
   const { referer, setOrders, status, participants, date, id, number, empid } = props;
   const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {}, title: "Sifariş №" });
 
@@ -95,6 +96,8 @@ const ListItem = (props) => {
       formData.append("ordNumb", data.ordNumb)
       formData.append("structureid", data.structureid)
       formData.append("returned", data.returned);
+      if (structureType === 2)
+        formData.append("iswo", 1)
       fetch("http://192.168.0.182:54321/api/new-order", {
         method: "POST",
         headers: {
@@ -130,6 +133,8 @@ const ListItem = (props) => {
       ordNumb: number,
       view: referer,
       id: id,
+      token,
+      structureType,
       onSendClick
     }
     setModalState(prev => ({ ...prev, visible: true, content: OrderContentWithChat, childProps, number: number }))
@@ -148,7 +153,9 @@ const ListItem = (props) => {
               ? <IoMdCheckmark color="#0F9D58" title="Təsdiq" size="20" />
               : status === 25 || status === 44
                 ? <FaBox color="#aaaaaa" title="Anbara daxil oldu" size="20" />
-                : ""
+                : status === 40 ?
+                  <FaShoppingCart color="#EC4646" size="18" title="Qiymət araşdırılması" />
+                  : ""
   return (
     <>
       <li style={{ justifyContent: "space-between" }}>
@@ -168,7 +175,7 @@ const ListItem = (props) => {
         <div style={{ minWidth: "60px", width: "15%", textAlign: "left" }}> {number}</div>
         <div className="participants-list-container">
           <IoMdPeople cursor="pointer" onClick={onParticipantsClick} size="20" display="block" style={{ position: "absolute", left: "0px" }} color="gray" />
-          <input className="participants-list" defaultValue={participants.slice(0, -2)} disabled={true} />
+          <input className="participants-list" defaultValue={participants ? participants.slice(0, -2) : ""} disabled={true} />
         </div>
         <div style={{ width: "60px" }}>
           <IoMdChatbubbles size="20" color="#4285F4" cursor="pointer" onClick={onInfoClick} />

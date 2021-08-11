@@ -54,6 +54,8 @@ const NewOrderContent = (props) => {
       formData.append("structureid", orderInfo.structure)
       formData.append("ordNumb", current ? current : "")
       formData.append("orderType", orderInfo.orderType)
+      if (props.structureType === 2)
+        formData.append("iswo", 1)
       for (let index = 0; index < files.length; index++) {
         formData.append("files", files[index])
       }
@@ -73,12 +75,13 @@ const NewOrderContent = (props) => {
             setOperationResult({ visible: true, errorDetails: respJ.reduce((sum, curr) => sum += curr.name + curr.overload_amount + "<br/>", ""), desc: "Büdcə Aşılmışdır" })
             props.modalContainerRef.current.style.visibility = "visible";
           }
-          else
+          else {
             setOperationResult({ visible: true, desc: respJ[0].error })
+            props.modalContainerRef.current.style.visibility = "visible";
+          }
           setSending(false);
         })
-        .catch(err => {
-          props.modalContainerRef.current.style.visibility = "visible";
+        .catch(_ => {
           setSending(false);
         })
     }

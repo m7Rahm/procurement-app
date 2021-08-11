@@ -17,11 +17,15 @@ const getUserData = () => {
     const userMods = modules.filter(module => userModules.find(userModule => userModule === module.text));
     const structureid = decoded.data.structureid;
     const fullName = decoded.data.fullName;
+    const sType = decoded.data.sType;
     return {
-      modules: userMods, previliges: previliges, userInfo: {
+      modules: userMods,
+      previliges: previliges,
+      userInfo: {
         id,
         structureid,
-        fullName
+        fullName,
+        sType
       }
     }
   }
