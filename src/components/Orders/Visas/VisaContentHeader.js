@@ -14,7 +14,7 @@ const EditOrderRequest = React.lazy(() => import('../../modal content/EditOrderR
 const VisaContentHeader = (props) => {
 	const { version, current, orderNumb, handleEditClick, updateContent } = props;
 	const visaGenInfo = current[0];
-	const tranid = current[0].id;
+	const tranid = visaGenInfo.id;
 	const tokenContext = useContext(TokenContext);
 	const userData = tokenContext[0].userData;
 	const fetchPost = useFetch("POST");
@@ -47,7 +47,9 @@ const VisaContentHeader = (props) => {
 			<VisaVersionsContainer
 				tranid={tranid}
 				version={version}
+				orderid={visaGenInfo.order_id}
 				content={current}
+				forwardType={visaGenInfo.forward_type}
 				doneEditing={updateContent}
 				orderNumb={orderNumb}
 				{...props}
@@ -69,7 +71,7 @@ const VisaContentHeader = (props) => {
 				<h1>
 					{`Sifariş № ${orderNumb}`}
 					{
-						canEditRequest && !visaGenInfo.result && visaGenInfo.can_influence &&
+						canEditRequest && !visaGenInfo.result && visaGenInfo.can_influence && visaGenInfo.forward_type !== 4 &&
 						<FaEdit onClick={showEditOrderContent}
 							title="düzəliş et"
 							size="20"

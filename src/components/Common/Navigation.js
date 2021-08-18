@@ -263,6 +263,14 @@ const Navigation = (props, ref) => {
                                         </li>
                                     )
                                 }
+                                {
+                                    props.warehouseVisible &&
+                                    <li>
+                                        <a href="http://192.168.0.182:62447">
+                                            <div style={{ minWidth: '60px' }}>Anbar</div>
+                                        </a>
+                                    </li>
+                                }
                                 <li onClick={handleLogOut}>
                                     <div style={{ minWidth: '60px' }}>Çıxış</div>
                                 </li>

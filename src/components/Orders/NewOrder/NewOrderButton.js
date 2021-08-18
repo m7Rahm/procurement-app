@@ -15,7 +15,6 @@ const NewOrder = (props) => {
   const tokenContext = useContext(TokenContext);
   const userData = tokenContext[0].userData;
   const canSeeOtherOrders = userData.previliges.includes("Digər sifarişləri görmək")
-  const structureType = userData.userInfo.sType;
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sending, setSending] = useState(false);
   const fetchPost = useFetch("POST");
@@ -62,7 +61,7 @@ const NewOrder = (props) => {
         <Suspense fallback={<Loading />}>
           <Modal
             title="Yeni Sifariş"
-            childProps={{ closeModal: closeModal, setSending: setSending, token: tokenContext[0].token, structureType }}
+            childProps={{ closeModal: closeModal, setSending: setSending, token: tokenContext[0].token }}
             changeModalState={() => setIsModalVisible()}
             wrapperRef={props.wrapperRef}
           >

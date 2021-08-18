@@ -17,7 +17,7 @@ const getResultText = (result) => {
 
 const Participants = (props) => {
   const { id } = props;
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(props.showReviewers);
   const [participants, setParticipants] = useState(null);
   const fetchGet = useFetch("GET");
   const handleChange = () => {

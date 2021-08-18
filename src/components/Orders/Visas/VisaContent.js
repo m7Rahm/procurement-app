@@ -16,6 +16,7 @@ const VisaContent = (props) => {
     const locationTranid = location.state ? location.state.tranid : undefined
     const inid = location.state ? location.state.initid : undefined
     const canProceed = useRef({});
+    // console.log(visa)
     // const otherProcurementUsers = useRef([]);
     // const getOtherProcUsers = (abortController) => {
     //     fetch
@@ -49,10 +50,11 @@ const VisaContent = (props) => {
         if (tranid && mounted && initid) {
             fetchGet(`http://192.168.0.182:54321/api/tran-info?tranid=${tranid}&init=${initid}`, abortController)
                 .then(respJ => {
+                    // console.log(respJ)
                     if (mounted)
                         if (respJ.length !== 0) {
                             canProceed.current = respJ.reduce((prev, material) => ({ ...prev, [material.order_material_id]: true }), {})
-                            setVisa({ content: respJ, files: respJ[0].related_files.split(',').filter(file => file !== "") });
+                            setVisa({ content: respJ, files: (respJ[0].related_files || "").split(',').filter(file => file !== "") });
                         }
                         else setVisa({ content: undefined, files: [] })
                 })

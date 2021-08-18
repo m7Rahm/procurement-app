@@ -65,7 +65,6 @@ const ListItem = (props) => {
   const tokenContext = useContext(TokenContext);
   const webSocket = useContext(WebSocketContext);
   const token = tokenContext[0].token;
-  const structureType = tokenContext[0].userData.userInfo.sType;
   const { referer, setOrders, status, participants, date, id, number, empid } = props;
   const [modalState, setModalState] = useState({ visible: false, content: null, childProps: {}, title: "Sifariş №" });
 
@@ -96,8 +95,8 @@ const ListItem = (props) => {
       formData.append("ordNumb", data.ordNumb)
       formData.append("structureid", data.structureid)
       formData.append("returned", data.returned);
-      if (structureType === 2)
-        formData.append("iswo", 1)
+      // if (structureType === 2)
+        // formData.append("iswo", 1)
       fetch("http://192.168.0.182:54321/api/new-order", {
         method: "POST",
         headers: {
@@ -134,7 +133,6 @@ const ListItem = (props) => {
       view: referer,
       id: id,
       token,
-      structureType,
       onSendClick
     }
     setModalState(prev => ({ ...prev, visible: true, content: OrderContentWithChat, childProps, number: number }))

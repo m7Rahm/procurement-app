@@ -125,6 +125,7 @@ const SelectModule = () => {
 								routes={routes}
 								webSocket={webSocket}
 								token={token}
+								warehouseVisible={warehouseVisible}
 								userData={userData}
 								ref={loadingIndicatorRef}
 								leftNavRef={leftNavIconRef}

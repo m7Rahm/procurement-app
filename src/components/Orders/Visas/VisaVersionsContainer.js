@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import VisaContentMaterials from '../../Common/VisaContentMaterials'
 import Participants from '../../modal content/Participants'
 import {
@@ -7,24 +7,27 @@ import {
     FaTimes
 } from 'react-icons/fa'
 import useFetch from '../../../hooks/useFetch'
+import { TokenContext } from '../../../App'
 
 const VisaVersionsContainer = (props) => {
-    const { orderNumb, doneEditing, tranid } = props;
+    const { orderNumb, doneEditing, tranid, orderid, forwardType } = props;
     const [versions, setVersions] = useState([]);
     const actionsAvailableRef = useRef(true);
     const fetchGet = useFetch("GET");
     const fetchPost = useFetch("POST");
+    const tokenContext = useContext(TokenContext);
+    const canReturn = tokenContext[0].userData.previliges.includes("Sifarişi redaktəyə qaytarmaq");
     useEffect(() => {
-        fetchGet(`http://192.168.0.182:54321/api/get-order-versions/${orderNumb}`)
+        fetchGet(`http://192.168.0.182:54321/api/order-versions/${orderNumb}/${orderid}`)
             .then(respJ => {
                 for (let i = 0; i < respJ.length; i++)
-                    if (respJ[i].is_confirmed || respJ[i].result !== 0) {
+                    if (respJ[i].processed === 2 && !respJ[i].can_decline) {
                         actionsAvailableRef.current = false;
                         break;
                     }
                 setVersions(respJ)
             })
-    }, [fetchGet, orderNumb]);
+    }, [fetchGet, orderNumb, orderid]);
     return (
         <div>
             {
@@ -35,6 +38,9 @@ const VisaVersionsContainer = (props) => {
                         fetchGet={fetchGet}
                         tranid={tranid}
                         key={version.id}
+                        forwardType={forwardType}
+                        orderid={orderid}
+                        canReturn={canReturn}
                         actionsAvailableRef={actionsAvailableRef}
                         closeModal={doneEditing}
                     />
@@ -44,8 +50,8 @@ const VisaVersionsContainer = (props) => {
     )
 }
 const VisaVersion = (props) => {
-    const { version, fetchPost, closeModal, actionsAvailableRef, tranid, fetchGet } = props;
-    const { emp_id, ord_numb, is_confirmed, conf_date, override, id } = version;
+    const { version, fetchPost, closeModal, actionsAvailableRef, tranid, fetchGet, orderid, forwardType } = props;
+    const { emp_id, ord_numb, processed, conf_date, id, can_decline } = version;
     const [visaContent, setVisaContent] = useState([]);
     const participantsRef = useRef(null);
     const [participantsVisiblity, setParticipantsVisiblity] = useState(false);
@@ -65,7 +71,7 @@ const VisaVersion = (props) => {
         fetchPost(`http://192.168.0.182:54321/api/accept-decline/${tranid}`, data)
             .then(respJ => {
                 if (respJ[0].operation_result === 'success') {
-                    closeModal({ act_date_time: respJ[0].act_date_time }, [], respJ[0].origin_emp_id)
+                    closeModal({ act_date_time: "Biraz öncə", result: action }, [], respJ[0].origin_emp_id)
                 }
             })
             .catch(err => console.log(err))
@@ -75,11 +81,12 @@ const VisaVersion = (props) => {
             .then(respJ => setVisaContent(respJ))
             .catch(ex => console.log(ex))
     }, [ord_numb, emp_id, fetchGet]);
-
     const acceptEditedVersion = () => {
         if (visaContent[0].override) {
             const data = {
-                orderid: id
+                orderid: id,
+                forwardType: forwardType,
+                ooid: orderid
             }
             fetchPost('http://192.168.0.182:54321/api/accept-edited-version', data)
                 .then(respJ => {
@@ -90,7 +97,7 @@ const VisaVersion = (props) => {
         }
     }
     return (
-        <div style={{ padding: '20px 0px', overflow: 'hidden' }}>
+        <div style={{ overflow: 'hidden' }}>
             {
                 visaContent.length !== 0 &&
                 <>
@@ -98,7 +105,7 @@ const VisaVersion = (props) => {
                         !actionsAvailableRef.current &&
                         <div className="protex-order-header-container">
                             {
-                                is_confirmed
+                                processed === 2
                                     ? <span>
                                         {conf_date}
                                         <FaCheck size="30" title="Təsdiq" color="#34A853" />
@@ -118,32 +125,30 @@ const VisaVersion = (props) => {
                         actionsAvailableRef.current &&
                         <div className="accept-decline-container">
                             {
-                                !override &&
+                                Boolean(can_decline) &&
                                 <div style={{ backgroundColor: 'rgb(217, 52, 4)' }} onClick={() => handleClick(-1)}>
                                     Etiraz et
-                            </div>
+                                </div>
                             }
-                            <div style={{ backgroundColor: 'rgb(15, 157, 88)' }} onClick={override ? acceptEditedVersion : () => handleClick(1)}>
+                            <div style={{ backgroundColor: 'rgb(15, 157, 88)' }} onClick={!Boolean(can_decline) ? acceptEditedVersion : () => handleClick(1)}>
                                 Təsdiq et
                             </div>
                             {
-                                !override &&
+                                Boolean(can_decline) && Boolean(props.canReturn) &&
                                 <div style={{ backgroundColor: 'rgb(244, 180, 0)' }} onClick={() => handleClick(2)}>
                                     Redaktəyə qaytar
-                            </div>
+                                </div>
                             }
                         </div>
                     }
                     <div className="toggle-participants" onClick={handleParticipantsTransition}>
                         Tarixçəni göstər
-                            <FaAngleDown size="36" color="royalblue" />
+                        <FaAngleDown size="36" color="royalblue" />
                     </div>
                     {
                         participantsVisiblity &&
                         <div ref={participantsRef} className="visa-content-participants-show">
-                            <Participants
-                                id={id}
-                            />
+                            <Participants id={id} showReviewers={true} />
                         </div>
                     }
                 </>

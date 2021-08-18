@@ -19,10 +19,10 @@ const FinishOrder = (props) => {
         setAccepted(prev => prev.find(mat => mat.id === material.id) ? prev : [...prev, material])
     }
     const confirmSelection = () => {
-        const materials = accepted.map(material => [material.id, material.amount - material.handed_amount === 0 ? 99 : material.handed_amount !== 0 ? 55 : 0]);
+        const mats = accepted.map(material => [material.id, material.amount - material.handed_amount === 0 ? 99 : material.handed_amount !== 0 ? 55 : 0]);
         const data = {
-            orderid: props.id,
-            materials: materials
+            orderid: materials[0].order_id,
+            materials: mats
         };
         fetchPost('http://192.168.0.182:54321/api/confirm-accepted', data)
             .then(respJ => {
