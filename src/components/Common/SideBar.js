@@ -84,6 +84,7 @@ const SideBar = (props) => {
 						return (
 							<VisaCard
 								key={visa.id}
+								structure_name={visa.structure_name}
 								setActive={setActive}
 								iconsPanelRef={iconsPanelRef}
 								checkedAmount={checkedAmountRef}

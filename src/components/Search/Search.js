@@ -1,18 +1,24 @@
 import React, { useEffect, useRef, useState } from "react"
-import { FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import useFetch from "../../hooks/useFetch";
 const Search = (props) => {
 	const { updateList, searchRefData } = props
 	const [departments, setDepartments] = useState([])
 	const departmentRef = useRef([])
 	const structuresInputRef = useRef(null);
-	const [selectedDepartments, setSelectedDepartments] = useState([])
+	const [selectedDepartments, setSelectedDepartments] = useState([]);
+	const [all_checked, set_all_checked] = useState(false);
 	const handleChange = (e) => {
 		const name = e.target.name;
 		const value = e.target.value;
 		searchRefData.current[name] = value
 	}
 	const handleStructureSelect = (department) => {
+		// setDepartments(prev => prev.map(dep => dep.id === department.id ? ({ ...dep, checked: true }) : dep))
+		const elem = departmentRef.current.find(dep => dep.id === department.id)
+		if (elem) {
+			elem.checked = true;
+		}
 		setSelectedDepartments(prev => {
 			let newState = []
 			if (prev.find(str => str.id === department.id)) {
@@ -33,11 +39,25 @@ const Search = (props) => {
 		}
 	}
 	const removeFromSelected = (department) => {
+		const elem = departmentRef.current.find(dep => dep.id === department.id);
+		if (elem) {
+			elem.checked = false;
+		}
 		setSelectedDepartments(prev => {
 			const newState = prev.filter(dep => dep.id !== department.id)
 			searchRefData.current.departments = newState;
 			return newState
 		})
+
+	}
+	const handle_check_all = () => {
+		departmentRef.current = departmentRef.current.map(dep => ({ ...dep, checked: !all_checked }))
+		if (!all_checked) {
+			setSelectedDepartments([...departmentRef.current])
+		} else {
+			setSelectedDepartments([]);
+		}
+		set_all_checked(prev => !prev)
 	}
 	const handleStructureChange = (e) => {
 		const value = e.target.value;
@@ -99,8 +119,11 @@ const Search = (props) => {
 						</div>
 						{
 							props.canSeeOtherOrders &&
-							<div style={{ position: "relative" }}>
+							<div style={{ position: "relative", zIndex: "1" }}>
 								<label htmlFor="dateTill">Struktur</label>
+								<span title={!all_checked ? "Hamısını seç" : "Hamısını sil"} onClick={handle_check_all} style={{ position: "absolute", right: "10px", cursor: "pointer" }}>
+									<FaCheck color={all_checked ? "#2FDD92" : "gainsboro"} />
+								</span>
 								<br />
 								<input
 									onChange={handleStructureChange}
@@ -119,7 +142,19 @@ const Search = (props) => {
 											const inputVal = structuresInputRef.current.value;
 											const strRegExp = new RegExp(`[${inputVal}]`, 'gi');
 											const title = department.name.replace(strRegExp, (text) => `<i>${text}</i>`);
-											return <li tabIndex="3" dangerouslySetInnerHTML={{ __html: title }} className="structure-dep" key={department.id} onClick={() => handleStructureSelect(department)}></li>
+											return <li
+												tabIndex="3"
+												key={department.id}
+												className="structure-dep"
+												onClick={() => handleStructureSelect(department)}>
+												{departmentRef.current.find(dep => dep.id === department.id)?.checked &&
+													<span>
+														<FaCheck size="10" color="#2FDD92" />
+													</span>
+												}
+												<div dangerouslySetInnerHTML={{ __html: title }}>
+												</div>
+											</li>
 										})
 									}
 								</ul>
@@ -162,7 +197,7 @@ const Search = (props) => {
 									backgroundColor: "#ffae00"
 								}}>
 								AXTAR
-						</button>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -171,7 +206,13 @@ const Search = (props) => {
 				selectedDepartments.map(department =>
 					<div className="sel-dep-list" key={department.id}>
 						{department.name}
-						<FaTimes cursor="pointer" onClick={() => removeFromSelected(department)} style={{ float: "right", marginLeft: "6px" }} />
+						<span>
+							<FaTimes
+								cursor="pointer"
+								onClick={() => removeFromSelected(department)}
+								style={{ float: "right", marginLeft: "6px" }}
+							/>
+						</span>
 					</div>
 				)
 			}

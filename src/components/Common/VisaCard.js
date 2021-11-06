@@ -24,6 +24,7 @@ const VisaCard = (props) => {
 		setIconsVisible,
 		setActive,
 		orderid,
+		structure_name
 	} = props;
 	const stateRef = useRef(null);
 	const checkBoxRef = useRef(null)
@@ -76,7 +77,8 @@ const VisaCard = (props) => {
 							{date}
 						</span>
 					</div>
-					<div style={{ height: '15px', position: 'relative' }}>
+					<div style={{ height: '15px', position: 'relative', color: "#E5890A", fontWeight: 600 }}>
+						{structure_name}
 					</div>
 					<div style={{ height: '23px', paddingTop: '8px' }}>
 						<span style={{ fontSize: '12px', color: 'gray', float: 'left', position: 'relative', zIndex: 0, background: 'whitesmoke', padding: '0px 5px 0px 0px' }}>

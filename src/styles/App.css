@@ -2245,8 +2245,16 @@ ul.structures-list>li {
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  font-size: 12px;
   padding: 1rem;
+}
+ul.structures-list div{
+  font-size: 12px;
+}
+ul.structures-list span{
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 ul.structures-list>li>hide{
   display: none;
@@ -2565,16 +2573,17 @@ div.uploaded-files>div {
   position: relative;
 }
 
-div.message>svg:first-of-type {
+div.message>span:first-of-type {
   vertical-align: middle;
   right: 4px;
   top: 2px;
+  z-index: 10;
   position: absolute;
   display: none;
   animation: show-up 0.2s both ease-in-out;
 }
 
-div.message:hover>svg {
+div.message:hover span {
   cursor: pointer;
   display: inline;
 }

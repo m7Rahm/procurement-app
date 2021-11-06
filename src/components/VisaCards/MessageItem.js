@@ -1,11 +1,35 @@
-import React, { useLayoutEffect, useRef } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { FaAngleDown } from 'react-icons/fa'
 import { IoMdImage } from "react-icons/io"
+import styles from "../../styles/App.module.css"
 const MessageItem = (props) => {
     const ref = useRef(null);
+    const [show_context_menu, set_show_context_menu] = useState(false);
     const calcHeight = props.getHeight;
     const setMessages = props.setMessages;
     const type = props.message.review.slice(0, 3) === ":f:" ? 1 : 0;
+    const delete_message = () => {
+        setMessages(prev => {
+            const m_index = prev.all.findIndex(m => m.id === props.id);
+            const all = prev.all.map((m, index) => index > m_index ? ({ ...m, offset: m.offset - ref.current.clientHeight }) : m).filter(mes => mes.id !== props.id)
+            return {
+                ...prev,
+                height: prev.height - ref.current.clientHeight,
+                count: prev.count - 1,
+                all: all,
+                visible: all.slice(prev.start, prev.end)
+            }
+        })
+    }
+    const handle_cmenu_click = () => {
+        set_show_context_menu(prev => !prev)
+    }
+    const hide_menu = (e) => {
+        if (e.relatedTarget?.classList.contains("menu-item")) {
+            delete_message()
+        }
+        set_show_context_menu(false)
+    }
     useLayoutEffect(() => {
         if (calcHeight && !props.added) {
             setMessages(prev => {
@@ -68,10 +92,21 @@ const MessageItem = (props) => {
     return (
         <li ref={ref} style={{ position: 'absolute', transform: `translateY(${props.offset})`, ...rightOrLeft, overflow: 'hidden' }}>
             <div className="message" style={{ clear: 'both', float: 'right', backgroundColor: props.self && 'rgb(5, 97, 98)' }}>
-                <FaAngleDown />
+                {
+                    props.self &&
+                    <span tabIndex="0" onClick={handle_cmenu_click} onBlur={hide_menu}>
+                        <FaAngleDown />
+                    </span>
+                }
+                {
+                    show_context_menu &&
+                    <div className={styles["message-context-container"]}>
+                        <div className="menu-item" tabIndex="0" onClick={delete_message}>Sil</div>
+                    </div>
+                }
                 {
                     !props.same && !props.self &&
-                    <h1 style={{ textAlign: props.self ? 'right' : 'left', margin: '10px' }}>{props.message.full_name}</h1>
+                    <h1 style={{ textAlign: props.self ? 'right' : 'left', margin: '10px 10px 10px 5px' }}>{props.message.full_name}</h1>
                 }
                 <div>
                     <div style={{ textAlign: 'left', padding: '5px', minWidth: '120px' }}>
