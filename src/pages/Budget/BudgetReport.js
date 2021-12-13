@@ -6,6 +6,51 @@ import { TokenContext } from "../../App";
 const date = new Date()
 const month = months.find(month => Number(month.value) === date.getMonth() + 1);
 const year = date.getFullYear();
+const exportToExcel = (rows) => {
+    const month = rows.length !== 0 ? months.find(month => Number(month.value) === rows[0].month).name : ""
+    const tableBody = rows.map(row =>
+        `<tr>
+            <td>${row.in}</td>
+            <td>${row.code}</td>
+            <td>${row.name}</td>
+            <td>${row.pl}</td>
+            <td>${row.fa}</td>
+            <td>${row.pl - row.fa}</td>
+        </tr>
+        `
+    ).reduce((con, curr) => con += curr, "")
+    const excelTableData = `
+            <thead>
+                <tr>
+                    <th style="background-color: tomato"></th>
+                    <th style="background-color: tomato"></th>
+                    <th style="font-size: 20px; color: white; background-color: tomato" rowSpan="2">Inzibati xərclər</th>
+                    <th style="width: 120px; color: white; background-color: tomato">Plan</th>
+                    <th style="width: 120px; color: white; background-color: tomato">Fakt</th>
+                    <th style="width: 120px; color: white; background-color: tomato">Fərq</th>
+                </tr>
+                <tr>
+                    <th style="width: 50px; color: white; background-color: tomato">#</th>
+                    <th style="width: 120px; color: white; background-color: tomato">Kod</th>
+                    <th style="width: 120px; color: white; background-color: tomato" colSpan="3">${month}</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableBody}
+            </tbody>
+`
+    const year = document.getElementById("year").value;
+
+    var uri = 'data:application/vnd.ms-excel;base64,'
+        , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+    var ctx = { worksheet: `${month}-${year}` || 'Worksheet', table: excelTableData }
+    const link = document.getElementById("a");
+    link.href = uri + base64(format(template, ctx))
+    link.download = `${month}-${year}.xls`;
+    link.click();
+}
 const BudgetReport = () => {
     const [rows, setRows] = useState([]);
     const userData = useContext(TokenContext)[0].userData;
@@ -26,64 +71,13 @@ const BudgetReport = () => {
             mounted = false
         }
     }, [fetchPost, structureid]);
-    const exportToExcel = () => {
-        const month = rows.length !== 0 ? months.find(month => Number(month.value) === rows[0].month).name : ""
-        const tableBody = rows.map(row =>
-            `<tr>
-                <td>${row.in}</td>
-                <td>${row.code}</td>
-                <td>${row.name}</td>
-                <td>${row.pl}</td>
-                <td>${row.fa}</td>
-            </tr>
-            `
-        ).reduce((con, curr) => con += curr, "")
-        const excelTableData = `
-        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-            <head>
-                <xml>
-                    <x:ExcelWorkbook>
-                        <x:ExcelWorksheets>
-                            <x:ExcelWorksheet>
-                            <x:Name>${month}</x:Name>
-                                <x:WorksheetOptions>
-                                    <x:DisplayGridlines/>
-                                </x:WorksheetOptions>
-                            </x:ExcelWorksheet>
-                        </x:ExcelWorksheets>
-                    </x:ExcelWorkbook>
-                </xml>
-            </head>
-            <body>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="background-color: tomato"></th>
-                            <th style="background-color: tomato"></th>
-                            <th style="font-size: 20px; color: white; background-color: tomato" rowSpan="2">Inzibati xərclər</th>
-                            <th style="width: 120px; color: white; background-color: tomato">Plan</th>
-                            <th style="width: 120px; color: white; background-color: tomato">Fakt</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 50px; color: white; background-color: tomato">#</th>
-                            <th style="width: 120px; color: white; background-color: tomato">Kod</th>
-                            <th style="width: 120px; color: white; background-color: tomato" colSpan="2">${month}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${tableBody}
-                    </tbody>
-                </table>
-            </body>
-        </html>
-    `
-        const url = "data:application/vnd.ms-excel;charset=utf-8,\uFEFF" + encodeURIComponent(excelTableData);
-        window.open(btoa(unescape(url)));
-    }
     return (
         <>
             <div className="app">
                 <ReportSearch setRows={setRows} structureid={structureid} fetchPost={fetchPost} />
+                {// eslint-disable-next-line
+                    <a id="a" style={{ display: "none" }} download={month} href="#" target="_blank" />
+                }
                 <div className="budget-report-container">
                     <div>
                         <ul className="budget-report" style={{ margin: "0px" }}>
@@ -93,6 +87,7 @@ const BudgetReport = () => {
                                 <div style={{ backgroundColor: "tomato" }}>Inzibati xərclər</div>
                                 <div>Plan</div>
                                 <div>Fakt</div>
+                                <div>Fərq</div>
                             </li>
                             {
                                 rows.map(row =>
@@ -116,7 +111,7 @@ const BudgetReport = () => {
                             right: "50px"
                         }}
                     >
-                        <FaFileExcel onClick={exportToExcel} cursor="pointer" color="#1d6f42" title="Export to Excel" size="40" />
+                        <FaFileExcel onClick={() => exportToExcel(rows)} cursor="pointer" color="#1d6f42" title="Export to Excel" size="40" />
                         <br />
                     </div>
                 </div>
@@ -135,6 +130,7 @@ const BudgetReportRow = (props) => {
             <div style={{ border: "1px solid white" }}>{name}</div>
             <div>{planned}</div>
             <div>{fact}</div>
+            <div>{planned - fact}</div>
         </li>
     )
 }
@@ -174,7 +170,7 @@ const ReportSearch = (props) => {
             return newState
         })
     }
-    
+
     return (
         <div style={{ maxWidth: "1156px", margin: "auto", marginBottom: "10px", overflow: "hidden" }}>
             <div className="months">
@@ -190,7 +186,7 @@ const ReportSearch = (props) => {
                     )
                 }
             </div>
-            <select style={{ float: "right", padding: "6px" }} name="year" value={searchSate.year} onChange={handleChange}>
+            <select style={{ float: "right", padding: "6px" }} id="year" name="year" value={searchSate.year} onChange={handleChange}>
                 <option value={year} >{year}</option>
                 <option value={year - 1} >{year - 1}</option>
             </select>

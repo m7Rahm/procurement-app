@@ -53,8 +53,10 @@ const Search = (props) => {
 	const handle_check_all = () => {
 		departmentRef.current = departmentRef.current.map(dep => ({ ...dep, checked: !all_checked }))
 		if (!all_checked) {
+			searchRefData.current.departments = [...departmentRef.current]
 			setSelectedDepartments([...departmentRef.current])
 		} else {
+			searchRefData.current.departments = []
 			setSelectedDepartments([]);
 		}
 		set_all_checked(prev => !prev)

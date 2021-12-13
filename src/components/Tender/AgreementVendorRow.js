@@ -16,6 +16,7 @@ const AgreementVendorRow = (props) => {
         if (vendor.files.length === 0)
             filesRef.current.value = ''
     }, [vendor.files])
+    console.log(filesRef)
     const handleFileUpload = (e) => {
         const files = [];
         if (e.target.files) {

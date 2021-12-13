@@ -13,7 +13,8 @@ const userDataInit = {
     modules: "",
     position_id: "0",
     filial_id: "",
-    id: ""
+    id: "",
+    is_curator: 0
 }
 const EditUser = (props) => {
     const { id, closeModal } = props;
@@ -25,6 +26,7 @@ const EditUser = (props) => {
     const repeatPass = useRef(null);
     const positionRef = useRef(null);
     const statusRef = useRef(null)
+    const curator_ref = useRef(null);
     const fetchPost = useFetch("POST");
     const fetchGet = useFetch("GET");
     const updateUserData = () => {
@@ -38,7 +40,8 @@ const EditUser = (props) => {
             role: userData.role_id,
             id: id,
             position_id: statusRef.current.value,
-            vezifeN: positionRef.current.value
+            vezifeN: positionRef.current.value,
+            is_curator: curator_ref.current.checked
         };
         fetchPost("http://192.168.0.182:54321/api/update-user-data", data)
             .then(respJ => {
@@ -48,7 +51,12 @@ const EditUser = (props) => {
             .catch(ex => console.log(ex))
     }
     const addNewUser = () => {
-        const data = { ...userData, vezifeN: positionRef.current.value, position_id: statusRef.current.value };
+        const data = {
+            ...userData,
+            vezifeN: positionRef.current.value,
+            position_id: statusRef.current.value,
+            is_curator: curator_ref.current.checked
+        };
         fetchPost('http://192.168.0.182:54321/api/add-new-user', data)
             .then(respJ => {
                 if (respJ[0].result === 'success') {
@@ -68,6 +76,7 @@ const EditUser = (props) => {
                         const vezife = respJ[0].vezife_n;
                         positionRef.current.value = vezife || ""
                         statusRef.current.value = respJ[0].position_id
+                        curator_ref.current.checked = Boolean(respJ[0].is_curator)
                     }
                 })
                 .catch(ex => console.log(ex))
@@ -167,6 +176,10 @@ const EditUser = (props) => {
                             fetchGet={fetchGet}
                         />
                     </div>
+                    <div>
+                        <input disabled={isProtected} ref={curator_ref} type="checkbox" style={{ width: "16px", height: "16px", display: "inline-block" }} />
+                        <label style={{ display: "inline-block", marginLeft: "10px" }}>Kuratordur</label>
+                    </div>
                 </div>
             </div>
             <Roles fetchGet={fetchGet} userData={userData} isProtected={isProtected} setUserData={setUserData} />
@@ -217,8 +230,8 @@ const EditUser = (props) => {
                     <div>
                         <IoMdCheckmarkCircle size="88" />
                     </div>
-                Əməliyyat uğurla tamamlandı
-			</div>
+                    Əməliyyat uğurla tamamlandı
+                </div>
             }
         </div >
     )

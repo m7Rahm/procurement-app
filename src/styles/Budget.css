@@ -58,8 +58,7 @@ ul.budget-report>li>div:first-of-type{
 ul.budget-report>li>div:nth-of-type(2){
     width: 120px;
 }
-ul.budget-report>li>div:nth-of-type(4),
-ul.budget-report>li>div:last-of-type{
+ul.budget-report>li>div:nth-of-type(n+4){
     width: 120px;
 }
 ul.budget-report>li>div:nth-of-type(3){

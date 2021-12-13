@@ -290,7 +290,16 @@ const NewMaterial = React.memo((props) => {
                         setOperationResult({ visible: true, desc: 'Əməliyyat uğurla tamamlandı', backgroundColor: "white", iconColor: "rgb(15, 157, 88)", icon: AiFillCheckCircle })
                         setTableData(prev => ({ content: [...prev.content, { ...data, id, product_id, is_service: data.type === "1", optimal_quantity: optimalQuantity.current.value }], count: prev.count + 1 }));
                         inventoryRef.current.checked = false;
-                        setNewCatState({ gl_category_id: "-1", sub_gl_category_id: "-1", title: "", approx_price: "" });
+                        setNewCatState({
+                            title: '',
+                            department: 1,
+                            procurement: '',
+                            approx_price: '',
+                            cluster: '',
+                            gl_category_id: '-1',
+                            sub_gl_category_id: '-1',
+                            type: 0
+                        });
                         curatoridRef.current.value = "-1"
                         optimalQuantity.current.value = 0
                     } else {

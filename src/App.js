@@ -37,9 +37,10 @@ const App = () => {
   const history = useHistory();
   const [token, setToken] = useState({ token: localStorage.getItem('token'), userData: getUserData() });
   const logout = () => {
-    setToken({ token: '', userData: {} })
     localStorage.removeItem('token');
-    window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
+    if (token.userData.modules.find(module => module.text === "Warehouse"))
+      window.location.replace('http://192.168.0.182:62447/?from=procurement&action=logout')
+    setToken({ token: '', userData: {} })
   }
   // localStorage.removeItem("token")
   useEffect(() => {
